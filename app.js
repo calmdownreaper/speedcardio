@@ -1,9 +1,9 @@
-import * as material from './content.js?v=36';
-import { TERRITORIES } from './territories.js?v=36';
+import * as material from './content.js?v=37';
+import { TERRITORIES } from './territories.js?v=37';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=36';
+} from './study.js?v=37';
 
 const REGION_PURPOSES = {
   "orientation": "Learn directions and the landmarks used throughout the path.",
@@ -1533,7 +1533,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=36');
+    const { createViewer } = await import('./viewer.js?v=37');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore);
     viewerStatus = 'ready';
     if ($('view-isolate').getAttribute('aria-pressed') === 'true') viewer.setIsolate(true);

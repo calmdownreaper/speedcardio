@@ -625,3 +625,7 @@ nav button[aria-current] { background: var(--surface-3); color: var(--ink); }
 .section-title { color: var(--soft); font-size: 14px; letter-spacing: 0; text-transform: none; }
 .mode-card:hover, .button.path-stop:hover { transform: none; }
 h1 { letter-spacing: -.035em; }
+/* Soft gradients back, in warm tones */
+.mode-card:first-child { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); background: linear-gradient(160deg, var(--accent-soft), var(--surface) 70%); }
+.button.path-stop.chosen { background: linear-gradient(160deg, var(--accent-soft), var(--surface) 80%); }
+.progress-line span { background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
