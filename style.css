@@ -1,40 +1,40 @@
 :root {
   color-scheme: dark;
-  --bg: #05070c;
-  --surface: #090e17;
-  --surface-2: #0e1522;
-  --surface-3: #131c2c;
-  --model: #070b12;
-  --model-glow: #0c1a2c;
-  --line: #1a2434;
-  --line-strong: #273449;
-  --ink: #eef3fb;
-  --soft: #c5d0e2;
-  --mute: #96a5bd;
-  --ghost: #61738c;
-  --accent: #8ea6ff;
-  --accent-hover: #a9baff;
-  --accent-ink: #060913;
-  --accent-soft: #1b2950;
-  --accent-2: #63e2f2;
-  --accent-2-soft: #123843;
-  --good: #67e8f9;
-  --bad: #f472b6;
-  --bad-soft: #3a1730;
+  --bg: #0d0a09;
+  --surface: #151110;
+  --surface-2: #1c1715;
+  --surface-3: #241d1a;
+  --model: #0f0b0a;
+  --model-glow: #0f0b0a;
+  --line: #2a221e;
+  --line-strong: #3b2f2a;
+  --ink: #f5eee8;
+  --soft: #d9cdc4;
+  --mute: #a8978c;
+  --ghost: #77675d;
+  --accent: #f2552c;
+  --accent-hover: #ff6d45;
+  --accent-ink: #160805;
+  --accent-soft: #3a1a12;
+  --accent-2: #f5a33b;
+  --accent-2-soft: #3a2711;
+  --good: #f5c14b;
+  --bad: #ff4d5e;
+  --bad-soft: #3d1519;
   --focus: var(--accent-2);
   --shadow: #000000;
-  --scrim: rgb(3 6 12 / .78);
-  --overlay: #070c14f2;
-  --model-select: #a8c6ff;
-  --model-select-deep: #1b2c58;
-  --model-axis: #5fe6f5;
-  --model-label-bg: #070c14;
-  --model-label-ink: #7de9f6;
-  --model-tint: #bcd8ff;
-  --model-light-sky: #e9f0ff;
-  --model-light-ground: #0f1a2a;
-  --model-light-key: #f4f7ff;
-  --model-light-rim: #8bd8ee;
+  --scrim: rgb(10 7 6 / .8);
+  --overlay: #100c0af2;
+  --model-select: #ffe0a3;
+  --model-select-deep: #6b4210;
+  --model-axis: #f5a33b;
+  --model-label-bg: #100c0a;
+  --model-label-ink: #ffc27a;
+  --model-tint: #f3e2d0;
+  --model-light-sky: #fff6ee;
+  --model-light-ground: #1a120e;
+  --model-light-key: #fffaf5;
+  --model-light-rim: #ffd2b0;
   --gutter: clamp(16px, 4vw, 60px);
   --ease: 170ms ease;
   font: 400 15px/1.5 Geist, system-ui, sans-serif;
@@ -602,3 +602,26 @@ nav button[aria-current] { background: var(--accent-soft); color: var(--ink); }
   .mode-card { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto; align-items: center; }
   .mode-card .button, .mode-card .button.primary { grid-column: auto; width: auto; min-width: 112px; }
 }
+
+/* Warm pass 2026-11-19: flat warm palette, no glows, gradients or decorative tells */
+:root { --card: var(--surface); }
+.app-header { background: var(--bg); backdrop-filter: none; border-bottom: 1px solid var(--line); }
+.brand-mark { display: none; }
+.brand { letter-spacing: -.02em; }
+nav { background: transparent; border-color: var(--line); }
+nav button[aria-current] { background: var(--surface-3); color: var(--ink); }
+.button.primary, .button.primary:not(:disabled):hover { box-shadow: none; }
+.button.primary:not(:disabled):hover { background: var(--accent-hover); }
+.button kbd { display: none; }
+.model-shell { box-shadow: none; }
+.model-shell .model-stage, .model-stage { background: var(--model); }
+.progress-line span { background: var(--accent); }
+.mode-card:first-child { border-color: var(--line-strong); background: var(--surface-2); }
+.mode-icon { border-radius: var(--r-sm); background: transparent; border: 1px solid var(--line-strong); color: var(--soft); }
+.mode-card:first-child .mode-icon { background: transparent; border-color: var(--accent); color: var(--accent); }
+.button.path-stop.chosen { border-color: var(--accent); background: var(--surface-2); }
+.path-num { color: var(--ghost); }
+.button.path-stop.chosen .path-num { color: var(--accent); }
+.section-title { color: var(--soft); font-size: 14px; letter-spacing: 0; text-transform: none; }
+.mode-card:hover, .button.path-stop:hover { transform: none; }
+h1 { letter-spacing: -.035em; }

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { COLORS, DEFAULT_COLOR } from './data.js?v=34';
-import { ITEMS } from './study.js?v=34';
+import { COLORS, DEFAULT_COLOR } from './data.js?v=36';
+import { ITEMS } from './study.js?v=36';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -28,11 +28,11 @@ function baseColor(id) {
 
 export async function createViewer(host, onPick, onUnavailable, onExplore) {
   const [meta, buffer] = await Promise.all([
-    fetch('./models.json?v=34').then(response => {
+    fetch('./models.json?v=36').then(response => {
       if (!response.ok) throw new Error('Model index unavailable');
       return response.json();
     }),
-    fetch('./models.bin?v=34').then(response => {
+    fetch('./models.bin?v=36').then(response => {
       if (!response.ok) throw new Error('Model geometry unavailable');
       return response.arrayBuffer();
     }),
