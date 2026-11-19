@@ -1,9 +1,10 @@
-import * as material from './content.js?v=37';
-import { TERRITORIES } from './territories.js?v=37';
+import * as material from './content.js?v=39';
+import { TERRITORIES } from './territories.js?v=39';
+import { correctSound, keySound, wrongKeySound } from './sound.js?v=39';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=37';
+} from './study.js?v=39';
 
 const REGION_PURPOSES = {
   "orientation": "Learn directions and the landmarks used throughout the path.",
@@ -509,7 +510,9 @@ function onInput(event) {
     return;
   }
   if (!run.feedback) {
-    run.typed = text.replace(answerCharacters, '').replace(/ +/g, ' ').trimStart().slice(0, 100);
+    const typed = text.replace(answerCharacters, '').replace(/ +/g, ' ').trimStart().slice(0, 100);
+    if (typed !== run.typed) keySound();
+    run.typed = typed;
     drawWord();
   }
   if (input.value !== run.typed) input.value = run.typed;
@@ -525,6 +528,7 @@ function typeText(text) {
   }
   if (run.round !== 1) $('typer').value = run.typed;
   drawWord(wrong);
+  if (wrong) wrongKeySound(); else keySound();
   if (wrong) {
     clearTimeout(wrongTimer);
     navigator.vibrate?.(50);
@@ -602,6 +606,7 @@ function showRecallFeedback() {
   const line = $('feedback');
   $('answer-actions').hidden = true;
   if (feedback.correct) {
+    correctSound();
     line.className = 'feedback good';
     line.textContent = round === 1 ? 'Correct' : `${item.pt} · ${lessonCue(item.id)}`;
     if (round > 1) $('continue-actions').hidden = false;
@@ -1533,7 +1538,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=37');
+    const { createViewer } = await import('./viewer.js?v=39');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore);
     viewerStatus = 'ready';
     if ($('view-isolate').getAttribute('aria-pressed') === 'true') viewer.setIsolate(true);
