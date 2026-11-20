@@ -714,3 +714,57 @@ h1 { letter-spacing: -.035em; }
   line-height: inherit;
   vertical-align: baseline;
 }
+
+/* ===== Rich lesson phases: overview, find, structure, contrast, check ===== */
+.lesson-body { color: var(--soft); font-size: 15px; line-height: 1.62; }
+.lesson-body strong { color: var(--ink); font-weight: 600; }
+.study-layout .prompt > .lesson-body,
+.study-layout .prompt > .contrast-text { font-size: 15px; line-height: 1.62; }
+.contrast-text { color: var(--soft); }
+
+.clinical-note {
+  display: grid; gap: 3px; padding: 10px 12px;
+  border-left: 3px solid var(--accent-2); border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  background: var(--surface);
+}
+.clinical-label { color: var(--accent-2); font-size: 10.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.clinical-note p { margin: 0; color: var(--soft); font-size: 13px; line-height: 1.5; }
+
+.find-summary { display: grid; gap: 6px; }
+.find-count { color: var(--mute); font-size: 13px; font-variant-numeric: tabular-nums; }
+.find-count b { color: var(--ink); font-size: 16px; font-weight: 600; }
+.find-meter { height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.find-bar { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--accent-2); transition: width .3s ease; }
+.find-list {
+  list-style: none; margin: 0; padding: 0; display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr)); gap: 3px 12px;
+}
+.find-chip {
+  display: flex; align-items: center; gap: 7px; min-width: 0; min-height: 30px;
+  padding: 3px 0; color: var(--mute); font-size: 13px; line-height: 1.3;
+}
+.find-chip > span:last-child { overflow-wrap: anywhere; }
+.find-box {
+  flex: none; width: 16px; height: 16px; display: grid; place-items: center;
+  border: 1px solid var(--line-strong); border-radius: 4px; color: var(--ghost);
+}
+.find-chip.found { color: var(--ink); }
+.find-chip.found .find-box { color: var(--accent-2); border-color: var(--accent-2); background: var(--accent-2-soft); }
+.find-box .icon { width: 12px; height: 12px; }
+
+.check-score { display: flex; align-items: baseline; gap: 8px; color: var(--mute); }
+.check-score b { color: var(--ink); font-size: 32px; font-weight: 400; line-height: 1; letter-spacing: -.03em; }
+.check-hints {
+  display: grid; gap: 8px; padding: 12px 14px;
+  border: 1px solid var(--line); border-left: 3px solid var(--accent-2);
+  border-radius: var(--r-sm); background: var(--surface);
+}
+.check-hints h2 { font-size: 14px; color: var(--ink); }
+.check-hints ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.check-hints li { color: var(--soft); font-size: 13px; line-height: 1.5; }
+.check-hints li strong { display: block; margin-bottom: 2px; color: var(--ink); font-weight: 600; }
+.check-hints li p { margin: 0; }
+@media (max-width: 770px) {
+  /* On touch screens the model itself is the picker; drop the third toolbar row. */
+  #pick-center { display: none; }
+}

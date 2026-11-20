@@ -1,4 +1,4 @@
-import { DECKS } from './data.js?v=39';
+import { DECKS } from './data.js?v=40';
 
 const SHORT_NAMES = {
   pap_vd_ant: 'Anterior RV papillary muscle',

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { COLORS, DEFAULT_COLOR } from './data.js?v=39';
-import { ITEMS } from './study.js?v=39';
+import { COLORS, DEFAULT_COLOR } from './data.js?v=40';
+import { ITEMS } from './study.js?v=40';
 
 export const VIEWS = {
   ant: [0, -1, .15],

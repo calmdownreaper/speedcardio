@@ -1957,6 +1957,7 @@ export const ORIENTATION = [
   },
   {
     "title": "Two exit valves",
+    "choice": "valves",
     "text": "The pulmonary valve leads to the lungs; the aortic valve leads to the body. Each has three flaps, called cusps: click each name below to isolate a flap.",
     "notice": "The pulmonary cusps are anterior to the aortic cusps.",
     "focus": [
@@ -2003,9 +2004,131 @@ export const ORIENTATION = [
     "view": "ant"
   },
   {
+    "title": "Two lungs around the heart",
+    "padding": 1.45,
+    "text": "The right lung has three lobes and the left two, with the lingula below the cardiac notch. Both surround the heart inside the rib cage and move with every breath; the right lung is shorter because the liver raises the right diaphragm.",
+    "notice": "Compare the three lobes on the right with the two on the left.",
+    "focus": [
+      "sd_apical",
+      "sd_post",
+      "sd_ant",
+      "sd_lat",
+      "sd_med",
+      "sd_sup",
+      "sd_bmed",
+      "sd_bant",
+      "sd_blat",
+      "sd_bpost",
+      "se_apical",
+      "se_post",
+      "se_ant",
+      "se_lsup",
+      "se_linf",
+      "se_sup",
+      "se_bmed",
+      "se_bant",
+      "se_blat",
+      "se_bpost"
+    ],
+    "chips": [
+      "sd_apical",
+      "sd_lat",
+      "sd_bpost",
+      "se_apical",
+      "se_lsup",
+      "se_bpost"
+    ],
+    "scope": [
+      "traqueia",
+      "bpd",
+      "bpe",
+      "sd_apical",
+      "sd_post",
+      "sd_ant",
+      "sd_lat",
+      "sd_med",
+      "sd_sup",
+      "sd_bmed",
+      "sd_bant",
+      "sd_blat",
+      "sd_bpost",
+      "se_apical",
+      "se_post",
+      "se_ant",
+      "se_lsup",
+      "se_linf",
+      "se_sup",
+      "se_bmed",
+      "se_bant",
+      "se_blat",
+      "se_bpost"
+    ],
+    "view": "ant"
+  },
+  {
+    "title": "The airway fork",
+    "text": "The trachea descends in the midline and divides at the carina into two main bronchi. The right bronchus is wider and steeper; the left passes under the aortic arch. Air follows this fork into both hila, where bronchi and vessels enter each lung.",
+    "notice": "Follow the trachea down to the carina, then compare the angle of the two bronchi.",
+    "focus": [
+      "traqueia",
+      "bpd",
+      "bpe"
+    ],
+    "scope": [
+      "traqueia",
+      "bpd",
+      "bpe",
+      "sd_apical",
+      "sd_post",
+      "sd_ant",
+      "sd_lat",
+      "sd_med",
+      "sd_sup",
+      "sd_bmed",
+      "sd_bant",
+      "sd_blat",
+      "sd_bpost",
+      "se_apical",
+      "se_post",
+      "se_ant",
+      "se_lsup",
+      "se_linf",
+      "se_sup",
+      "se_bmed",
+      "se_bant",
+      "se_blat",
+      "se_bpost"
+    ],
+    "view": "ant"
+  },
+  {
+    "title": "Behind and between",
+    "subtle": false,
+    "padding": 1.85,
+    "text": "The mediastinum is the central compartment between the pleural cavities. The esophagus and descending aorta run behind the heart, the thymus lies in front of the great vessels, and the diaphragm forms the floor. These relations explain why an enlarged left atrium can press on the esophagus.",
+    "notice": "Rotate to the posterior view: the esophagus is midline, the aorta to its left, the spine behind.",
+    "focus": [
+      "esofago",
+      "aodesc",
+      "azigo",
+      "hemiazigo"
+    ],
+    "scope": [
+      "diafragma",
+      "aodesc",
+      "azigo",
+      "hemiazigo",
+      "timo_d",
+      "timo_e",
+      "vertebras_toracicas",
+      "costelas_rest"
+    ],
+    "view": "post"
+  },
+  {
     "title": "Landmarks to remember",
-    "text": "The coronary sinus is a large vein on the posterior surface, draining toward the right atrium. Review the landmarks below before Level 1.",
-    "notice": "Recall: base and apex; anterior ventricle; right border; exit vessels; posterior atrium; surface vessels.",
+    "text": "The coronary sinus drains the heart wall into the right atrium; the lungs flank the heart, and the esophagus and descending aorta pass behind it. Review the landmarks below before Level 1.",
+    "notice": "Recall: base and apex; anterior ventricle; right border; exit vessels; posterior atrium; surface vessels; lungs and posterior mediastinum.",
     "focus": [
       "seio",
       "ad"
@@ -2131,4 +2254,637 @@ export const ROUND_CLUES = {
   "costela_5": "Rib at the level of the cardiac apex.",
   "costelas_rest": "Remaining ribs around the sides and back of the chest.",
   "vertebras_toracicas": "Twelve vertebrae with costal facets behind the chest."
+};
+
+// ── Rich lesson content (lessons v2) ───────────────────────────────────────
+// LESSON_DETAIL: per-structure teaching text (30–70 words, name in bold).
+// LEVEL_OVERVIEW / LEVEL_CONTRAST / LEVEL_CHECK: per-level lesson phases.
+export const LESSON_DETAIL = {
+  // Heart chambers
+  ad: {
+    text: "**Right atrium** forms the right border of the heart, between the superior and inferior venae cavae. Its smooth posterior part, the sinus venarum, receives both cavae and the coronary sinus; the rough anterior appendage is trabeculated by pectinate muscles. It primes venous blood into the right ventricle. On the model, follow the right border between the two caval openings.",
+  },
+  ae: {
+    text: "**Left atrium** is the most posterior chamber and forms most of the base. Four pulmonary veins enter its smooth posterior wall, while the left auricle projects anteriorly beside the pulmonary trunk. It delivers oxygenated blood to the left ventricle. Seen from behind, it lies immediately in front of the esophagus.",
+    clinical: "A dilated left atrium can compress the esophagus and cause dysphagia; its appendage is a common site of thrombus in atrial fibrillation.",
+  },
+  paredev: {
+    text: "**Ventricular myocardium** is the muscular wall common to both ventricles. Its thickness differs sharply: about 3–5 mm on the right and 10–15 mm on the left. It includes the muscular interventricular septum and is supplied by the coronary arteries. On the model it forms the outer surface of the lower chambers, not a chamber itself.",
+  },
+  vd: {
+    text: "**Right ventricle** is the most anterior chamber, lying directly behind the sternum. Its wall is 3–5 mm thick and throws up trabeculae carneae; the conus arteriosus funnels blood into the pulmonary trunk, and the moderator band crosses to the anterior papillary muscle. It pumps deoxygenated blood to the lungs.",
+  },
+  ve: {
+    text: "**Left ventricle** forms the apex and the left border of the heart. Its wall is about 10–15 mm thick, roughly three times that of the right ventricle, and its smooth aortic vestibule leads to the aorta. It pumps systemic blood. On the model the apex points inferolaterally to the patient's left.",
+  },
+
+  // Atrioventricular leaflets
+  tri_ant: {
+    text: "**Anterior tricuspid leaflet** is the largest of the three leaflets guarding the right atrioventricular orifice. It hangs from the annulus between the right atrium and ventricle, anchored by chordae to the anterior papillary muscle. It closes during ventricular systole and prevents backflow. On the model it faces the anterior wall through the open atrium.",
+  },
+  tri_post: {
+    text: "**Posterior tricuspid leaflet** is the smaller inferior leaflet of the right atrioventricular valve, also called the inferior cusp. It attaches along the posterior annulus and is tethered by chordae mainly to the posterior papillary muscle. It meets the other leaflets in systole to seal the orifice. Look along the inferior edge of the right atrioventricular opening.",
+  },
+  tri_sep: {
+    text: "**Septal tricuspid leaflet** lies against the interventricular septum at the right atrioventricular orifice. Its attachment is slightly more apical than that of the anterior mitral leaflet, a useful echocardiographic landmark, and septal chordae tether it. It helps close the right valve in systole. On the model, find the leaflet adjacent to the central septum.",
+  },
+  mit_ant: {
+    text: "**Anterior mitral leaflet** is the larger, sail-like leaflet of the left atrioventricular valve. It lies in fibrous continuity with the aortic valve, separates left ventricular inflow from the outflow tract, and is anchored by chordae to both papillary muscles. It closes during systole to prevent regurgitation. Look between the left atrium and ventricle beside the aortic root.",
+  },
+  mit_post: {
+    text: "**Posterior mitral leaflet** is the mural leaflet of the left atrioventricular valve, attached along the posterior annulus. It is shorter but has a wider base and three scallops, P1–P3; chordae from both left ventricular papillary muscles tether it. It closes against the anterior leaflet in systole. On the model it lines the posterior wall of the left atrioventricular opening.",
+    clinical: "Prolapse most often affects the middle scallop, P2.",
+  },
+
+  // Semilunar cusps
+  pulm_ant_d: {
+    text: "**Right anterior pulmonary valve cusp** is one of the three semilunar cusps of the pulmonary valve. It sits anteriorly and to the patient's right within the pulmonary root, with a nodule and lunules on its free edge and no chordal attachments. It opens in systole and closes in diastole. On the model, find it at the front-right of the valve ring.",
+  },
+  pulm_ant_e: {
+    text: "**Left anterior pulmonary valve cusp** is the anterior-left semilunar cusp of the pulmonary valve. Its thin free edge carries a nodule and lunules, and it has no chordae. It opens during right ventricular ejection and closes to prevent backflow. Find it at the front-left of the pulmonary root, anterior to the aortic valve.",
+  },
+  pulm_post: {
+    text: "**Posterior pulmonary valve cusp** is the semilunar cusp at the back of the pulmonary valve, called the left cusp in Terminologia Anatomica. It lies deep to the other two cusps and bears a nodule and lunules on its free margin. It closes in diastole. On the model, approach from above or behind the pulmonary trunk to see its posterior position.",
+  },
+  ao_ant: {
+    text: "**Right coronary cusp** is the anterior-right semilunar cusp of the aortic valve. Its sinus of Valsalva gives origin to the right coronary artery, and it sits at the centre of the heart, related anteriorly to the right ventricular outflow tract. It closes in diastole to prevent aortic regurgitation. On the model, find its coronary ostium just above the cusp.",
+  },
+  ao_post_e: {
+    text: "**Left coronary cusp** is the left-posterior semilunar cusp of the aortic valve. Its sinus gives off the left coronary artery, usually from a single ostium, and it lies beside the pulmonary trunk. It closes in diastole and helps maintain coronary perfusion. On the model, trace the left coronary artery from the left posterior aspect of the aortic root.",
+  },
+  ao_post_d: {
+    text: "**Noncoronary cusp** is the right-posterior semilunar cusp of the aortic valve and has no coronary ostium in its sinus. It lies close to the interatrial septum and the membranous septum, relations that matter in valve surgery and in perivalvular abscess. It closes in diastole. On the model, find the cusp without a coronary artery arising beside it.",
+  },
+
+  // Papillary muscles
+  pap_vd_ant: {
+    text: "**Right ventricular anterior papillary muscle** is the largest papillary muscle of the right ventricle, arising from its anterior wall. The septomarginal trabecula, or moderator band, reaches its base carrying the right bundle branch, and its chordae anchor the anterior tricuspid leaflet. It contracts with the ventricle to hold the valve closed. Look on the anterior wall inside the right ventricle.",
+  },
+  pap_vd_post: {
+    text: "**Right ventricular posterior papillary muscle** arises from the inferior wall of the right ventricle, sometimes as several bellies. Its chordae attach to the posterior and septal tricuspid leaflets, and it prevents leaflet prolapse during systole. On the model, look along the inferior wall inside the right ventricle, opposite the anterior muscle.",
+  },
+  pap_vd_sep: {
+    text: "**Right ventricular septal papillary muscle** is a small muscle on the interventricular septum inside the right ventricle, near the conus arteriosus. Also called the conal papillary muscle or muscle of Lancisi, its chordae help anchor the anterior and septal tricuspid leaflets. It contracts during systole to keep the valve competent. Find it high on the septum near the pulmonary outflow.",
+  },
+  pap_ve_al: {
+    text: "**Anterolateral papillary muscle** arises from the anterolateral wall of the left ventricle and anchors the anterior and posterior mitral leaflets through chordae. It has a dual blood supply from the LAD and circumflex, so it resists ischaemia better than the posteromedial muscle, which depends on the posterior descending artery. It holds the mitral valve closed in systole. Look inside the left ventricle on its lateral wall.",
+  },
+
+  // Coronary arteries
+  acd: {
+    text: "**Right coronary artery** arises from the right aortic sinus and runs in the right atrioventricular groove toward the crux. It supplies the right atrium and ventricle, the SA node in about 60% and the AV node in about 80% of hearts, and gives the posterior descending artery in right-dominant hearts. On the model, follow it around the right border.",
+    clinical: "Proximal occlusion can cause an inferior infarct with bradyarrhythmia or AV block.",
+  },
+  tce: {
+    text: "**Left main coronary artery** is a short trunk, usually 5–10 mm long, arising from the left aortic sinus. It passes between the pulmonary trunk and the left atrial appendage before dividing into the anterior interventricular and circumflex branches. It supplies most of the left ventricle. On the model, find the short segment hidden just below the pulmonary trunk.",
+    clinical: "A left main lesion threatens a large territory and is treated as a high-risk stenosis.",
+  },
+  dae: {
+    text: "**Anterior interventricular branch**, or LAD, runs in the anterior interventricular sulcus from the left main trunk toward the apex, giving diagonal and septal branches. It supplies the anterior two-thirds of the interventricular septum and the anterior left ventricular wall. On the model, follow it beside the great cardiac vein.",
+    clinical: "Its proximal occlusion is the classic widow-maker infarct.",
+  },
+  diag: {
+    text: "**Diagonal branches** leave the anterior interventricular artery at an acute angle and course laterally across the anterior left ventricular wall. They supply the anterolateral myocardium and anastomose with marginal branches of the circumflex. Their number varies from one to four. On the model, look for vessels fanning diagonally away from the LAD, not diving into the septum.",
+  },
+  vent_ant_d_dae: {
+    text: "**Right anterior ventricular branches of the LAD** are small branches that cross the anterior interventricular groove onto the anterior wall of the right ventricle. They supply the upper anterior right ventricular myocardium and anastomose with branches of the right coronary artery. On the model, find the fine twigs leaving the LAD toward the right side of the heart.",
+  },
+  cone_e: {
+    text: "**Conus branch of the LAD** is a small artery that curves around the pulmonary infundibulum, the funnel-shaped outflow of the right ventricle. It frequently anastomoses with the conus branch of the right coronary artery, forming the ring of Vieussens, a collateral route. On the model, find it turning onto the front of the pulmonary trunk.",
+  },
+  sept_da: {
+    text: "**Septal branches of the LAD** are several perforators that dive from the anterior interventricular artery into the interventricular septum. They supply the anterior two-thirds of the septum, including the right bundle branch and the left anterior fascicle. On the model, look for short branches entering the septum rather than crossing its surface.",
+    clinical: "They are targeted in alcohol septal ablation for hypertrophic cardiomyopathy.",
+  },
+  sept_dp: {
+    text: "**Septal branches of the PDA** arise from the posterior descending artery and enter the interventricular septum from behind. They supply the posterior third of the septum and anastomose with the anterior septal perforators. Their territory includes the posterior part of the conduction system. On the model, find them leaving the posterior interventricular artery and turning into the septum.",
+  },
+  cx: {
+    text: "**Circumflex branch** arises from the left main trunk and runs in the left atrioventricular groove around the obtuse margin. It supplies the left atrium and the lateral and posterior left ventricular walls, and gives the left marginal branches. In about 10% of hearts it is left-dominant and gives the posterior descending artery. On the model, follow it between the left atrium and ventricle.",
+  },
+  marg_d: {
+    text: "**Right marginal branch** leaves the right coronary artery at the acute margin of the right ventricle and runs toward the apex along the inferior border. It supplies the lateral and inferior right ventricular wall and anastomoses with branches of the LAD. On the model, follow it along the sharp lower-right edge of the heart.",
+  },
+  vent_ant_acd: {
+    text: "**Anterior ventricular branch of the RCA** is a small right coronary branch that crosses the anterior wall of the right ventricle. It supplies the anterior right ventricular myocardium and anastomoses with right anterior branches of the LAD. On the model, find it leaving the right atrioventricular groove and passing onto the front of the ventricle.",
+  },
+  dp: {
+    text: "**Posterior interventricular branch**, or PDA, runs in the posterior interventricular sulcus from the crux toward the apex, accompanied by the middle cardiac vein. It supplies the posterior third of the septum and the inferior walls of both ventricles. The artery that gives origin to it defines coronary dominance. On the model, follow it on the diaphragmatic surface.",
+  },
+  vent_post_acd: {
+    text: "**Posterior ventricular branch of the RCA** leaves the right coronary artery near the crux and crosses the diaphragmatic surface toward the left ventricle. Also called posterolateral branches, they supply the inferior and posterior left ventricular wall in right-dominant hearts. On the model, find the branches running leftward on the underside of the heart.",
+  },
+
+  // Cardiac veins
+  seio: {
+    text: "**Coronary sinus** is the large venous channel in the posterior atrioventricular groove, formed by the great cardiac vein and receiving the middle and small cardiac veins. It drains most of the heart's venous blood into the right atrium through an opening guarded by the Thebesian valve. On the model, follow it along the posterior surface toward the right atrium.",
+    clinical: "Its ostium is used for cardiac resynchronization pacing leads.",
+  },
+  vcmagna: {
+    text: "**Great cardiac vein** begins near the apex and ascends in the anterior interventricular sulcus beside the LAD, then turns left in the atrioventricular groove. It receives the left marginal vein and continues as the coronary sinus. It drains the anterior and lateral left ventricle. On the model, follow it alongside the anterior interventricular artery.",
+  },
+  vcmedia: {
+    text: "**Middle cardiac vein**, or posterior interventricular vein, runs in the posterior interventricular sulcus beside the posterior descending artery. It drains the inferior ventricular walls and the posterior part of the septum and empties into the coronary sinus near its termination. On the model, find it on the diaphragmatic surface between the ventricles.",
+  },
+  vcparva: {
+    text: "**Small cardiac vein** runs in the right atrioventricular groove with the right coronary artery and its marginal branch. It drains the right atrium and ventricle and usually enters the coronary sinus near its right end, though it may open directly into the right atrium. On the model, follow it around the right border.",
+  },
+  vpve: {
+    text: "**Posterior vein of the left ventricle** is a small vein on the diaphragmatic surface of the left ventricle. It drains the inferior left ventricular wall and opens into the coronary sinus or one of its tributaries. On the model, look for a short vein running toward the posterior atrioventricular groove, distinct from the middle cardiac vein.",
+  },
+  // Aorta and arch branches
+  aoasc: {
+    text: "**Ascending aorta** begins at the aortic valve behind the left half of the sternum and ascends inside the pericardium. It gives the right and left coronary arteries from its sinuses, then continues as the aortic arch at the sternal angle. It carries the entire systemic output. On the model, find it rising behind the pulmonary trunk.",
+  },
+  arco: {
+    text: "**Aortic arch** curves from the ascending to the descending aorta at the level of the sternal angle, about T4. It gives the brachiocephalic trunk, left common carotid and left subclavian arteries, and the ligamentum arteriosum tethers it to the left pulmonary artery. The left recurrent laryngeal nerve loops beneath it. On the model, trace its curve over the left main bronchus.",
+    clinical: "An aneurysm here can stretch the left recurrent laryngeal nerve and cause hoarseness.",
+  },
+  aodesc: {
+    text: "**Descending thoracic aorta** continues from the arch at T4 and descends left of the vertebral column to the aortic hiatus at T12. It gives posterior intercostal, bronchial, esophageal and superior phrenic branches. It lies in the posterior mediastinum, behind the left atrium and esophagus. On the model, follow it behind the heart along the spine.",
+  },
+  tbc: {
+    text: "**Brachiocephalic trunk** is the first and largest branch of the aortic arch. It ascends to the right and divides behind the right sternoclavicular joint into the right subclavian and right common carotid arteries. It supplies the right head, neck and upper limb. On the model, find it arising first from the arch and coursing rightward.",
+  },
+  ccd: {
+    text: "**Right common carotid artery** arises from the brachiocephalic trunk behind the right sternoclavicular joint and ascends in the neck. It supplies the right side of the head and neck and divides into the internal and external carotid arteries at the upper border of the thyroid cartilage. On the model, follow it upward from the brachiocephalic bifurcation.",
+  },
+  cce: {
+    text: "**Left common carotid artery** is the second branch of the aortic arch. It ascends in the neck to divide into the internal and external carotid arteries at about C4. Unlike the right common carotid, it usually arises directly from the arch. On the model, find it between the brachiocephalic trunk and the left subclavian artery.",
+  },
+  scd: {
+    text: "**Right subclavian artery** arises from the brachiocephalic trunk behind the right sternoclavicular joint and arches over the cervical pleura to the right arm. It gives the vertebral artery, internal thoracic artery and thyrocervical trunk before becoming the axillary artery. On the model, follow it laterally at the thoracic inlet.",
+  },
+  sce: {
+    text: "**Left subclavian artery** is the third branch of the aortic arch. It arches over the left cervical pleura and gives the vertebral, internal thoracic and thyrocervical branches before entering the arm. It lies posterior to the left brachiocephalic vein. On the model, find it leaving the arch most distally and coursing laterally.",
+  },
+
+  // Systemic veins
+  vcs: {
+    text: "**Superior vena cava** forms behind the first right costal cartilage by union of the two brachiocephalic veins. It descends vertically to the right of the ascending aorta and enters the right atrium; the azygos vein joins it at T4. It returns blood from the head, neck, upper limbs and thorax. On the model, follow it into the right atrium.",
+  },
+  vci: {
+    text: "**Inferior vena cava** returns blood from the lower body and enters the right atrium from below after passing through the diaphragm at T8. It lies in the posterior mediastinum, to the right of the aorta, and its opening is guarded by the Eustachian valve. On the model, find it entering the lower right atrium.",
+  },
+  vbcd: {
+    text: "**Right brachiocephalic vein** is a short, nearly vertical vein formed behind the right sternoclavicular joint by the internal jugular and subclavian veins. It joins the left brachiocephalic vein to form the superior vena cava and receives the right internal thoracic, vertebral and inferior thyroid veins. On the model, find it above the right atrium.",
+  },
+  vbce: {
+    text: "**Left brachiocephalic vein** is longer than the right and crosses the midline anterior to the branches of the aortic arch. It is formed by the left internal jugular and subclavian veins and joins the right brachiocephalic vein to form the superior vena cava. It receives the thymic, inferior thyroid and left internal thoracic veins. On the model, follow its long oblique course.",
+  },
+  azigo: {
+    text: "**Azygos vein** ascends along the right side of the thoracic vertebrae, receives the right posterior intercostal veins and the hemiazygos systems, then arches over the right lung root to join the superior vena cava at T4. It is a collateral route between the caval systems. On the model, follow its arch above the right hilum.",
+  },
+  hemiazigo: {
+    text: "**Hemiazygos vein** descends on the left side of the vertebrae, receives the lower left posterior intercostal veins, and crosses the midline at about T8 to join the azygos vein. It drains the left posterior thoracic wall and connects the left and right caval systems. On the model, find it low in the left posterior thorax crossing to the right.",
+  },
+
+  // Pulmonary arteries
+  tp: {
+    text: "**Pulmonary trunk** leaves the right ventricular conus arteriosus and ascends anterior and to the left of the ascending aorta. It divides into the right and left pulmonary arteries beneath the aortic arch at about T4–T5. It carries deoxygenated blood to the lungs. On the model, follow it from the front of the heart to its bifurcation.",
+  },
+  apd: {
+    text: "**Right pulmonary artery** is the longer, more horizontal branch of the pulmonary trunk. It passes beneath the aortic arch and behind the ascending aorta and superior vena cava to reach the right hilum, where it divides. It carries deoxygenated blood to the right lung. On the model, find it running rightward behind the SVC.",
+  },
+  ape: {
+    text: "**Left pulmonary artery** is the shorter branch of the pulmonary trunk. It passes anterior to the descending aorta and left main bronchus and is connected to the aortic arch by the ligamentum arteriosum. It carries deoxygenated blood to the left lung. On the model, follow it leftward under the arch.",
+  },
+  lobsupd: {
+    text: "**Right upper lobar pulmonary artery**, or truncus anterior, is the first major branch of the right pulmonary artery. It arises before or at the hilum and supplies the apical, posterior and anterior segments of the right upper lobe. On the model, find it turning upward from the right pulmonary artery toward the upper lung.",
+  },
+
+  // Pulmonary veins
+  vpsd: {
+    text: "**Right superior pulmonary vein** drains the right upper and middle lobes and enters the superolateral aspect of the left atrium's posterior wall. It carries oxygenated blood from the right lung. On the model, follow it from the right hilum to the upper right corner of the left atrial roof.",
+  },
+  vpid: {
+    text: "**Right inferior pulmonary vein** drains the right lower lobe and enters the lower right aspect of the left atrial posterior wall. It is one of four pulmonary veins, all of which lack valves. On the model, find it below the right superior vein, entering the left atrium from the right hilum.",
+  },
+  vpse: {
+    text: "**Left superior pulmonary vein** drains the left upper lobe, including the lingula, and enters the upper left aspect of the left atrial posterior wall. It carries oxygenated blood to the heart. On the model, follow it from the left hilum to the left atrial roof, above the left inferior vein.",
+  },
+  vpie: {
+    text: "**Left inferior pulmonary vein** drains the left lower lobe and enters the lower left aspect of the left atrium. It is the most inferior of the four pulmonary veins. On the model, find it entering the left atrium below the left superior pulmonary vein, close to the esophagus.",
+  },
+
+  // Mediastinal neighbours
+  esofago: {
+    text: "**Esophagus** is a muscular tube descending behind the trachea and left atrium through the posterior mediastinum. It passes through the diaphragm at T10 and ends at the cardia of the stomach. It carries food and is separated from the left atrium only by pericardium, which explains dysphagia in atrial enlargement. On the model, find it behind the heart.",
+  },
+  timo_d: {
+    text: "**Right lobe of the thymus** lies in the anterior superior mediastinum, behind the manubrium and anterior to the brachiocephalic veins and trachea. It is largest in childhood and involutes after puberty, when it is replaced by fat. It is a primary lymphoid organ for T-cell maturation. On the model, find it in front of the great vessels on the right.",
+  },
+  timo_e: {
+    text: "**Left lobe of the thymus** lies in the anterior superior mediastinum, in front of the left brachiocephalic vein and aortic arch. It is part of a bilobed lymphoid organ that matures T lymphocytes and involutes with age. On the model, find it behind the sternum on the patient's left, anterior to the great vessels.",
+  },
+
+  // Trachea and bronchi
+  traqueia: {
+    text: "**Trachea** begins below the cricoid cartilage at C6 and descends in the midline to the carina at T4–T5. It has 16–20 C-shaped cartilage rings, completed posteriorly by the trachealis muscle, and lies in front of the esophagus. It conducts air to the main bronchi. On the model, follow the ribbed tube to its bifurcation.",
+  },
+  bpd: {
+    text: "**Right main bronchus** is shorter, wider and more vertical than the left, so it continues the tracheal axis. It enters the right hilum behind the pulmonary artery and divides into upper and lower lobe bronchi. Its steep angle explains why aspirated objects lodge on the right. On the model, find the steeper branch at the carina.",
+    clinical: "Foreign bodies and aspirated vomit favour the right main bronchus.",
+  },
+  bpe: {
+    text: "**Left main bronchus** is longer, narrower and more horizontal than the right. It passes beneath the aortic arch and in front of the esophagus to reach the left hilum, where it divides into upper and lower lobe bronchi. On the model, follow it under the arch; its lesser angle protects it from aspiration.",
+  },
+
+  // Right lung segments
+  sd_apical: {
+    text: "**Right apical segment** (B1) is the uppermost part of the right upper lobe, above the posterior and anterior segments. Its segmental bronchus B1 leaves the upper lobe bronchus and its artery accompanies it. It lies against the cupula of the pleura. On the model, find the cap of the right lung at the thoracic inlet.",
+  },
+  sd_post: {
+    text: "**Right posterior segment** (B2) occupies the posterior part of the right upper lobe, behind the apical and anterior segments. It is bounded above by the apical segment and below by the oblique fissure. It is a classic site of reactivation tuberculosis and of aspiration in a supine patient. On the model, look at the back of the right upper lobe.",
+  },
+  sd_ant: {
+    text: "**Right anterior segment** (B3) is the anterior part of the right upper lobe, lying behind the anterior chest wall. It is separated from the posterior segment by the apical segment and reaches the oblique fissure below. On the model, find it at the front of the right upper lobe, above the middle lobe.",
+  },
+  sd_lat: {
+    text: "**Lateral segment of the middle lobe** (B4) occupies the outer part of the right middle lobe, against the lateral chest wall. Its bronchus and artery enter the middle lobe together. It is separated from the medial segment by an imperfect plane. On the model, look at the lateral surface of the middle lobe, above the oblique fissure.",
+  },
+  sd_med: {
+    text: "**Medial segment of the middle lobe** (B5) lies against the right heart border, medial to the lateral segment. It is separated from it by an incomplete fissure and is the segment that silhouettes the right atrium on a frontal radiograph. On the model, find the inner part of the middle lobe next to the heart.",
+  },
+  sd_sup: {
+    text: "**Right superior segment** (B6) is the top of the right lower lobe, behind the oblique fissure and above the basal segments. Its bronchus arises first from the lower lobe bronchus and runs posteriorly. It is a common site of aspiration when lying supine. On the model, find the crown of the right lower lobe behind the hilum.",
+  },
+  sd_bmed: {
+    text: "**Right medial basal segment** (B7) is the medial part of the right lower lobe base, against the right atrium and inferior vena cava. It is the only basal segment that is consistently separate on the right, though its bronchus may arise with B8. On the model, find the innermost wedge at the bottom of the right lung.",
+  },
+  sd_bant: {
+    text: "**Right anterior basal segment** (B8) forms the anterior part of the right lower lobe base, behind the middle lobe and above the diaphragm. Its bronchus and artery descend anteriorly. On the model, look at the front of the right lower lobe, below the oblique fissure.",
+  },
+  sd_blat: {
+    text: "**Right lateral basal segment** (B9) occupies the lateral part of the right lower lobe base, against the chest wall. Its bronchus B9 is the last of the basal bronchi to arise in many lungs. On the model, find it at the outer edge of the right lower lobe, above the diaphragm.",
+  },
+  sd_bpost: {
+    text: "**Right posterior basal segment** (B10) is the largest basal segment, filling the posterior part of the right lower lobe base beside the vertebrae. It is a common site of aspiration in an upright patient and of basal pneumonia. On the model, find the broad posterior wedge at the bottom of the right lung.",
+  },
+
+  // Left lung segments
+  se_apical: {
+    text: "**Left apical segment** (B1) is the top of the left upper lobe. On the left it usually fuses with the posterior segment to form the apicoposterior segment B1+2, though the model shows it separately. It lies against the pleural cupula. On the model, find the cap of the left lung at the thoracic inlet.",
+  },
+  se_post: {
+    text: "**Left posterior segment** (B2) occupies the back of the left upper lobe, behind the apical and anterior segments. It usually joins B1 as the apicoposterior segment; its bronchus arises from the upper lobe bronchus. On the model, look at the posterior part of the left upper lobe, above the oblique fissure.",
+  },
+  se_ant: {
+    text: "**Left anterior segment** (B3) is the anterior part of the left upper lobe, behind the anterior chest wall. It lies above the lingula and in front of the apical and posterior segments. On the model, find it at the front of the left upper lobe, above the cardiac notch.",
+  },
+  se_lsup: {
+    text: "**Superior lingular segment** (B4) is the upper half of the lingula, the tongue-like part of the left upper lobe that corresponds to the right middle lobe. It lies against the left heart border above the inferior lingular segment. On the model, find the upper part of the lingula, above the cardiac notch.",
+  },
+  se_linf: {
+    text: "**Inferior lingular segment** (B5) is the lower half of the lingula. It lies against the left ventricle and, when consolidated, obscures the left heart border on a frontal radiograph. On the model, find it below the superior lingular segment, at the lower edge of the left upper lobe.",
+  },
+  se_sup: {
+    text: "**Left superior segment** (B6) is the top of the left lower lobe, behind the oblique fissure and above the basal segments. Its bronchus arises first from the lower lobe bronchus and runs posteriorly. It is a site of aspiration in supine patients. On the model, find the crown of the left lower lobe behind the hilum.",
+  },
+  se_bmed: {
+    text: "**Left medial basal segment** (B7) is the medial part of the left lower lobe base, next to the heart and esophagus. On the left it usually joins the anterior basal segment as the anteromedial basal segment B7+8, so it is less often independent than on the right. On the model, find the inner base of the left lung.",
+  },
+  se_bant: {
+    text: "**Left anterior basal segment** (B8) forms the anterior part of the left lower lobe base, behind the lingula and above the diaphragm. It often fuses with B7. On the model, look at the front of the left lower lobe, below the oblique fissure.",
+  },
+  se_blat: {
+    text: "**Left lateral basal segment** (B9) occupies the lateral part of the left lower lobe base, against the chest wall. Its bronchus is the last basal branch in many lungs. On the model, find it at the outer edge of the left lower lobe, above the diaphragm.",
+  },
+  se_bpost: {
+    text: "**Left posterior basal segment** (B10) is the largest basal segment, filling the posterior part of the left lower lobe beside the vertebrae. It is a common site of aspiration in an upright patient and of basal pneumonia. On the model, find the broad posterior wedge at the bottom of the left lung.",
+  },
+  // Mediastinum
+  diafragma: {
+    text: "**Diaphragm** is the dome-shaped muscle separating the thorax from the abdomen. Its central tendon is pierced by the inferior vena cava at T8; the esophagus passes at T10 and the aorta at T12. The right crus arises from L1–L3 and the left from L1–L2, and the phrenic nerve, C3–C5, supplies it. On the model, find the floor beneath the lungs.",
+  },
+  eso_art: {
+    text: "**Esophageal artery** is a small branch of the descending thoracic aorta that runs to the esophagus behind the left atrium. Several such branches usually arise instead of one trunk, and they anastomose with esophageal branches of the inferior thyroid and left gastric arteries. On the model, find the fine vessel on the esophageal wall behind the heart.",
+  },
+  azigo_acs: {
+    text: "**Accessory hemiazygos vein** descends on the left side of the upper thoracic vertebrae and drains the left 4th–8th posterior intercostal veins. It crosses to the azygos vein at about T8, above the hemiazygos, or may join the left superior intercostal vein. On the model, find it in the upper left posterior thorax crossing rightward.",
+  },
+  ita_d: {
+    text: "**Right internal thoracic artery** arises from the first part of the right subclavian artery and descends vertically behind the right costal cartilages, about 1–2 cm from the sternal edge. It gives anterior intercostal branches and ends as the musculophrenic and superior epigastric arteries. On the model, find the vertical vessel behind the ribs.",
+  },
+  ita_e: {
+    text: "**Left internal thoracic artery** arises from the first part of the left subclavian artery and descends behind the left costal cartilages, 1–2 cm lateral to the sternal edge. It gives anterior intercostal branches and ends as the musculophrenic and superior epigastric arteries. On the model, find the vertical vessel behind the ribs.",
+    clinical: "It is the standard conduit for coronary bypass to the LAD.",
+  },
+  itv_d: {
+    text: "**Right internal thoracic vein** ascends beside the right internal thoracic artery behind the costal cartilages. It receives the anterior intercostal veins and ends near the right brachiocephalic vein. Its tributaries anastomose with posterior intercostal veins, forming a collateral route. On the model, find the thin vein alongside the artery.",
+  },
+  itv_e: {
+    text: "**Left internal thoracic vein** ascends beside the left internal thoracic artery behind the costal cartilages. It receives the left anterior intercostal veins and drains into the left brachiocephalic vein. On the model, find the thin vein medial to the artery, close to the sternal edge.",
+  },
+  pica_d1: {
+    text: "**Right first posterior intercostal artery** runs in the first right intercostal space behind the pleura. Unlike lower intercostal arteries, it usually arises from the costocervical trunk rather than the descending aorta. It supplies the chest wall and parietal pleura and anastomoses with the anterior intercostal arteries. On the model, find it high in the right posterior thorax.",
+  },
+  pica_e1: {
+    text: "**Left first posterior intercostal artery** runs in the first left intercostal space behind the pleura. It usually arises from the costocervical trunk through the superior intercostal artery. It supplies the chest wall and parietal pleura and joins the anterior intercostal circulation. On the model, find it high in the left posterior thorax.",
+  },
+  pica_d2: {
+    text: "**Right second posterior intercostal artery** runs in the second right intercostal space, usually from the superior intercostal branch of the costocervical trunk. It accompanies the posterior intercostal vein and nerve between the pleura and the internal intercostal membrane. On the model, find it one space below the first.",
+  },
+  pica_e2: {
+    text: "**Left second posterior intercostal artery** runs in the second left intercostal space, usually from the superior intercostal branch of the costocervical trunk. It passes between the internal and innermost intercostal muscles and anastomoses with anterior intercostal arteries. On the model, find it one space below the first on the left.",
+  },
+  pica_sup_d: {
+    text: "**Right superior intercostal artery** arises from the right costocervical trunk and descends in the upper posterior intercostal spaces. It usually gives the first and second posterior intercostal arteries and runs behind the pleura. On the model, find the short trunk high in the right posterior thorax, giving the upper intercostal branches.",
+  },
+  pica_sup_e: {
+    text: "**Left superior intercostal artery** arises from the left costocervical trunk and descends in the upper posterior intercostal spaces. It gives the first and second posterior intercostal arteries and contributes collateral flow between the subclavian and aortic territories. On the model, find it high in the left posterior thorax.",
+  },
+  icv_ant_d: {
+    text: "**Right anterior intercostal veins** run in the anterior intercostal spaces and drain toward the right internal thoracic vein. They accompany the anterior intercostal arteries and drain the anterior chest wall and parietal pleura. They anastomose with posterior intercostal veins around the chest wall. On the model, find the thin venous set near the right sternal edge.",
+  },
+  icv_ant_e: {
+    text: "**Left anterior intercostal veins** run in the anterior intercostal spaces and drain toward the left internal thoracic vein. They accompany the anterior intercostal arteries and provide collateral communication with the azygos system. On the model, find the thin venous set near the left sternal edge.",
+  },
+  phren_inf_a_d: {
+    text: "**Right inferior phrenic artery** arises from the abdominal aorta below the diaphragm and ascends onto the underside of the right diaphragm, passing behind the inferior vena cava. It supplies the diaphragm and gives superior suprarenal branches. On the model, find it on the abdominal surface of the right dome.",
+  },
+  phren_inf_a_e: {
+    text: "**Left inferior phrenic artery** arises from the abdominal aorta below the diaphragm and ascends onto the underside of the left diaphragm, passing behind the esophagus. It supplies the diaphragm and gives superior suprarenal branches, anastomosing with lower intercostal arteries. On the model, find it on the abdominal surface of the left dome.",
+  },
+  phren_inf_v: {
+    text: "**Inferior phrenic veins** accompany the inferior phrenic arteries on the underside of the diaphragm. The right usually drains into the inferior vena cava, while the left often drains into the left suprarenal or left renal vein. On the model, find the thin veins on the abdominal surface of the diaphragm.",
+  },
+  phren_sup_v: {
+    text: "**Superior phrenic veins** are small veins on the upper surface of the diaphragm, between it and the pericardium. They accompany the superior phrenic arteries and drain into pericardiophrenic and internal thoracic veins, forming part of the collateral venous channels. On the model, find them on the thoracic surface of the diaphragm.",
+  },
+
+  // Thoracic skeleton
+  manubrio: {
+    text: "**Manubrium** is the upper segment of the sternum, between the clavicular notches and above the sternal angle. It articulates with both clavicles and the first costal cartilages, and its lower border meets the body at T4–T5. The jugular notch is its superior midline depression. On the model, find the broad plate at the top of the breastbone.",
+  },
+  esterno: {
+    text: "**Body of the sternum** is the long flat segment below the manubrium, articulating with costal cartilages 2–7. The sternal angle marks its junction with the manubrium, and it lies anterior to the right ventricle and ascending aorta. On the model, find the central plate of the breastbone between the costal cartilages.",
+  },
+  xifoide: {
+    text: "**Xiphoid process** is the small inferior tip of the sternum at about T9. It ossifies late, varies in shape, and forms the xiphisternal joint with the sternal body. Chest compressions are delivered on the lower sternum above it, avoiding the xiphoid. On the model, find the pointed tip at the bottom of the breastbone.",
+  },
+  claviculas: {
+    text: "**Clavicles** are paired S-shaped bones at the thoracic inlet. The medial end articulates with the manubrium and the lateral end with the acromion; the clavicle is the first fetal bone to begin ossification. Fractures usually occur at the junction of its middle and lateral thirds. On the model, find the two struts from breastbone to shoulder.",
+  },
+  cart_costais: {
+    text: "**Costal cartilages** are bars of hyaline cartilage between the ribs and the sternum. Ribs 1–7 connect directly to the sternum, ribs 8–10 join the costal margin above, and they provide elasticity for chest expansion. They calcify with age. On the model, find the pale bars between ribs and breastbone.",
+  },
+  costela_1: {
+    text: "**First rib** is the shortest, broadest and most sharply curved rib at the thoracic inlet. Its scalene tubercle separates grooves for the subclavian vein and artery, and it articulates with T1 and the manubrium. On the model, find the tight ring at the very top of the rib cage.",
+  },
+  costela_2: {
+    text: "**Second rib** is a typical rib whose costal cartilage marks the sternal angle. It articulates with T2 and the sternal body, and the second intercostal space is a standard auscultation landmark. On the model, find the rib just below the first, at the level of the angle of Louis.",
+  },
+  costela_4: {
+    text: "**Fourth rib** is a mid-thoracic typical rib at nipple level in men. It articulates with T4, and the fourth intercostal space in the midaxillary line is used for chest drain insertion. It overlies the middle of the cardiac silhouette. On the model, find the rib at the mid-chest, above the apex.",
+  },
+  costela_5: {
+    text: "**Fifth rib** is a typical rib at the level of the cardiac apex. It articulates with T5, and the fifth intercostal space near the midclavicular line overlies the apex beat. On the model, find the rib crossing the lower cardiac border.",
+  },
+  costelas_rest: {
+    text: "**Ribs 3 and 6–12** complete the thoracic cage. Ribs 3–9 are typical, with head, neck, tubercle and angle; ribs 8–10 attach indirectly through costal cartilages, and ribs 11–12 are floating. They protect the lungs, pleura and upper abdominal organs. On the model, find the remaining bars around the sides and back of the chest.",
+  },
+  vertebras_toracicas: {
+    text: "**Thoracic vertebrae** are twelve vertebrae with costal facets that form the posterior thoracic wall. T1–T10 bear demifacets for rib heads, while T11–T12 have single facets; they contribute to the thoracic kyphosis. Their intervertebral foramina transmit thoracic spinal nerves. On the model, find the column behind the ribs.",
+  },
+};
+
+export const REGION_OVERVIEW = {
+  camaras: "The heart has four chambers: two thin-walled atria that receive blood and two ventricles that pump it out. They sit in the middle mediastinum behind the sternum, with the right side serving the lungs and the left side the body.",
+  vasos: "The great vessels are the large conduits that enter and leave the heart. The aorta and its branches carry systemic blood, the venae cavae return it, and the pulmonary arteries and veins connect the right ventricle and left atrium to the lungs.",
+  valvas: "The heart valves keep blood moving in one direction. Atrioventricular valves guard the inlet orifices and semilunar valves guard the outflow tracts; all are anchored to the fibrous skeleton of the heart and open or close with the pressure changes of the cardiac cycle.",
+  coronarias: "The coronary arteries arise from the aortic sinuses and run in the grooves on the heart's surface. The right coronary artery follows the right atrioventricular groove, while the left main trunk divides into the anterior interventricular and circumflex branches.",
+  veias: "Most cardiac veins drain into the coronary sinus, a wide channel in the posterior atrioventricular groove that opens into the right atrium. The great, middle and small cardiac veins follow the main arterial grooves and return blood from the myocardium.",
+  vias: "The trachea is the main airway between the larynx and the lungs. It descends in the midline, divides at the carina into two main bronchi, and each bronchus enters a hilum to supply one lung.",
+  segd: "The right lung has three lobes divided by oblique and horizontal fissures. Each lobe is made of bronchopulmonary segments with their own bronchus and artery, which is why this region is taught segment by segment.",
+  sege: "The left lung has two lobes divided by the oblique fissure. Its upper lobe includes the lingula, a tongue-like part corresponding to the right middle lobe, and its lower lobe mirrors the right lower lobe segments.",
+  mediastino: "The mediastinum is the central compartment between the two pleural cavities. It holds the heart and pericardium, the great vessels, the airway, the esophagus and the thoracic duct, and its contents are arranged from the sternum in front to the vertebral column behind.",
+};
+
+export const LEVEL_OVERVIEW = {
+  "camaras-1": "The heart has four chambers: two thin-walled atria that receive blood and two ventricles that pump it out. They sit in the middle mediastinum behind the sternum, with the right side serving the lungs and the left side the body. This level shows the chambers and the shared muscular wall that gives the heart its shape.",
+  "vasos-1": "The aorta is the body's main arterial trunk. It leaves the left ventricle, ascends, arches over the left main bronchus and descends behind the heart, giving three branches to the head, neck and arms. This level follows that course and the branches that spring from the arch.",
+  "vasos-2": "The venae cavae return systemic blood to the right atrium. The superior vena cava drains the head, neck, arms and thorax; the inferior vena cava drains everything below the diaphragm. Both enter the right atrium, and the brachiocephalic veins form the upper one behind the sternum.",
+  "vasos-3": "The pulmonary arteries carry deoxygenated blood from the right ventricle to the lungs. The pulmonary trunk leaves the front of the heart and divides beneath the aortic arch into right and left branches, which enter the hila and follow the airways. This level traces that low-pressure circuit.",
+  "vasos-4": "Four pulmonary veins return oxygenated blood from the lungs to the left atrium. Two come from each lung and enter the smooth posterior wall of the atrium, which forms most of the heart's base. They are the only veins in the body that carry oxygen-rich blood.",
+  "vasos-5": "The mediastinum holds the heart and the structures around it. Behind the heart run the azygos and hemiazygos veins and the esophagus; in front of the great vessels lies the thymus. This level introduces those neighbours, which explain many of the heart's posterior and anterior relations.",
+  "valvas-1": "The atrioventricular valves guard the openings between atria and ventricles. The tricuspid valve on the right has three leaflets; the mitral valve on the left has two. They hang from fibrous rings, are tethered by chordae to papillary muscles, and close during ventricular systole.",
+  "valvas-2": "The semilunar valves guard the two outflow tracts. The pulmonary valve sits anterior and superior, leading to the lungs; the aortic valve sits centrally, leading to the body. Each has three thin cusps with a nodule and lunules, and neither has chordae.",
+  "valvas-3": "Papillary muscles are ventricular muscles that anchor the atrioventricular valve leaflets through chordae tendineae. They contract during systole, tightening the chordae so the leaflets meet without prolapsing. This level contrasts the three right ventricular muscles with the single large anterolateral muscle of the left ventricle.",
+  "coronarias-1": "The coronary arteries arise from the aortic sinuses and run in the grooves on the heart's surface. The right coronary artery follows the right atrioventricular groove; the left main trunk divides into the anterior interventricular and circumflex branches. Together they supply the entire myocardium.",
+  "coronarias-2": "The anterior interventricular artery, or LAD, runs in the anterior groove toward the apex. Its diagonal branches cross the anterior left ventricular wall, while its septal perforators dive into the interventricular septum. This level follows those branches and their smaller ventricular twigs.",
+  "coronarias-3": "The right coronary artery gives branches to the right ventricular walls and, at the crux, the posterior descending artery. The right marginal branch follows the acute margin; posterior ventricular branches cross the diaphragmatic surface. Their territory depends on coronary dominance.",
+  "veias-1": "Most cardiac veins drain into the coronary sinus, a wide channel in the posterior atrioventricular groove that opens into the right atrium. The great cardiac vein follows the LAD, the middle cardiac vein follows the PDA, and the small cardiac vein follows the right coronary artery. This level traces that drainage.",
+  "vias-1": "The trachea is the main airway between the larynx and the lungs. It descends in the midline, divides at the carina into two main bronchi, and each bronchus enters a hilum to supply one lung. The right bronchus is wider and steeper, the left longer and more horizontal.",
+  "segd-1": "The right lung has three lobes. The upper lobe carries apical, posterior and anterior segments; the middle lobe has lateral and medial segments. Each segment has its own bronchus and artery, so this level maps the six segments above the oblique fissure.",
+  "segd-2": "The right lower lobe lies below the oblique fissure. It has a superior segment at the top and four basal segments at the bottom: medial, anterior, lateral and posterior. This level maps those five segments and their relations to the diaphragm, heart and chest wall.",
+  "sege-1": "The left lung has two lobes. The upper lobe carries apical, posterior and anterior segments plus the lingula, a tongue-like projection with superior and inferior segments that corresponds to the right middle lobe. This level maps the five segments above the oblique fissure.",
+  "sege-2": "The left lower lobe lies below the oblique fissure. It mirrors the right lower lobe with a superior segment and four basal segments, although the medial and anterior basal segments often fuse. This level maps those five segments around the left hemidiaphragm and heart.",
+  "mediastino-1": "The mediastinum is the central compartment between the two pleural cavities. It contains the heart and pericardium, the great vessels, the trachea, the esophagus, the thoracic duct and nerves. This level focuses on the central compartment, its posterior neighbours and the thymus in front.",
+  "mediastino-2": "The diaphragm is the muscular floor of the thorax and the principal muscle of breathing. Its right and left domes are supplied by the phrenic nerves and by vessels that reach them from above and below. This level follows the inferior and superior phrenic vessels onto its surfaces.",
+  "mediastino-3": "The thoracic wall is supplied by two arterial systems that meet around each rib. The internal thoracic artery runs behind the costal cartilages in front; posterior intercostal arteries run behind the pleura at the back. Their veins follow the same routes. This level traces those vessels.",
+  "mediastino-4": "The thoracic skeleton is the bony frame that protects the heart and lungs. The sternum forms the front, the ribs and costal cartilages form the sides, and the thoracic vertebrae form the back. This level identifies the landmarks used to count ribs and locate the heart.",
+};
+
+export const LEVEL_CONTRAST = {
+  "camaras-1": {
+    a: "vd", b: "ve", title: "Right or left ventricle",
+    text: "Both are lower chambers, but the right ventricle is anterior, crescent-shaped and 3–5 mm thick, with a moderator band and an outflow conus. The left ventricle forms the apex, has a 10–15 mm wall and a smooth aortic vestibule. On the model, the apex belongs to the left; the broad front belongs to the right.",
+  },
+  "vasos-1": {
+    a: "aoasc", b: "arco", title: "Ascending aorta or aortic arch",
+    text: "The ascending aorta is the straight intrapericardial segment that begins at the aortic valve and gives the coronary arteries. The arch is its continuation, curving backward over the left main bronchus and giving the three branches to the head, neck and arm. Straight and coronary-bearing versus curved and branching separates them.",
+  },
+  "vasos-2": {
+    a: "vcs", b: "vci", title: "Superior or inferior vena cava",
+    text: "Both enter the right atrium, but from opposite ends. The superior vena cava descends from above, formed by the brachiocephalic veins at the first right costal cartilage; the inferior vena cava ascends from below through the diaphragm at T8. On the model, the upper vertical tube is the SVC, the lower one the IVC.",
+  },
+  "vasos-3": {
+    a: "apd", b: "ape", title: "Right or left pulmonary artery",
+    text: "Both branch from the pulmonary trunk under the aortic arch. The right artery is longer and passes behind the ascending aorta and superior vena cava; the left is shorter, passes in front of the descending aorta and is tethered to the arch by the ligamentum arteriosum. Follow the side of the hilum.",
+  },
+  "vasos-4": {
+    a: "vpsd", b: "vpid", title: "Superior or inferior pulmonary vein",
+    text: "Four veins enter the left atrium, two on each side. The superior veins enter the upper corners of the posterior atrial wall and drain the upper lobes, plus the middle lobe on the right; the inferior veins enter below and drain the lower lobes. Compare their vertical level at the hilum.",
+  },
+  "vasos-5": {
+    a: "azigo", b: "hemiazigo", title: "Azygos or hemiazygos vein",
+    text: "The azygos runs on the right of the vertebrae and arches over the right hilum into the superior vena cava. The hemiazygos runs on the left and crosses to the azygos at about T8. Side and level separate them: right and high versus left and low.",
+  },
+  "valvas-1": {
+    a: "tri_sep", b: "mit_ant", title: "Tricuspid or mitral leaflet",
+    text: "The tricuspid valve has three leaflets and sits on the right; the mitral has two and sits on the left. A reliable model cue is the septal tricuspid leaflet, whose attachment is more apical than the anterior mitral leaflet. The mitral valve also lies in fibrous continuity with the aortic valve.",
+  },
+  "valvas-2": {
+    a: "pulm_post", b: "ao_ant", title: "Pulmonary or aortic valve",
+    text: "The pulmonary valve is anterior and superior, at the front of the outflow tract; the aortic valve is central, behind it. Both have three cusps, but only the aortic cusps have coronary ostia in their sinuses. From the front, the pulmonary root hides the aortic root.",
+  },
+  "valvas-3": {
+    a: "pap_vd_ant", b: "pap_ve_al", title: "Right or left papillary muscle",
+    text: "The right ventricle has three papillary muscles; its anterior one is the largest and receives the moderator band. The left ventricle has two; the anterolateral is large and has a dual blood supply. Chamber side and wall position tell them apart.",
+  },
+  "coronarias-1": {
+    a: "acd", b: "cx", title: "Right coronary or circumflex",
+    text: "Both run in atrioventricular grooves. The right coronary artery follows the right groove around the acute margin toward the crux; the circumflex follows the left groove around the obtuse margin. Look at which side of the heart the vessel curves.",
+  },
+  "coronarias-2": {
+    a: "diag", b: "vent_ant_d_dae", title: "Diagonal or right anterior branch",
+    text: "Both leave the anterior interventricular artery. The diagonal branches run laterally across the left ventricular wall; the right anterior ventricular branches cross the groove onto the right ventricular wall. Side of the groove is the discriminator.",
+  },
+  "coronarias-3": {
+    a: "vent_ant_acd", b: "vent_post_acd", title: "Anterior or posterior ventricular branch",
+    text: "Both are right coronary branches to the ventricular walls. The anterior ventricular branch crosses the front of the right ventricle; the posterior ventricular branches cross the diaphragmatic surface toward the left ventricle. Front versus underside is the quickest cue.",
+  },
+  "veias-1": {
+    a: "vcmagna", b: "vcmedia", title: "Great or middle cardiac vein",
+    text: "Both are named for their groove. The great cardiac vein ascends in the anterior interventricular groove beside the LAD, then turns into the coronary sinus. The middle cardiac vein runs in the posterior interventricular groove beside the PDA. Anterior versus posterior is the discriminator.",
+  },
+  "vias-1": {
+    a: "bpd", b: "bpe", title: "Right or left main bronchus",
+    text: "The right main bronchus is shorter, wider and steeper, almost continuing the tracheal line. The left is longer, narrower and more horizontal, passing under the aortic arch. At the carina, the steeper branch goes right.",
+  },
+  "segd-1": {
+    a: "sd_lat", b: "sd_med", title: "Lateral or medial middle lobe segment",
+    text: "Both belong to the right middle lobe. The lateral segment B4 faces the chest wall; the medial segment B5 faces the heart and silhouettes the right atrial border. Look at the inner or outer surface of the middle lobe.",
+  },
+  "segd-2": {
+    a: "sd_sup", b: "sd_bpost", title: "Superior or posterior basal segment",
+    text: "Both lie in the right lower lobe. The superior segment B6 is at the top of the lobe, behind the hilum; the posterior basal segment B10 is at the bottom, beside the vertebrae. Top versus bottom of the lower lobe separates them.",
+  },
+  "sege-1": {
+    a: "se_lsup", b: "se_linf", title: "Superior or inferior lingular segment",
+    text: "The lingula has two halves. The superior lingular segment B4 is above, the inferior B5 below, against the left ventricle. The inferior one silhouettes the left heart border when consolidated; the superior one sits higher in the lingula.",
+  },
+  "sege-2": {
+    a: "se_sup", b: "se_bpost", title: "Superior or posterior basal segment",
+    text: "Both lie in the left lower lobe. The superior segment B6 caps the lobe behind the hilum; the posterior basal segment B10 fills the bottom beside the vertebrae. Find the top of the lobe versus its posterior base.",
+  },
+  "mediastino-1": {
+    a: "hemiazigo", b: "azigo_acs", title: "Hemiazygos or accessory hemiazygos vein",
+    text: "Both run on the left of the vertebrae. The hemiazygos drains the lower left posterior intercostal veins and crosses to the azygos at about T8. The accessory hemiazygos drains the middle left spaces and crosses above it, or joins the left superior intercostal vein. Lower versus upper is the cue.",
+  },
+  "mediastino-2": {
+    a: "phren_inf_a_d", b: "phren_inf_a_e", title: "Right or left inferior phrenic artery",
+    text: "Both arise below the diaphragm and climb onto its underside. The right passes behind the inferior vena cava; the left passes behind the esophagus. Side of the cava versus side of the esophagus is the quickest cue.",
+  },
+  "mediastino-3": {
+    a: "ita_d", b: "pica_d1", title: "Internal thoracic or posterior intercostal artery",
+    text: "Both supply the chest wall. The internal thoracic artery runs vertically behind the costal cartilages near the sternum; the posterior intercostal arteries run horizontally in the spaces at the back, behind the pleura. Front-vertical versus back-horizontal separates them.",
+  },
+  "mediastino-4": {
+    a: "manubrio", b: "esterno", title: "Manubrium or body of the sternum",
+    text: "Both are parts of the sternum. The manubrium is the upper plate between the clavicles, bearing the jugular notch; the body is the long plate below it, from the sternal angle to the xiphoid. The angle of Louis is the joint between them.",
+  },
+};
+
+export const LEVEL_CHECK = {
+  "camaras-1": [
+    { q: "Which chamber forms the apex and has the thickest wall?", options: ["Left ventricle", "Right ventricle", "Right atrium", "Left atrium"], answer: 0, why: "The left ventricle forms the apex and its wall is 10–15 mm thick, about three times the right ventricular wall." },
+    { q: "Which chamber receives the superior and inferior venae cavae?", options: ["Right atrium", "Left atrium", "Right ventricle", "Left ventricle"], answer: 0, why: "The right atrium forms the right border and receives the SVC above, the IVC below and the coronary sinus behind." },
+    { q: "Which structure is the shared muscular wall of both ventricles?", options: ["Ventricular myocardium", "Right atrium", "Left atrium", "Pulmonary trunk"], answer: 0, why: "The ventricular myocardium is 3–5 mm thick on the right and 10–15 mm on the left; it is a wall, not a chamber." },
+  ],
+  "vasos-1": [
+    { q: "Which branch of the aortic arch arises first?", options: ["Brachiocephalic trunk", "Left common carotid artery", "Left subclavian artery", "Right subclavian artery"], answer: 0, why: "The brachiocephalic trunk is the first branch, followed by the left common carotid and left subclavian arteries." },
+    { q: "At which level does the aortic arch begin and end?", options: ["T4, at the sternal angle", "T1, at the thoracic inlet", "T8, at the caval opening", "T12, at the aortic hiatus"], answer: 0, why: "The arch runs from the ascending to the descending aorta at the sternal angle, about T4, where the ligamentum arteriosum also attaches." },
+    { q: "Which part of the aorta gives rise to the coronary arteries?", options: ["Ascending aorta", "Aortic arch", "Descending thoracic aorta", "Pulmonary trunk"], answer: 0, why: "The right and left coronary arteries arise from the aortic sinuses of the ascending aorta." },
+  ],
+  "vasos-2": [
+    { q: "Which vein enters the right atrium after passing through the diaphragm at T8?", options: ["Inferior vena cava", "Superior vena cava", "Azygos vein", "Coronary sinus"], answer: 0, why: "The inferior vena cava pierces the central tendon of the diaphragm at T8 on its way to the right atrium." },
+    { q: "The superior vena cava is formed by the union of which vessels?", options: ["The two brachiocephalic veins", "The right internal jugular and subclavian veins", "The azygos and hemiazygos veins", "The four pulmonary veins"], answer: 0, why: "The right and left brachiocephalic veins join behind the first right costal cartilage to form the superior vena cava." },
+    { q: "Which vein crosses anterior to the branches of the aortic arch?", options: ["Left brachiocephalic vein", "Right brachiocephalic vein", "Azygos vein", "Superior vena cava"], answer: 0, why: "The left brachiocephalic vein is long and oblique, crossing the midline in front of the arch branches." },
+  ],
+  "vasos-3": [
+    { q: "The pulmonary trunk divides beneath which structure?", options: ["Aortic arch", "Sternum", "Right atrium", "Diaphragm"], answer: 0, why: "The pulmonary trunk bifurcates beneath the aortic arch at about T4–T5." },
+    { q: "Which pulmonary artery passes behind the ascending aorta and superior vena cava?", options: ["Right pulmonary artery", "Left pulmonary artery", "Pulmonary trunk", "Right upper lobar artery"], answer: 0, why: "The longer right pulmonary artery runs behind the ascending aorta and SVC to reach the right hilum." },
+    { q: "Which structure connects the left pulmonary artery to the aortic arch?", options: ["Ligamentum arteriosum", "Azygos vein", "Coronary sinus", "Trachea"], answer: 0, why: "The ligamentum arteriosum, the remnant of the fetal ductus arteriosus, tethers the left pulmonary artery to the arch." },
+  ],
+  "vasos-4": [
+    { q: "How many pulmonary veins enter the left atrium?", options: ["Four", "Two", "Three", "Six"], answer: 0, why: "Two superior and two inferior pulmonary veins enter the posterior wall of the left atrium." },
+    { q: "Which pulmonary vein drains the right middle lobe?", options: ["Right superior pulmonary vein", "Right inferior pulmonary vein", "Left superior pulmonary vein", "Left inferior pulmonary vein"], answer: 0, why: "The right superior pulmonary vein drains both the right upper and middle lobes." },
+    { q: "Pulmonary veins carry which blood?", options: ["Oxygenated blood to the left atrium", "Deoxygenated blood to the lungs", "Blood to the right atrium", "Lymph to the thoracic duct"], answer: 0, why: "Pulmonary veins are the only veins carrying oxygen-rich blood, returning it from the lungs to the left atrium." },
+  ],
+  "vasos-5": [
+    { q: "Which vein arches over the right lung root?", options: ["Azygos vein", "Hemiazygos vein", "Left brachiocephalic vein", "Right superior pulmonary vein"], answer: 0, why: "The azygos vein arches anteriorly over the right lung root before joining the superior vena cava at T4." },
+    { q: "The hemiazygos vein crosses to the azygos vein at about which level?", options: ["T8", "T4", "T10", "T12"], answer: 0, why: "The hemiazygos crosses the midline at about T8, below the accessory hemiazygos." },
+    { q: "Where does the thymus lie?", options: ["Anterior to the great vessels in the superior mediastinum", "Posterior to the esophagus", "In the middle mediastinum behind the heart", "Below the diaphragm"], answer: 0, why: "The thymus occupies the anterior superior mediastinum, behind the manubrium and in front of the great vessels." },
+  ],
+  "valvas-1": [
+    { q: "Which atrioventricular valve has three leaflets?", options: ["Tricuspid", "Mitral", "Aortic", "Pulmonary"], answer: 0, why: "The tricuspid valve has anterior, posterior and septal leaflets; the mitral valve has anterior and posterior leaflets." },
+    { q: "Which leaflet lies in fibrous continuity with the aortic valve?", options: ["Anterior mitral leaflet", "Septal tricuspid leaflet", "Posterior mitral leaflet", "Anterior tricuspid leaflet"], answer: 0, why: "The anterior mitral leaflet and the aortic root share a fibrous curtain, the mitral–aortic continuity." },
+    { q: "The septal tricuspid leaflet attaches in which position?", options: ["More apically than the anterior mitral leaflet", "More basally than the anterior mitral leaflet", "To the aortic sinus", "To the pulmonary trunk"], answer: 0, why: "Its more apical attachment is a standard echocardiographic landmark for identifying the right-sided valve." },
+  ],
+  "valvas-2": [
+    { q: "Which valve lies most anteriorly?", options: ["Pulmonary", "Aortic", "Mitral", "Tricuspid"], answer: 0, why: "The pulmonary valve is anterior and superior to the aortic valve, at the front of the outflow tract." },
+    { q: "Which aortic cusp has no coronary ostium in its sinus?", options: ["Noncoronary cusp", "Right coronary cusp", "Left coronary cusp", "Posterior pulmonary cusp"], answer: 0, why: "The noncoronary cusp is the right-posterior cusp; the right and left coronary cusps give the coronary arteries." },
+    { q: "How are semilunar cusps anchored?", options: ["They attach to the arterial wall without chordae", "By chordae to papillary muscles", "By the moderator band", "By the coronary sinus"], answer: 0, why: "Semilunar cusps have no chordae; they attach to the fibrous ring and arterial wall and close by pressure differences." },
+  ],
+  "valvas-3": [
+    { q: "Which papillary muscle receives the moderator band?", options: ["Anterior right ventricular papillary muscle", "Posterior right ventricular papillary muscle", "Septal right ventricular papillary muscle", "Anterolateral left ventricular papillary muscle"], answer: 0, why: "The septomarginal trabecula, or moderator band, crosses the right ventricular cavity to the base of the anterior papillary muscle." },
+    { q: "Which papillary muscle has a dual blood supply?", options: ["Anterolateral left ventricular papillary muscle", "Anterior right ventricular papillary muscle", "Septal right ventricular papillary muscle", "Posterior right ventricular papillary muscle"], answer: 0, why: "The anterolateral muscle is supplied by both the LAD and circumflex, making it more resistant to ischaemia." },
+  ],
+  "coronarias-1": [
+    { q: "Which artery runs in the right atrioventricular groove?", options: ["Right coronary artery", "Circumflex artery", "LAD", "Posterior descending artery"], answer: 0, why: "The right coronary artery curves around the right border in the right atrioventricular groove." },
+    { q: "The left main coronary artery divides into which branches?", options: ["LAD and circumflex", "RCA and circumflex", "LAD and PDA", "RCA and PDA"], answer: 0, why: "The short left main trunk divides into the anterior interventricular and circumflex arteries." },
+    { q: "Which artery supplies the SA node in about 60% of people?", options: ["Right coronary artery", "Left circumflex artery", "LAD", "Left main coronary artery"], answer: 0, why: "A branch of the right coronary artery reaches the SA node in most hearts." },
+  ],
+  "coronarias-2": [
+    { q: "Which vessel runs in the anterior interventricular groove?", options: ["LAD", "Circumflex", "RCA", "PDA"], answer: 0, why: "The anterior interventricular branch, or LAD, runs in the anterior groove toward the apex." },
+    { q: "Septal branches of the LAD supply which part of the septum?", options: ["The anterior two-thirds", "The posterior third", "The whole right atrium", "The mitral valve"], answer: 0, why: "Anterior septal perforators supply the anterior two-thirds of the interventricular septum." },
+    { q: "Diagonal branches of the LAD run where?", options: ["Across the anterior left ventricular wall", "Into the interventricular septum", "Along the right border", "In the posterior groove"], answer: 0, why: "Diagonal branches leave the LAD at an acute angle and cross the anterolateral left ventricular wall." },
+  ],
+  "coronarias-3": [
+    { q: "Which artery defines coronary dominance?", options: ["The artery that gives the posterior descending branch", "The right coronary artery in every heart", "The circumflex in every heart", "The left main coronary artery"], answer: 0, why: "Dominance is defined by which artery supplies the posterior descending branch and the inferior septum." },
+    { q: "The right marginal branch runs along which margin?", options: ["The acute margin of the right ventricle", "The obtuse margin of the left ventricle", "The anterior interventricular groove", "The posterior interventricular groove"], answer: 0, why: "The right marginal branch follows the acute inferior margin of the right ventricle." },
+    { q: "Posterior ventricular branches of the RCA supply which surface?", options: ["The diaphragmatic surface of the left ventricle in right-dominant hearts", "The anterior right atrium", "The septum only", "The pulmonary trunk"], answer: 0, why: "Posterolateral branches cross the diaphragmatic surface toward the left ventricle in right-dominant hearts." },
+  ],
+  "veias-1": [
+    { q: "Most cardiac veins drain into which structure?", options: ["Coronary sinus", "Superior vena cava", "Pulmonary veins", "Inferior vena cava"], answer: 0, why: "The coronary sinus collects most myocardial venous blood and opens into the right atrium." },
+    { q: "The great cardiac vein begins beside which artery?", options: ["LAD", "RCA", "PDA", "Circumflex"], answer: 0, why: "It ascends in the anterior interventricular groove beside the LAD before turning into the coronary sinus." },
+    { q: "The middle cardiac vein runs with which artery?", options: ["Posterior descending artery", "Right coronary artery", "LAD", "Circumflex"], answer: 0, why: "The middle cardiac vein lies in the posterior interventricular groove beside the PDA." },
+  ],
+  "vias-1": [
+    { q: "At which level does the trachea divide?", options: ["T4–T5, at the carina", "C6", "T10", "T12"], answer: 0, why: "The carina lies at the level of the sternal angle, about T4–T5." },
+    { q: "Which main bronchus is shorter, wider and more vertical?", options: ["Right", "Left", "Both are equal", "Neither"], answer: 0, why: "The right main bronchus is shorter, wider and steeper, which is why aspirated objects favour it." },
+    { q: "Which structure does the left main bronchus pass beneath?", options: ["Aortic arch", "Pulmonary trunk", "Superior vena cava", "Azygos vein"], answer: 0, why: "The left main bronchus passes under the aortic arch on its way to the left hilum." },
+  ],
+  "segd-1": [
+    { q: "Which segments form the right upper lobe?", options: ["Apical, posterior and anterior", "Lateral and medial", "Superior and basal", "Apical and lingular"], answer: 0, why: "The right upper lobe has apical B1, posterior B2 and anterior B3 segments." },
+    { q: "Which middle lobe segment lies against the heart?", options: ["Medial segment B5", "Lateral segment B4", "Superior segment B6", "Posterior segment B2"], answer: 0, why: "The medial segment B5 lies next to the right heart border and can produce a silhouette sign." },
+    { q: "Which segment is a classic site of reactivation tuberculosis?", options: ["Posterior segment of the right upper lobe B2", "Medial segment of the middle lobe B5", "Anterior basal segment B8", "Apical segment B1"], answer: 0, why: "The posterior segment B2 is a classic site for reactivation tuberculosis and supine aspiration." },
+  ],
+  "segd-2": [
+    { q: "Which right lower lobe segment is at the top of the lobe?", options: ["Superior segment B6", "Posterior basal B10", "Medial basal B7", "Lateral basal B9"], answer: 0, why: "The superior segment B6 caps the lower lobe behind the hilum." },
+    { q: "Which segment is a common aspiration site when upright?", options: ["Posterior basal segment B10", "Superior segment B6", "Anterior segment B3", "Medial segment B5"], answer: 0, why: "Gravity directs aspirated material to the posterior basal segments in an upright patient." },
+    { q: "Which basal segment is consistently separate only on the right?", options: ["Medial basal B7", "Anterior basal B8", "Lateral basal B9", "Posterior basal B10"], answer: 0, why: "The right medial basal segment B7 is usually independent, while on the left B7 often fuses with B8." },
+  ],
+  "sege-1": [
+    { q: "The lingula corresponds to which right lung structure?", options: ["The middle lobe", "The upper lobe", "The lower lobe", "The superior segment"], answer: 0, why: "The lingula is the tongue-like part of the left upper lobe and corresponds to the right middle lobe." },
+    { q: "Which lingular segment lies against the left ventricle?", options: ["Inferior lingular segment B5", "Superior lingular segment B4", "Anterior segment B3", "Superior segment B6"], answer: 0, why: "The inferior lingular segment B5 lies against the left ventricle and can obscure its border." },
+    { q: "Which segments usually fuse on the left as the apicoposterior segment?", options: ["B1 and B2", "B3 and B4", "B4 and B5", "B7 and B8"], answer: 0, why: "The left apical and posterior segments usually form a single apicoposterior segment, B1+2." },
+  ],
+  "sege-2": [
+    { q: "Which left lower lobe segment caps the lobe?", options: ["Superior segment B6", "Posterior basal B10", "Medial basal B7", "Lateral basal B9"], answer: 0, why: "The superior segment B6 lies at the top of the left lower lobe, behind the hilum." },
+    { q: "Which left basal segments often fuse?", options: ["Medial and anterior basal B7 and B8", "Lateral and posterior basal B9 and B10", "Superior and medial basal B6 and B7", "Anterior and lateral basal B8 and B9"], answer: 0, why: "On the left, B7 and B8 frequently form a single anteromedial basal segment." },
+    { q: "The left lower lobe lies below which fissure?", options: ["Oblique fissure", "Horizontal fissure", "Both fissures", "No fissure"], answer: 0, why: "The left lung has only an oblique fissure, which separates the upper and lower lobes." },
+  ],
+  "mediastino-1": [
+    { q: "Which structure lies immediately behind the left atrium?", options: ["Esophagus", "Trachea", "Thymus", "Manubrium"], answer: 0, why: "The esophagus descends directly behind the left atrium, separated from it by pericardium." },
+    { q: "Where does the descending thoracic aorta lie?", options: ["In the posterior mediastinum, left of the vertebrae", "In the anterior mediastinum", "In the middle mediastinum", "In the neck"], answer: 0, why: "The descending thoracic aorta runs through the posterior mediastinum, to the left of the vertebral column." },
+    { q: "Which gland lies anterior to the great vessels in the superior mediastinum?", options: ["Thymus", "Thyroid", "Pituitary", "Adrenal"], answer: 0, why: "The thymus occupies the anterior superior mediastinum, in front of the great vessels." },
+  ],
+  "mediastino-2": [
+    { q: "At which level does the inferior vena cava pass through the diaphragm?", options: ["T8", "T10", "T12", "T4"], answer: 0, why: "The caval opening lies in the central tendon at T8; the esophagus passes at T10 and the aorta at T12." },
+    { q: "Which nerve supplies the diaphragm?", options: ["Phrenic nerve, C3–C5", "Vagus nerve", "Intercostal nerves only", "Recurrent laryngeal nerve"], answer: 0, why: "The phrenic nerve arises from C3–C5 and provides the motor supply to the diaphragm." },
+    { q: "The right inferior phrenic artery passes behind which structure?", options: ["The inferior vena cava", "The esophagus", "The aorta", "The trachea"], answer: 0, why: "The right inferior phrenic artery ascends behind the inferior vena cava onto the right diaphragm." },
+  ],
+  "mediastino-3": [
+    { q: "Where does the internal thoracic artery run?", options: ["Behind the costal cartilages, lateral to the sternal edge", "In the posterior intercostal spaces", "Along the vertebral bodies", "Inside the pericardium"], answer: 0, why: "The internal thoracic artery descends vertically behind the costal cartilages, about 1–2 cm from the sternal edge." },
+    { q: "The first and second posterior intercostal arteries usually arise from which structure?", options: ["Costocervical trunk", "Descending aorta", "Internal thoracic artery", "Subclavian vein"], answer: 0, why: "The upper posterior intercostal arteries usually arise from the costocervical trunk via the superior intercostal artery." },
+    { q: "Anterior intercostal veins drain mainly into which veins?", options: ["Internal thoracic veins", "Azygos vein", "Pulmonary veins", "Coronary sinus"], answer: 0, why: "Anterior intercostal veins accompany the arteries toward the internal thoracic veins." },
+  ],
+  "mediastino-4": [
+    { q: "Which sternal landmark marks the level of T4–T5?", options: ["The sternal angle", "The jugular notch", "The xiphisternal joint", "The clavicular notch"], answer: 0, why: "The sternal angle, or angle of Louis, marks the manubriosternal joint at T4–T5." },
+    { q: "Which rib's costal cartilage marks the sternal angle?", options: ["Second", "First", "Fourth", "Seventh"], answer: 0, why: "The second costal cartilage articulates at the sternal angle, a key surface landmark." },
+    { q: "Which ribs are floating ribs?", options: ["Ribs 11 and 12", "Ribs 8–10", "Ribs 1–7", "Ribs 3–5"], answer: 0, why: "Ribs 11 and 12 have no anterior attachment and end free in the muscles of the abdominal wall." },
+  ],
 };

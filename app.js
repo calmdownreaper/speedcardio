@@ -1,10 +1,10 @@
-import * as material from './content.js?v=39';
-import { TERRITORIES } from './territories.js?v=39';
-import { correctSound, keySound, wrongKeySound } from './sound.js?v=39';
+import * as material from './content.js?v=40';
+import { TERRITORIES } from './territories.js?v=40';
+import { correctSound, keySound, wrongKeySound } from './sound.js?v=40';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=39';
+} from './study.js?v=40';
 
 const REGION_PURPOSES = {
   "orientation": "Learn directions and the landmarks used throughout the path.",
@@ -23,11 +23,17 @@ const CONTENT = material.CONTENT || {};
 const lessonCue = id => material.LESSON_CUES?.[id] || ITEMS[id]?.dica || '';
 const THEORY = material.THEORY || [];
 const ORIENTATION = (material.ORIENTATION || []).filter(step => step?.title);
+const LESSON_DETAIL = material.LESSON_DETAIL || {};
+const LEVEL_OVERVIEW = material.LEVEL_OVERVIEW || {};
+const REGION_OVERVIEW = material.REGION_OVERVIEW || {};
+const LEVEL_CONTRAST = material.LEVEL_CONTRAST || {};
+const LEVEL_CHECK = material.LEVEL_CHECK || {};
 const $ = id => document.getElementById(id);
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 })[char]);
 const icon = (name, size = 18) => `<svg class="icon" width="${size}" height="${size}" aria-hidden="true" focusable="false"><use href="#i-${name}"/></svg>`;
+const markdown = text => escape(text).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
 const list = values => `<ul>${values.map(value => `<li>${escape(value)}</li>`).join('')}</ul>`;
 const plural = (count, word) => `${count} ${word}${count === 1 ? '' : 's'}`;
 const shortDate = iso => {
@@ -283,9 +289,10 @@ function renderOrientation() {
   const { index } = activity;
   const step = ORIENTATION[index];
   if (step) {
-    setModel([...heartIds, ...(step.focus || [])], {
-      focus: step.focus, view: step.view, controls: true, subtleFocus: true, explore: true,
-      close: true, padding: 1.62, title: 'Heart orientation',
+    const scope = [...new Set([...heartIds, ...(step.scope || []), ...(step.focus || [])])];
+    setModel(scope, {
+      focus: step.focus, view: step.view, controls: true, subtleFocus: step.subtle !== false, explore: true,
+      close: true, padding: step.padding || 1.62, title: 'Heart orientation',
     });
   }
   const finish = () => {
@@ -298,9 +305,9 @@ function renderOrientation() {
     <div class="eyebrow">Orientation${step ? ` / ${index + 1} of ${ORIENTATION.length}` : ''}</div>
     <h1>${escape(step?.title || 'Orientation tour')}</h1>
     <p>${linkedText(step?.text || '', step?.focus || [])}</p>
-    <p class="support">What to notice: ${escape(step?.notice)}</p><div class="chips">${(step?.focus || []).filter(id => ITEMS[id]).map(id => `${button(escape(ITEMS[id].pt), () => focusStructure(id))}`).join('')}</div>
-    ${index === 5 ? `<div class="actions" aria-label="Choose exit valve">${button('Pulmonary valve', () => focusGroup(['pulm_ant_d', 'pulm_ant_e', 'pulm_post'], 'Pulmonary valve'))}${button('Aortic valve', () => focusGroup(['ao_ant', 'ao_post_e', 'ao_post_d'], 'Aortic valve'))}</div>` : ''}
-    ${index === ORIENTATION.length - 1 ? `<h2>Landmarks you learned</h2>${list(['Base: the superior-posterior part, marked by the left atrium', 'Apex: the pointed tip of the left ventricle', 'Anterior: the broad right ventricle', 'Right border: the right atrium between two large veins', 'Exit vessels and valves: pulmonary trunk and aorta', 'Posterior and surface vessels: pulmonary veins, coronary sinus, LAD and great cardiac vein'])}` : ''}
+    <p class="support">What to notice: ${escape(step?.notice)}</p><div class="chips">${(step?.chips || step?.focus || []).filter(id => ITEMS[id]).map(id => `${button(escape(ITEMS[id].pt), () => focusStructure(id))}`).join('')}</div>
+    ${step?.choice === 'valves' ? `<div class="actions" aria-label="Choose exit valve">${button('Pulmonary valve', () => focusGroup(['pulm_ant_d', 'pulm_ant_e', 'pulm_post'], 'Pulmonary valve'))}${button('Aortic valve', () => focusGroup(['ao_ant', 'ao_post_e', 'ao_post_d'], 'Aortic valve'))}</div>` : ''}
+    ${index === ORIENTATION.length - 1 ? `<h2>Landmarks you learned</h2>${list(['Base: the superior-posterior part, marked by the left atrium', 'Apex: the pointed tip of the left ventricle', 'Anterior: the broad right ventricle', 'Right border: the right atrium between two large veins', 'Exit vessels and valves: pulmonary trunk and aorta', 'Posterior and surface vessels: pulmonary veins, coronary sinus, LAD and great cardiac vein', 'Lungs: right three lobes, left two with the lingula', 'Airway: trachea divides at the carina; the right bronchus is steeper', 'Posterior mediastinum: esophagus behind the left atrium, descending aorta to its left'])}` : ''}
     <div class="actions">${index ? button('Previous view', () => move(-1), { icon: 'arrow-left' }) : ''}
       ${step && index + 1 < ORIENTATION.length ? button('Next view', () => move(1), { key: 'Enter', class: 'primary', iconEnd: 'arrow-right' })
         : button('Start Level 1', finish, { key: 'Enter', class: 'primary', iconEnd: 'arrow-right' })}
@@ -312,7 +319,7 @@ function openLevel(level) {
   if (level === orientation) return startOrientation();
   selectedRegion = level.region;
   selectedLevel = level.id;
-  if (!savedLevel(level.id).lesson) launch('lesson', { level, index: 0 });
+  if (!savedLevel(level.id).lesson) launch('lesson', { level, stage: 'overview' });
   else beginRecall(level.ids, 'level', level);
 }
 
@@ -324,50 +331,272 @@ function validQuestion(question) {
     && Number.isInteger(question.answer) && question.answer >= 0 && question.answer < question.options.length);
 }
 
-function renderLesson() {
-  const { level, index } = activity;
-  const id = level.ids[index];
-  const it = ITEMS[id];
-  // Check recognition using only the landmarks displayed in this level.
-  const checkId = level.ids[0];
-  const checkOptions = level.ids.slice(0, 4);
-  const correctPosition = level.ids.length % checkOptions.length;
-  const orderedOptions = [...checkOptions.slice(correctPosition), ...checkOptions.slice(0, correctPosition)];
-  const question = {
-    q: `Which landmark identifies the ${ITEMS[checkId].pt}?`,
-    options: orderedOptions.map(lessonCue),
-    answer: orderedOptions.indexOf(checkId),
-    why: lessonCue(checkId),
+function overviewFor(level) {
+  return LEVEL_OVERVIEW[level.id] || REGION_OVERVIEW[level.region]
+    || `Explore ${String(level.title || 'these structures').toLowerCase()} on the model, then test yourself on each one.`;
+}
+function detailFor(id) {
+  return LESSON_DETAIL[id] || { text: lessonCue(id) };
+}
+function contrastFor(level) {
+  const direct = LEVEL_CONTRAST[level.id];
+  if (direct) return direct;
+  const regional = Object.entries(LEVEL_CONTRAST)
+    .filter(([id]) => id.startsWith(`${level.region}-`))
+    .map(([, contrast]) => contrast)
+    .find(contrast => level.ids.includes(contrast.a) && level.ids.includes(contrast.b));
+  if (regional) return regional;
+  const [a, b] = level.ids;
+  if (!a || !b) return null;
+  return {
+    a, b, title: `${ITEMS[a].pt} or ${ITEMS[b].pt}`,
+    text: `Both belong to this mixed run. ${lessonCue(a)} In contrast, ${lessonCue(b)}`,
   };
-  function start() {
+}
+function lessonView(level) {
+  if (level.region === 'veias' || level.id === 'mediastino-1') return 'post';
+  if (level.id === 'mediastino-2') return 'inf';
+  return 'ant';
+}
+function findTargets(level) {
+  const targets = level.ids.filter(id => id !== 'paredev');
+  return targets.length ? targets : [...level.ids];
+}
+function levelModel(level, options = {}) {
+  setModel(level.ids, {
+    title: level.title,
+    context: REGION_CONTEXT[level.region] || ITEMS[level.ids[0]]?.deck.ctx,
+    faint: level.region === 'mediastino' ? SKELETON_IDS : undefined,
+    padding: level.region === 'mediastino' ? 1.28 : undefined,
+    ...options,
+  });
+}
+function shuffledQuestion(question) {
+  const correct = question.options[question.answer];
+  const options = shuffle(question.options);
+  return { ...question, options, answer: options.indexOf(correct) };
+}
+function checkFor(level) {
+  const authored = (LEVEL_CHECK[level.id] || []).filter(validQuestion);
+  if (authored.length >= 2) return authored.map(shuffledQuestion);
+  const ids = level.ids.filter(id => ITEMS[id]);
+  const positions = [...new Set([0, Math.floor(ids.length / 2), ids.length - 1])]
+    .filter(index => index >= 0 && index < ids.length);
+  return positions.map(position => {
+    const id = ids[position];
+    const options = shuffle([id, ...shuffle(ids.filter(other => other !== id)).slice(0, 3)]);
+    return {
+      q: `Which structure is described? “${lessonCue(id)}”`,
+      options: options.map(key => ITEMS[key].pt),
+      answer: options.indexOf(id),
+      why: lessonCue(id),
+    };
+  });
+}
+
+function setLessonFindFeedback(text, tone = '') {
+  activity.findFeedback = text ? { text, tone } : null;
+  const line = $('find-feedback');
+  if (!line) return;
+  line.textContent = text || '';
+  line.className = `feedback ${tone}`;
+}
+
+function lessonFindPick(id) {
+  const state = activity;
+  if (state?.type !== 'lesson' || state.stage !== 'find') return;
+  const targets = findTargets(state.level);
+  const found = state.found || (state.found = []);
+  if (!id) return setLessonFindFeedback('No structure at that point. Rotate the model and try again.');
+  if (!targets.includes(id)) {
+    return setLessonFindFeedback('Not one of this group. Rotate the model and try again.');
+  }
+  const name = ITEMS[id]?.pt || 'That structure';
+  if (found.includes(id)) return setLessonFindFeedback(`You already found ${name}.`);
+  found.push(id);
+  const allFound = found.length === targets.length;
+  setLessonFindFeedback(allFound ? `Right — ${name}. All ${targets.length} structures found.` : `Right — ${name}.`, 'good');
+  correctSound();
+  render();
+  if (allFound) $('practice').querySelector('.primary')?.focus({ preventScroll: true });
+}
+
+function renderLesson() {
+  const { level } = activity;
+  const stage = activity.stage || 'overview';
+  const total = level.ids.length;
+  const contrast = contrastFor(level);
+  const startRounds = () => {
     progress.levels[level.id] = { ...savedLevel(level.id), lesson: true };
     saveProgress(progress);
     beginRecall(level.ids, 'level', level);
-  }
-  const goto = position => { activity.index = position; render({ activate: true }); };
-  const choose = position => {
-    if (position === index && model?.clickedFocus) return restoreStepView();
-    goto(position);
   };
-  const chip = (key, position) => key === id ? focusStructure(key) : choose(position);
-  if (!it) {
-    return `<div class="screen prompt"><div class="eyebrow">${escape(level.title)} / Lesson check</div>
-      <h1>${question ? 'Check your understanding' : 'Ready for Round 1'}</h1>
-      ${question ? quizMarkup(question, activity) : '<p>You’ve seen every structure in this level.</p>'}
-      <div class="actions">${button('Back to structures', () => goto(level.ids.length - 1))}
-      ${!question || activity.answer !== undefined ? button('Start Round 1', start, { class: 'primary', key: 'Enter' }) : ''}</div></div>`;
+  const openCheck = () => {
+    if (!activity.check) activity.check = { questions: checkFor(level), index: 0, results: [] };
+    activity.stage = 'check';
+    delete activity.answer;
+    render({ top: true, activate: true });
+  };
+  const jump = index => {
+    activity.stage = 'structure';
+    activity.index = index;
+    render({ top: true, activate: true });
+  };
+
+  if (stage === 'find') {
+    const targets = findTargets(level);
+    const found = (activity.found || []).filter(id => targets.includes(id));
+    activity.found = found;
+    const view = activity.findView || lessonView(level);
+    const allFound = found.length === targets.length;
+    const feedback = activity.findFeedback;
+    levelModel(level, {
+      view, controls: true, pick: true, explore: false, focus: found, close: false,
+      pickIds: targets, preserveCamera: found.length > 0,
+    });
+    const showAll = () => {
+      activity.found = [...targets];
+      activity.findFeedback = { text: `All ${targets.length} structures are lit on the model.`, tone: 'good' };
+      render({ top: true });
+      $('practice').querySelector('.primary')?.focus({ preventScroll: true });
+    };
+    const next = () => {
+      if (found.length < targets.length) return;
+      activity.stage = 'structure';
+      activity.index = 0;
+      render({ top: true, activate: true });
+    };
+    return `<div class="prompt lesson-find">
+      <div class="eyebrow">${escape(level.title)} / Find them</div>
+      <h1>Find the ${targets.length} structures</h1>
+      <p class="support">Tap or click each structure on the model. Rotate the view if you need another angle.</p>
+      <div class="find-summary">
+        <p class="find-count" role="status"><b>${found.length}</b> of ${targets.length} found</p>
+        <div class="find-meter" role="progressbar" aria-valuemin="0" aria-valuemax="${targets.length}" aria-valuenow="${found.length}" aria-label="Structures found"><span class="find-bar" style="width:${targets.length ? Math.round(found.length / targets.length * 100) : 0}%"></span></div>
+      </div>
+      <p id="find-feedback" class="feedback ${feedback?.tone || ''}" role="status">${feedback ? escape(feedback.text) : ''}</p>
+      <ul class="find-list" aria-label="Structures to find">${targets.map(id => {
+        const isFound = found.includes(id);
+        const name = ITEMS[id]?.pt || id;
+        return `<li class="find-chip${isFound ? ' found' : ''}" aria-label="${escape(name)}${isFound ? ' — found' : ''}">
+          <span class="find-box" aria-hidden="true">${isFound ? icon('check', 12) : ''}</span><span>${escape(name)}</span></li>`;
+      }).join('')}</ul>
+      ${targets.length < total ? '<p class="support">The ventricular wall is taught in the structure steps.</p>' : ''}
+      ${viewerStatus !== 'ready' ? `<p class="support" role="status">${viewerStatus === 'loading' ? 'Waiting for the 3D model…' : 'The 3D model is required to find structures.'}</p>` : ''}
+      <div class="actions">${button('Show me', showAll, { icon: 'eye' })}
+        ${button('Next: the structures', next, { class: 'primary', iconEnd: 'arrow-right', disabled: !allFound })}</div></div>`;
   }
-  showStructure(id, { controls: true, view: teachingView(id), explore: true, close: true, ...regionScope(level) });
-  return `<div class="prompt">
-    <div class="eyebrow">${escape(level.title)} / Lesson ${index + 1} of ${level.ids.length}</div>
-    <h1>${escape(it.pt)} ${it.tag ? `<small>${escape(it.tag)}</small>` : ''}</h1>
-    <p>${linkedText(material.LESSON_CUES?.[id] || it.dica, level.ids)}</p><p class="support">The view changes to show each structure best.${level.region === 'mediastino' ? ' Use Isolate for a small vessel.' : ''}</p>
-    ${!material.LESSON_CUES?.[id] && it.fatos?.[0] ? `<p class="support">${escape(it.fatos[0])}</p>` : ''}
-    <div class="chips">${level.ids.map((key, position) => button(escape(ITEMS[key].pt), () => chip(key, position), { class: key === id ? 'chosen' : '' })).join('')}</div>
-    <div class="actions">
-      ${index ? button('Previous', () => goto(index - 1), { icon: 'arrow-left' }) : ''}
-      ${button(index + 1 === level.ids.length ? 'Take lesson check' : 'Next structure', () => goto(index + 1), { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}
-    </div></div>`;
+
+  if (stage === 'structure') {
+    const index = Math.min(Math.max(Number(activity.index) || 0, 0), Math.max(total - 1, 0));
+    activity.index = index;
+    const id = level.ids[index];
+    const item = ITEMS[id];
+    const detail = detailFor(id);
+    levelModel(level, { view: teachingView(id), controls: true, explore: true, focus: [id], close: true });
+    const last = index + 1 === total;
+    const primary = () => {
+      if (!last) return jump(index + 1);
+      if (contrast) {
+        activity.stage = 'contrast';
+        render({ top: true, activate: true });
+        return;
+      }
+      openCheck();
+    };
+    return `<div class="prompt lesson-structure">
+      <div class="eyebrow">${escape(level.title)} / Structure ${index + 1} of ${total}</div>
+      <h1>${escape(item.pt)} ${item.tag ? `<small>${escape(item.tag)}</small>` : ''}</h1>
+      <p class="lesson-body">${markdown(detail.text)}</p>
+      ${detail.clinical ? `<aside class="clinical-note"><span class="clinical-label">Clinical note</span><p>${escape(detail.clinical)}</p></aside>` : ''}
+      <div class="chips">${level.ids.map((key, position) => button(escape(ITEMS[key].pt), () => {
+        if (key === id) return focusStructure(key);
+        jump(position);
+      }, { class: key === id ? 'chosen' : '' })).join('')}</div>
+      <div class="actions">
+        ${index ? button('Previous', () => jump(index - 1), { icon: 'arrow-left' }) : ''}
+        ${button(last ? contrast ? 'Contrast' : 'Take the check' : 'Next structure', primary, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}
+      </div></div>`;
+  }
+
+  if (stage === 'contrast' && contrast) {
+    levelModel(level, { view: teachingView(contrast.a), controls: true, explore: true, focus: [contrast.a, contrast.b], close: true });
+    const focus = id => button(escape(ITEMS[id].pt), () => focusStructure(id));
+    return `<div class="prompt lesson-contrast">
+      <div class="eyebrow">${escape(level.title)} / Contrast</div>
+      <h1>${escape(contrast.title)}</h1>
+      <p class="contrast-text">${escape(contrast.text)}</p>
+      <div class="chips">${ITEMS[contrast.a] ? focus(contrast.a) : ''}${ITEMS[contrast.b] ? focus(contrast.b) : ''}</div>
+      <div class="actions">
+        ${button('Previous', () => jump(total - 1), { icon: 'arrow-left' })}
+        ${button('Take the check', openCheck, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}
+      </div></div>`;
+  }
+
+  if (stage === 'checkDone') {
+    const check = activity.check || { results: [] };
+    const score = check.results.filter(result => result.correct).length;
+    const wrong = check.results.filter(result => !result.correct);
+    levelModel(level, { view: 'ant', controls: true, explore: false, preserveCamera: true });
+    return `<div class="prompt lesson-done">
+      <div class="eyebrow">${escape(level.title)} / Check complete</div>
+      <h1>Check complete</h1>
+      <p class="check-score"><b>${score}</b> of ${check.results.length} correct</p>
+      ${wrong.length
+        ? `<div class="check-hints"><h2>One more look before Round 1</h2><ul>${wrong.map(result =>
+          `<li><strong>${escape(result.q)}</strong><p>${escape(result.why)}</p></li>`).join('')}</ul></div>`
+        : '<p class="support">Every question correct. Round 1 starts when you are ready.</p>'}
+      <div class="actions">${button('Start Round 1', startRounds, { class: 'primary', key: 'Enter' })}</div>
+    </div>`;
+  }
+
+  if (stage === 'check' || stage === 'contrast') {
+    if (!activity.check) activity.check = { questions: checkFor(level), index: 0, results: [] };
+    const check = activity.check;
+    check.index = Math.min(Math.max(Number(check.index) || 0, 0), Math.max(check.questions.length - 1, 0));
+    const question = check.questions[check.index];
+    levelModel(level, { view: 'ant', controls: true, explore: false, preserveCamera: check.index > 0 });
+    if (!question) {
+      return `<div class="prompt lesson-done">
+        <div class="eyebrow">${escape(level.title)} / Check</div><h1>Check the level</h1>
+        <p>No check questions are available for this level.</p>
+        <div class="actions">${button('Start Round 1', startRounds, { class: 'primary', key: 'Enter' })}</div></div>`;
+    }
+    const next = () => {
+      if (activity.answer === undefined) return;
+      check.results.push({ q: question.q, correct: activity.answer === question.answer, why: question.why });
+      delete activity.answer;
+      if (check.index + 1 < check.questions.length) {
+        check.index++;
+        render({ top: true, activate: true });
+      } else {
+        activity.stage = 'checkDone';
+        render({ top: true, activate: true });
+      }
+    };
+    return `<div class="prompt lesson-check">
+      <div class="eyebrow">${escape(level.title)} / Check ${check.index + 1} of ${check.questions.length}</div>
+      <h1>Check the level</h1>
+      ${quizMarkup(question, activity)}
+      <div class="actions">${activity.answer !== undefined
+        ? button(check.index + 1 === check.questions.length ? 'Finish check' : 'Next question', next, { class: 'primary', key: 'Enter' }) : ''}</div>
+    </div>`;
+  }
+
+  levelModel(level, { view: lessonView(level), controls: true, explore: true });
+  return `<div class="prompt lesson-overview">
+    <div class="eyebrow">${escape(level.title)} / Overview</div>
+    <h1>${escape(level.title)}</h1>
+    <p class="lesson-body">${escape(overviewFor(level))}</p>
+    <p class="support">${plural(total, 'structure')} in this level. Start by finding them on the model.</p>
+    <div class="actions">${button('Find them', () => {
+      activity.stage = 'find';
+      activity.found = [];
+      activity.findFeedback = null;
+      delete activity.findView;
+      render({ top: true, activate: true });
+    }, { class: 'primary', iconEnd: 'arrow-right' })}</div>
+  </div>`;
 }
 
 function renderMap() {
@@ -712,7 +941,7 @@ function renderRecallResults() {
     <div class="actions">
       ${next && unlocked(next) ? button(`Next · ${escape(next.title)}`, () => openLevel(next), { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' }) : ''}
       ${level ? button('Play rounds again', () => beginRecall(level.ids, 'level', level), { class: passedLevel(level) ? '' : 'primary', icon: 'rotate-ccw' }) : ''}
-      ${level ? button('Redo the lesson', () => launch('lesson', { level, index: 0 })) : ''}
+      ${level ? button('Redo the lesson', () => launch('lesson', { level, stage: 'overview' })) : ''}
       ${button(level ? 'Back to map' : run.kind === 'weak' ? 'Back to progress' : 'Back to daily', () => setPage(level ? 'map' : run.kind === 'weak' ? 'progress' : 'daily'), { icon: 'arrow-left' })}
     </div>
     ${level && passedLevel(level) ? `<div class="actions">${modeButtons(level)}</div>` : ''}
@@ -773,6 +1002,10 @@ function renderFind() {
 }
 
 function findPick(id, reveal = false) {
+  if (activity?.type === 'lesson' && activity.stage === 'find') {
+    lessonFindPick(id);
+    return;
+  }
   const state = activity;
   if (state?.type !== 'find' || state.done) return;
   if (!id && !reveal) {
@@ -1470,7 +1703,8 @@ document.addEventListener('keydown', event => {
       return;
     }
   }
-  if (activity?.type === 'find' && viewer && model?.pick && (!control || target === $('pick-center')) && key.startsWith('Arrow')) {
+  if ((activity?.type === 'find' || (activity?.type === 'lesson' && activity.stage === 'find'))
+    && viewer && model?.pick && (!control || target === $('pick-center')) && key.startsWith('Arrow')) {
     const yaw = key === 'ArrowLeft' ? .15 : key === 'ArrowRight' ? -.15 : 0;
     const pitch = key === 'ArrowUp' ? .12 : key === 'ArrowDown' ? -.12 : 0;
     event.preventDefault();
@@ -1501,6 +1735,7 @@ $('view-direction').addEventListener('change', event => {
   const banner = document.querySelector('.view-banner');
   if (banner) banner.textContent = `${views[direction]} view`;
   if (activity?.type === 'find') activity.direction = direction;
+  if (activity?.type === 'lesson' && activity.stage === 'find') activity.findView = direction;
   if (page === 'atlas') atlas.view = direction;
   viewer?.view(direction);
 });
@@ -1534,7 +1769,7 @@ function showViewFallback() {
   if (activity?.type === 'recall') {
     stopTimers();
     render({ activate: true });
-  } else if (activity?.type === 'find') render();
+  } else if (activity?.type === 'find' || activity?.type === 'lesson') render();
   else updateModel();
 }
 
@@ -1544,7 +1779,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=39');
+    const { createViewer } = await import('./viewer.js?v=40');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore);
     viewerStatus = 'ready';
     if ($('view-isolate').getAttribute('aria-pressed') === 'true') viewer.setIsolate(true);
@@ -1558,7 +1793,7 @@ async function loadViewer() {
     if (activity?.type === 'recall') {
       render();
       if (activity.run.feedback) showRecallFeedback();
-    } else if (activity?.type === 'find') render();
+    } else if (activity?.type === 'find' || activity?.type === 'lesson') render();
     else updateModel();
   } catch {
     showViewFallback();
