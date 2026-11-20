@@ -768,3 +768,19 @@ h1 { letter-spacing: -.035em; }
   /* On touch screens the model itself is the picker; drop the third toolbar row. */
   #pick-center { display: none; }
 }
+/* Disabled actions keep the same shape but read as inert, not as a live primary. */
+.button.primary:disabled {
+  opacity: 1;
+  background: var(--surface-3);
+  border-color: var(--line);
+  color: var(--mute);
+  box-shadow: none;
+}
+/* Selecting from the mobile Atlas drawer scrolls the model into view; leave room for the sticky header. */
+.model-shell { scroll-margin-top: 84px; }
+@media (max-width: 770px) {
+  .model-shell { scroll-margin-top: 128px; }
+  /* The check is answered in the text column; keep the model in view without
+     pushing every option below the fold. */
+  .lesson-check .model-shell { height: clamp(250px, 38svh, 360px); }
+}

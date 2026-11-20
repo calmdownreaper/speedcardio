@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { COLORS, DEFAULT_COLOR } from './data.js?v=40';
-import { ITEMS } from './study.js?v=40';
+import { COLORS, DEFAULT_COLOR } from './data.js?v=41';
+import { ITEMS } from './study.js?v=41';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -217,8 +217,6 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
     const box = focused ? target : group;
     if (box.isEmpty()) return;
     const center = box.getCenter(new THREE.Vector3());
-    // Clamp the sphere so tiny branches cannot pull the camera inside their geometry.
-    const radius = Math.max(.03, box.getBoundingSphere(new THREE.Sphere()).radius);
     const normal = new THREE.Vector3(...(VIEWS[direction] || VIEWS.ant));
     if (!focused && !direction && !neutral && focus.length === 1 && !target.isEmpty()) {
       const offset = target.getCenter(new THREE.Vector3()).sub(center);
@@ -228,11 +226,35 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
         center.lerp(target.getCenter(new THREE.Vector3()), .30);
       }
     }
+    normal.normalize();
     const vertical = THREE.MathUtils.degToRad(camera.fov / 2);
-    const halfFov = Math.min(vertical, Math.atan(Math.tan(vertical) * camera.aspect));
+    const tanV = Math.tan(vertical);
+    const tanH = tanV * camera.aspect;
+    // Fit the projected box, not its circumsphere: sparse 3D parts (lung trees,
+    // great vessels) otherwise sit small in a mostly empty frame.
+    const viewDir = normal;
+    const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 0, 1), viewDir);
+    if (right.lengthSq() < 1e-8) right.set(1, 0, 0); else right.normalize();
+    const up = new THREE.Vector3().crossVectors(viewDir, right).normalize();
+    let required = 0;
+    for (let xi = 0; xi < 2; xi++) {
+      for (let yi = 0; yi < 2; yi++) {
+        for (let zi = 0; zi < 2; zi++) {
+          const corner = new THREE.Vector3(
+            xi ? box.max.x : box.min.x,
+            yi ? box.max.y : box.min.y,
+            zi ? box.max.z : box.min.z,
+          ).sub(center);
+          const depth = corner.dot(viewDir);
+          required = Math.max(required,
+            Math.abs(corner.dot(right)) / tanH + depth,
+            Math.abs(corner.dot(up)) / tanV + depth);
+        }
+      }
+    }
     const fit = current.padding || (current.atlas && close ? 1.33 : 1.13);
-    const distance = THREE.MathUtils.clamp(radius / Math.sin(halfFov) * fit, controls.minDistance, controls.maxDistance);
-    const position = center.clone().add(normal.normalize().multiplyScalar(distance));
+    const distance = THREE.MathUtils.clamp(required * fit, controls.minDistance, controls.maxDistance);
+    const position = center.clone().add(viewDir.multiplyScalar(distance));
     if (immediate || reduced.matches) {
       animation = null;
       camera.position.copy(position);

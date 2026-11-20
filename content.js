@@ -1958,6 +1958,7 @@ export const ORIENTATION = [
   {
     "title": "Two exit valves",
     "choice": "valves",
+    "subtle": false,
     "text": "The pulmonary valve leads to the lungs; the aortic valve leads to the body. Each has three flaps, called cusps: click each name below to isolate a flap.",
     "notice": "The pulmonary cusps are anterior to the aortic cusps.",
     "focus": [
@@ -2447,7 +2448,7 @@ export const LESSON_DETAIL = {
     text: "**Right pulmonary artery** is the longer, more horizontal branch of the pulmonary trunk. It passes beneath the aortic arch and behind the ascending aorta and superior vena cava to reach the right hilum, where it divides. It carries deoxygenated blood to the right lung. On the model, find it running rightward behind the SVC.",
   },
   ape: {
-    text: "**Left pulmonary artery** is the shorter branch of the pulmonary trunk. It passes anterior to the descending aorta and left main bronchus and is connected to the aortic arch by the ligamentum arteriosum. It carries deoxygenated blood to the left lung. On the model, follow it leftward under the arch.",
+    text: "**Left pulmonary artery** is the shorter branch of the pulmonary trunk. It passes anterior to the descending aorta and above the left main bronchus, and is connected to the aortic arch by the ligamentum arteriosum. It carries deoxygenated blood to the left lung. On the model, follow it leftward under the arch.",
   },
   lobsupd: {
     text: "**Right upper lobar pulmonary artery**, or truncus anterior, is the first major branch of the right pulmonary artery. It arises before or at the hilum and supplies the apical, posterior and anterior segments of the right upper lobe. On the model, find it turning upward from the right pulmonary artery toward the upper lung.",
@@ -2516,7 +2517,7 @@ export const LESSON_DETAIL = {
     text: "**Right anterior basal segment** (B8) forms the anterior part of the right lower lobe base, behind the middle lobe and above the diaphragm. Its bronchus and artery descend anteriorly. On the model, look at the front of the right lower lobe, below the oblique fissure.",
   },
   sd_blat: {
-    text: "**Right lateral basal segment** (B9) occupies the lateral part of the right lower lobe base, against the chest wall. Its bronchus B9 is the last of the basal bronchi to arise in many lungs. On the model, find it at the outer edge of the right lower lobe, above the diaphragm.",
+    text: "**Right lateral basal segment** (B9) occupies the lateral part of the right lower lobe base, against the chest wall. Its bronchus and artery enter the lateral base of the lobe. On the model, find it at the outer edge of the right lower lobe, above the diaphragm.",
   },
   sd_bpost: {
     text: "**Right posterior basal segment** (B10) is the largest basal segment, filling the posterior part of the right lower lobe base beside the vertebrae. It is a common site of aspiration in an upright patient and of basal pneumonia. On the model, find the broad posterior wedge at the bottom of the right lung.",
@@ -2548,7 +2549,7 @@ export const LESSON_DETAIL = {
     text: "**Left anterior basal segment** (B8) forms the anterior part of the left lower lobe base, behind the lingula and above the diaphragm. It often fuses with B7. On the model, look at the front of the left lower lobe, below the oblique fissure.",
   },
   se_blat: {
-    text: "**Left lateral basal segment** (B9) occupies the lateral part of the left lower lobe base, against the chest wall. Its bronchus is the last basal branch in many lungs. On the model, find it at the outer edge of the left lower lobe, above the diaphragm.",
+    text: "**Left lateral basal segment** (B9) occupies the lateral part of the left lower lobe base, against the chest wall. Its bronchus and artery enter the lateral base of the lobe. On the model, find it at the outer edge of the left lower lobe, above the diaphragm.",
   },
   se_bpost: {
     text: "**Left posterior basal segment** (B10) is the largest basal segment, filling the posterior part of the left lower lobe beside the vertebrae. It is a common site of aspiration in an upright patient and of basal pneumonia. On the model, find the broad posterior wedge at the bottom of the left lung.",
@@ -2633,7 +2634,7 @@ export const LESSON_DETAIL = {
     text: "**First rib** is the shortest, broadest and most sharply curved rib at the thoracic inlet. Its scalene tubercle separates grooves for the subclavian vein and artery, and it articulates with T1 and the manubrium. On the model, find the tight ring at the very top of the rib cage.",
   },
   costela_2: {
-    text: "**Second rib** is a typical rib whose costal cartilage marks the sternal angle. It articulates with T2 and the sternal body, and the second intercostal space is a standard auscultation landmark. On the model, find the rib just below the first, at the level of the angle of Louis.",
+    text: "**Second rib** is a typical rib. It articulates with T2, and its costal cartilage meets the sternal angle, where the second intercostal space is a standard auscultation landmark. On the model, find the rib just below the first, at the level of the angle of Louis.",
   },
   costela_4: {
     text: "**Fourth rib** is a mid-thoracic typical rib at nipple level in men. It articulates with T4, and the fourth intercostal space in the midaxillary line is used for chest drain insertion. It overlies the middle of the cardiac silhouette. On the model, find the rib at the mid-chest, above the apex.",
@@ -2670,13 +2671,13 @@ export const LEVEL_OVERVIEW = {
   "vasos-5": "The mediastinum holds the heart and the structures around it. Behind the heart run the azygos and hemiazygos veins and the esophagus; in front of the great vessels lies the thymus. This level introduces those neighbours, which explain many of the heart's posterior and anterior relations.",
   "valvas-1": "The atrioventricular valves guard the openings between atria and ventricles. The tricuspid valve on the right has three leaflets; the mitral valve on the left has two. They hang from fibrous rings, are tethered by chordae to papillary muscles, and close during ventricular systole.",
   "valvas-2": "The semilunar valves guard the two outflow tracts. The pulmonary valve sits anterior and superior, leading to the lungs; the aortic valve sits centrally, leading to the body. Each has three thin cusps with a nodule and lunules, and neither has chordae.",
-  "valvas-3": "Papillary muscles are ventricular muscles that anchor the atrioventricular valve leaflets through chordae tendineae. They contract during systole, tightening the chordae so the leaflets meet without prolapsing. This level contrasts the three right ventricular muscles with the single large anterolateral muscle of the left ventricle.",
+  "valvas-3": "Papillary muscles are ventricular muscles that anchor the atrioventricular valve leaflets through chordae tendineae. They contract during systole, tightening the chordae so the leaflets meet without prolapsing. This level contrasts the three right ventricular muscles with the large anterolateral muscle of the left ventricle.",
   "coronarias-1": "The coronary arteries arise from the aortic sinuses and run in the grooves on the heart's surface. The right coronary artery follows the right atrioventricular groove; the left main trunk divides into the anterior interventricular and circumflex branches. Together they supply the entire myocardium.",
   "coronarias-2": "The anterior interventricular artery, or LAD, runs in the anterior groove toward the apex. Its diagonal branches cross the anterior left ventricular wall, while its septal perforators dive into the interventricular septum. This level follows those branches and their smaller ventricular twigs.",
   "coronarias-3": "The right coronary artery gives branches to the right ventricular walls and, at the crux, the posterior descending artery. The right marginal branch follows the acute margin; posterior ventricular branches cross the diaphragmatic surface. Their territory depends on coronary dominance.",
   "veias-1": "Most cardiac veins drain into the coronary sinus, a wide channel in the posterior atrioventricular groove that opens into the right atrium. The great cardiac vein follows the LAD, the middle cardiac vein follows the PDA, and the small cardiac vein follows the right coronary artery. This level traces that drainage.",
   "vias-1": "The trachea is the main airway between the larynx and the lungs. It descends in the midline, divides at the carina into two main bronchi, and each bronchus enters a hilum to supply one lung. The right bronchus is wider and steeper, the left longer and more horizontal.",
-  "segd-1": "The right lung has three lobes. The upper lobe carries apical, posterior and anterior segments; the middle lobe has lateral and medial segments. Each segment has its own bronchus and artery, so this level maps the six segments above the oblique fissure.",
+  "segd-1": "The right lung has three lobes. The upper lobe carries apical, posterior and anterior segments; the middle lobe has lateral and medial segments. Each segment has its own bronchus and artery, so this level maps the five segments above the oblique fissure.",
   "segd-2": "The right lower lobe lies below the oblique fissure. It has a superior segment at the top and four basal segments at the bottom: medial, anterior, lateral and posterior. This level maps those five segments and their relations to the diaphragm, heart and chest wall.",
   "sege-1": "The left lung has two lobes. The upper lobe carries apical, posterior and anterior segments plus the lingula, a tongue-like projection with superior and inferior segments that corresponds to the right middle lobe. This level maps the five segments above the oblique fissure.",
   "sege-2": "The left lower lobe lies below the oblique fissure. It mirrors the right lower lobe with a superior segment and four basal segments, although the medial and anterior basal segments often fuse. This level maps those five segments around the left hemidiaphragm and heart.",

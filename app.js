@@ -1,10 +1,10 @@
-import * as material from './content.js?v=40';
-import { TERRITORIES } from './territories.js?v=40';
-import { correctSound, keySound, wrongKeySound } from './sound.js?v=40';
+import * as material from './content.js?v=41';
+import { TERRITORIES } from './territories.js?v=41';
+import { correctSound, keySound, wrongKeySound } from './sound.js?v=41';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=40';
+} from './study.js?v=41';
 
 const REGION_PURPOSES = {
   "orientation": "Learn directions and the landmarks used throughout the path.",
@@ -363,11 +363,12 @@ function findTargets(level) {
   return targets.length ? targets : [...level.ids];
 }
 function levelModel(level, options = {}) {
+  const context = REGION_CONTEXT[level.region] || ITEMS[level.ids[0]]?.deck.ctx || [];
   setModel(level.ids, {
     title: level.title,
-    context: REGION_CONTEXT[level.region] || ITEMS[level.ids[0]]?.deck.ctx,
+    context,
     faint: level.region === 'mediastino' ? SKELETON_IDS : undefined,
-    padding: level.region === 'mediastino' ? 1.28 : undefined,
+    padding: level.region === 'mediastino' ? 1.32 : 1.26,
     ...options,
   });
 }
@@ -509,6 +510,7 @@ function renderLesson() {
       <h1>${escape(item.pt)} ${item.tag ? `<small>${escape(item.tag)}</small>` : ''}</h1>
       <p class="lesson-body">${markdown(detail.text)}</p>
       ${detail.clinical ? `<aside class="clinical-note"><span class="clinical-label">Clinical note</span><p>${escape(detail.clinical)}</p></aside>` : ''}
+      ${level.region === 'mediastino' ? '<p class="support">Small vessel: use Isolate to show only the highlighted structure.</p>' : ''}
       <div class="chips">${level.ids.map((key, position) => button(escape(ITEMS[key].pt), () => {
         if (key === id) return focusStructure(key);
         jump(position);
@@ -537,7 +539,7 @@ function renderLesson() {
     const check = activity.check || { results: [] };
     const score = check.results.filter(result => result.correct).length;
     const wrong = check.results.filter(result => !result.correct);
-    levelModel(level, { view: 'ant', controls: true, explore: false, preserveCamera: true });
+    levelModel(level, { view: 'ant', controls: true, explore: false, layout: 'study-layout lesson-check', preserveCamera: true });
     return `<div class="prompt lesson-done">
       <div class="eyebrow">${escape(level.title)} / Check complete</div>
       <h1>Check complete</h1>
@@ -555,7 +557,7 @@ function renderLesson() {
     const check = activity.check;
     check.index = Math.min(Math.max(Number(check.index) || 0, 0), Math.max(check.questions.length - 1, 0));
     const question = check.questions[check.index];
-    levelModel(level, { view: 'ant', controls: true, explore: false, preserveCamera: check.index > 0 });
+    levelModel(level, { view: 'ant', controls: true, explore: false, layout: 'study-layout lesson-check', preserveCamera: check.index > 0 });
     if (!question) {
       return `<div class="prompt lesson-done">
         <div class="eyebrow">${escape(level.title)} / Check</div><h1>Check the level</h1>
@@ -585,7 +587,6 @@ function renderLesson() {
 
   levelModel(level, { view: lessonView(level), controls: true, explore: true });
   return `<div class="prompt lesson-overview">
-    <div class="eyebrow">${escape(level.title)} / Overview</div>
     <h1>${escape(level.title)}</h1>
     <p class="lesson-body">${escape(overviewFor(level))}</p>
     <p class="support">${plural(total, 'structure')} in this level. Start by finding them on the model.</p>
@@ -697,7 +698,7 @@ function renderRecall() {
   const { item, round, kind } = run;
   const memory = round === 3;
   const view = memory ? memoryView(item.id) : teachingView(item.id);
-  showStructure(item.id, { view, close: true, layout: 'recall-layout', controls: true, ...regionScope(level) });
+  showStructure(item.id, { view, close: true, padding: 1.26, layout: 'recall-layout', controls: true, ...regionScope(level) });
   const title = kind === 'level' ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest' }[kind];
   if (viewerStatus !== 'ready') {
     const loading = viewerStatus === 'loading';
@@ -707,7 +708,7 @@ function renderRecall() {
         ${button('Back', () => setPage(page))}</div></div>`;
   }
   const label = kind === 'level' ? `Round ${round} · ${ROUND_NAMES[round - 1]}` : 'From memory';
-  const clue = memory ? "Name the highlighted structure from memory." : round === 2 || run.hint ? (material.ROUND_CLUES[item.id]) : round === 1 ? 'Type over the letters. Spaces fill automatically.' : 'Name the highlighted structure.';
+  const clue = memory ? "Name the highlighted structure from memory." : round === 2 || run.hint ? (material.ROUND_CLUES[item.id]) : round === 1 ? 'Type over the letters, including the spaces.' : 'Name the highlighted structure.';
   const primary = round === 1 ? '' : button('Check answer', checkRecall, { class: 'primary check', icon: 'check' });
   return `<div class="recall">
     <div class="recall-top">
@@ -800,6 +801,8 @@ function drawWord(wrong = false) {
   $('wpm-stat').hidden = wpm === null;
   $('wpm').textContent = wpm;
   $('round-done').textContent = run.results[round].correct.size;
+  const checkButton = document.querySelector('.answer-area .check');
+  if (checkButton) checkButton.disabled = !run.typed;
   const reviews = run.queue.length - run.ids.length;
   $('review-count').textContent = reviews ? `+${reviews} review${reviews === 1 ? '' : 's'}` : '';
 }
@@ -1351,7 +1354,7 @@ function renderProgress() {
         const card = progress.cards[id];
         const value = (card?.box || 0) * 20;
         return `<div><span>${escape(ITEMS[id].pt)}</span><meter max="100" value="${value}" aria-label="${escape(ITEMS[id].pt)} mastery"></meter>
-          <span>${value}%</span><span class="muted">${card ? card.due <= day() ? 'Due' : card.due : 'Unstudied'}</span></div>`;
+          <span>${value}%</span><span class="muted">${card ? card.due <= day() ? 'Due' : shortDate(card.due) : 'Unstudied'}</span></div>`;
       }).join('')}</div></details>`).join('')}
   </div>`;
 }
@@ -1779,7 +1782,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=40');
+    const { createViewer } = await import('./viewer.js?v=41');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore);
     viewerStatus = 'ready';
     if ($('view-isolate').getAttribute('aria-pressed') === 'true') viewer.setIsolate(true);
