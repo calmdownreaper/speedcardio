@@ -179,14 +179,14 @@ export class Recall {
   type(char, now) {
     if (this.feedback || !this.item) return;
     if (this.round === 1) {
-      if (!char.trim()) return;
+      const expected = this.item.typing[this.position];
+      if (!char.trim() && expected !== ' ') return;
       this.stamp(now);
       this.keys++;
-      if (fold(char) !== fold(this.item.typing[this.position])) return 'wrong-key';
+      if (expected === ' ' ? char.trim() : fold(char) !== fold(expected)) return 'wrong-key';
       this.good++;
       this.chars++;
       this.position++;
-      while (this.item.typing[this.position] === ' ') this.position++;
       if (this.position === this.item.typing.length) this.submit();
       return;
     }
