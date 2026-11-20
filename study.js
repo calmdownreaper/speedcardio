@@ -1,4 +1,4 @@
-import { DECKS } from './data.js?v=43';
+import { DECKS } from './data.js?v=44';
 
 const SHORT_NAMES = {
   pap_vd_ant: 'Anterior RV papillary muscle',
@@ -116,6 +116,10 @@ function answerKey(value) {
   return fold(value).replace(/[–—-]/g, ' ').replace(/\s+/g, '').trim();
 }
 
+function sameKeyChar(left, right) {
+  return fold(left).replace(/[–—-]/g, '-') === fold(right).replace(/[–—-]/g, '-');
+}
+
 export function answers(id) {
   const { pt, en, typing, alt } = ITEMS[id];
   return [...new Set([pt, en, typing, pt.replace(/\s*\([^)]*\)/g, ''), ...(alt || [])].map(answerKey))];
@@ -183,7 +187,7 @@ export class Recall {
       if (!char.trim() && expected !== ' ') return;
       this.stamp(now);
       this.keys++;
-      if (expected === ' ' ? char.trim() : fold(char) !== fold(expected)) return 'wrong-key';
+      if (expected === ' ' ? char.trim() : !sameKeyChar(char, expected)) return 'wrong-key';
       this.good++;
       this.chars++;
       this.position++;
@@ -207,7 +211,9 @@ export class Recall {
     const guess = answerKey(this.typed);
     if (!guess && !reveal) return;
     const names = answers(this.id);
-    const correct = !reveal && (names.includes(guess) || (this.round === 2 && names.some(name => name.slice(1) === guess))); 
+    // For a hinted from-memory prompt the first letter is shown, so accept the rest.
+    const partial = (this.round === 2 || this.hint) && names.some(name => name.slice(1) === guess);
+    const correct = !reveal && (names.includes(guess) || partial);
     this.keys++;
     if (correct) {
       this.good++;
