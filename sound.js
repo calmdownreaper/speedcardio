@@ -1,6 +1,14 @@
 // Tiny synthesized feedback sounds (no audio files).
 let ctx;
 let last = 0;
+let muted = false;
+try { muted = localStorage.getItem('sc2_muted') === '1'; } catch { /* storage unavailable */ }
+
+export function isMuted() { return muted; }
+export function setMuted(value) {
+  muted = Boolean(value);
+  try { localStorage.setItem('sc2_muted', muted ? '1' : '0'); } catch { /* storage unavailable */ }
+}
 
 function audio() {
   if (!ctx) {
@@ -13,6 +21,7 @@ function audio() {
 }
 
 function tone(freq, start, length, gain, type = 'sine') {
+  if (muted) return;
   const a = audio();
   if (!a) return;
   const t = a.currentTime + start;

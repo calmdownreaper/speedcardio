@@ -1,0 +1,791 @@
+// Structured, topographical lesson text per structure.
+// lead: one-line identity. where: position and surface landmarks. relations: neighbours by direction
+// and what passes nearby. function: what it does. name: origin of the term (when it helps). clinical: optional.
+export const LESSONS = {
+  // ── Chambers ──────────────────────────────────────────────────────────
+  ad: {
+    lead: '**Right atrium** receives all systemic venous blood and forms the right border of the heart.',
+    where: 'Right border of the cardiac silhouette, from the 3rd to the 6th costal cartilage just right of the sternum. Its ear-shaped **right auricle** overlaps the root of the ascending aorta.',
+    relations: 'Superiorly the SVC opens into it, inferiorly the IVC; the coronary sinus opens between the IVC and the tricuspid orifice. Laterally: right phrenic nerve, pericardium, right pleura and lung. Medially: interatrial septum (fossa ovalis) and left atrium. Posteriorly: right pulmonary veins.',
+    function: 'Collects blood from SVC, IVC and coronary sinus and primes the right ventricle through the tricuspid valve. The SA node lies at the SVC junction, at the top of the crista terminalis.',
+    name: 'The crista terminalis separates the smooth **sinus venarum** (from the embryonic sinus venosus) from the rough part with pectinate (“comb”) muscles.',
+    clinical: 'An atrial septal defect at the fossa ovalis gives a left-to-right shunt; a patent foramen ovale allows paradoxical emboli.',
+  },
+  ae: {
+    lead: '**Left atrium** is the most posterior chamber and forms most of the base of the heart.',
+    where: 'Posterior surface of the heart, at the level of T6–T8. Only its **left auricle** reaches the left border, beside the pulmonary trunk.',
+    relations: 'Posteriorly: oblique pericardial sinus, then the esophagus and descending aorta. Its four pulmonary veins enter at the posterior corners. Anteriorly: the aortic root and pulmonary trunk; to the right: the right atrium across the septum.',
+    function: 'Receives oxygenated blood from the four pulmonary veins and passes it through the mitral valve to the left ventricle.',
+    clinical: 'An enlarged left atrium (mitral stenosis) indents the esophagus on a barium swallow and can compress the left recurrent laryngeal nerve (hoarseness). Its auricle is the commonest site of thrombus in atrial fibrillation.',
+  },
+  vd: {
+    lead: '**Right ventricle** forms most of the anterior (sternocostal) surface of the heart.',
+    where: 'Directly behind the sternum and the left 3rd–6th costal cartilages. Its lower edge forms the sharp **acute margin** (inferior border).',
+    relations: 'Superiorly it tapers into the smooth **conus arteriosus** (infundibulum) leading to the pulmonary trunk. Right: right atrium across the tricuspid orifice. Left and posterior: the interventricular septum, marked on the surface by the anterior interventricular groove with the LAD.',
+    function: 'Pumps deoxygenated blood into the low-pressure pulmonary circulation. Wall only 3–5 mm. The **septomarginal trabecula** (moderator band) carries the right bundle branch to the anterior papillary muscle.',
+    clinical: 'It lies right behind the sternum, so it is the chamber most exposed in penetrating chest trauma.',
+  },
+  ve: {
+    lead: '**Left ventricle** forms the apex, most of the left border and much of the inferior (diaphragmatic) surface.',
+    where: 'Left and posterior to the right ventricle. The **apex** lies in the left 5th intercostal space, midclavicular line, about 9 cm from the midline: this is where the apex beat is felt.',
+    relations: 'Left: pericardium, left phrenic nerve and left lung (cardiac notch). Inferiorly: central tendon of the diaphragm. Right and anterior: interventricular septum and right ventricle. Above: the smooth **aortic vestibule** leads to the aortic valve.',
+    function: 'Pumps oxygenated blood into the aorta at systemic pressure, so its wall is 10–15 mm, about three times the right. It holds two papillary muscles (anterolateral and posteromedial) for the mitral valve.',
+    clinical: 'A displaced apex beat (lateral or downward) suggests left ventricular dilatation.',
+  },
+  paredev: {
+    lead: '**Ventricular myocardium** is the muscular wall shared by both ventricles, including the interventricular septum.',
+    where: 'The outer shell of the lower part of the heart. On the surface, the anterior and posterior interventricular grooves mark where the septum meets the wall.',
+    relations: 'The septum bulges into the right ventricle because left pressure is higher. Its upper **membranous septum** lies just below the aortic valve, beside the septal tricuspid leaflet; the bundle of His runs along its lower border.',
+    function: 'Generates ventricular contraction. The septum is supplied by septal branches of the LAD (anterior two-thirds) and of the PDA (posterior third).',
+    clinical: 'Most ventricular septal defects are in the membranous part.',
+  },
+
+  // ── Great vessels: aorta and arch branches ─────────────────────────────
+  aoasc: {
+    lead: '**Ascending aorta** rises from the left ventricle and is entirely inside the pericardium.',
+    where: 'Starts behind the left half of the sternum at the 3rd costal cartilage, runs up, forward and to the right, and ends at the level of the sternal angle (2nd right costal cartilage).',
+    relations: 'Anterior: pulmonary trunk at first, the right auricle, then the sternum. Right: SVC and right atrium. Left: pulmonary trunk. Posterior: right pulmonary artery and right main bronchus, and the transverse pericardial sinus separating it from the atria.',
+    function: 'Carries the whole cardiac output. Its only branches are the **right and left coronary arteries**, from the aortic sinuses just above the valve.',
+    clinical: 'Aortic dissection starting here (Stanford type A) is a surgical emergency.',
+  },
+  arco: {
+    lead: '**Aortic arch** curves backward and to the left over the root of the left lung, entirely in the superior mediastinum.',
+    where: 'Begins and ends at the plane of the sternal angle (T4/T5). Its top reaches the middle of the manubrium.',
+    relations: 'Left: left phrenic and left vagus nerves cross it; the left superior intercostal vein runs between them. Right and posterior: trachea, esophagus, left recurrent laryngeal nerve, thoracic duct. Below: pulmonary bifurcation, **ligamentum arteriosum**, left main bronchus. In front of its branches: the left brachiocephalic vein.',
+    function: 'Gives three branches, right to left: **brachiocephalic trunk, left common carotid, left subclavian**.',
+    clinical: 'The left recurrent laryngeal nerve hooks under the arch behind the ligamentum arteriosum: an arch aneurysm or tumour here can cause hoarseness.',
+  },
+  aodesc: {
+    lead: '**Descending thoracic aorta** continues the arch down the posterior mediastinum.',
+    where: 'From T4 on the left side of the vertebral bodies, moving toward the midline, to the **aortic hiatus** of the diaphragm at T12.',
+    relations: 'Anterior: left lung root, pericardium over the left atrium, then the esophagus, which crosses in front of it from right to left in the lower thorax. Right: azygos vein and thoracic duct. Left: left pleura and lung. Posterior: hemiazygos veins crossing to the right.',
+    function: 'Branches: posterior intercostal arteries 3–11, subcostal arteries, bronchial, esophageal, mediastinal and superior phrenic arteries.',
+    name: 'At the aortic hiatus (T12) the aorta passes behind the median arcuate ligament with the **thoracic duct** and often the **azygos vein**.',
+  },
+  tbc: {
+    lead: '**Brachiocephalic trunk** is the first and largest branch of the aortic arch.',
+    where: 'Arises behind the middle of the manubrium and ascends to the right, ending behind the **right sternoclavicular joint**.',
+    relations: 'Anterior: manubrium and the left brachiocephalic vein crossing over it. Posterior: trachea. Right: right brachiocephalic vein and SVC. Left: left common carotid artery.',
+    function: 'Divides behind the right sternoclavicular joint into the **right subclavian** and **right common carotid** arteries.',
+    name: 'Brachio-cephalic = “arm-head”: it supplies the right upper limb and the right side of the head and neck.',
+  },
+  cce: {
+    lead: '**Left common carotid artery** is the second branch of the arch, arising directly from it.',
+    where: 'From the arch just left of the brachiocephalic trunk; it ascends into the neck behind the left sternoclavicular joint.',
+    relations: 'In the thorax: anterior, the left brachiocephalic vein; right, the trachea and brachiocephalic trunk; left, the left vagus nerve, pleura and lung; posterior-left, the left subclavian artery. In the neck it enters the **carotid sheath** with the internal jugular vein (lateral) and vagus nerve (posterior).',
+    function: 'Supplies the left side of the head and neck; it has no branches until it divides at C4 (upper border of the thyroid cartilage).',
+  },
+  sce: {
+    lead: '**Left subclavian artery** is the third and most posterior branch of the arch.',
+    where: 'Arises behind the left common carotid and ascends against the left mediastinal pleura, then arches over the dome of the pleura onto the **first rib**.',
+    relations: 'Anterior: left common carotid, left vagus and phrenic nerves. Right: trachea and esophagus, with the left recurrent laryngeal nerve and thoracic duct. On the first rib it lies behind the **scalene tubercle**, behind the anterior scalene, with the lower trunk of the brachial plexus.',
+    function: 'Supplies the left upper limb. Branches: vertebral, internal thoracic, thyrocervical trunk, costocervical trunk (and dorsal scapular).',
+    clinical: 'Subclavian steal: a stenosis before the vertebral origin reverses vertebral flow when the arm is exercised.',
+  },
+
+  // ── Great vessels: systemic vessels ────────────────────────────────────
+  ccd: {
+    lead: '**Right common carotid artery** is a branch of the brachiocephalic trunk.',
+    where: 'Begins behind the right sternoclavicular joint and ascends in the neck.',
+    relations: 'Medial: trachea, then thyroid gland, larynx and pharynx. In the carotid sheath: internal jugular vein lateral, vagus nerve posterior between them. Posterior: sympathetic trunk and prevertebral muscles.',
+    function: 'Supplies the right side of the head and neck. Divides at C4 into internal and external carotid arteries, where the carotid sinus (baroreceptor) and carotid body (chemoreceptor) lie.',
+    clinical: 'The carotid pulse is felt at the anterior border of the sternocleidomastoid, at the level of the thyroid cartilage.',
+  },
+  scd: {
+    lead: '**Right subclavian artery** is the other terminal branch of the brachiocephalic trunk.',
+    where: 'Begins behind the right sternoclavicular joint and arches laterally over the cervical pleura onto the first rib.',
+    relations: 'The **right recurrent laryngeal nerve** hooks under it. The anterior scalene divides it into three parts: medial, behind, lateral. On the first rib it lies behind the scalene tubercle; the subclavian vein lies in front of the tubercle.',
+    function: 'Supplies the right upper limb and, through the vertebral artery, part of the brain. Becomes the axillary artery at the outer border of the first rib.',
+  },
+  vcs: {
+    lead: '**Superior vena cava** drains everything above the diaphragm except the heart and lungs.',
+    where: 'Formed behind the lower border of the **right 1st costal cartilage** by the two brachiocephalic veins; it descends along the right sternal border and enters the right atrium at the 3rd costal cartilage.',
+    relations: 'Right: right phrenic nerve, pleura and lung. Left: ascending aorta. Posterior: root of the right lung (right pulmonary artery, right main bronchus). The **azygos vein** arches over the right lung root to enter it from behind at T4. Lower half is inside the pericardium.',
+    function: 'Returns blood from head, neck, upper limbs and (via the azygos) the thoracic wall. It has no valves.',
+    clinical: 'SVC obstruction (often lung cancer) causes facial swelling and dilated veins over the chest.',
+  },
+  vci: {
+    lead: '**Inferior vena cava** returns blood from everything below the diaphragm.',
+    where: 'It has only a very short thoracic course: it pierces the **central tendon** of the diaphragm at T8 and immediately enters the lower posterior part of the right atrium.',
+    relations: 'Passes through the **caval opening (T8)** with branches of the right phrenic nerve. Behind the heart, lies to the right of the esophagus. Its orifice in the right atrium carries the small valve of the IVC, beside the opening of the coronary sinus.',
+    function: 'Drains the lower limbs, abdomen and pelvis into the right atrium. The caval opening is in the tendon, so inspiration widens it and helps venous return.',
+  },
+  vbcd: {
+    lead: '**Right brachiocephalic vein** is the short, almost vertical vein on the right.',
+    where: 'Formed behind the medial end of the right clavicle (right sternoclavicular joint) by the internal jugular and subclavian veins; about 2.5 cm long.',
+    relations: 'Medial: brachiocephalic trunk. Lateral: right phrenic nerve and pleura. Posterior: right vagus nerve. It joins the left brachiocephalic vein behind the 1st right costal cartilage to form the SVC.',
+    function: 'Drains the right side of head, neck and right upper limb. The **right lymphatic duct** enters at the jugulo-subclavian junction where it begins.',
+  },
+  vbce: {
+    lead: '**Left brachiocephalic vein** is long and crosses the midline obliquely.',
+    where: 'Formed behind the left sternoclavicular joint and runs to the right and downward behind the upper half of the manubrium, about 6 cm long.',
+    relations: 'Anterior: manubrium and thymus. Posterior: the three arch branches (left subclavian, left common carotid, brachiocephalic trunk), the left vagus and phrenic nerves, and the trachea. Below: the aortic arch.',
+    function: 'Drains the left side of head, neck and left upper limb, plus the left superior intercostal, inferior thyroid and thymic veins. The **thoracic duct** enters at its origin.',
+    clinical: 'In children it can rise above the jugular notch, at risk in tracheostomy.',
+  },
+
+  // ── Great vessels: pulmonary arteries ───────────────────────────────────
+  tp: {
+    lead: '**Pulmonary trunk** carries deoxygenated blood out of the right ventricle.',
+    where: 'Begins at the pulmonary valve behind the left 3rd costal cartilage, rises backward and to the left, and divides under the aortic arch at the level of the sternal angle (T4/T5).',
+    relations: 'Inside the pericardium, sharing a sleeve of serous pericardium with the ascending aorta; the **transverse pericardial sinus** lies behind both. Anterior: left pleura and lung, sternum. Right: ascending aorta. Left: left auricle and left coronary artery. The bifurcation is joined to the arch by the **ligamentum arteriosum**.',
+    function: 'Delivers the whole right ventricular output to the lungs at low pressure.',
+    name: 'Ligamentum arteriosum = remnant of the fetal ductus arteriosus.',
+  },
+  apd: {
+    lead: '**Right pulmonary artery** is the longer, horizontal branch of the trunk.',
+    where: 'Runs to the right under the concavity of the arch to the right hilum.',
+    relations: 'Anterior: ascending aorta and SVC (it passes behind both). Posterior: right main bronchus and esophagus. Superior: the arch of the azygos vein and the right main bronchus at the hilum (the upper lobe bronchus is above the artery).',
+    function: 'Carries deoxygenated blood to the right lung. Its first branch, the truncus anterior, goes to the upper lobe even before the hilum.',
+  },
+  ape: {
+    lead: '**Left pulmonary artery** is the shorter branch of the trunk.',
+    where: 'Runs back and to the left to the left hilum, where it arches **over** the left main bronchus.',
+    relations: 'Superior: aortic arch, attached to it by the ligamentum arteriosum, with the left recurrent laryngeal nerve hooking around. Posterior: descending aorta. Inferior: left main bronchus. At the left hilum it is the most superior structure.',
+    function: 'Carries deoxygenated blood to the left lung.',
+    name: 'Hilum rule: on the left the artery is above the bronchus; on the right the upper lobe bronchus is above the artery.',
+  },
+  lobsupd: {
+    lead: '**Right upper lobar pulmonary artery** (truncus anterior) is the first branch of the right pulmonary artery.',
+    where: 'Leaves the right pulmonary artery near or before the right hilum and turns upward into the upper lobe.',
+    relations: 'Lies in front of and just below the right upper lobe bronchus, behind the SVC. The superior pulmonary vein lies anterior and inferior.',
+    function: 'Supplies the apical, posterior and anterior segments of the right upper lobe (S1–S3); each segmental artery runs with its segmental bronchus.',
+  },
+
+  // ── Great vessels: pulmonary veins ──────────────────────────────────────
+  vpsd: {
+    lead: '**Right superior pulmonary vein** drains the right upper and middle lobes.',
+    where: 'Leaves the right hilum as its most anterior structure and runs medially into the upper posterior corner of the left atrium.',
+    relations: 'Passes behind the SVC and the right atrium. Lies in front of and below the right pulmonary artery at the hilum.',
+    function: 'Returns oxygenated blood from the upper and middle lobes. Pulmonary veins run **between** segments (intersegmental), unlike arteries and bronchi.',
+  },
+  vpid: {
+    lead: '**Right inferior pulmonary vein** drains the right lower lobe.',
+    where: 'The lowest structure of the right hilum; it enters the lower posterior corner of the left atrium.',
+    relations: 'Passes behind the right atrium near the IVC. Below it the **pulmonary ligament** (double pleural fold) hangs from the hilum.',
+    function: 'Returns oxygenated blood from the right lower lobe.',
+    clinical: 'Ectopic beats from the pulmonary vein sleeves trigger atrial fibrillation: catheter ablation isolates all four veins.',
+  },
+  vpse: {
+    lead: '**Left superior pulmonary vein** drains the left upper lobe including the lingula.',
+    where: 'Anterior and inferior structure of the left hilum; enters the upper left corner of the left atrium.',
+    relations: 'In front of the descending aorta and the left main bronchus. Close to the left auricle, with the ligament of the left vena cava (vein of Marshall) running nearby.',
+    function: 'Returns oxygenated blood from the left upper lobe and lingula.',
+  },
+  vpie: {
+    lead: '**Left inferior pulmonary vein** drains the left lower lobe.',
+    where: 'Lowest structure of the left hilum; enters the lower left corner of the left atrium.',
+    relations: 'Directly in front of the **descending aorta**. The left pulmonary ligament hangs below it.',
+    function: 'Returns oxygenated blood from the left lower lobe. With the other three veins it outlines the **oblique pericardial sinus** behind the left atrium.',
+  },
+
+  // ── Mediastinal neighbours ───────────────────────────────────────────────
+  azigo: {
+    lead: '**Azygos vein** is the main vein of the posterior thoracic wall, on the right of the vertebral bodies.',
+    where: 'Enters the thorax through the aortic hiatus (or right crus) and ascends on the right of T12–T5; at **T4** it arches forward over the root of the right lung to join the SVC.',
+    relations: 'Left: thoracic duct and descending aorta. Posterior: vertebral bodies and right posterior intercostal arteries. Anterior: esophagus (partly), and above, the right main bronchus under its arch. Right: right pleura and lung.',
+    function: 'Drains the right posterior intercostal veins, hemiazygos and accessory hemiazygos, esophageal and bronchial veins. It connects the SVC and IVC systems.',
+    name: 'A-zygos = “unpaired”: it has no partner on the left (that role is shared by the hemiazygos veins).',
+  },
+  hemiazigo: {
+    lead: '**Hemiazygos vein** drains the lower left posterior thoracic wall.',
+    where: 'Ascends on the left side of the vertebral bodies to about **T9**, then crosses to the right.',
+    relations: 'It crosses **behind** the descending aorta, esophagus and thoracic duct to join the azygos vein. Posterior: vertebral bodies; left: left pleura.',
+    function: 'Drains the lower 3–4 left posterior intercostal veins and the left subcostal vein.',
+  },
+  esofago: {
+    lead: '**Esophagus** runs from the pharynx (C6) to the stomach, through the superior and posterior mediastinum.',
+    where: 'Behind the trachea, slightly to the left, then behind the left atrium; it pierces the diaphragm at the **esophageal hiatus (T10)**, in the right crus.',
+    relations: 'Anterior: trachea, left main bronchus, pericardium over the left atrium. Posterior: vertebral column, thoracic duct, azygos and hemiazygos veins, then the descending aorta. Left: aortic arch, left subclavian, left recurrent laryngeal nerve (in the tracheo-esophageal groove). Right: azygos arch and right pleura. Through the hiatus it carries the **anterior and posterior vagal trunks**.',
+    function: 'Moves food to the stomach by peristalsis; upper third striated, lower third smooth muscle.',
+    name: 'Narrowings (where swallowed objects lodge): cricopharyngeus, aortic arch, left main bronchus, diaphragm.',
+    clinical: 'In portal hypertension, veins at its lower end (porto-systemic anastomosis) form varices that can bleed.',
+  },
+  timo_d: {
+    lead: '**Right lobe of the thymus** is one half of the thymus in the anterior and superior mediastinum.',
+    where: 'Behind the manubrium and upper sternal body, in front of the pericardium and great vessels; may extend up to the thyroid.',
+    relations: 'Posterior: SVC, ascending aorta and, higher, the left brachiocephalic vein. Lateral: mediastinal pleura. Arteries from the internal thoracic arteries; veins mainly to the left brachiocephalic vein.',
+    function: 'Site of T-lymphocyte maturation. Large in children, it involutes into fat after puberty.',
+    clinical: 'Thymoma is associated with myasthenia gravis.',
+  },
+  timo_e: {
+    lead: '**Left lobe of the thymus** is the other half, joined to the right lobe in the midline.',
+    where: 'Behind the manubrium, in front of the aortic arch and pericardium.',
+    relations: 'Posterior: left brachiocephalic vein, aortic arch, pulmonary trunk. Lateral: left mediastinal pleura and lung. Its veins drain into the left brachiocephalic vein.',
+    function: 'Same as the right lobe: T-cell education in childhood, replaced by fat in adults.',
+  },
+
+  // ── Valves ───────────────────────────────────────────────────────────────
+  tri_ant: {
+    lead: '**Anterior tricuspid leaflet** is the largest leaflet of the tricuspid valve.',
+    where: 'Attached to the anterior part of the tricuspid ring, between the right atrium and the anterior wall of the right ventricle, close to the infundibulum. The tricuspid valve lies behind the sternum at the 4th intercostal space.',
+    relations: 'Its chordae go to the **anterior** and **septal** papillary muscles. Above it, the outflow tract leads to the pulmonary valve.',
+    function: 'Closes the right atrioventricular orifice in ventricular systole.',
+    name: 'Tricuspid = three cusps (anterior, posterior, septal). Best heard at the left lower sternal border.',
+  },
+  tri_post: {
+    lead: '**Posterior tricuspid leaflet** is the smallest tricuspid leaflet, on the inferior wall.',
+    where: 'Attached to the posterior (inferior) part of the tricuspid ring, along the diaphragmatic wall of the right ventricle.',
+    relations: 'Chordae to the **posterior** and **anterior** papillary muscles. Near the opening of the coronary sinus in the atrium above.',
+    function: 'Seals the posterior part of the orifice in systole.',
+  },
+  tri_sep: {
+    lead: '**Septal tricuspid leaflet** is attached along the interventricular septum.',
+    where: 'Medial part of the tricuspid ring, on the septum and across the membranous septum.',
+    relations: 'Its attachment forms one side of the **triangle of Koch** (with the coronary sinus ostium and the tendon of Todaro), which contains the **AV node**. Chordae to the posterior and septal papillary muscles.',
+    function: 'Closes the septal part of the orifice.',
+    clinical: 'The AV node and bundle of His lie close to it, so surgery on this leaflet risks heart block.',
+  },
+  mit_ant: {
+    lead: '**Anterior mitral leaflet** (aortic leaflet) is the larger, thicker leaflet of the mitral valve.',
+    where: 'Lies between the mitral orifice and the aortic vestibule. The mitral valve sits behind the left half of the sternum at the 4th costal cartilage.',
+    relations: 'In fibrous continuity with the **left and non-coronary aortic cusps** (aortic-mitral curtain). Chordae to both papillary muscles (anterolateral and posteromedial).',
+    function: 'Closes the left atrioventricular orifice; in diastole it also separates inflow from the outflow tract.',
+    name: 'Mitral = shaped like a bishop’s mitre. Best heard at the apex (left 5th intercostal space, midclavicular line).',
+  },
+  mit_post: {
+    lead: '**Posterior mitral leaflet** (mural leaflet) is the narrower leaflet with the longer attachment.',
+    where: 'Attached to the posterolateral two-thirds of the mitral ring, along the free wall of the left ventricle. Usually has three scallops (P1–P3).',
+    relations: 'Behind it, in the atrioventricular groove, run the circumflex artery and the coronary sinus. Chordae to both papillary muscles.',
+    function: 'Meets the anterior leaflet to seal the mitral orifice in systole.',
+    clinical: 'The commonest site of mitral valve prolapse (especially P2).',
+  },
+  pulm_ant_d: {
+    lead: '**Right anterior pulmonary valve cusp** is one of the three semilunar cusps of the pulmonary valve.',
+    where: 'Front-right of the pulmonary root, at the left 3rd costal cartilage; the pulmonary valve is the most anterior and superior valve of the heart.',
+    relations: 'Posterior and right of the valve lies the aortic root. Below the valve: the smooth infundibulum of the right ventricle.',
+    function: 'Opens in systole; in diastole the cusps fill from above and meet at their nodules. Semilunar valves have no chordae.',
+    name: 'Pulmonary valve sound is best heard in the left 2nd intercostal space.',
+  },
+  pulm_ant_e: {
+    lead: '**Left anterior pulmonary valve cusp** is the anterior-left semilunar cusp.',
+    where: 'Front-left of the pulmonary root, the cusp nearest the anterior chest wall on the left.',
+    relations: 'The left auricle lies to its left; the aortic valve lies posterior and to the right.',
+    function: 'Each cusp has a central **nodule** and thin crescent **lunules** on its free edge; they meet to close the valve in diastole.',
+  },
+  pulm_post: {
+    lead: '**Posterior pulmonary valve cusp** is the deepest of the three pulmonary cusps.',
+    where: 'At the back of the pulmonary root, facing the aorta.',
+    relations: 'Directly anterior to the aortic root and the origin of the left coronary artery.',
+    function: 'Closes the posterior part of the pulmonary orifice in diastole.',
+  },
+  ao_ant: {
+    lead: '**Right coronary cusp** is the anterior cusp of the aortic valve.',
+    where: 'Front of the aortic root, facing the pulmonary trunk and right ventricular outflow. The aortic valve lies behind the left half of the sternum at the 3rd intercostal space.',
+    relations: 'Its aortic sinus gives the **right coronary artery**. Below the commissure with the non-coronary cusp is the membranous septum with the bundle of His.',
+    function: 'Opens in systole, closes in diastole; during diastole the coronaries fill from the sinuses.',
+    name: 'Named by the artery that leaves its sinus. Aortic sounds are best heard in the right 2nd intercostal space.',
+  },
+  ao_post_e: {
+    lead: '**Left coronary cusp** is the left posterior cusp of the aortic valve.',
+    where: 'Left-posterior part of the aortic root.',
+    relations: 'Its sinus gives the **left main coronary artery**. It is in continuity with the anterior mitral leaflet and lies close to the left atrium.',
+    function: 'Closes the left part of the aortic orifice in diastole.',
+  },
+  ao_post_d: {
+    lead: '**Non-coronary cusp** is the right posterior cusp of the aortic valve.',
+    where: 'Right-posterior part of the aortic root, facing the interatrial septum.',
+    relations: 'Rests against both atria and the interatrial septum; it is continuous with the anterior mitral leaflet. No coronary artery arises from its sinus.',
+    function: 'Completes aortic valve closure in diastole.',
+  },
+
+  // ── Papillary muscles ───────────────────────────────────────────────────
+  pap_vd_ant: {
+    lead: '**Right ventricular anterior papillary muscle** is the largest papillary muscle of the right ventricle.',
+    where: 'Arises from the anterior wall of the right ventricle.',
+    relations: 'The **moderator band** (septomarginal trabecula) runs from the septum to its base, carrying the right bundle branch. Chordae go to the anterior and posterior tricuspid leaflets.',
+    function: 'Contracts early (thanks to the moderator band) and tenses the chordae so the leaflets do not evert.',
+  },
+  pap_vd_post: {
+    lead: '**Right ventricular posterior papillary muscle** arises from the inferior (diaphragmatic) wall.',
+    where: 'On the inferior wall of the right ventricle, often as several small heads.',
+    relations: 'Chordae to the posterior and septal tricuspid leaflets.',
+    function: 'Tenses chordae of the posterior part of the valve in systole.',
+  },
+  pap_vd_sep: {
+    lead: '**Right ventricular septal papillary muscle** is small and arises from the septum.',
+    where: 'Interventricular septum, near the outflow tract; the most prominent one is the medial papillary muscle (of Lancisi).',
+    relations: 'Chordae to the anterior and septal tricuspid leaflets. The right bundle branch runs close by.',
+    function: 'Tethers the septal side of the tricuspid valve.',
+  },
+  pap_ve_al: {
+    lead: '**Anterolateral papillary muscle** is the larger of the two left ventricular papillary muscles.',
+    where: 'Arises from the anterolateral wall of the left ventricle.',
+    relations: 'Chordae to the anterolateral halves of **both** mitral leaflets. Its opposite number, the posteromedial muscle, arises from the inferior wall.',
+    function: 'Prevents mitral prolapse in systole.',
+    clinical: 'It has a dual blood supply (LAD diagonals and circumflex), so it ruptures less often after infarction than the posteromedial muscle (single supply, usually PDA).',
+  },
+
+  // ── Coronary arteries ─────────────────────────────────────────────────────
+  acd: {
+    lead: '**Right coronary artery** arises from the right aortic sinus and runs in the right atrioventricular groove.',
+    where: 'Passes forward between the **pulmonary trunk and the right auricle**, descends in the right coronary groove, turns around the acute margin and reaches the **crux** on the inferior surface.',
+    relations: 'Accompanied in the groove by the small cardiac vein. Its early branches: conus artery and sinoatrial nodal artery (about 60%).',
+    function: 'Supplies right atrium, right ventricle, the inferior wall and usually the SA and AV nodes. In right-dominant hearts (most) it gives the posterior interventricular artery.',
+    clinical: 'Occlusion → inferior infarction, often with bradycardia or heart block (AV nodal artery).',
+  },
+  tce: {
+    lead: '**Left main coronary artery** is the short trunk from the left aortic sinus.',
+    where: 'Runs 1–2 cm to the left, **between the pulmonary trunk and the left auricle**.',
+    relations: 'Anterior: pulmonary trunk. Posterior/left: left atrium and left auricle. It ends at the start of the anterior interventricular groove.',
+    function: 'Divides into the **anterior interventricular (LAD)** and **circumflex** branches (sometimes a third: ramus intermedius). It supplies most of the left ventricle.',
+    clinical: 'Left main stenosis threatens a large territory and is usually treated by bypass surgery.',
+  },
+  dae: {
+    lead: '**Anterior interventricular branch (LAD)** runs in the anterior interventricular groove to the apex.',
+    where: 'Along the front of the septum, from below the left auricle to the apex, often wrapping around it onto the inferior surface.',
+    relations: 'The **great cardiac vein** runs beside it. Its branches: diagonals to the left ventricle, septal perforators into the septum, small branches to the right ventricle.',
+    function: 'Supplies the anterior left ventricle, the apex and the anterior two-thirds of the septum (including bundle branches).',
+    clinical: 'Proximal occlusion = anterior infarction, the “widow-maker”. The left internal thoracic artery is the classic bypass graft to it.',
+  },
+  cx: {
+    lead: '**Circumflex branch** runs to the left in the left atrioventricular groove.',
+    where: 'Under the left auricle, around the left (obtuse) margin onto the posterior surface.',
+    relations: 'Lies beside the great cardiac vein and coronary sinus in the groove, close to the posterior mitral annulus. Gives **obtuse marginal** branches to the lateral wall.',
+    function: 'Supplies left atrium and the lateral and posterior left ventricle; gives the SA nodal artery in about 40%. In left-dominant hearts it gives the PDA.',
+    name: 'Circum-flex = “bending around” (the left side of the heart).',
+  },
+  dp: {
+    lead: '**Posterior interventricular branch (PDA)** runs in the posterior interventricular groove toward the apex.',
+    where: 'On the inferior (diaphragmatic) surface, from the crux to near the apex.',
+    relations: 'The **middle cardiac vein** runs beside it. It usually comes from the right coronary artery (right dominance).',
+    function: 'Supplies the inferior walls of both ventricles and the posterior third of the septum, including the posteromedial papillary muscle.',
+    name: 'Dominance = which artery gives the PDA: right in most hearts, left (circumflex) in about 10%, both in co-dominance.',
+  },
+
+  // ── Anterior and septal branches ─────────────────────────────────────────
+  diag: {
+    lead: '**Diagonal branches** leave the LAD and cross the anterolateral wall of the left ventricle.',
+    where: 'Run obliquely from the anterior interventricular groove toward the left margin.',
+    relations: 'Run on the epicardial surface, between the LAD and the obtuse marginal branches of the circumflex.',
+    function: 'Supply the anterolateral left ventricle and part of the anterolateral papillary muscle.',
+  },
+  vent_ant_d_dae: {
+    lead: '**Right anterior ventricular branches of the LAD** are small branches to the right ventricle.',
+    where: 'Leave the right side of the LAD and run onto the anterior wall of the right ventricle near the groove.',
+    relations: 'Meet the anterior ventricular branches of the right coronary artery on the right ventricle.',
+    function: 'Supply the strip of right ventricle next to the anterior interventricular groove.',
+  },
+  cone_e: {
+    lead: '**Conus branch of the LAD** goes to the right ventricular outflow tract.',
+    where: 'One of the first branches of the LAD, running onto the conus arteriosus just below the pulmonary valve.',
+    relations: 'Anastomoses with the conus branch of the right coronary artery to form the **circle of Vieussens** around the infundibulum.',
+    function: 'Supplies the conus arteriosus and can be a collateral path between left and right coronaries.',
+  },
+  sept_da: {
+    lead: '**Septal branches of the LAD** dive perpendicularly into the interventricular septum.',
+    where: 'Leave the deep side of the LAD along its course in the anterior groove.',
+    relations: 'Run inside the septum toward the posterior septal branches; the first septal branch is the largest.',
+    function: 'Supply the anterior two-thirds of the septum and the bundle branches.',
+    clinical: 'Alcohol septal ablation for hypertrophic obstructive cardiomyopathy targets the first septal branch.',
+  },
+  sept_dp: {
+    lead: '**Septal branches of the PDA** enter the septum from below.',
+    where: 'Leave the deep side of the posterior interventricular artery along the inferior surface.',
+    relations: 'Meet the LAD septal branches inside the septum; the first one near the crux runs close to the AV node.',
+    function: 'Supply the posterior third of the interventricular septum.',
+  },
+
+  // ── Right coronary branches ────────────────────────────────────────────
+  marg_d: {
+    lead: '**Right marginal branch** runs along the acute margin of the heart.',
+    where: 'Leaves the right coronary artery where it turns around the inferior (acute) border and runs toward the apex.',
+    relations: 'Accompanied by the small cardiac vein, along the lower edge between anterior and inferior surfaces.',
+    function: 'Supplies the lateral and inferior wall of the right ventricle.',
+  },
+  vent_ant_acd: {
+    lead: '**Anterior ventricular branch of the RCA** runs on the front of the right ventricle.',
+    where: 'Leaves the right coronary artery in the right atrioventricular groove and descends across the sternocostal surface.',
+    relations: 'Runs toward the LAD territory, meeting the right anterior branches of the LAD.',
+    function: 'Supplies the anterior free wall of the right ventricle.',
+  },
+  vent_post_acd: {
+    lead: '**Posterior ventricular branch of the RCA** continues beyond the crux onto the left ventricle.',
+    where: 'On the inferior (diaphragmatic) surface, to the left of the posterior interventricular groove.',
+    relations: 'Present in right-dominant hearts; runs near the posterior vein of the left ventricle.',
+    function: 'Supplies part of the inferior wall of the left ventricle.',
+  },
+
+  // ── Cardiac veins ─────────────────────────────────────────────────────────
+  seio: {
+    lead: '**Coronary sinus** is the main collecting vein of the heart.',
+    where: 'In the posterior part of the left atrioventricular (coronary) groove, between the left atrium and left ventricle; about 2–3 cm long.',
+    relations: 'Receives the great, middle and small cardiac veins, the posterior vein of the left ventricle and the oblique vein of the left atrium. Opens into the right atrium between the **IVC orifice and the tricuspid valve**, guarded by a small valve.',
+    function: 'Returns most venous blood from the myocardium to the right atrium.',
+    clinical: 'Pacing leads for cardiac resynchronisation reach the left ventricle through it.',
+  },
+  vcmagna: {
+    lead: '**Great cardiac vein** runs beside the LAD and then the circumflex.',
+    where: 'Starts near the apex, ascends in the anterior interventricular groove, then turns left in the left atrioventricular groove.',
+    relations: 'Accompanies the **LAD** on the front and the **circumflex** on the left side; it becomes the coronary sinus at the oblique vein of the left atrium.',
+    function: 'Drains the territory of the left coronary artery.',
+  },
+  vcmedia: {
+    lead: '**Middle cardiac vein** runs in the posterior interventricular groove.',
+    where: 'From the apex up the inferior surface to the right end of the coronary sinus.',
+    relations: 'Accompanies the **posterior interventricular artery (PDA)**.',
+    function: 'Drains the inferior walls of both ventricles and the posterior septum.',
+  },
+  vcparva: {
+    lead: '**Small cardiac vein** runs in the right atrioventricular groove.',
+    where: 'Along the right side of the heart, from the acute margin to the end of the coronary sinus (or straight into the right atrium).',
+    relations: 'Accompanies the **right coronary artery** and the right marginal branch.',
+    function: 'Drains the right atrium and the lateral part of the right ventricle.',
+  },
+  vpve: {
+    lead: '**Posterior vein of the left ventricle** drains the inferior wall of the left ventricle.',
+    where: 'On the diaphragmatic surface of the left ventricle, to the left of the middle cardiac vein.',
+    relations: 'Runs up to the coronary sinus, often near the posterior ventricular branches of the coronary arteries.',
+    function: 'Drains the inferolateral left ventricle into the coronary sinus.',
+  },
+
+  // ── Trachea and bronchi ─────────────────────────────────────────────────
+  traqueia: {
+    lead: '**Trachea** runs from the larynx (C6) to its bifurcation at the sternal angle (T4/T5).',
+    where: 'Midline in the neck and superior mediastinum, about 10–11 cm long, held open by 16–20 C-shaped cartilages; the gap behind is closed by the trachealis muscle.',
+    relations: 'Anterior: manubrium, thymus, left brachiocephalic vein, aortic arch, brachiocephalic trunk and left common carotid. Posterior: esophagus. Right: azygos arch, right vagus, pleura. Left: aortic arch, left common carotid and subclavian, left recurrent laryngeal nerve.',
+    function: 'Conducts air; the **carina** at the bifurcation is a highly sensitive cough-reflex area.',
+  },
+  bpd: {
+    lead: '**Right main bronchus** is wider, shorter and more vertical than the left.',
+    where: 'About 2.5 cm long, at roughly 25° from the vertical; it gives the right upper lobe bronchus **before** entering the hilum.',
+    relations: 'Above: the arch of the azygos vein. Anterior: right pulmonary artery, then the SVC. Posterior: right vagus and esophagus side.',
+    function: 'Conducts air to the right lung: upper lobe, then middle and lower lobe bronchi.',
+    clinical: 'Inhaled foreign bodies usually go to the right because this bronchus is wider and steeper.',
+  },
+  bpe: {
+    lead: '**Left main bronchus** is longer, narrower and more horizontal.',
+    where: 'About 5 cm long, at roughly 45°; it passes under the aortic arch to the left hilum.',
+    relations: 'Above: aortic arch and left pulmonary artery (which arches over it). Posterior: esophagus and descending aorta. Anterior: left pulmonary artery and left atrium below.',
+    function: 'Conducts air to the left lung; divides into upper and lower lobe bronchi.',
+    clinical: 'Where it crosses the esophagus is one of the esophageal narrowings.',
+  },
+
+  // ── Right lung segments ─────────────────────────────────────────────
+  sd_apical: {
+    lead: '**Apical segment (S1)** is the top of the right upper lobe.',
+    where: 'Rises through the thoracic inlet above the 1st rib into the root of the neck, under the cervical pleura (suprapleural membrane).',
+    relations: 'Medially: right subclavian artery and vein grooving it, brachiocephalic vessels, trachea. Posteriorly: neck of the 1st rib with the sympathetic trunk and the T1 root of the brachial plexus.',
+    function: 'Aerated by B1 with its own segmental artery; segmental veins run between segments.',
+    clinical: 'An apical (Pancoast) tumour invades the brachial plexus and sympathetic trunk → arm pain and Horner syndrome.',
+  },
+  sd_post: {
+    lead: '**Posterior segment (S2)** is the back of the right upper lobe.',
+    where: 'Against the posterior thoracic wall, ribs 2–4, just above the oblique fissure.',
+    relations: 'Inferiorly: oblique fissure and the superior segment (S6) of the lower lobe. Medially: azygos arch and trachea.',
+    function: 'Aerated by B2.',
+    clinical: 'With S6 it is a dependent segment when lying supine, so a common site of aspiration pneumonia.',
+  },
+  sd_ant: {
+    lead: '**Anterior segment (S3)** is the front of the right upper lobe.',
+    where: 'Behind the upper anterior chest wall, from the clavicle to about the 4th costal cartilage.',
+    relations: 'Inferiorly: the **horizontal fissure** (along the 4th rib/cartilage) separates it from the middle lobe. Medially: SVC and right atrium.',
+    function: 'Aerated by B3.',
+  },
+  sd_lat: {
+    lead: '**Lateral segment (S4)** is the outer half of the right middle lobe.',
+    where: 'Lateral chest wall between the horizontal fissure (4th rib) and the oblique fissure (6th rib laterally).',
+    relations: 'Above: anterior segment of the upper lobe (horizontal fissure). Behind and below: lower lobe basal segments (oblique fissure).',
+    function: 'Aerated by B4 from the middle lobe bronchus.',
+  },
+  sd_med: {
+    lead: '**Medial segment (S5)** is the inner half of the right middle lobe.',
+    where: 'Front of the chest beside the sternum, 4th–6th costal cartilages.',
+    relations: 'Medially: the **right atrium and right heart border**, separated by pleura and pericardium. Below: diaphragm.',
+    function: 'Aerated by B5.',
+    clinical: 'Middle lobe consolidation blurs the right heart border on a PA chest X-ray (silhouette sign).',
+  },
+  sd_sup: {
+    lead: '**Superior segment (S6)** is the top of the right lower lobe.',
+    where: 'Posterior, at about the level of T4–T6, just below the upper end of the oblique fissure.',
+    relations: 'Above, across the oblique fissure: posterior segment of the upper lobe. Medially: vertebral bodies, azygos vein, esophagus. Below: basal segments.',
+    function: 'Aerated by B6, the first posterior branch of the lower lobe bronchus.',
+    clinical: 'Most dependent segment when supine, so aspiration often lands here.',
+  },
+  sd_bmed: {
+    lead: '**Medial basal segment (S7)** (cardiac segment) is the inner base of the right lower lobe.',
+    where: 'Mediastinal surface of the lower lobe base, below the hilum.',
+    relations: 'Medially: IVC and right atrium. Below: diaphragm. Posteriorly: pulmonary ligament and esophagus.',
+    function: 'Aerated by B7. It is a separate segment only on the right; on the left it merges with S8.',
+  },
+  sd_bant: {
+    lead: '**Anterior basal segment (S8)** is the front of the right lower lobe base.',
+    where: 'Lies on the diaphragm, behind the oblique fissure.',
+    relations: 'Anterior: middle lobe across the oblique fissure. Below: right dome of the diaphragm (over the liver). Lateral: S9.',
+    function: 'Aerated by B8.',
+  },
+  sd_blat: {
+    lead: '**Lateral basal segment (S9)** is the lateral base of the right lower lobe.',
+    where: 'Lateral chest wall low down, reaching the costodiaphragmatic recess.',
+    relations: 'Anterior: S8. Posterior: S10. Below: diaphragm and costodiaphragmatic recess.',
+    function: 'Aerated by B9.',
+  },
+  sd_bpost: {
+    lead: '**Posterior basal segment (S10)** is the back of the right lower lobe base.',
+    where: 'Posterior, beside the lower thoracic vertebrae, reaching the deepest part of the costodiaphragmatic recess (about T12 at the back).',
+    relations: 'Medially: vertebral bodies, azygos vein and esophagus. Below: diaphragm (right crus). Above: S6.',
+    function: 'Aerated by B10.',
+    clinical: 'Fluid collects behind it first: thoracocentesis is done posteriorly, above a rib, below the fluid level.',
+  },
+
+  // ── Left lung segments ──────────────────────────────────────────────
+  se_apical: {
+    lead: '**Apical segment (S1)** is the top of the left upper lobe (often fused with S2 as apicoposterior S1+2).',
+    where: 'Rises above the 1st rib into the root of the neck under the cervical pleura.',
+    relations: 'Medially: left subclavian artery, left common carotid, esophagus. Posteriorly: neck of the 1st rib and sympathetic trunk.',
+    function: 'Aerated by B1 (or B1+2).',
+  },
+  se_post: {
+    lead: '**Posterior segment (S2)** is the back of the left upper lobe.',
+    where: 'Against the posterior wall of ribs 2–4, above the oblique fissure.',
+    relations: 'Inferiorly: superior segment (S6) across the oblique fissure. Medially: aortic arch and descending aorta.',
+    function: 'Aerated by B2 (usually a shared apicoposterior bronchus).',
+  },
+  se_ant: {
+    lead: '**Anterior segment (S3)** is the front of the left upper lobe.',
+    where: 'Behind the upper anterior chest wall, down to about the 4th costal cartilage.',
+    relations: 'Inferiorly: the lingula (no horizontal fissure on the left). Medially: pulmonary trunk and aortic arch.',
+    function: 'Aerated by B3.',
+  },
+  se_lsup: {
+    lead: '**Superior lingular segment (S4)** is the upper part of the lingula.',
+    where: 'Front of the left upper lobe at about the 4th–5th ribs.',
+    relations: 'Medially: left auricle and pulmonary trunk. Above: anterior segment S3. Below: inferior lingular segment.',
+    function: 'Aerated by B4 from the lingular bronchus. The lingula is the left counterpart of the middle lobe.',
+    name: 'Lingula = “little tongue”, the tongue of lung below the cardiac notch.',
+  },
+  se_linf: {
+    lead: '**Inferior lingular segment (S5)** is the lower tip of the lingula.',
+    where: 'Lies over the left ventricle at the **cardiac notch**, 5th–6th costal cartilages.',
+    relations: 'Medially: left ventricle and apex (left heart border). Below: diaphragm. Behind: oblique fissure and the lower lobe.',
+    function: 'Aerated by B5.',
+    clinical: 'Lingular consolidation blurs the left heart border on X-ray.',
+  },
+  se_sup: {
+    lead: '**Superior segment (S6)** is the top of the left lower lobe.',
+    where: 'Posterior, at about T4–T6, below the upper end of the oblique fissure.',
+    relations: 'Medially: descending aorta and vertebral bodies. Above: posterior segment of the upper lobe across the fissure.',
+    function: 'Aerated by B6.',
+  },
+  se_bmed: {
+    lead: '**Medial basal segment (S7)** of the left lower lobe is small and usually fused with S8.',
+    where: 'Mediastinal base of the left lower lobe.',
+    relations: 'Medially: left ventricle and pericardium, esophagus. Below: diaphragm.',
+    function: 'Aerated by B7, often a branch of the anteromedial basal bronchus (B7+8).',
+  },
+  se_bant: {
+    lead: '**Anterior basal segment (S8)** is the front of the left lower lobe base.',
+    where: 'On the left dome of the diaphragm, behind the oblique fissure.',
+    relations: 'Anterior: lingula. Below: left dome of the diaphragm (over spleen and stomach fundus).',
+    function: 'Aerated by B8.',
+  },
+  se_blat: {
+    lead: '**Lateral basal segment (S9)** is the lateral base of the left lower lobe.',
+    where: 'Low lateral chest wall, down into the costodiaphragmatic recess.',
+    relations: 'Anterior: S8. Posterior: S10. Below: diaphragm.',
+    function: 'Aerated by B9.',
+  },
+  se_bpost: {
+    lead: '**Posterior basal segment (S10)** is the back of the left lower lobe base.',
+    where: 'Posterior, beside the lower thoracic vertebrae, into the deepest costodiaphragmatic recess.',
+    relations: 'Medially: descending aorta, vertebral bodies, hemiazygos vein. Below: diaphragm (left crus).',
+    function: 'Aerated by B10.',
+  },
+
+  // ── Posterior mediastinum extras ──────────────────────────────────────
+  eso_art: {
+    lead: '**Esophageal arteries** are small direct branches of the descending thoracic aorta.',
+    where: 'Leave the front of the descending aorta (usually 2–5 branches) in the posterior mediastinum, about T5–T9.',
+    relations: 'Run forward to the esophagus behind the left atrium; they anastomose above with branches of the inferior thyroid and below with the left gastric artery.',
+    function: 'Supply the middle third of the esophagus. Upper third: inferior thyroid artery; lower third: left gastric artery.',
+  },
+  azigo_acs: {
+    lead: '**Accessory hemiazygos vein** drains the upper left posterior thoracic wall.',
+    where: 'Descends on the left side of T5–T8 vertebral bodies and crosses to the right at about **T8**.',
+    relations: 'Crosses **behind** the descending aorta and thoracic duct to reach the azygos. Above, it may connect with the left superior intercostal vein; below, with the hemiazygos.',
+    function: 'Drains the left 4th–8th posterior intercostal veins (sometimes bronchial veins).',
+  },
+
+  // ── Diaphragm and phrenic vessels ───────────────────────────────────
+  diafragma: {
+    lead: '**Diaphragm** is the dome-shaped muscle separating thorax and abdomen; the main muscle of inspiration.',
+    where: 'Right dome reaches the 5th rib, left dome the 5th intercostal space in expiration. Origins: xiphoid (sternal part), lower six costal cartilages and ribs (costal part), crura and arcuate ligaments on L1–L3 (lumbar part). Insertion: the central tendon.',
+    relations: 'Above: lungs, and the heart on the central tendon (fused to the fibrous pericardium). Below: liver (right), stomach and spleen (left). Three openings: **T8 caval** (IVC + right phrenic nerve branches), **T10 esophageal** (esophagus + vagal trunks + left gastric vessels), **T12 aortic** (aorta + thoracic duct + azygos vein).',
+    function: 'Contraction flattens the domes and enlarges the thorax vertically. Motor supply: **phrenic nerves (C3–C5)**; the centre is sensory via phrenic, the periphery via intercostal nerves.',
+    name: 'Mnemonic: “I 8 10 Eggs At 12” (IVC T8, Esophagus T10, Aorta T12).',
+    clinical: 'Diaphragmatic irritation refers pain to the shoulder tip (C4 dermatome).',
+  },
+  phren_inf_a_d: {
+    lead: '**Right inferior phrenic artery** supplies the diaphragm from below.',
+    where: 'Arises from the abdominal aorta (or celiac trunk) at T12/L1 and runs upward and to the right over the right crus.',
+    relations: 'Passes behind the IVC, on the inferior surface of the diaphragm; gives superior suprarenal branches to the right adrenal gland.',
+    function: 'Main blood supply of the diaphragm with its left partner.',
+  },
+  phren_inf_a_e: {
+    lead: '**Left inferior phrenic artery** supplies the left half of the diaphragm from below.',
+    where: 'Arises from the abdominal aorta (or celiac trunk) and runs up and to the left over the left crus.',
+    relations: 'Passes behind the esophagus near the esophageal hiatus; gives superior suprarenal arteries to the left adrenal gland.',
+    function: 'Supplies the inferior surface of the left hemidiaphragm and branches to the lower esophagus.',
+  },
+  phren_inf_v: {
+    lead: '**Inferior phrenic veins** drain the inferior surface of the diaphragm.',
+    where: 'Accompany the inferior phrenic arteries under the diaphragm.',
+    relations: 'The right usually drains into the **IVC**; the left often into the **left renal or left suprarenal vein** (or the IVC).',
+    function: 'Return blood from the abdominal side of the diaphragm.',
+  },
+  phren_sup_v: {
+    lead: '**Superior phrenic veins** drain the thoracic surface of the diaphragm.',
+    where: 'Small veins on the upper surface of the diaphragm, at its posterior part.',
+    relations: 'Run with the superior phrenic arteries (from the descending aorta) and the pericardiacophrenic vessels; they drain toward the azygos system and internal thoracic veins.',
+    function: 'Return blood from the thoracic side of the diaphragm.',
+  },
+
+  // ── Thoracic wall vessels ───────────────────────────────────────────────
+  ita_d: {
+    lead: '**Right internal thoracic artery** runs down the inside of the anterior chest wall.',
+    where: 'Arises from the 1st part of the right subclavian, descends about **1 cm lateral to the sternal border**, behind the costal cartilages 1–6, in front of the transversus thoracis.',
+    relations: 'Anterior: costal cartilages and internal intercostal muscles. Posterior: pleura (above), transversus thoracis (below). Medial: the internal thoracic vein(s). Accompanied at the top by the phrenic nerve, which crosses it.',
+    function: 'Gives anterior intercostal arteries (spaces 1–6), perforating branches, and the pericardiacophrenic artery. Ends at the 6th space as **superior epigastric** and **musculophrenic** arteries.',
+  },
+  ita_e: {
+    lead: '**Left internal thoracic artery** (LIMA) is the left counterpart, from the left subclavian artery.',
+    where: 'Descends behind the left costal cartilages 1–6, about 1 cm from the sternal border.',
+    relations: 'Posterior: pleura and the anterior pericardium (heart lies behind it from the 3rd space). Medial: the internal thoracic vein.',
+    function: 'Same branches as the right. Ends as superior epigastric (into the rectus sheath) and musculophrenic arteries.',
+    clinical: 'The LIMA is the preferred bypass graft to the LAD: it resists atherosclerosis and stays patent for decades.',
+  },
+  itv_d: {
+    lead: '**Right internal thoracic vein** accompanies the right internal thoracic artery.',
+    where: 'Behind the right costal cartilages, beside the artery (often paired below, single above).',
+    relations: 'Runs medial to the artery; receives the anterior intercostal veins.',
+    function: 'Drains the anterior chest wall into the **right brachiocephalic vein**.',
+  },
+  itv_e: {
+    lead: '**Left internal thoracic vein** accompanies the left internal thoracic artery.',
+    where: 'Behind the left costal cartilages, beside the artery.',
+    relations: 'Receives the left anterior intercostal veins; drains above into the **left brachiocephalic vein**.',
+    function: 'Drains the left anterior chest wall. Below it connects with the superior epigastric veins (caval-caval collateral).',
+  },
+  pica_d1: {
+    lead: '**Right 1st posterior intercostal artery** runs in the first right intercostal space.',
+    where: 'Comes from the **superior intercostal artery** (costocervical trunk), not from the aorta, and runs under the 1st rib.',
+    relations: 'In the costal groove the order from above is **vein, artery, nerve (VAN)**, between the internal and innermost intercostal muscles.',
+    function: 'Supplies the first intercostal space and the overlying muscles.',
+  },
+  pica_e1: {
+    lead: '**Left 1st posterior intercostal artery** runs in the first left intercostal space.',
+    where: 'From the left superior intercostal artery (costocervical trunk), under the 1st rib.',
+    relations: 'VAN order in the costal groove; anastomoses in front with the anterior intercostal branch of the internal thoracic artery.',
+    function: 'Supplies the first left intercostal space.',
+  },
+  pica_d2: {
+    lead: '**Right 2nd posterior intercostal artery** runs in the second right intercostal space.',
+    where: 'Also from the superior intercostal artery, in the costal groove of the 2nd rib.',
+    relations: 'VAN order. From the 3rd space down, posterior intercostals come directly from the aorta (right ones cross behind the esophagus, azygos and thoracic duct).',
+    function: 'Supplies the second right intercostal space.',
+  },
+  pica_e2: {
+    lead: '**Left 2nd posterior intercostal artery** runs in the second left intercostal space.',
+    where: 'From the left superior intercostal artery, in the costal groove of the 2nd rib.',
+    relations: 'VAN order; meets the anterior intercostal artery from the internal thoracic.',
+    function: 'Supplies the second left intercostal space.',
+    clinical: 'Needles and drains go along the **upper border of the rib below** to avoid the neurovascular bundle.',
+  },
+  pica_sup_d: {
+    lead: '**Right superior intercostal artery** (supreme intercostal) feeds the top two right spaces.',
+    where: 'Arises from the right **costocervical trunk** (subclavian), descends in front of the neck of the 1st and 2nd ribs.',
+    relations: 'Lies lateral to the sympathetic trunk (cervicothoracic ganglion) and medial to the T1 ventral ramus.',
+    function: 'Gives the 1st and 2nd posterior intercostal arteries.',
+  },
+  pica_sup_e: {
+    lead: '**Left superior intercostal artery** feeds the top two left spaces.',
+    where: 'From the left costocervical trunk, in front of the necks of ribs 1–2.',
+    relations: 'Beside the sympathetic trunk; the left superior intercostal vein runs separately forward over the aortic arch.',
+    function: 'Gives the 1st and 2nd left posterior intercostal arteries.',
+  },
+  icv_ant_d: {
+    lead: '**Right anterior intercostal veins** drain the front of the right intercostal spaces.',
+    where: 'In the upper six intercostal spaces, front part, running medially to the internal thoracic vein.',
+    relations: 'Accompany the anterior intercostal arteries (two per space), in the VAN order of the costal groove.',
+    function: 'Drain into the **right internal thoracic vein**; below, into the musculophrenic vein.',
+  },
+  icv_ant_e: {
+    lead: '**Left anterior intercostal veins** drain the front of the left intercostal spaces.',
+    where: 'Upper six left intercostal spaces, front part.',
+    relations: 'Run with the anterior intercostal arteries; meet the posterior intercostal veins laterally.',
+    function: 'Drain into the **left internal thoracic vein**.',
+  },
+
+  // ── Thoracic skeleton ──────────────────────────────────────────────────
+  manubrio: {
+    lead: '**Manubrium** is the upper part of the sternum, at the level of T3–T4.',
+    where: 'Its upper border is the **jugular (suprasternal) notch** (T2/T3); lateral clavicular notches; it meets the body at the **sternal angle** (T4/T5).',
+    relations: 'Articulates with the clavicles (sternoclavicular joints), the 1st costal cartilage and part of the 2nd. Behind it: thymus, left brachiocephalic vein, aortic arch and its branches. Muscle attachments: sternocleidomastoid (sternal head) on the front, sternohyoid and sternothyroid behind, pectoralis major on the front.',
+    function: 'Anchors the shoulder girdle to the axial skeleton.',
+  },
+  esterno: {
+    lead: '**Body of the sternum** forms the middle of the anterior chest wall.',
+    where: 'From the sternal angle (T4/T5) to the xiphisternal joint (T9).',
+    relations: 'Lateral notches for costal cartilages 2–7 (2nd at the sternal angle). Behind: pericardium and right ventricle, internal thoracic vessels 1 cm lateral. Front: origin of pectoralis major. Back: transversus thoracis origin at its lower part.',
+    function: 'Protects the heart and transmits rib movement. Red marrow in adults (bone marrow biopsy).',
+    name: 'The **sternal angle** (of Louis) is the key landmark: 2nd costal cartilage, T4/T5, arch of aorta begins and ends, tracheal bifurcation, azygos joins SVC.',
+  },
+  xifoide: {
+    lead: '**Xiphoid process** is the small lower tip of the sternum.',
+    where: 'At the level of T9–T10, at the infrasternal (subcostal) angle.',
+    relations: 'Attachments: linea alba and rectus abdominis, the sternal part of the **diaphragm** on its back. Behind: the inferior surface of the heart and the liver.',
+    function: 'Anchors abdominal and diaphragmatic muscles; often ossifies late.',
+    clinical: 'The subxiphoid route is used for pericardiocentesis (needle aimed toward the left shoulder).',
+  },
+  claviculas: {
+    lead: '**Clavicles** are the S-shaped bones bridging sternum and shoulder.',
+    where: 'Horizontal at the root of the neck; the medial end articulates with the manubrium (sternoclavicular joint), the lateral end with the acromion (acromioclavicular joint).',
+    relations: 'Behind the medial third: subclavian vessels and brachial plexus, protected by the subclavius muscle. Attachments: sternocleidomastoid and pectoralis major (medial), deltoid and trapezius (lateral), costoclavicular ligament below to the 1st rib.',
+    function: 'Strut that keeps the upper limb away from the trunk; the only bony link between limb and axial skeleton.',
+    clinical: 'Fractures usually occur at the junction of the middle and lateral thirds.',
+  },
+  cart_costais: {
+    lead: '**Costal cartilages** are the hyaline cartilage bars joining ribs to the sternum.',
+    where: 'Anterior chest wall: cartilages 1–7 reach the sternum (true ribs); 8–10 join the cartilage above to form the **costal margin**; 11–12 are free (floating).',
+    relations: 'Behind them run the internal thoracic vessels; the transversus thoracis lies on their deep surface. The 2nd cartilage meets the sternal angle; the 7th meets the xiphisternal junction.',
+    function: 'Give the chest wall elasticity for breathing movements.',
+  },
+  costela_1: {
+    lead: '**First rib** is the shortest, broadest and most curved rib, framing the thoracic inlet.',
+    where: 'Under the clavicle; its head articulates only with T1. Superior surface faces upward.',
+    relations: 'On its upper surface: **scalene tubercle** (anterior scalene insertion), with the **subclavian vein in front** and the **subclavian artery and lower trunk of the brachial plexus behind**. Middle scalene inserts behind the artery groove. Under its neck: sympathetic trunk, superior intercostal artery, T1 nerve.',
+    function: 'Forms the boundary of the superior thoracic aperture with T1 and the manubrium.',
+    clinical: 'A cervical rib or tight scalenes can compress the plexus and artery (thoracic outlet syndrome).',
+  },
+  costela_2: {
+    lead: '**Second rib** is the landmark rib for counting.',
+    where: 'Its cartilage meets the **sternal angle**, so it is the first rib you can feel reliably.',
+    relations: 'Has a tuberosity for **serratus anterior**. The 2nd intercostal space below it is the site for the pulmonary (left) and aortic (right) auscultation areas.',
+    function: 'Count ribs and spaces down from it on the chest wall.',
+  },
+  costela_4: {
+    lead: '**Fourth rib** marks the horizontal fissure and the nipple region.',
+    where: 'In men the nipple usually lies over the 4th intercostal space at the midclavicular line.',
+    relations: 'The right **horizontal fissure** follows the 4th rib/cartilage. The tricuspid area lies at the 4th–5th space at the left sternal border.',
+    function: 'Typical rib: head with two facets, neck, tubercle, angle and costal groove.',
+  },
+  costela_5: {
+    lead: '**Fifth rib** lies at the level of the heart apex.',
+    where: 'The **apex beat** is felt in the 5th intercostal space at the midclavicular line, just below this rib.',
+    relations: 'The domes of the diaphragm reach about the 5th rib (right) and 5th space (left). The safe triangle for chest drains: lateral border of pectoralis major, anterior border of latissimus dorsi, and the 5th intercostal space level.',
+    function: 'Typical rib; with neighbours, raises the chest wall in inspiration (pump handle).',
+  },
+  costelas_rest: {
+    lead: '**Remaining ribs** complete the thoracic cage.',
+    where: 'Ribs 3 and 6–12. Ribs 8–10 form the costal margin; 11–12 float freely in the posterior abdominal wall.',
+    relations: 'Each rib has a **costal groove** on its lower inner border for the intercostal vein, artery and nerve (VAN). Typical ribs articulate with two vertebral bodies and one transverse process.',
+    function: 'Upper ribs move like a pump handle (AP diameter), lower ribs like a bucket handle (transverse diameter).',
+    clinical: 'Lower rib fractures (9–11) may injure the liver or spleen.',
+  },
+  vertebras_toracicas: {
+    lead: '**Thoracic vertebrae (T1–T12)** form the posterior wall of the thorax.',
+    where: 'Midline posteriorly; their spinous processes are long and slope downward. **T4/T5** = sternal angle plane; **T8, T10, T12** = diaphragmatic openings.',
+    relations: 'In front: descending aorta (left), azygos vein (right), thoracic duct, esophagus, hemiazygos veins crossing. Laterally: heads of ribs (costovertebral joints) with the sympathetic trunk over them.',
+    function: 'Costal facets on bodies and transverse processes carry the ribs; the spinal cord runs in the vertebral canal.',
+  },
+};

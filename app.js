@@ -1,10 +1,11 @@
-import * as material from './content.js?v=41';
-import { TERRITORIES } from './territories.js?v=41';
-import { correctSound, keySound, wrongKeySound } from './sound.js?v=41';
+import * as material from './content.js?v=43';
+import { TERRITORIES } from './territories.js?v=43';
+import { LESSONS } from './lessons.js?v=43';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=43';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=41';
+} from './study.js?v=43';
 
 const REGION_PURPOSES = {
   "orientation": "Learn directions and the landmarks used throughout the path.",
@@ -95,6 +96,13 @@ function button(label, run, options = {}) {
   const start = options.icon ? icon(options.icon, 16) : '';
   const end = options.iconEnd ? icon(options.iconEnd, 16) : '';
   return `<button type="button" class="button ${options.class || ''}" data-action="${index}" ${options.disabled ? 'disabled' : ''}>${start}${label}${end}${options.key === 'Enter' ? `<kbd>${icon('enter', 12)}</kbd>` : ''}</button>`;
+}
+
+// Ask before abandoning a recall run that is under way.
+function leaveGuard() {
+  const run = activity?.type === 'recall' || activity?.type === 'round' ? activity.run : null;
+  if (!run || (!run.keys && run.round === 1 && !run.index)) return true;
+  return window.confirm('Leave this run? Your progress in these rounds will be lost.');
 }
 
 function setPage(next) {
@@ -362,9 +370,17 @@ function findTargets(level) {
   const targets = level.ids.filter(id => id !== 'paredev');
   return targets.length ? targets : [...level.ids];
 }
+// Distinct, high-contrast hues; each lesson structure keeps one for the whole lesson.
+const LESSON_PALETTE = ['#ffd84a', '#4dd0e1', '#ff7ab6', '#8bd450', '#b18cff', '#ff9f43',
+  '#5b9dff', '#2ee6a6', '#f25f5c', '#e8e3d0', '#c0ca33', '#ff6bd6'];
+function levelPalette(level) {
+  return Object.fromEntries(level.ids.map((id, index) => [id, LESSON_PALETTE[index % LESSON_PALETTE.length]]));
+}
+const swatch = (level, id) => `<i class="swatch" style="--swatch:${levelPalette(level)[id] || 'var(--mute)'}" aria-hidden="true"></i>`;
 function levelModel(level, options = {}) {
   const context = REGION_CONTEXT[level.region] || ITEMS[level.ids[0]]?.deck.ctx || [];
   setModel(level.ids, {
+    palette: levelPalette(level),
     title: level.title,
     context,
     faint: level.region === 'mediastino' ? SKELETON_IDS : undefined,
@@ -403,23 +419,56 @@ function setLessonFindFeedback(text, tone = '') {
   line.className = `feedback ${tone}`;
 }
 
+// Guided find: after the structures are taught, the learner locates them one at a time.
+function lessonFindOrder(level) {
+  if (!activity.order) activity.order = shuffle(findTargets(level));
+  return activity.order;
+}
+
 function lessonFindPick(id) {
   const state = activity;
   if (state?.type !== 'lesson' || state.stage !== 'find') return;
-  const targets = findTargets(state.level);
+  const order = lessonFindOrder(state.level);
   const found = state.found || (state.found = []);
-  if (!id) return setLessonFindFeedback('No structure at that point. Rotate the model and try again.');
-  if (!targets.includes(id)) {
-    return setLessonFindFeedback('Not one of this group. Rotate the model and try again.');
+  const target = order[found.length];
+  if (!target) return;
+  if (!id) return setLessonFindFeedback('No structure at that point. Rotate the model and try again.', 'bad');
+  if (id !== target) {
+    state.misses = (state.misses || 0) + 1;
+    const clicked = ITEMS[id]?.pt;
+    return setLessonFindFeedback(order.includes(id) && clicked
+      ? `That is ${clicked}. Look for ${ITEMS[target].pt}.`
+      : `Not ${ITEMS[target].pt}. Rotate the model and try again.`, 'bad');
   }
-  const name = ITEMS[id]?.pt || 'That structure';
-  if (found.includes(id)) return setLessonFindFeedback(`You already found ${name}.`);
   found.push(id);
-  const allFound = found.length === targets.length;
-  setLessonFindFeedback(allFound ? `Right — ${name}. All ${targets.length} structures found.` : `Right — ${name}.`, 'good');
+  state.revealed = false;
+  const next = order[found.length];
+  setLessonFindFeedback(next ? `Right — ${ITEMS[id].pt}.` : `Right — ${ITEMS[id].pt}. All ${order.length} found.`, 'good');
   correctSound();
   render();
-  if (allFound) $('practice').querySelector('.primary')?.focus({ preventScroll: true });
+  if (!next) $('practice').querySelector('.primary')?.focus({ preventScroll: true });
+}
+
+function lessonSteps(level) {
+  return [['overview', 'Overview'], ['structure', 'Structures'], ['find', 'Find'],
+    ...(contrastFor(level) ? [['contrast', 'Contrast']] : []), ['check', 'Check']];
+}
+function lessonStepper(level, stage) {
+  const steps = lessonSteps(level);
+  const current = Math.max(0, steps.findIndex(([key]) => key === (stage === 'checkDone' ? 'check' : stage)));
+  return `<div class="lesson-top">
+    <ol class="stepper" aria-label="Lesson steps">${steps.map(([key, label], index) =>
+      `<li class="${index < current ? 'done' : index === current ? 'now' : ''}"${index === current ? ' aria-current="step"' : ''}><span>${label}</span></li>`).join('')}</ol>
+    ${button('Exit', () => setPage('map'), { icon: 'x', class: 'exit' })}</div>`;
+}
+
+function lessonBlocks(id) {
+  const blocks = LESSONS[id];
+  if (!blocks) return `<p class="lesson-body">${markdown(detailFor(id).text)}</p>`;
+  const rows = [['Where', blocks.where], ['Relations', blocks.relations], ['Function', blocks.function], ['Name', blocks.name]]
+    .filter(([, text]) => text);
+  return `${blocks.lead ? `<p class="lesson-lead">${markdown(blocks.lead)}</p>` : ''}
+    <dl class="lesson-facts">${rows.map(([label, text]) => `<div><dt>${label}</dt><dd>${markdown(text)}</dd></div>`).join('')}</dl>`;
 }
 
 function renderLesson() {
@@ -427,6 +476,8 @@ function renderLesson() {
   const stage = activity.stage || 'overview';
   const total = level.ids.length;
   const contrast = contrastFor(level);
+  const top = lessonStepper(level, stage);
+  const chip = (key, chosen, run) => button(`${swatch(level, key)}${escape(ITEMS[key].pt)}`, run, { class: `chip-swatch ${chosen ? 'chosen' : ''}` });
   const startRounds = () => {
     progress.levels[level.id] = { ...savedLevel(level.id), lesson: true };
     saveProgress(progress);
@@ -438,99 +489,80 @@ function renderLesson() {
     delete activity.answer;
     render({ top: true, activate: true });
   };
-  const jump = index => {
-    activity.stage = 'structure';
-    activity.index = index;
+  const goStage = (next, extra = {}) => {
+    Object.assign(activity, { stage: next }, extra);
     render({ top: true, activate: true });
   };
-
-  if (stage === 'find') {
-    const targets = findTargets(level);
-    const found = (activity.found || []).filter(id => targets.includes(id));
-    activity.found = found;
-    const view = activity.findView || lessonView(level);
-    const allFound = found.length === targets.length;
-    const feedback = activity.findFeedback;
-    levelModel(level, {
-      view, controls: true, pick: true, explore: false, focus: found, close: false,
-      pickIds: targets, preserveCamera: found.length > 0,
-    });
-    const showAll = () => {
-      activity.found = [...targets];
-      activity.findFeedback = { text: `All ${targets.length} structures are lit on the model.`, tone: 'good' };
-      render({ top: true });
-      $('practice').querySelector('.primary')?.focus({ preventScroll: true });
-    };
-    const next = () => {
-      if (found.length < targets.length) return;
-      activity.stage = 'structure';
-      activity.index = 0;
-      render({ top: true, activate: true });
-    };
-    return `<div class="prompt lesson-find">
-      <div class="eyebrow">${escape(level.title)} / Find them</div>
-      <h1>Find the ${targets.length} structures</h1>
-      <p class="support">Tap or click each structure on the model. Rotate the view if you need another angle.</p>
-      <div class="find-summary">
-        <p class="find-count" role="status"><b>${found.length}</b> of ${targets.length} found</p>
-        <div class="find-meter" role="progressbar" aria-valuemin="0" aria-valuemax="${targets.length}" aria-valuenow="${found.length}" aria-label="Structures found"><span class="find-bar" style="width:${targets.length ? Math.round(found.length / targets.length * 100) : 0}%"></span></div>
-      </div>
-      <p id="find-feedback" class="feedback ${feedback?.tone || ''}" role="status">${feedback ? escape(feedback.text) : ''}</p>
-      <ul class="find-list" aria-label="Structures to find">${targets.map(id => {
-        const isFound = found.includes(id);
-        const name = ITEMS[id]?.pt || id;
-        return `<li class="find-chip${isFound ? ' found' : ''}" aria-label="${escape(name)}${isFound ? ' — found' : ''}">
-          <span class="find-box" aria-hidden="true">${isFound ? icon('check', 12) : ''}</span><span>${escape(name)}</span></li>`;
-      }).join('')}</ul>
-      ${targets.length < total ? '<p class="support">The ventricular wall is taught in the structure steps.</p>' : ''}
-      ${viewerStatus !== 'ready' ? `<p class="support" role="status">${viewerStatus === 'loading' ? 'Waiting for the 3D model…' : 'The 3D model is required to find structures.'}</p>` : ''}
-      <div class="actions">${button('Show me', showAll, { icon: 'eye' })}
-        ${button('Next: the structures', next, { class: 'primary', iconEnd: 'arrow-right', disabled: !allFound })}</div></div>`;
-  }
+  const jump = index => goStage('structure', { index });
+  const openFind = () => goStage('find', { found: [], order: null, findFeedback: null, revealed: false, misses: 0, findView: undefined });
+  const afterFind = () => contrast ? goStage('contrast') : openCheck();
 
   if (stage === 'structure') {
     const index = Math.min(Math.max(Number(activity.index) || 0, 0), Math.max(total - 1, 0));
     activity.index = index;
     const id = level.ids[index];
     const item = ITEMS[id];
-    const detail = detailFor(id);
     levelModel(level, { view: teachingView(id), controls: true, explore: true, focus: [id], close: true });
     const last = index + 1 === total;
-    const primary = () => {
-      if (!last) return jump(index + 1);
-      if (contrast) {
-        activity.stage = 'contrast';
-        render({ top: true, activate: true });
-        return;
-      }
-      openCheck();
-    };
-    return `<div class="prompt lesson-structure">
-      <div class="eyebrow">${escape(level.title)} / Structure ${index + 1} of ${total}</div>
-      <h1>${escape(item.pt)} ${item.tag ? `<small>${escape(item.tag)}</small>` : ''}</h1>
-      <p class="lesson-body">${markdown(detail.text)}</p>
-      ${detail.clinical ? `<aside class="clinical-note"><span class="clinical-label">Clinical note</span><p>${escape(detail.clinical)}</p></aside>` : ''}
-      ${level.region === 'mediastino' ? '<p class="support">Small vessel: use Isolate to show only the highlighted structure.</p>' : ''}
-      <div class="chips">${level.ids.map((key, position) => button(escape(ITEMS[key].pt), () => {
-        if (key === id) return focusStructure(key);
-        jump(position);
-      }, { class: key === id ? 'chosen' : '' })).join('')}</div>
+    const clinical = LESSONS[id]?.clinical || detailFor(id).clinical;
+    return `<div class="prompt lesson-structure">${top}
+      <div class="eyebrow">${escape(level.title)} · ${index + 1} of ${total}</div>
+      <h1>${swatch(level, id)}${escape(item.pt)} ${item.tag ? `<small>${escape(item.tag)}</small>` : ''}</h1>
+      ${lessonBlocks(id)}
+      ${clinical ? `<aside class="clinical-note"><span class="clinical-label">Clinical note</span><p>${escape(clinical)}</p></aside>` : ''}
+      ${level.region === 'mediastino' ? '<p class="support">Small vessel? Use Isolate to show only the highlighted structure.</p>' : ''}
+      <div class="chips">${level.ids.map((key, position) => chip(key, key === id, () => key === id ? focusStructure(key) : jump(position))).join('')}</div>
       <div class="actions">
-        ${index ? button('Previous', () => jump(index - 1), { icon: 'arrow-left' }) : ''}
-        ${button(last ? contrast ? 'Contrast' : 'Take the check' : 'Next structure', primary, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}
+        ${button('Previous', () => index ? jump(index - 1) : goStage('overview'), { icon: 'arrow-left' })}
+        ${button(last ? 'Find them on the model' : 'Next structure', last ? openFind : () => jump(index + 1), { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}
+      </div></div>`;
+  }
+
+  if (stage === 'find') {
+    const order = lessonFindOrder(level);
+    const found = (activity.found || []).filter(id => order.includes(id));
+    activity.found = found;
+    const target = order[found.length];
+    const allFound = !target;
+    const feedback = activity.findFeedback;
+    levelModel(level, {
+      view: activity.findView || lessonView(level), controls: true, pick: !allFound, explore: false,
+      focus: activity.revealed && target ? [...found, target] : found, close: false,
+      pickIds: order, preserveCamera: found.length > 0 || activity.revealed,
+    });
+    const reveal = () => {
+      activity.revealed = true;
+      activity.findFeedback = { text: `${ITEMS[target].pt} is lit on the model. Click it to continue.`, tone: '' };
+      render();
+    };
+    return `<div class="prompt lesson-find">${top}
+      <div class="eyebrow">${escape(level.title)} · Find them · ${found.length} of ${order.length}</div>
+      <h1>${allFound ? 'All found' : `Click the <span class="target-name">${escape(ITEMS[target].pt)}</span>`}</h1>
+      <p class="support">${allFound ? 'Each structure now keeps its lesson colour on the model.' : 'Rotate or zoom if it is hidden. Wrong clicks tell you what you touched.'}</p>
+      <div class="find-meter" role="progressbar" aria-valuemin="0" aria-valuemax="${order.length}" aria-valuenow="${found.length}" aria-label="Structures found"><span class="find-bar" style="width:${Math.round(found.length / order.length * 100)}%"></span></div>
+      <p id="find-feedback" class="feedback ${feedback?.tone || ''}" role="status">${feedback ? escape(feedback.text) : ''}</p>
+      <ul class="find-list" aria-label="Structures to find">${order.map(id => {
+        const done = found.includes(id);
+        return `<li class="find-chip${done ? ' found' : ''}${id === target ? ' current' : ''}">${done ? swatch(level, id) : '<i class="swatch empty" aria-hidden="true"></i>'}<span>${escape(ITEMS[id].pt)}</span></li>`;
+      }).join('')}</ul>
+      ${order.length < total ? '<p class="support">The ventricular wall wraps the others, so it is not part of this task.</p>' : ''}
+      ${viewerStatus !== 'ready' ? `<p class="support" role="status">${viewerStatus === 'loading' ? 'Waiting for the 3D model…' : 'The 3D model is required to find structures.'}</p>` : ''}
+      <div class="actions">
+        ${button('Previous', () => jump(total - 1), { icon: 'arrow-left' })}
+        ${allFound ? button(contrast ? 'Next: contrast' : 'Take the check', afterFind, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })
+          : button('Show me', reveal, { icon: 'eye', disabled: activity.revealed })}
       </div></div>`;
   }
 
   if (stage === 'contrast' && contrast) {
     levelModel(level, { view: teachingView(contrast.a), controls: true, explore: true, focus: [contrast.a, contrast.b], close: true });
-    const focus = id => button(escape(ITEMS[id].pt), () => focusStructure(id));
-    return `<div class="prompt lesson-contrast">
-      <div class="eyebrow">${escape(level.title)} / Contrast</div>
+    return `<div class="prompt lesson-contrast">${top}
+      <div class="eyebrow">${escape(level.title)} · Don’t mix them up</div>
       <h1>${escape(contrast.title)}</h1>
       <p class="contrast-text">${escape(contrast.text)}</p>
-      <div class="chips">${ITEMS[contrast.a] ? focus(contrast.a) : ''}${ITEMS[contrast.b] ? focus(contrast.b) : ''}</div>
+      <div class="chips">${[contrast.a, contrast.b].filter(id => ITEMS[id]).map(id => chip(id, false, () => focusStructure(id))).join('')}</div>
       <div class="actions">
-        ${button('Previous', () => jump(total - 1), { icon: 'arrow-left' })}
+        ${button('Previous', openFind, { icon: 'arrow-left' })}
         ${button('Take the check', openCheck, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}
       </div></div>`;
   }
@@ -539,16 +571,15 @@ function renderLesson() {
     const check = activity.check || { results: [] };
     const score = check.results.filter(result => result.correct).length;
     const wrong = check.results.filter(result => !result.correct);
-    levelModel(level, { view: 'ant', controls: true, explore: false, layout: 'study-layout lesson-check', preserveCamera: true });
-    return `<div class="prompt lesson-done">
-      <div class="eyebrow">${escape(level.title)} / Check complete</div>
-      <h1>Check complete</h1>
-      <p class="check-score"><b>${score}</b> of ${check.results.length} correct</p>
+    levelModel(level, { view: lessonView(level), controls: true, explore: true, paletteAll: true, layout: 'study-layout lesson-check' });
+    return `<div class="prompt lesson-done">${top}
+      <div class="eyebrow">${escape(level.title)} · Check complete</div>
+      <h1><span class="${score === check.results.length ? 'good' : ''}">${score}</span> of ${check.results.length} correct</h1>
       ${wrong.length
         ? `<div class="check-hints"><h2>One more look before Round 1</h2><ul>${wrong.map(result =>
           `<li><strong>${escape(result.q)}</strong><p>${escape(result.why)}</p></li>`).join('')}</ul></div>`
         : '<p class="support">Every question correct. Round 1 starts when you are ready.</p>'}
-      <div class="actions">${button('Start Round 1', startRounds, { class: 'primary', key: 'Enter' })}</div>
+      <div class="actions">${button('Start Round 1', startRounds, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}</div>
     </div>`;
   }
 
@@ -557,10 +588,13 @@ function renderLesson() {
     const check = activity.check;
     check.index = Math.min(Math.max(Number(check.index) || 0, 0), Math.max(check.questions.length - 1, 0));
     const question = check.questions[check.index];
-    levelModel(level, { view: 'ant', controls: true, explore: false, layout: 'study-layout lesson-check', preserveCamera: check.index > 0 });
+    // After answering, light the structure the right answer names (if it is one).
+    const named = question && activity.answer !== undefined
+      ? level.ids.find(id => fold(ITEMS[id].pt) === fold(question.options[question.answer] || '')) : null;
+    levelModel(level, { view: named ? teachingView(named) : lessonView(level), controls: true, explore: false,
+      focus: named ? [named] : [], close: Boolean(named), layout: 'study-layout lesson-check', preserveCamera: !named && check.index > 0 });
     if (!question) {
-      return `<div class="prompt lesson-done">
-        <div class="eyebrow">${escape(level.title)} / Check</div><h1>Check the level</h1>
+      return `<div class="prompt lesson-done">${top}<h1>Check the level</h1>
         <p>No check questions are available for this level.</p>
         <div class="actions">${button('Start Round 1', startRounds, { class: 'primary', key: 'Enter' })}</div></div>`;
     }
@@ -568,35 +602,27 @@ function renderLesson() {
       if (activity.answer === undefined) return;
       check.results.push({ q: question.q, correct: activity.answer === question.answer, why: question.why });
       delete activity.answer;
-      if (check.index + 1 < check.questions.length) {
-        check.index++;
-        render({ top: true, activate: true });
-      } else {
-        activity.stage = 'checkDone';
-        render({ top: true, activate: true });
-      }
+      if (check.index + 1 < check.questions.length) check.index++;
+      else activity.stage = 'checkDone';
+      render({ top: true, activate: true });
     };
-    return `<div class="prompt lesson-check">
-      <div class="eyebrow">${escape(level.title)} / Check ${check.index + 1} of ${check.questions.length}</div>
-      <h1>Check the level</h1>
+    return `<div class="prompt lesson-check">${top}
+      <div class="eyebrow">${escape(level.title)} · Question ${check.index + 1} of ${check.questions.length}</div>
       ${quizMarkup(question, activity)}
       <div class="actions">${activity.answer !== undefined
-        ? button(check.index + 1 === check.questions.length ? 'Finish check' : 'Next question', next, { class: 'primary', key: 'Enter' }) : ''}</div>
+        ? button(check.index + 1 === check.questions.length ? 'Finish check' : 'Next question', next, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' }) : ''}</div>
     </div>`;
   }
 
-  levelModel(level, { view: lessonView(level), controls: true, explore: true });
-  return `<div class="prompt lesson-overview">
+  levelModel(level, { view: lessonView(level), controls: true, explore: true, paletteAll: true });
+  return `<div class="prompt lesson-overview">${top}
+    <div class="eyebrow">${escape(regions[level.region]?.title || '')} · Lesson</div>
     <h1>${escape(level.title)}</h1>
     <p class="lesson-body">${escape(overviewFor(level))}</p>
-    <p class="support">${plural(total, 'structure')} in this level. Start by finding them on the model.</p>
-    <div class="actions">${button('Find them', () => {
-      activity.stage = 'find';
-      activity.found = [];
-      activity.findFeedback = null;
-      delete activity.findView;
-      render({ top: true, activate: true });
-    }, { class: 'primary', iconEnd: 'arrow-right' })}</div>
+    <h2 class="legend-title">${plural(total, 'structure')} in this level</h2>
+    <div class="chips legend">${level.ids.map(id => chip(id, false, () => focusStructure(id))).join('')}</div>
+    <p class="support">Each colour stays with its structure for the whole lesson. Click a name to light it alone.</p>
+    <div class="actions">${button('Learn the structures', () => jump(0), { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}</div>
   </div>`;
 }
 
@@ -611,6 +637,15 @@ function renderMap() {
     selectedRegion = id;
     selectedLevel = regions[id]?.levels.find(item => unlocked(item) && !passedLevel(item))?.id;
     render();
+    // Bring the region's levels into view when they sit below the fold.
+    requestAnimationFrame(() => {
+      const heading = $('level-list-title');
+      if (!heading) return;
+      const box = heading.getBoundingClientRect();
+      if (box.top > window.innerHeight * .6 || box.top < 0) {
+        heading.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      }
+    });
   }
   const overviewIds = region?.id === 'mediastino' ? region.ids.filter(id => !SKELETON_IDS.includes(id)) : region?.ids;
   setModel(overviewIds?.length ? overviewIds : [...heartIds, ...airwayIds], {
@@ -639,7 +674,7 @@ function renderMap() {
       return button(`<span class="path-num">${String(index + 1).padStart(2, '0')}</span><span class="path-body"><b>${escape(entry.title)}</b><small>${escape(REGION_PURPOSES[entry.id])}</small></span><span class="path-count">${status}</span>`,
         () => chooseRegion(entry.id), { class: `path-stop ${entry.id === selectedRegion ? 'chosen' : ''}` });
     }).join('')}</div>
-    <h2 class="section-title">${escape(region?.title || 'Orientation')} · levels</h2>
+    <h2 class="section-title level-list-title" id="level-list-title">${escape(region?.title || 'Orientation')} · levels</h2>
     <div class="level-list">
       ${!region ? `<div class="level-item"><div class="level-heading"><h2>Orientation tour</h2></div><p>Learn the heart’s surfaces, borders and axis on the 3D model.</p>
         <div class="actions">${button(savedLevel('orientation').passed ? 'Redo orientation' : 'Start orientation', startOrientation, { class: 'primary' })}</div></div>`
@@ -656,6 +691,7 @@ function renderLevelRow(level, selected) {
     <p>${level.ids.length} structures · ${!open ? 'Pass the previous level to unlock' : passedLevel(level) ? 'Passed' : savedLevel(level.id).clearedOn ? 'Replay the recall rounds to pass' : 'Ready'}</p>
     ${open ? `<div class="actions">${button(passedLevel(level) ? 'Name it' : savedLevel(level.id).lesson ? 'Start rounds' : 'Start lesson',
       () => openLevel(level), { class: level === selected ? 'primary' : '' })}
+      ${savedLevel(level.id).lesson ? button('Review lesson', () => launch('lesson', { level, stage: 'overview' }), { icon: 'book' }) : ''}
       ${passedLevel(level) ? modeButtons(level) : ''}</div>` : ''}
   </div>`;
 }
@@ -698,8 +734,8 @@ function renderRecall() {
   const { item, round, kind } = run;
   const memory = round === 3;
   const view = memory ? memoryView(item.id) : teachingView(item.id);
-  showStructure(item.id, { view, close: true, padding: 1.26, layout: 'recall-layout', controls: true, ...regionScope(level) });
-  const title = kind === 'level' ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest' }[kind];
+  showStructure(item.id, { view, close: true, padding: 1.26, layout: 'recall-layout', controls: true, ...regionScope(level || activity.from) });
+  const title = kind === 'level' ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest', mistakes: 'Drill mistakes' }[kind];
   if (viewerStatus !== 'ready') {
     const loading = viewerStatus === 'loading';
     return `<div class="prompt"><h1>${escape(title)}</h1>
@@ -842,8 +878,8 @@ function showRecallFeedback() {
   $('answer-actions').hidden = true;
   if (feedback.correct) {
     correctSound();
-    line.className = 'feedback good';
-    line.textContent = round === 1 ? 'Correct' : `${item.pt} · ${lessonCue(item.id)}`;
+    line.className = 'feedback good verdict';
+    line.innerHTML = `<strong class="verdict-tag">${icon('check', 15)}Correct</strong>${round === 1 ? '' : ` <span>${escape(item.pt)} · ${escape(lessonCue(item.id))}</span>`}`;
     if (round > 1) $('continue-actions').hidden = false;
     advanceTimer = setTimeout(advanceRecall, round === 1 ? 520 : 1100);
     return;
@@ -855,7 +891,8 @@ function showRecallFeedback() {
     : feedback.reveal ? `This is ${item.pt}.` : `You typed “${feedback.guess}”. This is ${item.pt}.`;
   const clue = lessonCue(item.id).trimEnd();
   const punctuation = /[.!?…]$/.test(clue) ? '' : '.';
-  line.textContent = `${intro} ${clue}${punctuation}${feedback.requeued ? ' It will come up again.' : ''}`;
+  line.className = 'feedback bad verdict';
+  line.innerHTML = `<strong class="verdict-tag">${icon('x', 15)}${feedback.reveal ? 'Revealed' : 'Not quite'}</strong> <span>${escape(`${intro} ${clue}${punctuation}${feedback.requeued ? ' It will come up again.' : ''}`)}</span>`;
   $('continue-actions').hidden = false;
   if (!coarsePointer.matches) focusTyper();
 }
@@ -930,9 +967,12 @@ function renderRecallResults() {
   const next = level && LEVELS[LEVELS.indexOf(level) + 1];
   const wpm = displayWpm(run);
   const nextDue = run.ids.map(id => progress.cards[id]?.due).filter(Boolean).sort()[0];
-  const caption = level ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest' }[run.kind];
+  const caption = level ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest', mistakes: 'Drill mistakes' }[run.kind];
   const title = level ? passedLevel(level) ? 'Level passed' : 'Rounds complete' : 'Recall complete';
   const clinical = level ? run.ids.map(id => CONTENT[id]?.oral?.clinical?.[0]).find(Boolean) : null;
+  const mistakes = run.ids.filter(id => Object.values(run.results).some(round => round.missed.has(id) || round.hinted.has(id)));
+  const from = level || activity.from;
+  const back = from ? ['Back to map', 'map'] : run.kind === 'weak' ? ['Back to progress', 'progress'] : ['Back to daily', 'daily'];
   return `<div class="screen result">
     <div class="eyebrow">${escape(caption)} · ${day()}</div><h1>${title}</h1>
     ${level && !passedLevel(level) ? '<p>To unlock the next level, recall every structure at least once in both recall rounds.</p>' : ''}
@@ -945,7 +985,9 @@ function renderRecallResults() {
       ${next && unlocked(next) ? button(`Next · ${escape(next.title)}`, () => openLevel(next), { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' }) : ''}
       ${level ? button('Play rounds again', () => beginRecall(level.ids, 'level', level), { class: passedLevel(level) ? '' : 'primary', icon: 'rotate-ccw' }) : ''}
       ${level ? button('Redo the lesson', () => launch('lesson', { level, stage: 'overview' })) : ''}
-      ${button(level ? 'Back to map' : run.kind === 'weak' ? 'Back to progress' : 'Back to daily', () => setPage(level ? 'map' : run.kind === 'weak' ? 'progress' : 'daily'), { icon: 'arrow-left' })}
+      ${mistakes.length ? button(`Drill ${mistakes.length} mistake${mistakes.length > 1 ? 's' : ''}`, () =>
+        launch('recall', { from, run: new Recall(mistakes, 'mistakes') }), { icon: 'rotate-ccw' }) : ''}
+      ${button(back[0], () => setPage(back[1]), { icon: 'arrow-left' })}
     </div>
     ${level && passedLevel(level) ? `<div class="actions">${modeButtons(level)}</div>` : ''}
     <h2>What you recalled</h2>
@@ -1094,8 +1136,8 @@ function quizMarkup(question, state) {
         document.querySelector('.prompt .primary')?.focus({ preventScroll: true });
       }, { class: `option ${tone}`, disabled: answered });
     }).join('')}</div>
-    ${answered ? `<p class="feedback ${state.answer === question.answer ? 'good' : 'bad'}" role="status">
-      <strong>${state.answer === question.answer ? 'Correct. ' : 'Answer: ' + escape(question.options[question.answer]) + '. '}</strong>${escape(question.why)}</p>` : ''}
+    ${answered ? `<p class="feedback verdict ${state.answer === question.answer ? 'good' : 'bad'}" role="status">
+      <strong class="verdict-tag">${state.answer === question.answer ? `${icon('check', 15)}Correct` : `${icon('x', 15)}Answer: ${escape(question.options[question.answer])}`}</strong> ${escape(question.why)}</p>` : ''}
   </div>`;
 }
 
@@ -1634,7 +1676,7 @@ document.addEventListener('input', event => {
 
 document.addEventListener('click', event => {
   const nav = event.target.closest('[data-nav]');
-  if (nav) return setPage(nav.dataset.nav);
+  if (nav) return leaveGuard() && setPage(nav.dataset.nav);
   const control = event.target.closest('[data-action]');
   if (control && !control.disabled) actions[Number(control.dataset.action)]?.();
 });
@@ -1742,6 +1784,16 @@ $('view-direction').addEventListener('change', event => {
   if (page === 'atlas') atlas.view = direction;
   viewer?.view(direction);
 });
+function syncSoundToggle() {
+  const toggle = $('sound-toggle');
+  const off = isMuted();
+  toggle.setAttribute('aria-pressed', String(off));
+  toggle.setAttribute('aria-label', off ? 'Turn sounds on' : 'Mute sounds');
+  toggle.title = off ? 'Turn sounds on' : 'Mute sounds';
+  toggle.querySelector('use').setAttribute('href', off ? '#i-volume-x' : '#i-volume');
+}
+$('sound-toggle').addEventListener('click', () => { setMuted(!isMuted()); syncSoundToggle(); });
+syncSoundToggle();
 $('pick-center').addEventListener('click', () => viewer?.pickCenter());
 $('view-zoom-in').addEventListener('click', () => viewer?.zoom(.8));
 $('view-zoom-out').addEventListener('click', () => viewer?.zoom(1.25));
@@ -1782,7 +1834,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=41');
+    const { createViewer } = await import('./viewer.js?v=43');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore);
     viewerStatus = 'ready';
     if ($('view-isolate').getAttribute('aria-pressed') === 'true') viewer.setIsolate(true);

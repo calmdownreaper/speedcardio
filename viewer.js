@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { COLORS, DEFAULT_COLOR } from './data.js?v=41';
-import { ITEMS } from './study.js?v=41';
+import { COLORS, DEFAULT_COLOR } from './data.js?v=43';
+import { ITEMS } from './study.js?v=43';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -310,11 +310,15 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
         material.emissiveIntensity = 0;
         material.opacity = active || !highlight.size ? 1 : display.ghost;
       } else {
-        material.color.set(active ? select : baseColor(id));
-        material.emissive.copy(active ? selectDeep : off);
-        material.emissiveIntensity = active ? 1 : 0;
+        // Lessons give every structure of the level its own colour (matching its chip).
+        const own = current.palette?.[id];
+        const coloured = own && (active || current.paletteAll);
+        material.color.set(coloured ? own : active ? select : baseColor(id));
+        if (coloured) material.emissive.set(own).multiplyScalar(active ? .32 : .12);
+        else material.emissive.copy(active ? selectDeep : off);
+        material.emissiveIntensity = active || coloured ? 1 : 0;
         material.opacity = active ? 1 : primary.has(id)
-          ? (highlight.size ? .18 : id === 'paredev' ? .28 : current.pick ? .88 : 1)
+          ? (current.pick ? (id === 'paredev' ? .2 : .88) : highlight.size ? .18 : id === 'paredev' ? (current.paletteAll ? .16 : .28) : 1)
           : faint.has(id) ? .04 : .10;
         if (!active && highlight.size) material.opacity *= display.ghost;
       }
