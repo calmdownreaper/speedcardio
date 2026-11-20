@@ -283,7 +283,10 @@ function renderOrientation() {
   const { index } = activity;
   const step = ORIENTATION[index];
   if (step) {
-    setModel([...heartIds, ...(step.focus || [])], { focus: step.focus, view: step.view, controls: true, subtleFocus: true, explore: true, title: 'Heart orientation' });
+    setModel([...heartIds, ...(step.focus || [])], {
+      focus: step.focus, view: step.view, controls: true, subtleFocus: true, explore: true,
+      close: true, padding: 1.62, title: 'Heart orientation',
+    });
   }
   const finish = () => {
     progress.levels.orientation = { passed: true };
@@ -354,7 +357,7 @@ function renderLesson() {
       <div class="actions">${button('Back to structures', () => goto(level.ids.length - 1))}
       ${!question || activity.answer !== undefined ? button('Start Round 1', start, { class: 'primary', key: 'Enter' }) : ''}</div></div>`;
   }
-  showStructure(id, { controls: true, view: teachingView(id), explore: true, ...regionScope(level) });
+  showStructure(id, { controls: true, view: teachingView(id), explore: true, close: true, ...regionScope(level) });
   return `<div class="prompt">
     <div class="eyebrow">${escape(level.title)} / Lesson ${index + 1} of ${level.ids.length}</div>
     <h1>${escape(it.pt)} ${it.tag ? `<small>${escape(it.tag)}</small>` : ''}</h1>
@@ -465,7 +468,7 @@ function renderRecall() {
   const { item, round, kind } = run;
   const memory = round === 3;
   const view = memory ? memoryView(item.id) : teachingView(item.id);
-  showStructure(item.id, { view, close: memory, layout: 'recall-layout', controls: true, ...regionScope(level) });
+  showStructure(item.id, { view, close: true, layout: 'recall-layout', controls: true, ...regionScope(level) });
   const title = kind === 'level' ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest' }[kind];
   if (viewerStatus !== 'ready') {
     const loading = viewerStatus === 'loading';
@@ -1504,7 +1507,10 @@ $('view-direction').addEventListener('change', event => {
 $('pick-center').addEventListener('click', () => viewer?.pickCenter());
 $('view-zoom-in').addEventListener('click', () => viewer?.zoom(.8));
 $('view-zoom-out').addEventListener('click', () => viewer?.zoom(1.25));
-$('view-reset').addEventListener('click', () => viewer?.resetView());
+$('view-reset').addEventListener('click', () => {
+  if (model?.clickedFocus && model.step) restoreStepView();
+  else viewer?.resetView();
+});
 $('view-back').addEventListener('click', restoreStepView);
 $('view-isolate').addEventListener('click', event => {
   const control = event.currentTarget;

@@ -80,6 +80,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
   controls.rotateSpeed = .8;
   controls.minDistance = .05;
   controls.maxDistance = 8;
+  controls.zoomToCursor = true;
 
   const meshes = new Map();
   let pickable = [];
@@ -211,12 +212,15 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
     const { ids, focus = [], close, neutral } = current;
     const group = boxOf(ids);
     const target = boxOf(focus);
-    const box = close && !target.isEmpty() ? target : group;
+    // Focused steps frame the focused meshes themselves; otherwise frame the whole group.
+    const focused = close && !target.isEmpty();
+    const box = focused ? target : group;
     if (box.isEmpty()) return;
     const center = box.getCenter(new THREE.Vector3());
-    const radius = Math.max(.03, box.getSize(new THREE.Vector3()).length() / 2);
-    let normal = new THREE.Vector3(...(VIEWS[direction] || VIEWS.ant));
-    if (!direction && !neutral && focus.length === 1 && !target.isEmpty()) {
+    // Clamp the sphere so tiny branches cannot pull the camera inside their geometry.
+    const radius = Math.max(.03, box.getBoundingSphere(new THREE.Sphere()).radius);
+    const normal = new THREE.Vector3(...(VIEWS[direction] || VIEWS.ant));
+    if (!focused && !direction && !neutral && focus.length === 1 && !target.isEmpty()) {
       const offset = target.getCenter(new THREE.Vector3()).sub(center);
       offset.z *= .3;
       if (offset.lengthSq() > .00001) {
@@ -227,7 +231,8 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
     const vertical = THREE.MathUtils.degToRad(camera.fov / 2);
     const halfFov = Math.min(vertical, Math.atan(Math.tan(vertical) * camera.aspect));
     const fit = current.padding || (current.atlas && close ? 1.33 : 1.13);
-    const position = center.clone().add(normal.normalize().multiplyScalar(radius / Math.sin(halfFov) * fit));
+    const distance = THREE.MathUtils.clamp(radius / Math.sin(halfFov) * fit, controls.minDistance, controls.maxDistance);
+    const position = center.clone().add(normal.normalize().multiplyScalar(distance));
     if (immediate || reduced.matches) {
       animation = null;
       camera.position.copy(position);
@@ -259,6 +264,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
     const faint = new Set(current.faint || []);
     const isolate = display.isolate && highlight.size > 0;
     const visible = isolate ? highlight : new Set([...primary, ...context, ...highlight]);
+    const pickOnly = current.pickIds ? new Set(current.pickIds) : null;
     for (const [id, mesh] of meshes) {
       if (!visible.has(id)) mesh.visible = false;
     }
@@ -293,14 +299,19 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
       material.depthWrite = material.opacity >= .8;
       mesh.renderOrder = active ? 2 : material.depthWrite ? 0 : 1;
       mesh.visible = material.opacity > 0;
-      if (mesh.visible) pickable.push(mesh);
+      if (mesh.visible && (!pickOnly || pickOnly.has(id))) pickable.push(mesh);
     }
   }
 
   function zoom(scale) {
     animation = null;
     const offset = camera.position.clone().sub(controls.target);
-    const distance = THREE.MathUtils.clamp(offset.length() * scale, controls.minDistance, controls.maxDistance);
+    const factor = Number.isFinite(scale) && scale > 0 ? scale : 1;
+    if (!Number.isFinite(offset.lengthSq()) || offset.lengthSq() < 1e-12) {
+      offset.set(...(VIEWS[current.view] || VIEWS.ant));
+    }
+    const distance = THREE.MathUtils.clamp(offset.length() * factor, controls.minDistance, controls.maxDistance);
+    if (!Number.isFinite(distance)) return;
     camera.position.copy(controls.target).add(offset.setLength(distance));
     controls.update();
     schedule();
@@ -308,6 +319,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
 
   function resetView() {
     animation = null;
+    // Return to the active step's current view, focus and close framing.
     frame(current.view);
   }
 

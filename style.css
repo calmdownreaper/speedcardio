@@ -629,3 +629,88 @@ h1 { letter-spacing: -.035em; }
 .mode-card:first-child { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); background: linear-gradient(160deg, var(--accent-soft), var(--surface) 70%); }
 .button.path-stop.chosen { background: linear-gradient(160deg, var(--accent-soft), var(--surface) 80%); }
 .progress-line span { background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+
+/* ===== Focus layouts: the model leads in lessons, orientation and recall =====
+   Model right at ~2/3 width and nearly full viewport height; text column left.
+   Map and atlas keep their own layout rules. */
+.recall-layout { max-width: 1512px; }
+@media (min-width: 771px) {
+  .study-layout,
+  .recall-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: start;
+    gap: clamp(24px, 3vw, 52px);
+  }
+  .study-layout .model-shell,
+  .recall-layout .model-shell {
+    grid-column: 2;
+    grid-row: 1;
+    position: sticky;
+    top: 84px;
+    height: calc(100dvh - 104px);
+    min-height: 520px;
+    max-height: 940px;
+  }
+  .study-layout #practice,
+  .recall-layout #practice {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    min-width: 0;
+    padding-block: 4px 24px;
+  }
+
+  /* Narrow side column: quieter lesson type and tighter chips */
+  .study-layout .prompt { padding-block: 6px 24px; gap: 14px; }
+  .study-layout .prompt h1 { font-size: clamp(24px, 2.3vw, 32px); letter-spacing: -.03em; }
+  .study-layout .prompt h1 small { font-size: .55em; }
+  .study-layout .prompt > p { font-size: 14px; line-height: 1.55; }
+  .study-layout .prompt > .support { font-size: 13px; line-height: 1.5; }
+  .study-layout .chips .button { min-height: 34px; padding-inline: 11px; font-size: 13px; }
+
+  /* Recall: stack the header, keep stats and the typing word inside the column */
+  .recall-layout .recall { display: grid; gap: 8px; min-width: 0; }
+  .recall-layout .recall-top { display: grid; gap: 10px; padding-block: 4px 10px; }
+  .recall-layout .recall-top h1 { font-size: clamp(19px, 1.7vw, 24px); }
+  .recall-layout .stats {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 14px; width: 100%;
+  }
+  .recall-layout .stats span { display: flex; align-items: baseline; gap: 4px; min-width: 0; }
+  .recall-layout .stats b { font-size: 22px; }
+  .recall-layout .view-banner { padding-inline: 12px; }
+  .recall-layout .word { font-size: clamp(28px, 3vw, 42px); }
+  .recall-layout .word.medium { font-size: clamp(24px, 2.6vw, 36px); }
+  .recall-layout .word.long { font-size: clamp(20px, 2.15vw, 29px); }
+  .recall-layout .feedback { font-size: 13px; }
+}
+@media (max-width: 770px) {
+  .study-layout,
+  .recall-layout { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .recall-layout { display: grid; max-width: none; }
+  .study-layout .model-shell,
+  .recall-layout .model-shell {
+    grid-column: 1;
+    grid-row: auto;
+    position: relative;
+    top: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .study-layout .model-shell { height: clamp(340px, 58svh, 540px); }
+  .recall-layout .model-shell { height: clamp(320px, 54svh, 480px); }
+  .recall-layout #practice { grid-column: 1; grid-row: auto; }
+}
+
+/* Structure names inside lesson and orientation prose stay in the sentence */
+.study-layout .prompt .inline-structure {
+  display: inline;
+  min-height: 0;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  line-height: inherit;
+  vertical-align: baseline;
+}
