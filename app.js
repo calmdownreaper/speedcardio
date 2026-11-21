@@ -1,9 +1,9 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=49';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=49';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=50';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=50';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=49';
+} from './study.js?v=50';
 
 // Boot the selected subject before any UI state is derived. The subject pack is
 // a dynamic import, so the other subject's data is never downloaded.
@@ -118,8 +118,7 @@ function leaveGuard() {
 
 function setPage(next) {
   stopTimers();
-  document.body.classList.remove('atlas-drawer-open');
-  atlas.open = false;
+  if (atlas.open) setAtlasDrawer(false, { restoreFocus: false });
   page = next;
   activity = null;
   render();
@@ -132,6 +131,14 @@ function launch(type, state) {
   activity = { type, ...state };
   started = performance.now();
   render({ top: true, activate: true });
+}
+
+function scrollBelowHeader(element) {
+  const headerHeight = document.querySelector('.app-header').offsetHeight;
+  window.scrollBy({
+    top: element.getBoundingClientRect().top - headerHeight - 8,
+    behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+  });
 }
 
 function stopTimers() {
@@ -270,16 +277,21 @@ function updateModel() {
   $('model-label').textContent = model.title || 'Heart and lungs';
   $('model-angle').textContent = views[model.view] || '3D specimen';
   $('view-direction').value = model.view || 'ant';
+  syncModelStatus();
   $('view-toolbar').hidden = !(viewer && model.controls);
   $('view-back').hidden = !(viewer && model.clickedFocus && model.step);
   $('view-isolate').disabled = !model.focus.length;
   $('view-ghost').disabled = !model.focus.length;
   $('reticle').hidden = !(viewer && model.pick);
   $('pick-center').hidden = !(viewer && model.pick);
-  viewer?.paint(model, model.preserveCamera);
+  const refocus = model.clickedFocus || model.frameFocus;
+  const config = refocus ? { ...model, close: model.frameFocus || model.close, subtleFocus: false } : model;
+  viewer?.paint(config, model.preserveCamera && !refocus);
   viewer?.focusAxis(activity?.type === 'orientation' && activity.index === 0);
-  if (model.clickedFocus && model.focus.length) viewer?.focus(model.focus, { close: Boolean(model.close) });
-  else if (model.frameFocus && model.focus.length) viewer?.focus(model.focus, { close: true });
+}
+
+function syncModelStatus() {
+  $('model-status').hidden = viewerStatus === 'failed' || modelLoaded();
 }
 
 function stepSnapshot() {
@@ -693,10 +705,9 @@ function renderMap() {
     requestAnimationFrame(() => {
       const heading = $('level-list-title');
       if (!heading) return;
+      heading.focus({ preventScroll: true });
       const box = heading.getBoundingClientRect();
-      if (box.top > window.innerHeight * .6 || box.top < 0) {
-        heading.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-      }
+      if (box.top > window.innerHeight * .6 || box.top < document.querySelector('.app-header').offsetHeight) scrollBelowHeader(heading);
     });
   }
   const requiredIds = region ? region.ids.filter(id => region.levels.some(level => !level.bonus && level.ids.includes(id))) : [];
@@ -729,7 +740,7 @@ function renderMap() {
       return button(`<span class="path-num">${String(index + 1).padStart(2, '0')}</span><span class="path-body"><b>${escape(entry.title)}</b><small>${escape(REGION_PURPOSES[entry.id])}</small></span><span class="path-count">${status}</span>`,
         () => chooseRegion(entry.id), { class: `path-stop ${entry.id === selectedRegion ? 'chosen' : ''}` });
     }).join('')}</div>
-    <h2 class="section-title level-list-title" id="level-list-title">${escape(region?.title || 'Orientation')} · levels</h2>
+    <h2 class="section-title level-list-title" id="level-list-title" tabindex="-1">${escape(region?.title || 'Orientation')} · levels</h2>
     <div class="level-list">
       ${!region ? `<div class="level-item"><div class="level-heading"><h2>Orientation tour</h2></div><p>Learn the heart’s surfaces, borders and axis on the 3D model.</p>
         <div class="actions">${button(savedLevel('orientation').passed ? 'Redo orientation' : 'Start orientation', startOrientation, { class: 'primary' })}</div></div>`
@@ -1568,8 +1579,8 @@ function renderAtlas() {
     <div class="page-head"><h1>Atlas</h1><p>All ${ATLAS_IDS.length} structures on one model. Show or hide parts, then click a name or the model to focus it. ${escape(pack.atlasNote || '')}</p></div>
     <button type="button" class="button atlas-drawer-toggle" id="atlas-drawer-toggle" data-atlas-drawer="open" aria-controls="atlas-panel" aria-expanded="false">${icon('layers', 16)}Structures <b id="atlas-drawer-count">${visible.length}</b></button>
     ${atlasDetailMarkup()}
-    <aside class="atlas-panel" id="atlas-panel" aria-label="Atlas structures">
-      <div class="atlas-panel-head"><h2>Structures</h2><span id="atlas-visible-count">${visible.length} of ${ATLAS_IDS.length} shown</span>
+    <aside class="atlas-panel" id="atlas-panel" aria-labelledby="atlas-panel-title"${atlasNarrow.matches ? ' inert' : ''}>
+      <div class="atlas-panel-head"><h2 id="atlas-panel-title">Structures</h2><span id="atlas-visible-count">${visible.length} of ${ATLAS_IDS.length} shown</span>
         <button type="button" class="atlas-close" data-atlas-drawer="close" aria-label="Close structure list" title="Close structure list">${icon('x', 20)}</button></div>
       <input id="atlas-search" type="search" value="${escape(atlas.query)}" placeholder="Search by name or region" aria-label="Search structures" autocomplete="off">
       <div class="atlas-tools">
@@ -1647,7 +1658,11 @@ function atlasFocus(id, additive = false) {
   atlas.focus = focus;
   atlas.active = focus.includes(id) ? id : focus[focus.length - 1] || null;
   atlasApply({ preserve: focus.length > 0, frame: focus.length > 0 });
-  if (fromDrawer) document.querySelector('.model-shell')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  if (fromDrawer) {
+    const shell = document.querySelector('.model-shell');
+    shell.focus({ preventScroll: true });
+    scrollBelowHeader(shell);
+  }
 }
 
 function atlasClearFocus() {
@@ -1696,16 +1711,35 @@ function filterAtlas(value) {
   }
 }
 
+const atlasNarrow = matchMedia('(max-width: 770px)');
+
 function setAtlasDrawer(open, { restoreFocus = true } = {}) {
+  if (open && !atlasNarrow.matches) return;
   atlas.open = open;
-  $('atlas-panel')?.classList.toggle('open', open);
+  const panel = $('atlas-panel');
+  panel.classList.toggle('open', open);
+  panel.inert = !open && atlasNarrow.matches;
+  if (open) {
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
+  } else {
+    panel.removeAttribute('role');
+    panel.removeAttribute('aria-modal');
+  }
+  for (const element of document.querySelectorAll('.skip, .app-header, .model-shell, .atlas-content > .page-head, .atlas-detail, .atlas-drawer-toggle, .credits')) {
+    element.inert = open;
+  }
   const backdrop = $('atlas-backdrop');
   if (backdrop) backdrop.hidden = !open;
   document.body.classList.toggle('atlas-drawer-open', open);
   $('atlas-drawer-toggle')?.setAttribute('aria-expanded', String(open));
-  if (open) requestAnimationFrame(() => requestAnimationFrame(() => $('atlas-search')?.focus({ preventScroll: true })));
+  if (open) $('atlas-search')?.focus({ preventScroll: true });
   else if (restoreFocus) $('atlas-drawer-toggle')?.focus({ preventScroll: true });
 }
+
+atlasNarrow.addEventListener('change', () => {
+  if (page === 'atlas') setAtlasDrawer(false, { restoreFocus: atlasNarrow.matches && $('atlas-panel').contains(document.activeElement) });
+});
 
 function handleExplore(id, event) {
   if (page === 'atlas') atlasFocus(id, Boolean(event?.metaKey || event?.ctrlKey || event?.shiftKey));
@@ -1763,6 +1797,15 @@ document.addEventListener('click', event => {
 document.addEventListener('keydown', event => {
   if (event.isComposing || event.ctrlKey || event.metaKey || event.altKey) return;
   const { key, target } = event;
+  if (target.closest?.('.app-header, .skip, .credits')) return;
+  if (atlas.open && key === 'Tab') {
+    const controls = [...$('atlas-panel').querySelectorAll('button, input')].filter(el => !el.disabled && el.getClientRects().length);
+    if (target === controls[event.shiftKey ? 0 : controls.length - 1]) {
+      event.preventDefault();
+      controls[event.shiftKey ? controls.length - 1 : 0]?.focus();
+    }
+    return;
+  }
   const input = $('typer');
   const control = target.closest?.('button, summary, select, a, textarea, input');
   if (key === 'Escape' && page === 'atlas') {
@@ -1992,7 +2035,7 @@ function openSubjectMenu(focus = 'current') {
   if (focus) {
     const items = subjectItems();
     const current = items.find(item => item.dataset.subjectId === pack.id);
-    (focus === 'first' ? items[0] : current || items[0])?.focus();
+    (focus === 'last' ? items.at(-1) : focus === 'first' ? items[0] : current || items[0])?.focus();
   }
 }
 function closeSubjectMenu(returnFocus = true) {
@@ -2010,16 +2053,17 @@ brandMenu?.addEventListener('click', () => {
   } else closeSubjectMenu();
 });
 brandMenu?.addEventListener('keydown', event => {
-  if (['ArrowDown', 'Enter', ' '].includes(event.key)) {
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
     event.preventDefault();
-    openSubjectMenu('current');
+    closeThemePopover(false);
+    openSubjectMenu(event.key === 'ArrowDown' ? 'first' : 'last');
   }
 });
 subjectMenu?.addEventListener('click', event => {
   const item = event.target.closest?.('[data-subject-id]');
   if (!item) return;
   if (item.dataset.subjectId === pack.id) return closeSubjectMenu(true);
-  location.assign(subjectUrl(item.dataset.subjectId));
+  if (leaveGuard()) location.assign(subjectUrl(item.dataset.subjectId));
 });
 subjectMenu?.addEventListener('keydown', event => {
   const items = subjectItems();
@@ -2036,8 +2080,12 @@ subjectMenu?.addEventListener('keydown', event => {
     event.stopPropagation();
     closeSubjectMenu();
   } else if (event.key === 'Tab') {
-    closeSubjectMenu(false);
+    closeSubjectMenu();
   }
+});
+document.addEventListener('focusin', event => {
+  if (!subjectMenu.contains(event.target) && !brandMenu.contains(event.target)) closeSubjectMenu(false);
+  if (!themePopover.contains(event.target) && !themeToggle.contains(event.target)) closeThemePopover(false);
 });
 document.addEventListener('pointerdown', event => {
   if (!subjectMenu || subjectMenu.hidden) return;
@@ -2094,9 +2142,10 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=49');
+    const { createViewer } = await import('./viewer.js?v=50');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore, { ...pack, ...pack.model });
     viewer.onReady(() => {
+      syncModelStatus();
       if (activity?.type === 'recall') render();
       else if (activity?.type === 'find') render();
       else if (activity?.type === 'lesson' && activity.stage === 'find') render();
@@ -2109,7 +2158,7 @@ async function loadViewer() {
     if (rotate.getAttribute('aria-pressed') === 'true') {
       rotate.setAttribute('aria-pressed', String(viewer.setAutoRotate(true)));
     }
-    $('model-status').hidden = true;
+    syncModelStatus();
     if (activity?.type === 'recall') {
       render();
       if (activity.run.feedback) showRecallFeedback();

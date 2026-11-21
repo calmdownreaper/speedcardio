@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ITEMS } from './study.js?v=49';
+import { ITEMS } from './study.js?v=50';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=49';
+const VERSION = '?v=50';
 
 function fetchJSON(url) {
   return fetch(url, { cache: 'force-cache' }).then(response => {
@@ -136,7 +136,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
 
   function loadedFor(ids) {
     if (!regionMode) return ids.every(id => markerPoints.has(id) || Object.hasOwn(meta.parts, id));
-    return ids.every(id => markerPoints.has(id) || meshes.has(id));
+    return ids.every(id => markerPoints.has(id) || packs.has(meta.parts[id]?.region));
   }
 
   function meshFor(id) {
@@ -194,10 +194,15 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   for (const [id, points] of markerPoints) {
     const list = (Array.isArray(points[0]) ? points : [points]).map(raw => {
       const material = new THREE.MeshBasicMaterial({
-        color: tone.select, transparent: true, opacity: .9, depthTest: false,
+        color: '#24262c', transparent: true, opacity: .9, depthTest: false,
         depthWrite: false, toneMapped: false,
       });
       const marker = new THREE.Mesh(markerGeometry, material);
+      const fill = new THREE.Mesh(markerGeometry, material.clone());
+      fill.scale.setScalar(.82);
+      fill.renderOrder = 1002;
+      marker.add(fill);
+      marker.userData.fill = fill.material;
       marker.position.copy(markerPosition(raw));
       marker.scale.setScalar(markerSize);
       marker.userData.id = id;
@@ -279,6 +284,8 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   let scheduled = false;
   let unavailable = false;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const markerOffset = new THREE.Vector3();
+  const cameraDirection = new THREE.Vector3();
 
   function schedule() {
     if (scheduled || unavailable) return;
@@ -298,6 +305,20 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       else schedule();
     }
     controls.update();
+    if (regionMode) {
+      camera.getWorldDirection(cameraDirection);
+      const pixelScale = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / oldHeight;
+      for (const list of markerMeshes.values()) {
+        for (const marker of list) {
+          if (!marker.visible) continue;
+          const depth = markerOffset.copy(marker.position).sub(camera.position).dot(cameraDirection);
+          const active = current.focus?.includes(marker.userData.id);
+          const size = markerSize * (active ? 1.35 : 1);
+          const minRadius = active || current.pick ? 7 : 5;
+          marker.scale.setScalar(Math.max(size, minRadius * depth * pixelScale));
+        }
+      }
+    }
     try {
       renderer.render(scene, camera);
     } catch {
@@ -323,7 +344,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     // Focused steps frame the focused meshes themselves; a tiny target in a
     // point-marker level keeps the regional context in frame instead.
     const targetExtent = target.isEmpty() ? 0 : Math.max(...target.getSize(new THREE.Vector3()).toArray());
-    const focused = close && !target.isEmpty() && (!regionMode || targetExtent >= .08);
+    const focused = close && !target.isEmpty() && (!regionMode || current.atlas || targetExtent >= .08);
     const box = focused ? target : group;
     if (box.isEmpty()) return;
     const extent = box.getSize(new THREE.Vector3());
@@ -364,7 +385,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
         }
       }
     }
-    const fit = current.padding || (current.atlas && close ? 1.33 : 1.13);
+    const fit = Math.max(1.08, current.padding || (current.atlas && close ? 1.33 : 1.13));
     const distance = THREE.MathUtils.clamp(required * fit, controls.minDistance, controls.maxDistance);
     const position = center.clone().add(viewDir.multiplyScalar(distance));
     if (immediate || reduced.matches) {
@@ -394,7 +415,9 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
         if (!preserveCamera) frame(config.view);
         else schedule();
         onModelReady?.();
-      }).catch(() => fail());
+      }).catch(() => {
+        if (current === config) fail();
+      });
     }
   }
 
@@ -414,12 +437,6 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     selectDeep.set(tone.selectDeep);
     tint.set(tone.tint);
     axisTube?.material.color.set(tone.axis);
-    for (const list of markerMeshes.values()) {
-      for (const marker of list) {
-        marker.material.color.set((current.focus || []).includes(marker.userData.id)
-          ? tone.axis : (current.palette?.[marker.userData.id] || baseColor(marker.userData.id)));
-      }
-    }
     for (const child of axis.children) {
       const label = child.userData.label;
       if (!label) continue;
@@ -482,11 +499,13 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       const on = visible.has(id);
       const active = highlight.has(id);
       for (const marker of list) {
-        marker.visible = on;
-        marker.material.color.set(active ? tone.axis : (current.palette?.[id] || baseColor(id)));
-        marker.material.opacity = active ? 1 : on ? .78 : 0;
+        const opacity = active ? 1 : .78 * (highlight.size ? display.ghost : 1);
+        marker.visible = on && opacity > 0;
+        marker.userData.fill.color.set(active ? tone.axis : (current.palette?.[id] || baseColor(id)));
+        marker.userData.fill.opacity = opacity;
+        marker.material.opacity = opacity;
         marker.scale.setScalar(markerSize * (active ? 1.35 : 1));
-        if (on && (!pickOnly || pickOnly.has(id))) pickable.push(marker);
+        if (marker.visible && (!pickOnly || pickOnly.has(id))) pickable.push(marker);
       }
     }
   }
@@ -541,7 +560,10 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       axisTube?.material.dispose();
       markerGeometry.dispose();
       for (const list of markerMeshes.values()) {
-        for (const marker of list) marker.material.dispose();
+        for (const marker of list) {
+          marker.material.dispose();
+          marker.userData.fill.dispose();
+        }
       }
       for (const label of axis.children) {
         label.material.map?.dispose();
@@ -560,6 +582,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   controls.addEventListener('start', () => { animation = null; });
 
   const ray = new THREE.Raycaster();
+  const projectedMarker = new THREE.Vector3();
   function pickId(x, y) {
     scene.updateMatrixWorld(true);
     ray.setFromCamera({ x, y }, camera);
@@ -570,7 +593,17 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     // Markers are small, depth-independent points, so a direct hit wins over
     // the bone behind it; otherwise a surface marker could never be clicked.
     const markerHits = ray.intersectObjects(pickable.filter(entry => entry.userData.marker), false);
-    if (markerHits.length) return markerHits[0].object.userData.id;
+    let nearestMarker;
+    let nearestDistance = Infinity;
+    for (const { object } of markerHits) {
+      const center = projectedMarker.copy(object.position).project(camera);
+      const distance = ((center.x - x) * camera.aspect) ** 2 + (center.y - y) ** 2;
+      if (distance < nearestDistance) {
+        nearestMarker = object;
+        nearestDistance = distance;
+      }
+    }
+    if (nearestMarker) return nearestMarker.userData.id;
     return meshHit?.object.userData.id;
   }
   function pick(x, y) {
@@ -587,13 +620,15 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     tip.hidden = true;
     tip.textContent = '';
   }
-  function showTip(id, x, y, width) {
+  function showTip(id, x, y, width, height) {
     const name = ITEMS[id]?.pt;
     if (!name) return;
     tip.textContent = name;
-    tip.style.left = `${THREE.MathUtils.clamp(x, 8, width - 8)}px`;
-    tip.style.top = `${Math.max(8, y)}px`;
     tip.hidden = false;
+    const left = THREE.MathUtils.clamp(x - tip.offsetWidth / 2, 4, width - tip.offsetWidth - 4);
+    const top = y - tip.offsetHeight - 8;
+    tip.style.left = `${left}px`;
+    tip.style.top = `${top >= 4 ? top : Math.min(y + 12, height - tip.offsetHeight - 4)}px`;
   }
 
   let pointer;
@@ -619,7 +654,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     lastHover = now;
     const rect = renderer.domElement.getBoundingClientRect();
     const id = pickId((event.clientX - rect.left) / rect.width * 2 - 1, 1 - (event.clientY - rect.top) / rect.height * 2);
-    if (id) showTip(id, event.clientX - rect.left, event.clientY - rect.top, rect.width);
+    if (id) showTip(id, event.clientX - rect.left, event.clientY - rect.top, rect.width, rect.height);
     else hideTip();
   });
   renderer.domElement.addEventListener('pointerup', event => {

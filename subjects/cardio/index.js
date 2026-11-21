@@ -1,8 +1,8 @@
-import { COLORS, DECKS, DEFAULT_COLOR } from './data.js?v=49';
-import * as material from './content.js?v=49';
-import { LESSONS } from './lessons.js?v=49';
-import { TERRITORIES } from './territories.js?v=49';
-import { buildRegions, REGION_CONTEXT } from './curriculum.js?v=49';
+import { COLORS, DECKS, DEFAULT_COLOR } from './data.js?v=50';
+import * as material from './content.js?v=50';
+import { LESSONS } from './lessons.js?v=50';
+import { TERRITORIES } from './territories.js?v=50';
+import { buildRegions, REGION_CONTEXT } from './curriculum.js?v=50';
 
 const ITEMS = Object.fromEntries(DECKS.flatMap(deck => deck.itens.map(item => [item.id, { ...item, deck }])));
 
@@ -52,6 +52,8 @@ function memoryView(id) {
   return teachingView(id);
 }
 
+const regions = buildRegions(ITEMS);
+
 export default {
   id: 'cardio',
   name: 'SpeedCardio',
@@ -62,7 +64,7 @@ export default {
   colors: COLORS,
   defaultColor: DEFAULT_COLOR,
   baseColor,
-  regions: buildRegions(ITEMS),
+  regions,
   regionContext: REGION_CONTEXT,
   regionPurposes: REGION_PURPOSES,
   content: {
@@ -83,7 +85,7 @@ export default {
   territories: TERRITORIES,
   model: { kind: 'packed', manifest: './models.json' },
   markers: {},
-  atlasIds: Object.keys(material.CONTENT || {}).filter(id => ITEMS[id]),
+  atlasIds: [...new Set(regions.flatMap(region => region.ids))],
   atlasHidden: SKELETON_IDS,
   skeletonIds: SKELETON_IDS,
   mapDefaultIds: ['ad', 'ae', 'vd', 've', 'paredev', 'aoasc', 'arco', 'tp', 'vcs', 'traqueia', 'bpd', 'bpe'],
