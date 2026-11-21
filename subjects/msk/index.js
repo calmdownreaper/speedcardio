@@ -1,6 +1,14 @@
-import * as upperRegion from './regions/upper.js?v=47';
-
-const ALL = [upperRegion];
+const V = '?v=49';
+// Add a region by writing regions/<id>.js and listing it here.
+const REGION_FILES = ['skull', 'spine', 'thorax', 'pelvis', 'upper', 'abdomen', 'lower'];
+const ALL = (await Promise.all(REGION_FILES.map(async name => {
+  try {
+    return await import(`./regions/${name}.js${V}`);
+  } catch (error) {
+    console.error(`SpeedMSK region "${name}" failed to load`, error);
+    return null;
+  }
+}))).filter(Boolean);
 const ITEMS = Object.fromEntries(ALL.flatMap(region => region.deck.itens.map(item => [item.id, item])));
 
 function buildRegion(entry) {
@@ -43,6 +51,7 @@ function viewFor(id) {
   for (const entry of ALL) {
     if (entry.viewHints?.post?.includes(id)) return 'post';
     if (entry.viewHints?.sup?.includes(id)) return 'sup';
+    if (entry.viewHints?.inf?.includes(id)) return 'inf';
   }
   return 'ant';
 }
@@ -56,6 +65,7 @@ export default {
   description: 'Study bones, joints and muscles region by region with 3D anatomy, recall drills and 30L exam content.',
   storagePrefix: 'sm2_',
   deriveOralFromLessons: true,
+  findViewUsesTeaching: true,
   decks: ALL.map(entry => entry.deck),
   colors,
   defaultColor: '#d9b38c',
@@ -71,13 +81,15 @@ export default {
   model: { kind: 'regions', manifest: './msk/models.json' },
   markers,
   markerSpace: 'world',
-  markerSize: .016,
+  markerSize: .008,
   atlasIds,
+  atlasHomeDeck: true,
   atlasHidden: [],
   skeletonIds: [],
   mapDefaultIds: atlasIds,
   mapHeading: 'Musculoskeletal map',
   atlasNote: 'Point markers stand for structures without a mesh, such as joint spaces, ligaments and foramina.',
+  regionPadding: { skull: .96, thorax: 1.04, pelvis: 1.02, abdomen: 1.02 },
   teachingView: viewFor,
   memoryView: viewFor,
 };

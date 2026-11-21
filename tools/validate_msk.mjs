@@ -21,6 +21,10 @@ for (const file of files) {
 
 const items = new Map();
 const markers = new Map();
+const lessonOwner = new Map();
+const cueOwner = new Map();
+const clueOwner = new Map();
+const colorOwner = new Map();
 for (const { file, mod } of modules) {
   const region = mod.region?.id || file.replace('.js', '');
   if (!mod.deck || !Array.isArray(mod.deck.itens) || !mod.deck.itens.length) problems.push(`${file}: missing deck items`);
@@ -37,8 +41,21 @@ for (const { file, mod } of modules) {
     }
     if (!mod.colors?.[item.id]) problems.push(`${file}: no color for ${item.id}`);
     if (!mod.lessons?.[item.id]) problems.push(`${file}: no lesson for ${item.id}`);
+    else if (!mod.lessons[item.id].lead || !mod.lessons[item.id].where || !mod.lessons[item.id].function) {
+      problems.push(`${file}: lesson missing lead/where/function for ${item.id}`);
+    }
     if (!mod.lessonCues?.[item.id]) problems.push(`${file}: no lesson cue for ${item.id}`);
     if (!mod.roundClues?.[item.id]) problems.push(`${file}: no round clue for ${item.id}`);
+    for (const [map, id, owner, label] of [
+      [mod.lessons, item.id, lessonOwner, 'lesson'],
+      [mod.lessonCues, item.id, cueOwner, 'lesson cue'],
+      [mod.roundClues, item.id, clueOwner, 'round clue'],
+      [mod.colors, item.id, colorOwner, 'color'],
+    ]) {
+      if (!map?.[id]) continue;
+      if (owner.has(id) && owner.get(id) !== file) problems.push(`${file}: duplicate ${label} for ${id} (also ${owner.get(id)})`);
+      else owner.set(id, file);
+    }
     const clue = `${mod.roundClues?.[item.id] || ''} ${item.dica || ''}`.toLowerCase();
     const name = item.pt.toLowerCase().replace(/[^a-z ]/g, '');
     if (name && clue.includes(name)) problems.push(`${file}: round clue leaks the name for ${item.id}`);
@@ -53,6 +70,10 @@ for (const { file, mod } of modules) {
 for (const { file, mod } of modules) {
   const region = mod.region?.id || file.replace('.js', '');
   if (!Array.isArray(mod.levels) || !mod.levels.length) continue;
+  const levelIds = new Set(mod.levels.flatMap(level => level.ids || []));
+  for (const item of mod.deck?.itens || []) {
+    if (!levelIds.has(item.id)) problems.push(`${file}: deck item ${item.id} is not in any level`);
+  }
   const required = mod.levels.filter(level => !level.bonus).length;
   if (mod.levels.at(-1)?.bonus !== true) problems.push(`${file}: last level is not the bonus level`);
   if (required < 1) problems.push(`${file}: no required levels`);

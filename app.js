@@ -1,9 +1,9 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=47';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=47';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=49';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=49';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=47';
+} from './study.js?v=49';
 
 // Boot the selected subject before any UI state is derived. The subject pack is
 // a dynamic import, so the other subject's data is never downloaded.
@@ -58,10 +58,18 @@ const orientation = { id: 'orientation', title: 'Orientation' };
 // Give each structure one Atlas home (its last region) so rows and counts agree.
 const ATLAS_GROUP_OF = new Map();
 REGIONS.forEach((region, index) => region.ids.forEach(id => ATLAS_GROUP_OF.set(id, index)));
-const ATLAS_GROUPS = REGIONS.map((region, index) => ({
-  id: region.id, title: region.title,
-  ids: region.ids.filter(id => ITEMS[id] && ATLAS_GROUP_OF.get(id) === index),
-})).filter(group => group.ids.length);
+// Cardio keeps its historical "last region wins" Atlas home. Subjects with
+// cross-region curriculum references can instead group every part by its
+// owning deck, so a rib stays under Thorax when Abdomen also cites it.
+const ATLAS_GROUPS = pack.atlasHomeDeck
+  ? REGIONS.map(region => ({
+    id: region.id, title: region.title,
+    ids: ATLAS_IDS.filter(id => ITEMS[id]?.deck.id === region.id),
+  })).filter(group => group.ids.length)
+  : REGIONS.map((region, index) => ({
+    id: region.id, title: region.title,
+    ids: region.ids.filter(id => ITEMS[id] && ATLAS_GROUP_OF.get(id) === index),
+  })).filter(group => group.ids.length);
 const ATLAS_REGION = Object.fromEntries(ATLAS_GROUPS.flatMap(group => group.ids.map(id => [id, group.title])));
 const ATLAS_SET = new Set(ATLAS_IDS);
 const atlas = { query: '', hidden: new Set(pack.atlasHidden || []), focus: [], active: null, open: false, view: 'ant' };
@@ -79,8 +87,9 @@ const views = {
 const coarsePointer = matchMedia('(pointer: coarse)');
 const answerCharacters = /[^\p{L}\p{M}\p{N} ()+'’‘–—-]/gu;
 let page = 'map';
-let selectedRegion = nextLevel()?.region || 'orientation';
-let selectedLevel = nextLevel()?.id;
+const firstNext = nextLevel();
+let selectedRegion = firstNext?.region || (ORIENTATION.length ? 'orientation' : REGIONS[0]?.id);
+let selectedLevel = firstNext?.id || (ORIENTATION.length ? undefined : REGIONS[0]?.levels[0]?.id);
 let activity;
 let viewer;
 let viewerStatus = 'loading';
@@ -400,14 +409,27 @@ function levelPalette(level) {
   return Object.fromEntries(level.ids.map((id, index) => [id, LESSON_PALETTE[index % LESSON_PALETTE.length]]));
 }
 const swatch = (level, id) => `<i class="swatch" style="--swatch:${levelPalette(level)[id] || 'var(--mute)'}" aria-hidden="true"></i>`;
+function levelContext(level) {
+  const markerOnly = level.ids.every(id => pack.markers?.[id]);
+  const regionMeshes = markerOnly
+    ? regions[level.region]?.ids.filter(id => !pack.markers?.[id] && !level.ids.includes(id)) || []
+    : [];
+  const context = markerOnly
+    ? [...new Set([...(ITEMS[level.ids[0]]?.deck.ctx || []), ...regionMeshes])]
+    : REGION_CONTEXT[level.region] || ITEMS[level.ids[0]]?.deck.ctx || [];
+  return {
+    context,
+    ...(markerOnly ? { contextOpacity: .42, padding: 1.08 } : {}),
+  };
+}
 function levelModel(level, options = {}) {
-  const context = REGION_CONTEXT[level.region] || ITEMS[level.ids[0]]?.deck.ctx || [];
+  const base = levelContext(level);
   setModel(level.ids, {
     palette: levelPalette(level),
     title: level.title,
-    context,
+    ...base,
     faint: REGION_CONTEXT[level.region] ? SKELETON_IDS : undefined,
-    padding: level.region === 'mediastino' ? 1.32 : 1.26,
+    padding: base.padding || (level.region === 'mediastino' ? 1.32 : 1.26),
     ...options,
   });
 }
@@ -677,10 +699,12 @@ function renderMap() {
       }
     });
   }
-  const overviewIds = region && REGION_CONTEXT[region.id] ? region.ids.filter(id => !SKELETON_IDS.includes(id)) : region?.ids;
+  const requiredIds = region ? region.ids.filter(id => region.levels.some(level => !level.bonus && level.ids.includes(id))) : [];
+  const overviewIds = region && REGION_CONTEXT[region.id] ? requiredIds.filter(id => !SKELETON_IDS.includes(id)) : requiredIds;
   setModel(overviewIds?.length ? overviewIds : MAP_DEFAULT_IDS, {
-    title: region?.title || 'Thoracic anatomy', layout: 'map-layout', view: 'ant',
+    title: region?.title || 'Thoracic anatomy', layout: 'map-layout', view: pack.regionView?.[region?.id] || 'ant',
     context: region ? (REGION_CONTEXT[region.id] || ITEMS[region.ids[0]].deck.ctx) : [],
+    ...(pack.regionPadding?.[region?.id] ? { padding: pack.regionPadding[region.id] } : {}),
   });
   const pct = Math.round(done / levels.length * 100);
   const nextLabel = next?.id === 'orientation' ? 'Start' : 'Continue';
@@ -692,7 +716,7 @@ function renderMap() {
       <div class="progress-line"><span style="--pct:${pct}%"></span></div>
       <p>${done} of ${levels.length} levels passed · Pass by recalling every structure in Rounds 2 and 3.</p></div>
     <div class="modes" aria-label="Study modes">
-      ${mode('arrow-right', next ? escape(next.title) : 'All levels passed', next?.id === 'orientation' ? 'Start here: directions and landmarks.' : 'Your next level on the path.',
+      ${mode('arrow-right', next ? escape(next.title) : LEVELS.some(level => level.bonus) ? 'Required levels passed' : 'All levels passed', next?.id === 'orientation' ? 'Start here: directions and landmarks.' : 'Your next level on the path.',
         next ? button(nextLabel, () => next.id === 'orientation' ? startOrientation() : openLevel(next), { class: 'primary', iconEnd: 'arrow-right' }) : button('Open Daily', () => setPage('daily'), { class: 'primary' }))}
       ${TERRITORIES.length ? mode('crosshair', 'Coronary territories', 'Match each wall to its artery.', button('Practice', startTerritories)) : ''}
       ${mode('calendar', 'Structure of the day', 'One structure from memory.', button('Recall', () => startDailyStructure()))}
@@ -747,19 +771,8 @@ function displayWpm(run) {
 
 // Keep hidden/posterior landmarks in their teaching view. Lateral views
 // provide another useful angle for landmarks on the lateral heart/lung borders.
-function teachingView(id) {
-  if (/^(pulm_|ao_ant$|ao_post|tri_|mit_|pap_)/.test(id)) return 'sup';
-  if (['diafragma', 'phren_inf_a_d', 'phren_inf_a_e', 'phren_inf_v', 'phren_sup_v'].includes(id)) return 'inf';
-  if (['ae', 'vpsd', 'vpid', 'vpse', 'vpie', 'seio', 'dp', 'vcmedia', 'aodesc', 'esofago', 'azigo', 'hemiazigo', 'sept_dp', 'vent_post_acd', 'vpve', 'apd',
-    'azigo_acs', 'eso_art', 'vertebras_toracicas', 'pica_d1', 'pica_e1', 'pica_d2', 'pica_e2', 'pica_sup_d', 'pica_sup_e'].includes(id)
-      || /_(post|bpost)$/.test(id)) return 'post';
-  return 'ant';
-}
-function memoryView(id) {
-  if (['ad', 'acd', 'marg_d', 'vcparva', 'sd_lat', 'sd_blat'].includes(id)) return 'dir';
-  if (['ve', 'cx', 'se_blat'].includes(id)) return 'esq';
-  return teachingView(id);
-}
+function teachingView(id) { return pack.teachingView?.(id) || 'ant'; }
+function memoryView(id) { return pack.memoryView?.(id) || teachingView(id); }
 
 function renderRecall() {
   const { run, level } = activity;
@@ -1057,8 +1070,9 @@ function renderFind() {
   const id = ids[index];
   setModel(level.ids, {
     title: REGION_CONTEXT[level.region] ? regions[level.region]?.title : ITEMS[id].deck.titulo,
-    context: REGION_CONTEXT[level.region] || ITEMS[id].deck.ctx, focus: done ? [id] : [],
-    view: state.direction || 'ant', controls: true, pick: Boolean(viewer && !done && modelLoaded()),
+    ...levelContext(level), focus: done ? [id] : [],
+    view: state.direction || (pack.findViewUsesTeaching ? teachingView(id) : 'ant'),
+    controls: true, pick: Boolean(viewer && !done && modelLoaded()),
     preserveCamera: Boolean(tries),
   });
   const ready = modelLoaded();
@@ -1953,6 +1967,9 @@ syncThemeChrome();
 const brandMenu = $('brand-menu');
 const subjectMenu = $('subject-menu');
 function syncSubjectChrome() {
+  if (new URL(location.href).searchParams.get('s') !== pack.id) {
+    history.replaceState(null, '', subjectUrl(pack.id));
+  }
   document.title = `${pack.name} · ${pack.tagline}`;
   document.querySelector('meta[name="description"]')?.setAttribute('content', pack.description || `${pack.tagline} with 3D anatomy and recall drills.`);
   document.querySelector('.brand-name')?.replaceChildren(document.createTextNode(pack.name));
@@ -1994,7 +2011,7 @@ brandMenu?.addEventListener('click', () => {
 brandMenu?.addEventListener('keydown', event => {
   if (['ArrowDown', 'Enter', ' '].includes(event.key)) {
     event.preventDefault();
-    openSubjectMenu(event.key === 'ArrowDown' ? 'current' : 'first');
+    openSubjectMenu('current');
   }
 });
 subjectMenu?.addEventListener('click', event => {
@@ -2076,7 +2093,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=47');
+    const { createViewer } = await import('./viewer.js?v=49');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore, { ...pack, ...pack.model });
     viewer.onReady(() => {
       if (activity?.type === 'recall') render();

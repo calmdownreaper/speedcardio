@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ITEMS } from './study.js?v=47';
+import { ITEMS } from './study.js?v=49';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=47';
+const VERSION = '?v=49';
 
 function fetchJSON(url) {
   return fetch(url, { cache: 'force-cache' }).then(response => {
@@ -127,6 +127,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   }
 
   function loadedFor(ids) {
+    if (!regionMode) return ids.every(id => markerPoints.has(id) || Object.hasOwn(meta.parts, id));
     return ids.every(id => markerPoints.has(id) || meshes.has(id));
   }
 
@@ -309,12 +310,16 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
 
   function frame(direction = current.view, immediate = false) {
     const { ids, focus = [], close, neutral } = current;
-    const group = boxOf(ids);
+    const group = boxOf(regionMode && current.context?.length ? [...new Set([...ids, ...current.context])] : ids);
     const target = boxOf(focus);
-    // Focused steps frame the focused meshes themselves; otherwise frame the whole group.
-    const focused = close && !target.isEmpty();
+    // Focused steps frame the focused meshes themselves; a tiny target in a
+    // point-marker level keeps the regional context in frame instead.
+    const targetExtent = target.isEmpty() ? 0 : Math.max(...target.getSize(new THREE.Vector3()).toArray());
+    const focused = close && !target.isEmpty() && (!regionMode || targetExtent >= .08);
     const box = focused ? target : group;
     if (box.isEmpty()) return;
+    const extent = box.getSize(new THREE.Vector3());
+    if (regionMode && Math.max(extent.x, extent.y, extent.z) < .05) box.expandByScalar(.06);
     const center = box.getCenter(new THREE.Vector3());
     const normal = new THREE.Vector3(...(VIEWS[direction] || VIEWS.ant));
     if (!focused && !direction && !neutral && focus.length === 1 && !target.isEmpty()) {
@@ -403,7 +408,8 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     axisTube?.material.color.set(tone.axis);
     for (const list of markerMeshes.values()) {
       for (const marker of list) {
-        marker.material.color.set((current.focus || []).includes(marker.userData.id) ? tone.axis : baseColor(marker.userData.id));
+        marker.material.color.set((current.focus || []).includes(marker.userData.id)
+          ? tone.axis : (current.palette?.[marker.userData.id] || baseColor(marker.userData.id)));
       }
     }
     for (const child of axis.children) {
@@ -456,7 +462,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
         material.emissiveIntensity = active || coloured ? 1 : 0;
         material.opacity = active ? 1 : primary.has(id)
           ? (current.pick ? (id === 'paredev' ? .2 : .88) : highlight.size ? .18 : id === 'paredev' ? (current.paletteAll ? .16 : .28) : 1)
-          : faint.has(id) ? .04 : .10;
+          : faint.has(id) ? .04 : (current.contextOpacity ?? .10);
         if (!active && highlight.size) material.opacity *= display.ghost;
       }
       material.depthWrite = material.opacity >= .8;
@@ -469,8 +475,8 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       const active = highlight.has(id);
       for (const marker of list) {
         marker.visible = on;
-        marker.material.color.set(active ? tone.axis : baseColor(id));
-        marker.material.opacity = active ? 1 : on ? .72 : 0;
+        marker.material.color.set(active ? tone.axis : (current.palette?.[id] || baseColor(id)));
+        marker.material.opacity = active ? 1 : on ? .78 : 0;
         marker.scale.setScalar(markerSize * (active ? 1.35 : 1));
         if (on && (!pickOnly || pickOnly.has(id))) pickable.push(marker);
       }
