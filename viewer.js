@@ -99,11 +99,13 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   const meshes = new Map();
   let pickable = [];
 
+  const loadingPacks = new Map();
   function loadPack(region) {
     if (packs.has(region)) return Promise.resolve(packs.get(region));
+    if (loadingPacks.has(region)) return loadingPacks.get(region);
     const info = manifest.regions[region];
     const url = new URL(info.file, new URL(source.manifest, location.href)).href;
-    return fetch(`${url}${VERSION}`).then(response => {
+    const request = fetch(`${url}${VERSION}`).then(response => {
       if (!response.ok) throw new Error('Model geometry unavailable');
       return response.arrayBuffer();
     }).then(bytes => {
@@ -111,8 +113,14 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       if (info.bytes && bytes.byteLength !== info.bytes) throw new Error('Model geometry does not match its index');
       const pack = { meta: info, buffer: bytes, IndexArray: Type };
       packs.set(region, pack);
+      loadingPacks.delete(region);
       return pack;
+    }).catch(error => {
+      loadingPacks.delete(region);
+      throw error;
     });
+    loadingPacks.set(region, request);
+    return request;
   }
 
   function ensurePacks(ids) {
@@ -559,11 +567,10 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     const meshHits = ray.intersectObjects(meshesHere, false);
     // The translucent ventricular wall surrounds the two ventricle meshes.
     const meshHit = meshHits.find(entry => entry.object.userData.id !== 'paredev') || meshHits[0];
-    // Markers sit on or just inside bone; accept them only when they are at
-    // least as close as the mesh, so a marker never steals a mesh pick.
+    // Markers are small, depth-independent points, so a direct hit wins over
+    // the bone behind it; otherwise a surface marker could never be clicked.
     const markerHits = ray.intersectObjects(pickable.filter(entry => entry.userData.marker), false);
-    const markerHit = markerHits[0];
-    if (markerHit && (!meshHit || markerHit.distance <= meshHit.distance + .02)) return markerHit.object.userData.id;
+    if (markerHits.length) return markerHits[0].object.userData.id;
     return meshHit?.object.userData.id;
   }
   function pick(x, y) {

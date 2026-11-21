@@ -1070,6 +1070,7 @@ function renderFind() {
   const id = ids[index];
   setModel(level.ids, {
     title: REGION_CONTEXT[level.region] ? regions[level.region]?.title : ITEMS[id].deck.titulo,
+    palette: levelPalette(level),
     ...levelContext(level), focus: done ? [id] : [],
     view: state.direction || (pack.findViewUsesTeaching ? teachingView(id) : 'ant'),
     controls: true, pick: Boolean(viewer && !done && modelLoaded()),

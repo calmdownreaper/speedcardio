@@ -120,12 +120,12 @@ export const deck = {
       'Nerve: long head from the tibial division and short head from the common fibular division of the sciatic nerve (L5 to S2).',
       'Flexes the knee, extends the hip and laterally rotates the flexed knee.',
     ]),
-    S('semitendinosus', 'Semitendinosus', 'Semitendinosus', ['semitendinosus muscle', 'medial hamstring'], 'Medial hamstring with a long cord-like tendon', [
+    S('semitendinosus', 'Semitendinosus', 'Semitendinosus', ['semitendinosus muscle'], 'Medial hamstring with a long cord-like tendon', [
       'Origin: ischial tuberosity, shared with the long head of biceps femoris. Insertion: proximal medial tibia at the pes anserinus.',
       'Nerve: tibial division of the sciatic nerve (L5 to S2).',
       'Extends the hip, flexes the knee and medially rotates the flexed knee.',
     ]),
-    S('semimembranosus', 'Semimembranosus', 'Semimembranosus', ['semimembranosus muscle', 'medial hamstring'], 'Deep medial hamstring with a broad membranous tendon', [
+    S('semimembranosus', 'Semimembranosus', 'Semimembranosus', ['semimembranosus muscle'], 'Deep medial hamstring with a broad membranous tendon', [
       'Origin: ischial tuberosity. Insertion: posterior part of the medial tibial condyle, with an expansion into the oblique popliteal ligament.',
       'Nerve: tibial division of the sciatic nerve (L5 to S2).',
       'Extends the hip, flexes the knee and medially rotates the flexed knee.',
