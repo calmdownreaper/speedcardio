@@ -111,6 +111,24 @@ for (const [id, item] of items) {
 for (const id of markers.keys()) {
   if (!items.has(id)) problems.push(`marker ${id} has no deck item`);
 }
+const VIEW_KEYS = new Set(['ant', 'post', 'dir', 'esq', 'sup', 'inf']);
+for (const { file, mod } of modules) {
+  const markerIds = new Set(Object.keys(mod.markers || {}));
+  for (const id of markerIds) {
+    const meta = mod.markerMeta?.[id];
+    if (!meta) { problems.push(`${file}: no markerMeta for ${id}`); continue; }
+    if (!VIEW_KEYS.has(meta.view)) problems.push(`${file}: bad marker view for ${id}: ${meta.view}`);
+    if (!Array.isArray(meta.anchors) || !meta.anchors.length) problems.push(`${file}: no anchor bones for ${id}`);
+    for (const anchor of meta.anchors || []) {
+      if (!items.has(anchor)) problems.push(`${file}: anchor ${anchor} of ${id} has no deck item`);
+      if (!meshIds.has(anchor)) problems.push(`${file}: anchor ${anchor} of ${id} has no mesh`);
+      if (anchor === id) problems.push(`${file}: marker ${id} anchors to itself`);
+    }
+  }
+  for (const id of Object.keys(mod.markerMeta || {})) {
+    if (!markerIds.has(id)) problems.push(`${file}: markerMeta for non-marker ${id}`);
+  }
+}
 notes.push(`${files.length} region modules, ${items.size} items, ${markers.size} markers, ${meshIds.size} mesh parts`);
 for (const { filed, mod } of []) { /* noop */ }
 for (const { file, mod } of modules) {

@@ -241,13 +241,14 @@ export const colors = {
 };
 
 export const markers = {
-  knee_joint: [[78, -100, 380], [-78, -100, 380]],
-  anterior_cruciate_ligament: [[72, -108, 392], [-72, -108, 392]],
-  posterior_cruciate_ligament: [[82, -88, 390], [-82, -88, 390]],
-  medial_collateral_ligament: [[62, -105, 360], [-62, -105, 360]],
-  lateral_collateral_ligament: [[102, -105, 360], [-102, -105, 360]],
-  patellar_ligament: [[80, -122, 340], [-80, -122, 340]],
-  ankle_joint: [[70, -75, 15], [-70, -75, 15]],
+  patellar_ligament: [[84.6, -17.8, 406.5], [-84.7, -17.8, 406.5]],
+  ankle_joint: [[72.6, 37.5, 83.4], [-72.6, 37.5, 83.4]],
+};
+
+// Anchor bones for each point marker and the view that shows it best.
+export const markerMeta = {
+  patellar_ligament: { anchors: ['patella', 'tibia'], view: 'ant' },
+  ankle_joint: { anchors: ['tibia', 'fibula', 'tarsal_bones'], view: 'ant' },
 };
 
 export const purpose = 'Bones, joints and ligaments of the lower limb, then the thigh and leg muscles that move the hip, knee, ankle and foot.';
@@ -765,6 +766,7 @@ export const content = {
 };
 
 export const viewHints = {
-  post: ['femur', 'tibia', 'fibula', 'biceps_femoris', 'semitendinosus', 'semimembranosus', 'gastrocnemius', 'soleus'],
+  post: ['femur', 'tibia', 'fibula', 'biceps_femoris', 'semitendinosus', 'semimembranosus', 'gastrocnemius', 'soleus', 'calcaneal_tendon', 'posterior_cruciate_ligament'],
   ant: ['patella', 'rectus_femoris', 'vastus_lateralis', 'vastus_medialis', 'vastus_intermedius', 'tibialis_anterior'],
+  inf: ['long_plantar_lig'],
 };

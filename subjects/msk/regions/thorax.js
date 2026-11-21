@@ -125,13 +125,24 @@ export const colors = {
 };
 
 export const markers = {
-  costovertebral_joint: [[30, -60, 1260], [-30, -60, 1260]],
-  costotransverse_joint: [[55, -45, 1260], [-55, -45, 1260]],
-  costochondral_joint: [[55, -165, 1230], [-55, -165, 1230]],
-  sternocostal_joint: [[25, -185, 1270], [-25, -185, 1270]],
-  manubriosternal_joint: [0, -175, 1272],
-  xiphisternal_joint: [0, -195, 1120],
-  radiate_sternocostal_ligament: [0, -180, 1250],
+  costovertebral_joint: [[31.8, 39.3, 1327.6], [-30.5, 39.3, 1327.6]],
+  costotransverse_joint: [[57.8, 54.7, 1327.6], [-56.4, 54.7, 1327.6]],
+  costochondral_joint: [[57.8, -64.5, 1295.3], [-56.4, -64.5, 1295.3]],
+  sternocostal_joint: [[26.9, -88.0, 1318.6], [-26.9, -88.0, 1318.6]],
+  manubriosternal_joint: [-0.0, -86.1, 1341.3],
+  xiphisternal_joint: [-0.0, -102.6, 1220.9],
+  radiate_sternocostal_ligament: [-0.0, -87.4, 1285.0],
+};
+
+// Anchor bones for each point marker and the view that shows it best.
+export const markerMeta = {
+  costovertebral_joint: { anchors: ['thoracic_vertebra', 'ribs'], view: 'post' },
+  costotransverse_joint: { anchors: ['thoracic_vertebra', 'ribs'], view: 'post' },
+  costochondral_joint: { anchors: ['ribs', 'costal_cartilages'], view: 'ant' },
+  sternocostal_joint: { anchors: ['sternum', 'costal_cartilages'], view: 'ant' },
+  manubriosternal_joint: { anchors: ['sternum'], view: 'ant' },
+  xiphisternal_joint: { anchors: ['sternum'], view: 'ant' },
+  radiate_sternocostal_ligament: { anchors: ['sternum', 'costal_cartilages'], view: 'ant' },
 };
 
 export const purpose = 'The bony cage, the joints that let it move, and the muscles that inflate it.';

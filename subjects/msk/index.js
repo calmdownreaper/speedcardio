@@ -1,4 +1,4 @@
-const V = '?v=50';
+const V = '?v=54';
 // Add a region by writing regions/<id>.js and listing it here.
 const REGION_FILES = ['skull', 'spine', 'thorax', 'pelvis', 'upper', 'abdomen', 'lower'];
 const ALL = (await Promise.all(REGION_FILES.map(async name => {
@@ -31,6 +31,7 @@ function buildRegion(entry) {
 const regions = ALL.map(buildRegion);
 const colors = Object.assign({}, ...ALL.map(entry => entry.colors));
 const markers = Object.assign({}, ...ALL.map(entry => entry.markers || {}));
+const markerMeta = Object.assign({}, ...ALL.map(entry => entry.markerMeta || {}));
 const lessons = Object.assign({}, ...ALL.map(entry => entry.lessons));
 const regionPurposes = Object.fromEntries(ALL.map(entry => [entry.region.id, entry.purpose]));
 
@@ -49,6 +50,8 @@ const content = {
 
 function viewFor(id) {
   for (const entry of ALL) {
+    const meta = entry.markerMeta?.[id];
+    if (meta?.view) return meta.view;
     if (entry.viewHints?.post?.includes(id)) return 'post';
     if (entry.viewHints?.sup?.includes(id)) return 'sup';
     if (entry.viewHints?.inf?.includes(id)) return 'inf';
@@ -80,6 +83,7 @@ export default {
   territories: [],
   model: { kind: 'regions', manifest: './msk/models.json' },
   markers,
+  markerMeta,
   markerSpace: 'world',
   markerSize: .008,
   atlasIds,

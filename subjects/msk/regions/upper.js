@@ -199,17 +199,6 @@ export const colors = {
   brachioradialis: '#c06b55', flexor_carpi_radialis: '#b55f4f', flexor_carpi_ulnaris: '#9f4b43', extensor_digitorum: '#ac5549',
 };
 
-export const markers = {
-  ac_joint: [[150, -62, 1344], [-150, -62, 1344]],
-  sc_joint: [[14, -134, 1320], [-14, -134, 1320]],
-  coracoclavicular_lig: [[136, -82, 1337], [-136, -82, 1337]],
-  glenohumeral_joint: [[158, -72, 1305], [-158, -72, 1305]],
-  glenoid_labrum: [[150, -68, 1300], [-150, -68, 1300]],
-  coracohumeral_lig: [[148, -88, 1320], [-148, -88, 1320]],
-  glenohumeral_ligs: [[156, -82, 1292], [-156, -82, 1292]],
-  transverse_humeral_lig: [[160, -92, 1310], [-160, -92, 1310]],
-};
-
 export const purpose = 'Bones, joints and ligaments of the shoulder girdle, then the cuff, shoulder muscles and arm compartments.';
 
 export const overview = 'The shoulder girdle hangs the upper limb from the axial skeleton through the clavicle. The scapula glides on the chest wall, while the glenohumeral joint trades stability for range. This region follows bones and joints first, then the rotator cuff and the muscles that move the shoulder, arm and forearm.';

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ITEMS } from './study.js?v=50';
+import { ITEMS } from './study.js?v=54';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=50';
+const VERSION = '?v=54';
 
 function fetchJSON(url) {
   return fetch(url, { cache: 'force-cache' }).then(response => {
@@ -182,6 +182,31 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   const markerMeshes = new Map();
   const markerGeometry = new THREE.SphereGeometry(1, 14, 10);
   const markerSize = source.markerSize || .018;
+  function haloTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    // A faint glow with one fine ring just outside the marker rim: the focus
+    // reads on both pale bone and the dark model background without bloom.
+    const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gradient.addColorStop(0, 'rgba(255,255,255,.24)');
+    gradient.addColorStop(.45, 'rgba(255,255,255,.17)');
+    gradient.addColorStop(.66, 'rgba(255,255,255,.05)');
+    gradient.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 128, 128);
+    ctx.beginPath();
+    ctx.arc(64, 64, 41, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255,255,255,.95)';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+    return new THREE.CanvasTexture(canvas);
+  }
+  const haloMap = haloTexture();
+  const haloMaterial = new THREE.SpriteMaterial({
+    map: haloMap, color: tone.axis, transparent: true, opacity: .68,
+    depthTest: false, depthWrite: false, toneMapped: false,
+  });
   function markerPosition(raw) {
     const point = new THREE.Vector3(raw[0], raw[1], raw[2]);
     if (source.markerSpace === 'world' && meta.center && meta.scale) {
@@ -203,6 +228,12 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       fill.renderOrder = 1002;
       marker.add(fill);
       marker.userData.fill = fill.material;
+      const halo = new THREE.Sprite(haloMaterial);
+      halo.scale.set(4.6, 4.6, 1);
+      halo.renderOrder = 1000;
+      halo.visible = false;
+      marker.add(halo);
+      marker.userData.halo = halo;
       marker.position.copy(markerPosition(raw));
       marker.scale.setScalar(markerSize);
       marker.userData.id = id;
@@ -213,6 +244,115 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       return marker;
     });
     markerMeshes.set(id, list);
+  }
+
+  // Labels are DOM pins: the text stays crisp at every zoom and follows the
+  // theme tokens without repainting a texture.
+  const annotationLayer = document.createElement('div');
+  annotationLayer.className = 'view-annotations';
+  annotationLayer.hidden = true;
+  annotationLayer.setAttribute('aria-hidden', 'true');
+  host.append(annotationLayer);
+  const labelPins = new Map();
+  function labelPin(id) {
+    let pin = labelPins.get(id);
+    if (pin) return pin;
+    const line = document.createElement('span');
+    line.className = 'marker-leader';
+    line.hidden = true;
+    const tag = document.createElement('span');
+    tag.className = 'marker-tag';
+    tag.hidden = true;
+    annotationLayer.append(line, tag);
+    pin = { id, line, tag, text: '' };
+    labelPins.set(id, pin);
+    return pin;
+  }
+  function hidePin(pin) {
+    pin.line.hidden = true;
+    pin.tag.hidden = true;
+  }
+  const labelPoint = new THREE.Vector3();
+  function placeLabel(pin, marker, width, height) {
+    if (!current.markerLabels || !current.focus?.includes(pin.id)) return hidePin(pin);
+    labelPoint.copy(marker.position).project(camera);
+    if (labelPoint.z < -1 || labelPoint.z > 1) return hidePin(pin);
+    const x = (labelPoint.x * .5 + .5) * width;
+    const y = (-labelPoint.y * .5 + .5) * height;
+    if (x < -20 || x > width + 20 || y < -20 || y > height + 20) return hidePin(pin);
+    const name = ITEMS[pin.id]?.pt;
+    if (!name) return hidePin(pin);
+    if (pin.text !== name) {
+      pin.tag.textContent = name;
+      pin.text = name;
+    }
+    pin.tag.hidden = false;
+    const tagWidth = pin.tag.offsetWidth;
+    const tagHeight = pin.tag.offsetHeight;
+    // Short views (phone atlas, lesson stages) need the label closer so it can
+    // sit between the focused structure's markers instead of across them.
+    const compact = height < 260;
+    const liftGap = compact ? 18 : 40;
+    const sideGap = compact ? 18 : 26;
+    const minSide = compact ? 48 : 64;
+    const toLeft = x > width * .58;
+    const lift = y < tagHeight + liftGap + 18 ? 1 : -1;
+    const tagX = THREE.MathUtils.clamp(
+      x + (toLeft ? -1 : 1) * Math.max(minSide, tagWidth * .5 + sideGap),
+      tagWidth * .5 + 10,
+      Math.max(tagWidth * .5 + 10, width - tagWidth * .5 - 10),
+    );
+    const tagY = THREE.MathUtils.clamp(
+      y + lift * (tagHeight * .5 + liftGap),
+      tagHeight * .5 + 10,
+      Math.max(tagHeight * .5 + 10, height - tagHeight * .5 - 10),
+    );
+    pin.tag.style.left = `${tagX}px`;
+    pin.tag.style.top = `${tagY}px`;
+    const dx = tagX - x;
+    const dy = tagY - y;
+    const length = Math.hypot(dx, dy);
+    const angle = Math.atan2(dy, dx);
+    // Start at the rim of the 10 px marker instead of its centre.
+    const gap = 9;
+    pin.line.hidden = length - gap < 8;
+    if (pin.line.hidden) return;
+    pin.line.style.left = `${x + Math.cos(angle) * gap}px`;
+    pin.line.style.top = `${y + Math.sin(angle) * gap}px`;
+    pin.line.style.width = `${length - gap}px`;
+    pin.line.style.transform = `rotate(${angle}rad)`;
+  }
+  function updateLabels() {
+    const labelsOn = Boolean(current.markerLabels && current.focus?.length && regionMode);
+    annotationLayer.hidden = !labelsOn;
+    if (!labelsOn) {
+      for (const pin of labelPins.values()) hidePin(pin);
+      return;
+    }
+    const width = host.clientWidth;
+    const height = host.clientHeight;
+    const focused = new Set(current.focus);
+    let shown = 0;
+    for (const [id, pin] of labelPins) {
+      if (!focused.has(id)) hidePin(pin);
+    }
+    for (const id of focused) {
+      if (!markerPoints.has(id) || shown >= 6) continue;
+      const pin = labelPin(id);
+      const list = (markerMeshes.get(id) || []).filter(marker => marker.visible);
+      if (!list.length) { hidePin(pin); continue; }
+      let nearest = list[0];
+      let best = Infinity;
+      for (const marker of list) {
+        const distance = marker.position.distanceToSquared(camera.position);
+        if (distance < best) {
+          best = distance;
+          nearest = marker;
+        }
+      }
+      placeLabel(pin, nearest, width, height);
+      shown++;
+    }
   }
 
   // Focus annotations belong to the focus API, independent of model geometry.
@@ -308,16 +448,23 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     if (regionMode) {
       camera.getWorldDirection(cameraDirection);
       const pixelScale = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / oldHeight;
-      for (const list of markerMeshes.values()) {
+      const pulseOn = !reduced.matches;
+      for (const [id, list] of markerMeshes) {
+        const active = current.focus?.includes(id);
+        const wave = active && pulseOn ? Math.sin((now || 0) / 300) : 0;
         for (const marker of list) {
           if (!marker.visible) continue;
-          const depth = markerOffset.copy(marker.position).sub(camera.position).dot(cameraDirection);
-          const active = current.focus?.includes(marker.userData.id);
-          const size = markerSize * (active ? 1.35 : 1);
-          const minRadius = active || current.pick ? 7 : 5;
-          marker.scale.setScalar(Math.max(size, minRadius * depth * pixelScale));
+          const depth = Math.max(0, markerOffset.copy(marker.position).sub(camera.position).dot(cameraDirection));
+          // Markers keep a readable screen size instead of ballooning when the
+          // camera moves in close on a small foramen.
+          const pixels = (active ? 10 : current.pick ? 7 : 5) * (pulseOn ? 1 + .16 * wave : 1);
+          marker.scale.setScalar(Math.max(.0004, pixels * depth * pixelScale));
+          marker.userData.halo.visible = active;
+          marker.userData.halo.material.opacity = .68 + .1 * wave;
         }
       }
+      updateLabels();
+      if (pulseOn && current.focus?.some(id => markerMeshes.has(id))) schedule();
     }
     try {
       renderer.render(scene, camera);
@@ -338,13 +485,29 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   }
 
   function frame(direction = current.view, immediate = false) {
-    const { ids, focus = [], close, neutral } = current;
+    const { ids, focus = [], anchors = [], close, neutral } = current;
     const group = boxOf(regionMode && current.context?.length ? [...new Set([...ids, ...current.context])] : ids);
-    const target = boxOf(focus);
-    // Focused steps frame the focused meshes themselves; a tiny target in a
-    // point-marker level keeps the regional context in frame instead.
+    const markerFocus = focus.some(id => markerPoints.has(id));
+    const support = [...new Set([...focus, ...(markerFocus ? anchors : [])])];
+    const markerBox = markerFocus ? boxOf(focus.filter(id => markerPoints.has(id))) : null;
+    // A point marker is smaller than any bone. Centre the frame on the marker
+    // and keep enough of the anchor bones in view to give it context, instead
+    // of shrinking a whole femur or vertebral column into the frame.
+    let target = boxOf(support);
+    if (markerBox && !markerBox.isEmpty()) {
+      target = markerBox.clone().expandByScalar(
+        Math.max(.06, Math.min(.09, Math.max(...markerBox.getSize(new THREE.Vector3()).toArray()) * .35)),
+      );
+      const meshBox = boxOf(focus.filter(id => !markerPoints.has(id)));
+      if (!meshBox.isEmpty()) target.union(meshBox);
+    }
+    // Focused steps frame the focused meshes themselves; a point marker is
+    // centred with enough surrounding body to read it against its anchor bones.
+    // A tiny marker with no anchors keeps the regional context in frame instead.
     const targetExtent = target.isEmpty() ? 0 : Math.max(...target.getSize(new THREE.Vector3()).toArray());
-    const focused = close && !target.isEmpty() && (!regionMode || current.atlas || targetExtent >= .08);
+    const tightMarker = markerFocus && anchors.length > 0 && !target.isEmpty();
+    const focused = !target.isEmpty() && (close || tightMarker)
+      && (!regionMode || current.atlas || tightMarker || targetExtent >= .08);
     const box = focused ? target : group;
     if (box.isEmpty()) return;
     const extent = box.getSize(new THREE.Vector3());
@@ -404,7 +567,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     hideTip();
     applyStyles();
     const wanted = [...new Set([...(config.ids || []), ...(config.context || []),
-      ...(config.focus || []), ...(config.pickIds || [])])];
+      ...(config.focus || []), ...(config.pickIds || []), ...(config.anchors || [])])];
     const pending = ensurePacks(wanted);
     if (preserveCamera) schedule();
     else frame(config.view);
@@ -436,6 +599,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     select.set(tone.select);
     selectDeep.set(tone.selectDeep);
     tint.set(tone.tint);
+    haloMaterial.color.set(tone.axis);
     axisTube?.material.color.set(tone.axis);
     for (const child of axis.children) {
       const label = child.userData.label;
@@ -452,8 +616,12 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     const context = new Set(current.context || []);
     const highlight = new Set(current.focus || []);
     const faint = new Set(current.faint || []);
+    const anchors = new Set(current.anchors || []);
+    const anchorFocus = anchors.size > 0 && highlight.size > 0;
     const isolate = display.isolate && highlight.size > 0;
-    const visible = isolate ? highlight : new Set([...primary, ...context, ...highlight]);
+    const visible = isolate
+      ? new Set([...highlight, ...(anchorFocus ? anchors : [])])
+      : new Set([...primary, ...context, ...highlight, ...(anchorFocus ? anchors : [])]);
     const pickOnly = current.pickIds ? new Set(current.pickIds) : null;
     for (const [id, mesh] of meshes) {
       if (!visible.has(id)) mesh.visible = false;
@@ -463,8 +631,21 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       const mesh = meshFor(id);
       if (!mesh) continue;
       const active = highlight.has(id);
+      const anchor = anchorFocus && !active && anchors.has(id);
       const material = mesh.material;
-      if (current.atlas) {
+      if (anchor) {
+        // Anchor bones support the focused marker: readable, never louder.
+        material.color.set(baseColor(id));
+        material.emissive.copy(tint).multiplyScalar(.22);
+        material.emissiveIntensity = 1;
+        material.opacity = Math.max(.5, Math.min(.68, current.contextOpacity ?? .58));
+      } else if (anchorFocus && !active) {
+        // Everything that is not an anchor drops to a faint ghost.
+        material.color.set(baseColor(id));
+        material.emissive.copy(off);
+        material.emissiveIntensity = 0;
+        material.opacity = (primary.has(id) && !context.has(id) ? .10 : .045) * display.ghost;
+      } else if (current.atlas) {
         // Atlas shows every checked part; only a selection is emphasised.
         material.color.set(active ? select : baseColor(id));
         material.emissive.copy(active ? selectDeep : off);
@@ -499,12 +680,14 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       const on = visible.has(id);
       const active = highlight.has(id);
       for (const marker of list) {
-        const opacity = active ? 1 : .78 * (highlight.size ? display.ghost : 1);
+        const opacity = active ? 1 : (anchorFocus ? .16 : .78) * (highlight.size ? display.ghost : 1);
         marker.visible = on && opacity > 0;
         marker.userData.fill.color.set(active ? tone.axis : (current.palette?.[id] || baseColor(id)));
         marker.userData.fill.opacity = opacity;
+        marker.material.color.set(tone.labelBg);
         marker.material.opacity = opacity;
-        marker.scale.setScalar(markerSize * (active ? 1.35 : 1));
+        marker.userData.halo.visible = active;
+        marker.scale.setScalar(markerSize * (active ? 1.75 : 1));
         if (marker.visible && (!pickOnly || pickOnly.has(id))) pickable.push(marker);
       }
     }
@@ -559,6 +742,9 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       axisTube?.geometry.dispose();
       axisTube?.material.dispose();
       markerGeometry.dispose();
+      haloMap.dispose();
+      haloMaterial.dispose();
+      annotationLayer.remove();
       for (const list of markerMeshes.values()) {
         for (const marker of list) {
           marker.material.dispose();

@@ -1,9 +1,9 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=50';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=50';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=54';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=54';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=50';
+} from './study.js?v=54';
 
 // Boot the selected subject before any UI state is derived. The subject pack is
 // a dynamic import, so the other subject's data is never downloaded.
@@ -244,7 +244,25 @@ function render({ top = false, activate = false } = {}) {
 
 function setModel(ids, options = {}) {
   const valid = sequence => [...new Set((sequence || []).filter(id => ITEMS[id]))];
-  model = { ...options, ids: valid(ids), focus: valid(options.focus), context: valid(options.context) };
+  const focus = valid(options.focus);
+  model = { ...options, ids: valid(ids), focus, context: valid(options.context), anchors: markerAnchors(focus) };
+}
+
+// Point markers name the bones they sit on or connect. Those bones stay
+// readable while the rest of the region is ghosted behind them.
+function markerAnchors(focus) {
+  return [...new Set((focus || []).flatMap(id => pack.markerMeta?.[id]?.anchors || []).filter(id => ITEMS[id]))];
+}
+function markerView(id) {
+  return pack.markerMeta?.[id]?.view;
+}
+function focusedStructureView(focus, fallback) {
+  if (focus?.length !== 1) return fallback;
+  const id = focus[0];
+  // MSK packs declare a teaching view for point markers and hidden structures;
+  // other subjects keep the view the learner chose.
+  const preferred = pack.markerMeta ? (markerView(id) || teachingView(id)) : null;
+  return preferred || fallback;
 }
 
 function showStructure(id, options = {}) {
@@ -266,7 +284,7 @@ function regionScope(level) {
 function modelLoaded() {
   if (viewerStatus !== 'ready' || !viewer) return false;
   if (!model) return true;
-  return viewer.loadedFor([...model.ids, ...(model.context || []), ...(model.focus || [])]);
+  return viewer.loadedFor([...model.ids, ...(model.context || []), ...(model.focus || []), ...(model.anchors || [])]);
 }
 
 function updateModel() {
@@ -274,6 +292,7 @@ function updateModel() {
     viewer?.focusAxis(false);
     return;
   }
+  model.anchors = markerAnchors(model.focus);
   $('model-label').textContent = model.title || 'Heart and lungs';
   $('model-angle').textContent = views[model.view] || '3D specimen';
   $('view-direction').value = model.view || 'ant';
@@ -308,7 +327,7 @@ function focusStructure(id) {
   if (!model || !ITEMS[id]) return;
   if (model.clickedFocus && model.focus.length === 1 && model.focus[0] === id) return restoreStepView();
   const step = model.step || stepSnapshot();
-  model = { ...model, focus: [id], close: true, clickedFocus: true, title: ITEMS[id].pt, step };
+  model = { ...model, focus: [id], close: true, clickedFocus: true, title: ITEMS[id].pt, view: focusedStructureView([id], model.view), step };
   updateModel();
 }
 function restoreStepView() {
@@ -564,7 +583,7 @@ function renderLesson() {
     activity.index = index;
     const id = level.ids[index];
     const item = ITEMS[id];
-    levelModel(level, { view: teachingView(id), controls: true, explore: true, focus: [id], close: true });
+    levelModel(level, { view: teachingView(id), controls: true, explore: true, focus: [id], close: true, markerLabels: true });
     const last = index + 1 === total;
     const clinical = LESSONS[id]?.clinical || detailFor(id).clinical;
     return `<div class="prompt lesson-structure">${top}
@@ -587,10 +606,11 @@ function renderLesson() {
     const target = order[found.length];
     const allFound = !target;
     const feedback = activity.findFeedback;
+    const preferred = target && pack.markerMeta?.[target] ? markerView(target) : null;
     levelModel(level, {
-      view: activity.findView || lessonView(level), controls: true, pick: !allFound && modelLoaded(), explore: false,
+      view: activity.findView || preferred || lessonView(level), controls: true, pick: !allFound && modelLoaded(), explore: false,
       focus: activity.revealed && target ? [...found, target] : found, close: false,
-      pickIds: order, preserveCamera: found.length > 0 || activity.revealed,
+      pickIds: order, preserveCamera: (found.length > 0 || activity.revealed) && !(activity.revealed && pack.markerMeta?.[target]),
     });
     const ready = modelLoaded();
     const reveal = () => {
@@ -619,7 +639,7 @@ function renderLesson() {
   }
 
   if (stage === 'contrast' && contrast) {
-    levelModel(level, { view: teachingView(contrast.a), controls: true, explore: true, focus: [contrast.a, contrast.b], close: true });
+    levelModel(level, { view: teachingView(contrast.a), controls: true, explore: true, focus: [contrast.a, contrast.b], close: true, markerLabels: true });
     return `<div class="prompt lesson-contrast">${top}
       <div class="eyebrow">${escape(level.title)} · Don’t mix them up</div>
       <h1>${escape(contrast.title)}</h1>
@@ -635,7 +655,7 @@ function renderLesson() {
     const check = activity.check || { results: [] };
     const score = check.results.filter(result => result.correct).length;
     const wrong = check.results.filter(result => !result.correct);
-    levelModel(level, { view: lessonView(level), controls: true, explore: true, paletteAll: true, layout: 'study-layout lesson-check' });
+    levelModel(level, { view: lessonView(level), controls: true, explore: true, paletteAll: true, layout: 'study-layout lesson-check', markerLabels: true });
     return `<div class="prompt lesson-done">${top}
       <div class="eyebrow">${escape(level.title)} · Check complete</div>
       <h1><span class="${score === check.results.length ? 'good' : ''}">${score}</span> of ${check.results.length} correct</h1>
@@ -656,7 +676,7 @@ function renderLesson() {
     const named = question && activity.answer !== undefined
       ? level.ids.find(id => fold(ITEMS[id].pt) === fold(question.options[question.answer] || '')) : null;
     levelModel(level, { view: named ? teachingView(named) : lessonView(level), controls: true, explore: false,
-      focus: named ? [named] : [], close: Boolean(named), layout: 'study-layout lesson-check', preserveCamera: !named && check.index > 0 });
+      focus: named ? [named] : [], close: Boolean(named), layout: 'study-layout lesson-check', preserveCamera: !named && check.index > 0, markerLabels: Boolean(named) });
     if (!question) {
       return `<div class="prompt lesson-done">${top}<h1>Check the level</h1>
         <p>No check questions are available for this level.</p>
@@ -678,7 +698,7 @@ function renderLesson() {
     </div>`;
   }
 
-  levelModel(level, { view: lessonView(level), controls: true, explore: true, paletteAll: true });
+  levelModel(level, { view: lessonView(level), controls: true, explore: true, paletteAll: true, markerLabels: true });
   return `<div class="prompt lesson-overview">${top}
     <div class="eyebrow">${escape(regions[level.region]?.title || '')} · Learn</div>
     <h1>${escape(level.title)}</h1>
@@ -1085,7 +1105,7 @@ function renderFind() {
     ...levelContext(level), focus: done ? [id] : [],
     view: state.direction || (pack.findViewUsesTeaching ? teachingView(id) : 'ant'),
     controls: true, pick: Boolean(viewer && !done && modelLoaded()),
-    preserveCamera: Boolean(tries),
+    preserveCamera: Boolean(tries) && !(done && pack.markerMeta?.[id]),
   });
   const ready = modelLoaded();
   function next() {
@@ -1093,7 +1113,7 @@ function renderFind() {
       recordActivity();
       activity = { type: 'complete', title: 'Find it complete', label: level.title, description: `${state.correct} of ${ids.length} structures located.`, level };
     } else {
-      Object.assign(state, { index: index + 1, tries: 0, done: false, feedback: '', direction: 'ant' });
+      Object.assign(state, { index: index + 1, tries: 0, done: false, feedback: '', direction: undefined });
     }
     render({ activate: true });
   }
@@ -1571,7 +1591,7 @@ function renderAtlas() {
     : `Atlas · ${visible.length} structures`;
   setModel(visible, {
     title, controls: true, explore: true, atlas: true, layout: 'atlas-layout', view: atlas.view,
-    focus, frameFocus: focus.length > 0, preserveCamera: focus.length > 0,
+    focus, frameFocus: focus.length > 0, preserveCamera: focus.length > 0, markerLabels: true,
   });
   const anyMatch = ATLAS_GROUPS.some(group => group.ids.some(id => !query || atlasSearchText(id).includes(query)));
   queueMicrotask(syncAtlasGroups);
@@ -1639,7 +1659,7 @@ function atlasApply({ preserve = true, frame = false } = {}) {
     : `Atlas · ${visible.length} structures`;
   setModel(visible, {
     title, controls: true, explore: true, atlas: true, layout: 'atlas-layout', view: atlas.view,
-    focus: atlas.focus, frameFocus: frame && atlas.focus.length > 0, preserveCamera: preserve,
+    focus: atlas.focus, frameFocus: frame && atlas.focus.length > 0, preserveCamera: preserve, markerLabels: true,
   });
   updateModel();
   atlasRenderDetail();
@@ -1657,6 +1677,8 @@ function atlasFocus(id, additive = false) {
   else focus = [id];
   atlas.focus = focus;
   atlas.active = focus.includes(id) ? id : focus[focus.length - 1] || null;
+  // Focus sets the preferred direction once; later visibility toggles keep it.
+  if (focus.length === 1) atlas.view = focusedStructureView(focus, atlas.view);
   atlasApply({ preserve: focus.length > 0, frame: focus.length > 0 });
   if (fromDrawer) {
     const shell = document.querySelector('.model-shell');
@@ -2142,7 +2164,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=50');
+    const { createViewer } = await import('./viewer.js?v=54');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore, { ...pack, ...pack.model });
     viewer.onReady(() => {
       syncModelStatus();

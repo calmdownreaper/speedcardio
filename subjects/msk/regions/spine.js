@@ -149,14 +149,16 @@ export const colors = {
 };
 
 export const markers = {
-  atlantooccipital_joint: [[18, -60, 1478], [-18, -60, 1478]],
-  atlantoaxial_joint: [[25, -55, 1462], [-25, -55, 1462]],
-  zygapophyseal_joint: [[25, -48, 950], [-25, -48, 950]],
-  anterior_longitudinal_ligament: [[0, -92, 1350], [0, -92, 1150], [0, -92, 980]],
-  posterior_longitudinal_ligament: [[0, -70, 1350], [0, -70, 1150], [0, -70, 980]],
-  ligamentum_flavum: [[0, -48, 1350], [0, -48, 1150], [0, -48, 980]],
-  supraspinous_ligament: [[0, -25, 1350], [0, -25, 1150], [0, -25, 980]],
-  nuchal_ligament: [[0, -32, 1420], [0, -30, 1380]],
+  atlantooccipital_joint: [[18.5, 23.7, 1549.5], [-18.2, 24.8, 1546.1]],
+  atlantoaxial_joint: [[22.9, 29.4, 1538.4], [-22.9, 29.4, 1538.4]],
+  zygapophyseal_joint: [[25.3, 44.3, 1003.2], [-25.3, 44.3, 1003.2]],
+};
+
+// Anchor bones for each point marker and the view that shows it best.
+export const markerMeta = {
+  atlantooccipital_joint: { anchors: ['occipital', 'atlas'], view: 'post' },
+  atlantoaxial_joint: { anchors: ['atlas', 'axis'], view: 'post' },
+  zygapophyseal_joint: { anchors: ['thoracic_vertebra', 'lumbar_vertebra'], view: 'post' },
 };
 
 export const purpose = 'Vertebrae, discs, joints and ligaments of the column, then the deep muscles that hold the head and trunk upright.';
@@ -453,5 +455,6 @@ export const content = {
 };
 
 export const viewHints = {
-  post: ['atlas', 'axis', 'cervical_vertebra', 'thoracic_vertebra', 'lumbar_vertebra', 'sacrum', 'iliocostalis', 'longissimus', 'spinalis', 'semispinalis', 'splenius_capitis', 'rectus_capitis_posterior_major'],
+  post: ['atlas', 'axis', 'cervical_vertebra', 'thoracic_vertebra', 'lumbar_vertebra', 'sacrum', 'iliocostalis', 'longissimus', 'spinalis', 'semispinalis', 'splenius_capitis', 'rectus_capitis_posterior_major',
+    'posterior_longitudinal_ligament', 'ligamentum_flavum', 'supraspinous_ligament', 'nuchal_ligament'],
 };

@@ -176,22 +176,42 @@ export const colors = {
 };
 
 export const markers = {
-  bregma: [0, -105, 1633],
-  pterion: [[52, -110, 1555], [-52, -110, 1555]],
-  nasion: [0, -175, 1524],
-  glabella: [0, -165, 1572],
-  inion: [0, 8, 1535],
-  mastoid_process: [[45, -55, 1485], [-45, -55, 1485]],
-  foramen_magnum: [0, -48, 1472],
-  foramen_ovale: [[22, -112, 1498], [-22, -112, 1498]],
-  foramen_rotundum: [[15, -133, 1505], [-15, -133, 1505]],
-  foramen_spinosum: [[27, -110, 1498], [-27, -110, 1498]],
-  jugular_foramen: [[34, -73, 1470], [-34, -73, 1470]],
-  internal_acoustic_meatus: [[28, -95, 1498], [-28, -95, 1498]],
-  optic_canal: [[10, -150, 1512], [-10, -150, 1512]],
-  superior_orbital_fissure: [[20, -158, 1512], [-20, -158, 1512]],
-  infraorbital_foramen: [[22, -180, 1500], [-22, -180, 1500]],
-  mental_foramen: [[18, -170, 1462], [-18, -170, 1462]],
+  bregma: [1.3, -16.1, 1700.8],
+  pterion: [[56.0, -26.7, 1620.9], [-57.0, -25.5, 1620.7]],
+  nasion: [0.0, -84.0, 1596.8],
+  glabella: [0.0, -85.0, 1611.2],
+  inion: [-0.0, 100.5, 1567.7],
+  mastoid_process: [[-55.4, 16.1, 1561.7], [55.4, 16.1, 1561.7]],
+  foramen_magnum: [0.7, 29.6, 1550.5],
+  foramen_ovale: [[-24.0, -12.2, 1578.3], [24.0, -12.2, 1578.3]],
+  foramen_rotundum: [[-15.3, -25.5, 1591.4], [15.3, -25.5, 1591.4]],
+  foramen_spinosum: [[-30.2, -6.8, 1577.8], [30.2, -6.8, 1577.8]],
+  jugular_foramen: [[-29.4, 13.1, 1562.6], [29.4, 13.1, 1562.6]],
+  internal_acoustic_meatus: [[25.5, -5.0, 1573.6], [-24.8, -6.2, 1573.5]],
+  optic_canal: [[-12.0, -49.1, 1603.1], [12.0, -49.1, 1603.1]],
+  superior_orbital_fissure: [[20.2, -68.1, 1583.6], [-18.9, -68.1, 1583.6]],
+  infraorbital_foramen: [[22.6, -90.1, 1572.6], [-20.8, -90.1, 1572.6]],
+  mental_foramen: [[-21.6, -73.2, 1510.3], [21.6, -73.2, 1510.3]],
+};
+
+// Anchor bones for each point marker and the view that shows it best.
+export const markerMeta = {
+  bregma: { anchors: ['frontal', 'parietal'], view: 'sup' },
+  pterion: { anchors: ['frontal', 'parietal', 'sphenoid', 'temporal'], view: 'esq' },
+  nasion: { anchors: ['frontal', 'nasal'], view: 'ant' },
+  glabella: { anchors: ['frontal'], view: 'ant' },
+  inion: { anchors: ['occipital'], view: 'post' },
+  mastoid_process: { anchors: ['temporal'], view: 'esq' },
+  foramen_magnum: { anchors: ['occipital'], view: 'inf' },
+  foramen_ovale: { anchors: ['sphenoid'], view: 'inf' },
+  foramen_rotundum: { anchors: ['sphenoid'], view: 'inf' },
+  foramen_spinosum: { anchors: ['sphenoid'], view: 'inf' },
+  jugular_foramen: { anchors: ['temporal', 'occipital'], view: 'inf' },
+  internal_acoustic_meatus: { anchors: ['temporal'], view: 'post' },
+  optic_canal: { anchors: ['sphenoid'], view: 'ant' },
+  superior_orbital_fissure: { anchors: ['sphenoid'], view: 'ant' },
+  infraorbital_foramen: { anchors: ['maxilla'], view: 'ant' },
+  mental_foramen: { anchors: ['mandible'], view: 'ant' },
 };
 
 export const purpose = 'Cranial and facial bones, the palpable skull landmarks, and the foramina with their contents.';

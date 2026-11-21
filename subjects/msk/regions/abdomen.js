@@ -61,10 +61,18 @@ export const colors = {
 };
 
 export const markers = {
-  superficial_inguinal_ring: [[22, -135, 800], [-22, -135, 800]],
-  deep_inguinal_ring: [[45, -105, 880], [-45, -105, 880]],
-  rectus_sheath: [[25, -135, 1000], [-25, -135, 1000]],
-  arcuate_line: [0, -130, 1000],
+  superficial_inguinal_ring: [[20.6, -51.8, 847.4], [-20.4, -51.8, 847.4]],
+  deep_inguinal_ring: [[42.0, -20.8, 930.6], [-41.9, -20.8, 930.6]],
+  rectus_sheath: [[23.3, -41.4, 1053.4], [-23.2, -41.4, 1053.4]],
+  arcuate_line: [0.1, -36.6, 1053.4],
+};
+
+// Anchor bones for each point marker and the view that shows it best.
+export const markerMeta = {
+  superficial_inguinal_ring: { anchors: ['hip_bone'], view: 'ant' },
+  deep_inguinal_ring: { anchors: ['hip_bone'], view: 'ant' },
+  rectus_sheath: { anchors: ['linea_alba', 'hip_bone'], view: 'ant' },
+  arcuate_line: { anchors: ['linea_alba', 'hip_bone'], view: 'ant' },
 };
 
 export const purpose = 'The bony frame, wall muscles and inguinal region of the abdomen, including the inguinal canal.';

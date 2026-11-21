@@ -1,0 +1,1114 @@
+{
+ "baseline": "b26781e",
+ "markers": {
+  "skull": {
+   "bregma": [
+    0,
+    -105,
+    1633
+   ],
+   "pterion": [
+    [
+     52,
+     -110,
+     1555
+    ],
+    [
+     -52,
+     -110,
+     1555
+    ]
+   ],
+   "nasion": [
+    0,
+    -175,
+    1524
+   ],
+   "glabella": [
+    0,
+    -165,
+    1572
+   ],
+   "inion": [
+    0,
+    8,
+    1535
+   ],
+   "mastoid_process": [
+    [
+     45,
+     -55,
+     1485
+    ],
+    [
+     -45,
+     -55,
+     1485
+    ]
+   ],
+   "foramen_magnum": [
+    0,
+    -48,
+    1472
+   ],
+   "foramen_ovale": [
+    [
+     22,
+     -112,
+     1498
+    ],
+    [
+     -22,
+     -112,
+     1498
+    ]
+   ],
+   "foramen_rotundum": [
+    [
+     15,
+     -133,
+     1505
+    ],
+    [
+     -15,
+     -133,
+     1505
+    ]
+   ],
+   "foramen_spinosum": [
+    [
+     27,
+     -110,
+     1498
+    ],
+    [
+     -27,
+     -110,
+     1498
+    ]
+   ],
+   "jugular_foramen": [
+    [
+     34,
+     -73,
+     1470
+    ],
+    [
+     -34,
+     -73,
+     1470
+    ]
+   ],
+   "internal_acoustic_meatus": [
+    [
+     28,
+     -95,
+     1498
+    ],
+    [
+     -28,
+     -95,
+     1498
+    ]
+   ],
+   "optic_canal": [
+    [
+     10,
+     -150,
+     1512
+    ],
+    [
+     -10,
+     -150,
+     1512
+    ]
+   ],
+   "superior_orbital_fissure": [
+    [
+     20,
+     -158,
+     1512
+    ],
+    [
+     -20,
+     -158,
+     1512
+    ]
+   ],
+   "infraorbital_foramen": [
+    [
+     22,
+     -180,
+     1500
+    ],
+    [
+     -22,
+     -180,
+     1500
+    ]
+   ],
+   "mental_foramen": [
+    [
+     18,
+     -170,
+     1462
+    ],
+    [
+     -18,
+     -170,
+     1462
+    ]
+   ]
+  },
+  "spine": {
+   "atlantooccipital_joint": [
+    [
+     18,
+     -60,
+     1478
+    ],
+    [
+     -18,
+     -60,
+     1478
+    ]
+   ],
+   "atlantoaxial_joint": [
+    [
+     25,
+     -55,
+     1462
+    ],
+    [
+     -25,
+     -55,
+     1462
+    ]
+   ],
+   "zygapophyseal_joint": [
+    [
+     25,
+     -48,
+     950
+    ],
+    [
+     -25,
+     -48,
+     950
+    ]
+   ]
+  },
+  "thorax": {
+   "costovertebral_joint": [
+    [
+     30,
+     -60,
+     1260
+    ],
+    [
+     -30,
+     -60,
+     1260
+    ]
+   ],
+   "costotransverse_joint": [
+    [
+     55,
+     -45,
+     1260
+    ],
+    [
+     -55,
+     -45,
+     1260
+    ]
+   ],
+   "costochondral_joint": [
+    [
+     55,
+     -165,
+     1230
+    ],
+    [
+     -55,
+     -165,
+     1230
+    ]
+   ],
+   "sternocostal_joint": [
+    [
+     25,
+     -185,
+     1270
+    ],
+    [
+     -25,
+     -185,
+     1270
+    ]
+   ],
+   "manubriosternal_joint": [
+    0,
+    -175,
+    1272
+   ],
+   "xiphisternal_joint": [
+    0,
+    -195,
+    1120
+   ],
+   "radiate_sternocostal_ligament": [
+    0,
+    -180,
+    1250
+   ]
+  },
+  "pelvis": {
+   "sacroiliac_joint": [
+    [
+     45,
+     -60,
+     900
+    ],
+    [
+     -45,
+     -60,
+     900
+    ]
+   ]
+  },
+  "upper": {},
+  "abdomen": {
+   "superficial_inguinal_ring": [
+    [
+     22,
+     -135,
+     800
+    ],
+    [
+     -22,
+     -135,
+     800
+    ]
+   ],
+   "deep_inguinal_ring": [
+    [
+     45,
+     -105,
+     880
+    ],
+    [
+     -45,
+     -105,
+     880
+    ]
+   ],
+   "rectus_sheath": [
+    [
+     25,
+     -135,
+     1000
+    ],
+    [
+     -25,
+     -135,
+     1000
+    ]
+   ],
+   "arcuate_line": [
+    0,
+    -130,
+    1000
+   ]
+  },
+  "lower": {
+   "patellar_ligament": [
+    [
+     80,
+     -122,
+     340
+    ],
+    [
+     -80,
+     -122,
+     340
+    ]
+   ],
+   "ankle_joint": [
+    [
+     70,
+     -75,
+     15
+    ],
+    [
+     -70,
+     -75,
+     15
+    ]
+   ]
+  }
+ },
+ "markerMeta": {
+  "skull": {
+   "bregma": {
+    "anchors": [
+     "frontal",
+     "parietal"
+    ],
+    "view": "sup"
+   },
+   "pterion": {
+    "anchors": [
+     "frontal",
+     "parietal",
+     "sphenoid",
+     "temporal"
+    ],
+    "view": "esq"
+   },
+   "nasion": {
+    "anchors": [
+     "frontal",
+     "nasal"
+    ],
+    "view": "ant"
+   },
+   "glabella": {
+    "anchors": [
+     "frontal"
+    ],
+    "view": "ant"
+   },
+   "inion": {
+    "anchors": [
+     "occipital"
+    ],
+    "view": "post"
+   },
+   "mastoid_process": {
+    "anchors": [
+     "temporal"
+    ],
+    "view": "esq"
+   },
+   "foramen_magnum": {
+    "anchors": [
+     "occipital"
+    ],
+    "view": "inf"
+   },
+   "foramen_ovale": {
+    "anchors": [
+     "sphenoid"
+    ],
+    "view": "inf"
+   },
+   "foramen_rotundum": {
+    "anchors": [
+     "sphenoid"
+    ],
+    "view": "inf"
+   },
+   "foramen_spinosum": {
+    "anchors": [
+     "sphenoid"
+    ],
+    "view": "inf"
+   },
+   "jugular_foramen": {
+    "anchors": [
+     "temporal",
+     "occipital"
+    ],
+    "view": "inf"
+   },
+   "internal_acoustic_meatus": {
+    "anchors": [
+     "temporal"
+    ],
+    "view": "post"
+   },
+   "optic_canal": {
+    "anchors": [
+     "sphenoid"
+    ],
+    "view": "ant"
+   },
+   "superior_orbital_fissure": {
+    "anchors": [
+     "sphenoid"
+    ],
+    "view": "ant"
+   },
+   "infraorbital_foramen": {
+    "anchors": [
+     "maxilla"
+    ],
+    "view": "ant"
+   },
+   "mental_foramen": {
+    "anchors": [
+     "mandible"
+    ],
+    "view": "ant"
+   }
+  },
+  "spine": {
+   "atlantooccipital_joint": {
+    "anchors": [
+     "occipital",
+     "atlas"
+    ],
+    "view": "post"
+   },
+   "atlantoaxial_joint": {
+    "anchors": [
+     "atlas",
+     "axis"
+    ],
+    "view": "post"
+   },
+   "zygapophyseal_joint": {
+    "anchors": [
+     "thoracic_vertebra",
+     "lumbar_vertebra"
+    ],
+    "view": "post"
+   }
+  },
+  "thorax": {
+   "costovertebral_joint": {
+    "anchors": [
+     "thoracic_vertebra",
+     "ribs"
+    ],
+    "view": "post"
+   },
+   "costotransverse_joint": {
+    "anchors": [
+     "thoracic_vertebra",
+     "ribs"
+    ],
+    "view": "post"
+   },
+   "costochondral_joint": {
+    "anchors": [
+     "ribs",
+     "costal_cartilages"
+    ],
+    "view": "ant"
+   },
+   "sternocostal_joint": {
+    "anchors": [
+     "sternum",
+     "costal_cartilages"
+    ],
+    "view": "ant"
+   },
+   "manubriosternal_joint": {
+    "anchors": [
+     "sternum"
+    ],
+    "view": "ant"
+   },
+   "xiphisternal_joint": {
+    "anchors": [
+     "sternum"
+    ],
+    "view": "ant"
+   },
+   "radiate_sternocostal_ligament": {
+    "anchors": [
+     "sternum",
+     "costal_cartilages"
+    ],
+    "view": "ant"
+   }
+  },
+  "pelvis": {
+   "sacroiliac_joint": {
+    "anchors": [
+     "hip_bone",
+     "sacrum"
+    ],
+    "view": "post"
+   }
+  },
+  "upper": {},
+  "abdomen": {
+   "superficial_inguinal_ring": {
+    "anchors": [
+     "hip_bone"
+    ],
+    "view": "ant"
+   },
+   "deep_inguinal_ring": {
+    "anchors": [
+     "hip_bone"
+    ],
+    "view": "ant"
+   },
+   "rectus_sheath": {
+    "anchors": [
+     "linea_alba",
+     "hip_bone"
+    ],
+    "view": "ant"
+   },
+   "arcuate_line": {
+    "anchors": [
+     "linea_alba",
+     "hip_bone"
+    ],
+    "view": "ant"
+   }
+  },
+  "lower": {
+   "patellar_ligament": {
+    "anchors": [
+     "patella",
+     "tibia"
+    ],
+    "view": "ant"
+   },
+   "ankle_joint": {
+    "anchors": [
+     "tibia",
+     "fibula",
+     "tarsal_bones"
+    ],
+    "view": "ant"
+   }
+  }
+ },
+ "anchorBoxes": {
+  "skull": {
+   "bregma": {
+    "anchors": [
+     "frontal",
+     "parietal"
+    ],
+    "low": [
+     -76.19281611682486,
+     -177.37980247657703,
+     1517.7970786004212
+    ],
+    "high": [
+     74.86341699880978,
+     14.939936596270641,
+     1636.27
+    ]
+   },
+   "pterion": {
+    "anchors": [
+     "frontal",
+     "parietal",
+     "sphenoid",
+     "temporal"
+    ],
+    "low": [
+     -76.19281611682486,
+     -177.37980247657703,
+     1475.4909066682944
+    ],
+    "high": [
+     74.86341699880978,
+     14.939936596270641,
+     1636.27
+    ]
+   },
+   "nasion": {
+    "anchors": [
+     "frontal",
+     "nasal"
+    ],
+    "low": [
+     -63.289824677266765,
+     -190.8301935529649,
+     1501.1665563005463
+    ],
+    "high": [
+     61.98649220862453,
+     -106.63491607867671,
+     1629.9358042023987
+    ]
+   },
+   "glabella": {
+    "anchors": [
+     "frontal"
+    ],
+    "low": [
+     -63.289824677266765,
+     -177.37980247657703,
+     1520.8990098757895
+    ],
+    "high": [
+     61.98649220862453,
+     -106.63491607867671,
+     1629.9358042023987
+    ]
+   },
+   "inion": {
+    "anchors": [
+     "occipital"
+    ],
+    "low": [
+     -61.96042555925169,
+     -100.95238651539658,
+     1477.7587051637317
+    ],
+    "high": [
+     60.70922638935515,
+     17.989734572893454,
+     1584.5016343455304
+    ]
+   },
+   "mastoid_process": {
+    "anchors": [
+     "temporal"
+    ],
+    "low": [
+     -73.97715092013306,
+     -133.74423142643514,
+     1475.4909066682944
+    ],
+    "high": [
+     72.5956185033723,
+     -35.00376360209967,
+     1551.5273228888823
+    ]
+   },
+   "foramen_magnum": {
+    "anchors": [
+     "occipital"
+    ],
+    "low": [
+     -61.96042555925169,
+     -100.95238651539658,
+     1477.7587051637317
+    ],
+    "high": [
+     60.70922638935515,
+     17.989734572893454,
+     1584.5016343455304
+    ]
+   },
+   "foramen_ovale": {
+    "anchors": [
+     "sphenoid"
+    ],
+    "low": [
+     -56.33002929471724,
+     -145.03109060487685,
+     1478.9056377361371
+    ],
+    "high": [
+     55.02669682607502,
+     -90.42146016876735,
+     1548.4514582628865
+    ]
+   },
+   "foramen_rotundum": {
+    "anchors": [
+     "sphenoid"
+    ],
+    "low": [
+     -56.33002929471724,
+     -145.03109060487685,
+     1478.9056377361371
+    ],
+    "high": [
+     55.02669682607502,
+     -90.42146016876735,
+     1548.4514582628865
+    ]
+   },
+   "foramen_spinosum": {
+    "anchors": [
+     "sphenoid"
+    ],
+    "low": [
+     -56.33002929471724,
+     -145.03109060487685,
+     1478.9056377361371
+    ],
+    "high": [
+     55.02669682607502,
+     -90.42146016876735,
+     1548.4514582628865
+    ]
+   },
+   "jugular_foramen": {
+    "anchors": [
+     "temporal",
+     "occipital"
+    ],
+    "low": [
+     -73.97715092013306,
+     -133.74423142643514,
+     1475.4909066682944
+    ],
+    "high": [
+     72.5956185033723,
+     17.989734572893454,
+     1584.5016343455304
+    ]
+   },
+   "internal_acoustic_meatus": {
+    "anchors": [
+     "temporal"
+    ],
+    "low": [
+     -73.97715092013306,
+     -133.74423142643514,
+     1475.4909066682944
+    ],
+    "high": [
+     72.5956185033723,
+     -35.00376360209967,
+     1551.5273228888823
+    ]
+   },
+   "optic_canal": {
+    "anchors": [
+     "sphenoid"
+    ],
+    "low": [
+     -56.33002929471724,
+     -145.03109060487685,
+     1478.9056377361371
+    ],
+    "high": [
+     55.02669682607502,
+     -90.42146016876735,
+     1548.4514582628865
+    ]
+   },
+   "superior_orbital_fissure": {
+    "anchors": [
+     "sphenoid"
+    ],
+    "low": [
+     -56.33002929471724,
+     -145.03109060487685,
+     1478.9056377361371
+    ],
+    "high": [
+     55.02669682607502,
+     -90.42146016876735,
+     1548.4514582628865
+    ]
+   },
+   "infraorbital_foramen": {
+    "anchors": [
+     "maxilla"
+    ],
+    "low": [
+     -47.597701754814295,
+     -184.02679806665242,
+     1463.9955142948697
+    ],
+    "high": [
+     45.79910294808802,
+     -126.81050269325846,
+     1533.3588682760094
+    ]
+   },
+   "mental_foramen": {
+    "anchors": [
+     "mandible"
+    ],
+    "low": [
+     -53.853697604297004,
+     -173.83473816187018,
+     1421.6372090639975
+    ],
+    "high": [
+     52.55036513565477,
+     -89.84799388256477,
+     1506.093153032014
+    ]
+   }
+  },
+  "spine": {
+   "atlantooccipital_joint": {
+    "anchors": [
+     "occipital",
+     "atlas"
+    ],
+    "low": [
+     -61.96042555925169,
+     -100.95238651539658,
+     1462.2229821375163
+    ],
+    "high": [
+     60.70922638935515,
+     17.989734572893454,
+     1584.5016343455304
+    ]
+   },
+   "atlantoaxial_joint": {
+    "anchors": [
+     "atlas",
+     "axis"
+    ],
+    "low": [
+     -41.36777255470442,
+     -87.63232868587298,
+     1433.1586680867945
+    ],
+    "high": [
+     40.22083998229927,
+     -36.67202916196172,
+     1481.4341027253029
+    ]
+   },
+   "zygapophyseal_joint": {
+    "anchors": [
+     "thoracic_vertebra",
+     "lumbar_vertebra"
+    ],
+    "low": [
+     -51.01243282265694,
+     -115.34117696920683,
+     904.6052187536241
+    ],
+    "high": [
+     49.57876710715049,
+     0.02981315500350945,
+     1376.9068387401958
+    ]
+   }
+  },
+  "thorax": {
+   "costovertebral_joint": {
+    "anchors": [
+     "thoracic_vertebra",
+     "ribs"
+    ],
+    "low": [
+     -137.0845090517899,
+     -197.685722338023,
+     1008.0637501144444
+    ],
+    "high": [
+     135.7811765831477,
+     0.02981315500350945,
+     1376.9068387401958
+    ]
+   },
+   "costotransverse_joint": {
+    "anchors": [
+     "thoracic_vertebra",
+     "ribs"
+    ],
+    "low": [
+     -137.0845090517899,
+     -197.685722338023,
+     1008.0637501144444
+    ],
+    "high": [
+     135.7811765831477,
+     0.02981315500350945,
+     1376.9068387401958
+    ]
+   },
+   "costochondral_joint": {
+    "anchors": [
+     "ribs",
+     "costal_cartilages"
+    ],
+    "low": [
+     -137.0845090517899,
+     -213.2214453642384,
+     1008.0637501144444
+    ],
+    "high": [
+     135.7811765831477,
+     -3.645584406567579,
+     1370.4683763451033
+    ]
+   },
+   "sternocostal_joint": {
+    "anchors": [
+     "sternum",
+     "costal_cartilages"
+    ],
+    "low": [
+     -109.89699375591297,
+     -213.82097829981385,
+     1102.5553540910062
+    ],
+    "high": [
+     108.46332804040651,
+     -122.17063910489212,
+     1325.242739683218
+    ]
+   },
+   "manubriosternal_joint": {
+    "anchors": [
+     "sternum"
+    ],
+    "low": [
+     -27.4481817896054,
+     -213.82097829981385,
+     1164.0205133121738
+    ],
+    "high": [
+     27.4481817896054,
+     -130.7987000473037,
+     1325.242739683218
+    ]
+   },
+   "xiphisternal_joint": {
+    "anchors": [
+     "sternum"
+    ],
+    "low": [
+     -27.4481817896054,
+     -213.82097829981385,
+     1164.0205133121738
+    ],
+    "high": [
+     27.4481817896054,
+     -130.7987000473037,
+     1325.242739683218
+    ]
+   },
+   "radiate_sternocostal_ligament": {
+    "anchors": [
+     "sternum",
+     "costal_cartilages"
+    ],
+    "low": [
+     -109.89699375591297,
+     -213.82097829981385,
+     1102.5553540910062
+    ],
+    "high": [
+     108.46332804040651,
+     -122.17063910489212,
+     1325.242739683218
+    ]
+   }
+  },
+  "pelvis": {
+   "sacroiliac_joint": {
+    "anchors": [
+     "hip_bone",
+     "sacrum"
+    ],
+    "low": [
+     -144.87843721427046,
+     -139.08789454786827,
+     751.9589200262459
+    ],
+    "high": [
+     144.74810396740625,
+     7.250275031281461,
+     958.0939832667012
+    ]
+   }
+  },
+  "upper": {},
+  "abdomen": {
+   "superficial_inguinal_ring": {
+    "anchors": [
+     "hip_bone"
+    ],
+    "low": [
+     -144.87843721427046,
+     -139.08789454786827,
+     751.9589200262459
+    ],
+    "high": [
+     144.74810396740625,
+     -1.1171194174016534,
+     958.0939832667012
+    ]
+   },
+   "deep_inguinal_ring": {
+    "anchors": [
+     "hip_bone"
+    ],
+    "low": [
+     -144.87843721427046,
+     -139.08789454786827,
+     751.9589200262459
+    ],
+    "high": [
+     144.74810396740625,
+     -1.1171194174016534,
+     958.0939832667012
+    ]
+   },
+   "rectus_sheath": {
+    "anchors": [
+     "linea_alba",
+     "hip_bone"
+    ],
+    "low": [
+     -144.87843721427046,
+     -212.15271273995177,
+     751.9589200262459
+    ],
+    "high": [
+     144.74810396740625,
+     -1.1171194174016534,
+     1177.8358374797815
+    ]
+   },
+   "arcuate_line": {
+    "anchors": [
+     "linea_alba",
+     "hip_bone"
+    ],
+    "low": [
+     -144.87843721427046,
+     -212.15271273995177,
+     751.9589200262459
+    ],
+    "high": [
+     144.74810396740625,
+     -1.1171194174016534,
+     1177.8358374797815
+    ]
+   }
+  },
+  "lower": {
+   "patellar_ligament": {
+    "anchors": [
+     "patella",
+     "tibia"
+    ],
+    "low": [
+     -109.34959411908322,
+     -122.74410539109469,
+     -6.085310385448793
+    ],
+    "high": [
+     109.4538607165746,
+     -51.973152343821525,
+     400.78901967528304
+    ]
+   },
+   "ankle_joint": {
+    "anchors": [
+     "tibia",
+     "fibula",
+     "tarsal_bones"
+    ],
+    "low": [
+     -120.16725360881374,
+     -140.52156026337474,
+     -68.48886898403885
+    ],
+    "high": [
+     120.11512031006805,
+     -24.003637566759238,
+     373.9143041718802
+    ]
+   }
+  }
+ }
+}

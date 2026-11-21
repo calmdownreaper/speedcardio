@@ -4,3 +4,6 @@ nohup.out
 .taste-skill/
 backup_pre_redesign/
 .slim/deepwork/
+
+# Z-Anatomy FBX cache (rebuild with tools/zanatomy/extract.py)
+tools/zanatomy/.cache/

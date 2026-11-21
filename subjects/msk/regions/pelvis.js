@@ -123,13 +123,12 @@ export const colors = {
 };
 
 export const markers = {
-  sacroiliac_joint: [[45, -60, 900], [-45, -60, 900]],
-  pubic_symphysis: [0, -145, 790],
-  hip_joint: [[98, -76, 818], [-98, -76, 818]],
-  sacrotuberous_ligament: [[40, -40, 840], [-40, -40, 840]],
-  sacrospinous_ligament: [[32, -35, 860], [-32, -35, 860]],
-  iliolumbar_ligament: [[45, -50, 960], [-45, -50, 960]],
-  inguinal_ligament: [[55, -125, 850], [-55, -125, 850]],
+  sacroiliac_joint: [[38.6, 24.2, 948.7], [-38.6, 24.2, 948.7]],
+};
+
+// Anchor bones for each point marker and the view that shows it best.
+export const markerMeta = {
+  sacroiliac_joint: { anchors: ['hip_bone', 'sacrum'], view: 'post' },
 };
 
 export const purpose = 'Bones and joints of the pelvic ring, then the gluteal, iliopsoas and pelvic floor muscles.';
@@ -388,6 +387,7 @@ export const content = {
 };
 
 export const viewHints = {
-  post: ['hip_bone', 'sacrum', 'gluteus_maximus', 'gluteus_medius', 'gluteus_minimus', 'piriformis'],
+  post: ['hip_bone', 'sacrum', 'gluteus_maximus', 'gluteus_medius', 'gluteus_minimus', 'piriformis',
+    'sacrotuberous_ligament', 'sacrospinous_ligament', 'iliolumbar_ligament'],
   inf: ['pubic_symphysis', 'pubococcygeus', 'iliococcygeus', 'coccygeus'],
 };
