@@ -24,8 +24,29 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   const baseColor = source.baseColor || (id => source.colors?.[id] || source.defaultColor || '#d9b38c');
   const markerSource = source.markers || {};
   const regionMode = source.kind === 'regions';
-  const depthOnlyMaterial = new THREE.MeshBasicMaterial({ colorWrite: false, side: THREE.DoubleSide });
+  const ghostDepthMaterial = regionMode ? new THREE.MeshBasicMaterial({
+    colorWrite: false, side: THREE.DoubleSide, transparent: true, forceSinglePass: true,
+    blending: THREE.NoBlending,
+  }) : null;
   const markerPoints = new Map();
+  // Ghost bones draw far to near, each as a depth pass then a color pass. Each
+  // bone blends only its own nearest surface (no triangle-order shards), and
+  // bones behind it, already blended, still show through it.
+  const ghostCenter = new THREE.Vector3();
+  function orderGhosts() {
+    const ghosts = [];
+    for (const mesh of meshes.values()) {
+      const depth = mesh.userData.depth;
+      if (!depth?.visible || !mesh.visible) continue;
+      mesh.geometry.boundingBox.getCenter(ghostCenter).applyMatrix4(mesh.matrixWorld);
+      ghosts.push([ghostCenter.distanceToSquared(camera.position), mesh, depth]);
+    }
+    ghosts.sort((a, b) => b[0] - a[0]);
+    ghosts.forEach(([, mesh, depth], index) => {
+      depth.renderOrder = 10 + index * 2;
+      mesh.renderOrder = 11 + index * 2;
+    });
+  }
   let packs = new Map();
   let manifest = null;
   let meta;
@@ -168,20 +189,19 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     geometry.computeBoundingBox();
     const material = new THREE.MeshStandardMaterial({
       color: baseColor(id), roughness: .52, side: THREE.DoubleSide,
-      transparent: true, forceSinglePass: true,
+      transparent: !regionMode, forceSinglePass: true,
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.userData.id = id;
     mesh.visible = false;
     meshes.set(id, mesh);
     scene.add(mesh);
-    if (regionMode) {
-      // Depth-only twin drawn just before translucent MSK bones: each bone then
-      // blends only its nearest surface instead of a triangle-order patchwork
-      // of its outer and inner tables.
-      const depth = new THREE.Mesh(geometry, depthOnlyMaterial);
+    if (ghostDepthMaterial) {
+      // The transparent queue starts after opaque meshes have drawn their color.
+      // Find the nearest ghost surface across all meshes before blending it.
+      const depth = new THREE.Mesh(geometry, ghostDepthMaterial);
+      depth.renderOrder = 1;
       depth.visible = false;
-      depth.raycast = () => {};
       mesh.add(depth);
       mesh.userData.depth = depth;
     }
@@ -477,6 +497,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       updateLabels();
       if (pulseOn && current.focus?.some(id => markerMeshes.has(id))) schedule();
     }
+    if (ghostDepthMaterial) orderGhosts();
     try {
       renderer.render(scene, camera);
     } catch {
@@ -682,14 +703,22 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
           : faint.has(id) ? .04 : (current.contextOpacity ?? .10);
         if (!active && highlight.size) material.opacity *= display.ghost;
       }
-      material.depthWrite = material.opacity >= .8;
-      mesh.renderOrder = active ? 2 : material.depthWrite ? 0 : 1;
       mesh.visible = material.opacity > 0;
       const depth = mesh.userData.depth;
       if (depth) {
-        const prepass = mesh.visible && material.opacity < 1;
-        depth.visible = prepass;
-        if (prepass) { depth.renderOrder = 3; mesh.renderOrder = 4; }
+        const ghost = material.opacity < 1;
+        if (material.transparent !== ghost) {
+          material.transparent = ghost;
+          material.needsUpdate = true;
+        }
+        material.depthWrite = !ghost;
+        material.depthFunc = THREE.LessEqualDepth;
+        mesh.renderOrder = 0;
+        depth.renderOrder = 0;
+        depth.visible = mesh.visible && ghost;
+      } else {
+        material.depthWrite = material.opacity >= .8;
+        mesh.renderOrder = active ? 2 : material.depthWrite ? 0 : 1;
       }
       if (mesh.visible && (!pickOnly || pickOnly.has(id))) pickable.push(mesh);
     }
@@ -756,6 +785,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
         mesh.geometry.dispose();
         mesh.material.dispose();
       }
+      ghostDepthMaterial?.dispose();
       axisTube?.geometry.dispose();
       axisTube?.material.dispose();
       markerGeometry.dispose();
