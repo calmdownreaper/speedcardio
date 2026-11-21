@@ -1,6 +1,6 @@
 // Subject registry. Add a subject by exporting its pack module and listing it
 // here; the engine loads only the selected subject's modules.
-const V = '?v=55';
+const V = '?v=56';
 
 export const SUBJECTS = [
   {
