@@ -28,9 +28,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=46">
+  <link rel="stylesheet" href="./style.css?v=47">
   <script type="importmap">
-    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js?v=46","three/addons/controls/OrbitControls.js":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js?v=46"}}
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js?v=47","three/addons/controls/OrbitControls.js":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js?v=47"}}
   </script>
 </head>
 <body>
@@ -62,10 +62,14 @@
     <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
     <symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
   </svg>
   <a class="skip" href="#main">Skip to study activity</a>
   <header class="app-header">
-    <button class="brand" type="button" data-nav="map" aria-label="SpeedCardio home"><span class="brand-mark" aria-hidden="true"></span>SpeedCardio</button>
+    <div class="brand-wrap">
+      <button class="brand" type="button" id="brand-menu" aria-label="SpeedCardio subject menu" aria-haspopup="menu" aria-expanded="false" aria-controls="subject-menu"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">SpeedCardio</span><svg class="brand-caret" width="14" height="14" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg></button>
+      <div class="subject-menu" id="subject-menu" role="menu" aria-label="Choose subject" hidden></div>
+    </div>
     <nav aria-label="Study pages">
       <button type="button" data-nav="map" aria-current="page"><svg class="icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-map"/></svg>Map</button>
       <button type="button" data-nav="atlas"><svg class="icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-layers"/></svg>Atlas</button>
@@ -154,6 +158,6 @@
     <noscript>SpeedCardio needs JavaScript to run.</noscript>
   </main>
   <footer class="credits">3D models by <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D © DBCLS</a> · <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a></footer>
-  <script type="module" src="./app.js?v=46"></script>
+  <script type="module" src="./app.js?v=47"></script>
 </body>
 </html>

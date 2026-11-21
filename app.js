@@ -1,25 +1,25 @@
-import * as material from './content.js?v=46';
-import { TERRITORIES } from './territories.js?v=46';
-import { LESSONS } from './lessons.js?v=46';
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=46';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=47';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=47';
 import {
-  IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, matchDaily,
+  IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=46';
+} from './study.js?v=47';
 
-const REGION_PURPOSES = {
-  "orientation": "Learn directions and the landmarks used throughout the path.",
-  "camaras": "Locate the four chambers and their shared muscle wall.",
-  "vasos": "Trace the large vessels entering and leaving the heart.",
-  "valvas": "Find the one-way valve flaps and their supporting muscles.",
-  "laringe": "Name the cartilages, ligaments and the muscles that move the vocal folds.",
-  "coronarias": "Follow the arteries across the heart’s surface.",
-  "veias": "Trace the veins returning blood from the heart muscle.",
-  "vias": "Follow the airway fork into the two lungs.",
-  "segd": "Locate the segments within the three right lung lobes.",
-  "sege": "Locate the segments within the two left lung lobes.",
-  "mediastino": "Explore the central compartment, chest wall vessels and thoracic skeleton."
-};
+// Boot the selected subject before any UI state is derived. The subject pack is
+// a dynamic import, so the other subject's data is never downloaded.
+const subjectId = subjectFromUrl();
+const subject = SUBJECTS.find(entry => entry.id === subjectId) || SUBJECTS[0];
+const pack = (await subject.load()).default;
+initStudy(pack);
+document.documentElement.dataset.subject = pack.id;
+
+const material = pack.content;
+const TERRITORIES = pack.territories || [];
+const LESSONS = pack.lessons || {};
+const REGION_PURPOSES = pack.regionPurposes || {};
+const ATLAS_IDS = pack.atlasIds || IDS;
+const SKELETON_IDS = pack.skeletonIds || [];
+const MAP_DEFAULT_IDS = pack.mapDefaultIds || IDS;
 
 const CONTENT = material.CONTENT || {};
 const lessonCue = id => material.LESSON_CUES?.[id] || ITEMS[id]?.dica || '';
@@ -54,11 +54,6 @@ const dateSeries = (count, offset = 0) => Array.from({ length: count }, (_, inde
 const progress = readProgress();
 const regions = Object.fromEntries(REGIONS.map(region => [region.id, region]));
 const orientation = { id: 'orientation', title: 'Orientation' };
-const heartIds = ['ad', 'ae', 'vd', 've', 'paredev', 'aoasc', 'arco', 'tp', 'vcs'];
-const airwayIds = ['traqueia', 'bpd', 'bpe'];
-// Context bones start hidden in the Atlas so the organs stay readable.
-const SKELETON_IDS = ['manubrio', 'esterno', 'xifoide', 'claviculas', 'cart_costais', 'costela_1', 'costela_2', 'costela_4', 'costela_5', 'costelas_rest', 'vertebras_toracicas'];
-const ATLAS_IDS = Object.keys(CONTENT).filter(id => ITEMS[id]);
 // The curriculum cross-lists a few mediastinal structures under Great vessels.
 // Give each structure one Atlas home (its last region) so rows and counts agree.
 const ATLAS_GROUP_OF = new Map();
@@ -69,9 +64,10 @@ const ATLAS_GROUPS = REGIONS.map((region, index) => ({
 })).filter(group => group.ids.length);
 const ATLAS_REGION = Object.fromEntries(ATLAS_GROUPS.flatMap(group => group.ids.map(id => [id, group.title])));
 const ATLAS_SET = new Set(ATLAS_IDS);
-const atlas = { query: '', hidden: new Set(SKELETON_IDS), focus: [], active: null, open: false, view: 'ant' };
+const atlas = { query: '', hidden: new Set(pack.atlasHidden || []), focus: [], active: null, open: false, view: 'ant' };
 const sectionTitles = {
   definition: 'Definition', location: 'Location and projection', relations: 'Relations',
+  function: 'Function and action', origin: 'Origin', insertion: 'Insertion', nerve: 'Nerve supply',
   course: 'Origin, course and termination', branches: 'Branches and tributaries',
   supply: 'Supply and drainage', internal: 'Internal features', development: 'Development',
   clinical: 'Clinical correlations', imaging: 'Imaging',
@@ -148,15 +144,24 @@ function saveProgress(progress) {
 }
 
 function savedLevel(id) { return progress.levels[id] || {}; }
+function requiredLevels() { return LEVELS.filter(level => !level.bonus); }
+function previousRequired(level) {
+  const list = LEVELS.filter(entry => entry.region === level.region);
+  const index = list.indexOf(level);
+  for (let cursor = index - 1; cursor >= 0; cursor--) {
+    if (!list[cursor].bonus) return list[cursor];
+  }
+  return null;
+}
 function nextLevel() {
-  if (!savedLevel('orientation').passed) return orientation;
-  return LEVELS.find(level => !savedLevel(level.id).passed);
+  if (ORIENTATION.length && !savedLevel('orientation').passed) return orientation;
+  return LEVELS.find(level => !level.bonus && !savedLevel(level.id).passed);
 }
 function unlocked(level) {
   if (level.id === 'orientation' || savedLevel(level.id).passed) return true;
-  const region = REGIONS.find(r => r.levels.includes(level));
-  const index = region ? region.levels.indexOf(level) : -1;
-  return index <= 0 || Boolean(savedLevel(region.levels[index - 1].id).passed);
+  const previous = previousRequired(level);
+  if (level.bonus && !previous) return false;
+  return !previous || Boolean(savedLevel(previous.id).passed);
 }
 
 function passedLevel(level) { return savedLevel(level.id).passed; }
@@ -208,7 +213,7 @@ function render({ top = false, activate = false } = {}) {
   }
   updateModel();
   const input = $('typer');
-  input.hidden = activity?.type !== 'recall' || viewerStatus !== 'ready';
+  input.hidden = activity?.type !== 'recall' || !modelLoaded();
   if (!input.hidden) {
     input.value = activity.run.round === 1 ? '' : activity.run.typed;
     drawWord();
@@ -237,8 +242,15 @@ function showStructure(id, options = {}) {
 
 // Mixed-deck levels use their own ids, with the regional thorax as ghost context.
 function regionScope(level) {
-  return level?.region === 'mediastino'
-    ? { scope: level.ids, context: REGION_CONTEXT.mediastino, faint: SKELETON_IDS, title: 'Mediastinum & thoracic wall', padding: 1.28 } : {};
+  const context = level && REGION_CONTEXT[level.region];
+  return context
+    ? { scope: level.ids, context, faint: SKELETON_IDS, title: regions[level.region]?.title || 'Regional context', padding: 1.28 } : {};
+}
+
+function modelLoaded() {
+  if (viewerStatus !== 'ready' || !viewer) return false;
+  if (!model) return true;
+  return viewer.loadedFor([...model.ids, ...(model.context || []), ...(model.focus || [])]);
 }
 
 function updateModel() {
@@ -303,7 +315,7 @@ function renderOrientation() {
   const { index } = activity;
   const step = ORIENTATION[index];
   if (step) {
-    const scope = [...new Set([...heartIds, ...(step.scope || []), ...(step.focus || [])])];
+    const scope = [...new Set([...MAP_DEFAULT_IDS, ...(step.scope || []), ...(step.focus || [])])];
     setModel(scope, {
       focus: step.focus, view: step.view, controls: true, subtleFocus: step.subtle !== false, explore: true,
       close: true, padding: step.padding || 1.62, title: 'Heart orientation',
@@ -394,7 +406,7 @@ function levelModel(level, options = {}) {
     palette: levelPalette(level),
     title: level.title,
     context,
-    faint: level.region === 'mediastino' ? SKELETON_IDS : undefined,
+    faint: REGION_CONTEXT[level.region] ? SKELETON_IDS : undefined,
     padding: level.region === 'mediastino' ? 1.32 : 1.26,
     ...options,
   });
@@ -479,7 +491,8 @@ function lessonBlocks(id) {
   if (!blocks) return `<p class="lesson-body">${markdown(detailFor(id).text)}</p>`;
   const facts = rows => `<dl class="lesson-facts">${rows.filter(([, text]) => text)
     .map(([label, text]) => `<div><dt>${label}</dt><dd>${markdown(text)}</dd></div>`).join('')}</dl>`;
-  const more = [['Relations', blocks.relations], ['Name', blocks.name]].filter(([, text]) => text);
+  const more = [['Origin', blocks.origin], ['Insertion', blocks.insertion], ['Nerve supply', blocks.nerve],
+    ['Relations', blocks.relations], ['Name', blocks.name]].filter(([, text]) => text);
   return `${blocks.lead ? `<p class="lesson-lead">${markdown(blocks.lead)}</p>` : ''}
     ${facts([['Where', blocks.where], ['Function', blocks.function]])}
     ${more.length ? `<details class="lesson-more"><summary>More detail</summary>${facts(more)}</details>` : ''}`;
@@ -541,10 +554,11 @@ function renderLesson() {
     const allFound = !target;
     const feedback = activity.findFeedback;
     levelModel(level, {
-      view: activity.findView || lessonView(level), controls: true, pick: !allFound, explore: false,
+      view: activity.findView || lessonView(level), controls: true, pick: !allFound && modelLoaded(), explore: false,
       focus: activity.revealed && target ? [...found, target] : found, close: false,
       pickIds: order, preserveCamera: found.length > 0 || activity.revealed,
     });
+    const ready = modelLoaded();
     const reveal = () => {
       activity.revealed = true;
       activity.findFeedback = { text: `${ITEMS[target].pt} is lit on the model. Click it to continue.`, tone: '' };
@@ -553,7 +567,7 @@ function renderLesson() {
     return `<div class="prompt lesson-find">${top}
       <div class="eyebrow">${memorize ? 'Memorize' : 'Learn'} · Find them · ${found.length} of ${order.length}</div>
       <h1>${allFound ? 'All found' : `Click the <span class="target-name">${escape(ITEMS[target].pt)}</span>`}</h1>
-      <p class="support">${allFound ? 'Each structure now keeps its lesson colour on the model.' : 'Rotate or zoom if it is hidden. Wrong clicks tell you what you touched.'}</p>
+      <p class="support">${!ready ? 'Loading the 3D region…' : allFound ? 'Each structure now keeps its lesson colour on the model.' : 'Rotate or zoom if it is hidden. Wrong clicks tell you what you touched.'}</p>
       <div class="find-meter" role="progressbar" aria-valuemin="0" aria-valuemax="${order.length}" aria-valuenow="${found.length}" aria-label="Structures found"><span class="find-bar" style="width:${Math.round(found.length / order.length * 100)}%"></span></div>
       <p id="find-feedback" class="feedback ${feedback?.tone || ''}" role="status">${feedback ? escape(feedback.text) : ''}</p>
       <ul class="find-list" aria-label="Structures to find">${order.map(id => {
@@ -562,6 +576,7 @@ function renderLesson() {
       }).join('')}</ul>
       ${order.length < total ? '<p class="support">The ventricular wall wraps the others, so it is not part of this task.</p>' : ''}
       ${viewerStatus !== 'ready' ? `<p class="support" role="status">${viewerStatus === 'loading' ? 'Waiting for the 3D model…' : 'The 3D model is required to find structures.'}</p>` : ''}
+      ${viewerStatus === 'ready' && !ready ? '<p class="support" role="status">Loading the 3D region…</p>' : ''}
       <div class="actions">
         ${button('Previous', () => jump(total - 1), { icon: 'arrow-left' })}
         ${allFound ? button(memorize ? 'Start Round 1' : contrast ? 'Next: contrast' : 'Take the check', afterFind, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })
@@ -645,9 +660,9 @@ function renderMap() {
   const region = regions[selectedRegion];
   const next = nextLevel();
   const level = region?.levels.find(item => item.id === selectedLevel) || region?.levels[0];
-  const levels = [orientation, ...LEVELS];
+  const levels = [...(ORIENTATION.length ? [orientation] : []), ...requiredLevels()];
   const done = levels.filter(passedLevel).length;
-  const map = [{ id: 'orientation', title: 'Orientation' }, ...REGIONS];
+  const map = [...(ORIENTATION.length ? [{ id: 'orientation', title: 'Orientation' }] : []), ...REGIONS];
   function chooseRegion(id) {
     selectedRegion = id;
     selectedLevel = regions[id]?.levels.find(item => unlocked(item) && !passedLevel(item))?.id;
@@ -662,8 +677,8 @@ function renderMap() {
       }
     });
   }
-  const overviewIds = region?.id === 'mediastino' ? region.ids.filter(id => !SKELETON_IDS.includes(id)) : region?.ids;
-  setModel(overviewIds?.length ? overviewIds : [...heartIds, ...airwayIds], {
+  const overviewIds = region && REGION_CONTEXT[region.id] ? region.ids.filter(id => !SKELETON_IDS.includes(id)) : region?.ids;
+  setModel(overviewIds?.length ? overviewIds : MAP_DEFAULT_IDS, {
     title: region?.title || 'Thoracic anatomy', layout: 'map-layout', view: 'ant',
     context: region ? (REGION_CONTEXT[region.id] || ITEMS[region.ids[0]].deck.ctx) : [],
   });
@@ -673,19 +688,20 @@ function renderMap() {
       <div class="mode-icon">${icon(iconName, 18)}</div>
       <div class="mode-text"><h2>${title}</h2><p>${text}</p></div>${action}</article>`;
   return `<div class="map-content">
-    <div class="page-head map-head"><h1>Heart &amp; lungs map</h1>
+    <div class="page-head map-head"><h1>${escape(pack.mapHeading || `${pack.name} map`)}</h1>
       <div class="progress-line"><span style="--pct:${pct}%"></span></div>
       <p>${done} of ${levels.length} levels passed · Pass by recalling every structure in Rounds 2 and 3.</p></div>
     <div class="modes" aria-label="Study modes">
       ${mode('arrow-right', next ? escape(next.title) : 'All levels passed', next?.id === 'orientation' ? 'Start here: directions and landmarks.' : 'Your next level on the path.',
         next ? button(nextLabel, () => next.id === 'orientation' ? startOrientation() : openLevel(next), { class: 'primary', iconEnd: 'arrow-right' }) : button('Open Daily', () => setPage('daily'), { class: 'primary' }))}
-      ${mode('crosshair', 'Coronary territories', 'Match each wall to its artery.', button('Practice', startTerritories))}
+      ${TERRITORIES.length ? mode('crosshair', 'Coronary territories', 'Match each wall to its artery.', button('Practice', startTerritories)) : ''}
       ${mode('calendar', 'Structure of the day', 'One structure from memory.', button('Recall', () => startDailyStructure()))}
     </div>
     <h2 class="section-title">Regions</h2>
     <div class="path" aria-label="Curriculum regions">${map.map((entry, index) => {
-      const count = entry.levels?.filter(passedLevel).length;
-      const status = entry.levels ? `${count}/${entry.levels.length}` : savedLevel(entry.id).passed ? icon('check', 14) : '';
+      const required = entry.levels?.filter(item => !item.bonus) || [];
+      const count = required.filter(passedLevel).length;
+      const status = entry.levels ? `${count}/${required.length}` : savedLevel(entry.id).passed ? icon('check', 14) : '';
       return button(`<span class="path-num">${String(index + 1).padStart(2, '0')}</span><span class="path-body"><b>${escape(entry.title)}</b><small>${escape(REGION_PURPOSES[entry.id])}</small></span><span class="path-count">${status}</span>`,
         () => chooseRegion(entry.id), { class: `path-stop ${entry.id === selectedRegion ? 'chosen' : ''}` });
     }).join('')}</div>
@@ -702,8 +718,8 @@ function renderLevelRow(level, selected) {
   const open = unlocked(level);
   const label = level === selected ? 'selected' : '';
   return `<div class="level-item ${label}">
-    <div class="level-heading"><h2>${escape(level.title)}</h2>${starsHTML(level.id)}</div>
-    <p>${level.ids.length} structures · ${!open ? 'Pass the previous level to unlock' : passedLevel(level) ? 'Passed' : savedLevel(level.id).clearedOn ? 'Replay the recall rounds to pass' : 'Ready'}</p>
+    <div class="level-heading"><h2>${escape(level.title)}${level.bonus ? ' <span class="bonus-tag">Bonus</span>' : ''}</h2>${starsHTML(level.id)}</div>
+    <p>${level.ids.length} structures · ${!open ? (level.bonus ? 'Pass the previous level to open the bonus' : 'Pass the previous level to unlock') : passedLevel(level) ? 'Passed' : savedLevel(level.id).clearedOn ? 'Replay the recall rounds to pass' : level.bonus ? 'Optional · not required to progress' : 'Ready'}</p>
     ${open ? `<div class="actions">${button(passedLevel(level) ? 'Name it' : savedLevel(level.id).lesson ? 'Start rounds' : 'Memorize',
       () => openLevel(level), { class: level === selected ? 'primary' : '' })}
       ${savedLevel(level.id).lesson ? button('Memorize again', () => startMemorize(level), { icon: 'rotate-ccw' }) : ''}
@@ -752,10 +768,10 @@ function renderRecall() {
   const view = memory ? memoryView(item.id) : teachingView(item.id);
   showStructure(item.id, { view, close: true, padding: 1.26, layout: 'recall-layout', controls: true, ...regionScope(level || activity.from) });
   const title = kind === 'level' ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest', mistakes: 'Drill mistakes' }[kind];
-  if (viewerStatus !== 'ready') {
-    const loading = viewerStatus === 'loading';
+  if (!modelLoaded()) {
+    const loading = viewerStatus === 'loading' || (viewerStatus === 'ready' && !modelLoaded());
     return `<div class="prompt"><h1>${escape(title)}</h1>
-      <p role="status">${loading ? 'Waiting for the 3D model…' : 'The 3D model is required for recall.'}</p>
+      <p role="status">${loading ? 'Loading the 3D region…' : 'The 3D model is required for recall.'}</p>
       <div class="actions">${loading ? '' : button('Retry 3D model', loadViewer, { class: 'primary' })}
         ${button('Back', () => setPage(page))}</div></div>`;
   }
@@ -785,7 +801,7 @@ function renderRecall() {
 function focusTyper() { $('typer')?.focus({ preventScroll: true }); }
 
 function onInput(event) {
-  if (event.isComposing || activity?.type !== 'recall' || viewerStatus !== 'ready') return;
+  if (event.isComposing || activity?.type !== 'recall' || !modelLoaded()) return;
   const input = event.target;
   const { run } = activity;
   const text = input.value.normalize('NFC');
@@ -980,7 +996,7 @@ function renderRecallResults() {
   const clean = run.ids.filter(id => firstTry(final, id)).length;
   const percent = Math.round((clean + (second ? run.ids.filter(id => firstTry(second, id)).length : 0))
     / (run.ids.length * (second ? 2 : 1)) * 100);
-  const next = level && LEVELS[LEVELS.indexOf(level) + 1];
+  const next = level && LEVELS.slice(LEVELS.indexOf(level) + 1).find(entry => !entry.bonus);
   const wpm = displayWpm(run);
   const nextDue = run.ids.map(id => progress.cards[id]?.due).filter(Boolean).sort()[0];
   const caption = level ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest', mistakes: 'Drill mistakes' }[run.kind];
@@ -1026,7 +1042,7 @@ function renderDaily() {
     <div class="study-row"><div><h2>Structure of the day</h2>
       <p>${daily ? escape(ITEMS[id]?.pt) + ' · ' + ({ correct: 'Recalled', hint: 'Recalled with a hint', missed: 'Reviewed' })[daily] : 'One structure to identify from memory. A hint is available.'}</p></div>
       ${id ? button(daily ? 'Try it again' : 'Start daily structure', () => startDailyStructure(), { class: due.length ? '' : 'primary' }) : ''}</div>
-    <div class="study-row"><div><h2>Mock oral exam</h2><p>Two structures and one theory question.</p></div>
+    <div class="study-row"><div><h2>Mock oral exam</h2><p>Two structures${THEORY.length ? ' and one theory question' : ''}.</p></div>
       ${button('Mock exam', startMock)}</div>
   </div>`;
 }
@@ -1040,10 +1056,12 @@ function renderFind() {
   const { level, ids, index, tries, feedback, done } = state;
   const id = ids[index];
   setModel(level.ids, {
-    title: REGION_CONTEXT[level.region] ? 'Mediastinum & thoracic wall' : ITEMS[id].deck.titulo,
+    title: REGION_CONTEXT[level.region] ? regions[level.region]?.title : ITEMS[id].deck.titulo,
     context: REGION_CONTEXT[level.region] || ITEMS[id].deck.ctx, focus: done ? [id] : [],
-    view: state.direction || 'ant', controls: true, pick: Boolean(viewer && !done), preserveCamera: Boolean(tries),
+    view: state.direction || 'ant', controls: true, pick: Boolean(viewer && !done && modelLoaded()),
+    preserveCamera: Boolean(tries),
   });
+  const ready = modelLoaded();
   function next() {
     if (index + 1 === ids.length) {
       recordActivity();
@@ -1055,14 +1073,15 @@ function renderFind() {
   }
   return `<div class="prompt"><div class="eyebrow">Find it / ${index + 1} of ${ids.length}</div>
     <h1>${escape(ITEMS[id].pt)}</h1>
-    <p>${viewer ? 'Select this structure on the model. Drag to rotate.' : 'The 3D model is required to locate this structure.'}</p>
+    <p>${!viewer ? 'The 3D model is required to locate this structure.' : ready ? 'Select this structure on the model. Drag to rotate.' : 'Loading the 3D region…'}</p>
     ${viewer && !done ? '<p class="support">Use the arrow keys to aim, then select “Pick at crosshair”.</p>' : ''}
     <p class="feedback ${done && state.hit ? 'good' : 'bad'}" role="status">${escape(feedback)}</p>
     <div class="actions">${done ? button(index + 1 === ids.length ? 'See results' : 'Next structure', next, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })
-      : viewer ? button('Reveal on model', () => findPick(undefined, true), { icon: 'eye' }) : button('Back to level', () => setPage('map'), { icon: 'arrow-left' })}</div></div>`;
+      : viewer && ready ? button('Reveal on model', () => findPick(undefined, true), { icon: 'eye' }) : button('Back to level', () => setPage('map'), { icon: 'arrow-left' })}</div></div>`;
 }
 
 function findPick(id, reveal = false) {
+  if (!modelLoaded()) return;
   if (activity?.type === 'lesson' && activity.stage === 'find') {
     lessonFindPick(id);
     return;
@@ -1186,8 +1205,27 @@ function renderQuiz() {
       : state.answer !== undefined ? button(index + 1 === questions.length ? 'See results' : 'Next question', next, { class: 'primary', key: 'Enter' }) : ''}</div></div>`;
 }
 
+const plainText = value => String(value || '').replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\s+/g, ' ').trim();
+
+// Subjects without hand-written oral cards still get an Oral exam mode: the
+// topographical lesson fields become the model-answer checklist.
+function derivedOral(id) {
+  if (!pack.deriveOralFromLessons) return {};
+  const lesson = LESSONS[id];
+  if (!lesson) return {};
+  const oral = {};
+  if (lesson.lead) oral.definition = [plainText(lesson.lead)];
+  if (lesson.where) oral.location = [plainText(lesson.where)];
+  if (lesson.relations) oral.relations = [plainText(lesson.relations)];
+  if (lesson.function) oral.function = [plainText(lesson.function)];
+  if (lesson.origin) oral.origin = [plainText(lesson.origin)];
+  if (lesson.insertion) oral.insertion = [plainText(lesson.insertion)];
+  if (lesson.nerve) oral.nerve = [plainText(lesson.nerve)];
+  return oral;
+}
+
 function oralSections(id) {
-  const oral = CONTENT[id]?.oral;
+  const oral = CONTENT[id]?.oral || derivedOral(id);
   return Object.entries(sectionTitles).flatMap(([key, heading]) =>
     Array.isArray(oral?.[key]) && oral[key].length ? [{ key, heading, values: oral[key] }] : []);
 }
@@ -1210,7 +1248,7 @@ function renderOral() {
   const id = ids[index];
   if (!id) return `<div class="screen prompt"><h1>Oral exam</h1><p>No model answers are available for this level yet.</p>
     <div class="actions">${button('Back to level', () => setPage('map'), { icon: 'arrow-left' })}</div></div>`;
-  const card = CONTENT[id];
+  const card = CONTENT[id] || {};
   const sections = oralSections(id);
   const last = index + 1 === ids.length;
   function saveGrades() {
@@ -1243,7 +1281,12 @@ function renderOral() {
 }
 
 function startMock() {
-  const eligible = IDS.filter(id => CONTENT[id]?.prompt && CONTENT[id].followups?.length && oralSections(id).length);
+  // Cardio keeps its original eligible set; a subject without authored cards
+  // can still run the mock from its topographical lessons.
+  const eligible = IDS.filter(id => CONTENT[id]
+    ? Boolean(CONTENT[id].prompt && CONTENT[id].followups?.length)
+    : pack.deriveOralFromLessons && oralSections(id).length > 0);
+  if (!eligible.length) return;
   const studied = new Set(LEVELS.filter(level => {
     const saved = savedLevel(level.id);
     return saved.lesson || saved.clearedOn || saved.passed;
@@ -1259,10 +1302,13 @@ function startMock() {
   }
   const [theory] = shuffle(THEORY.flatMap(topic => topic.oral || []));
   const questions = structures.map(id => ({
-    id, prompt: CONTENT[id].prompt, sections: oralSections(id),
-    followup: shuffle(CONTENT[id].followups)[0], grades: [],
+    id,
+    prompt: CONTENT[id]?.prompt || `Describe the ${ITEMS[id].pt.toLowerCase()}.`,
+    sections: oralSections(id),
+    followup: CONTENT[id]?.followups?.length ? shuffle(CONTENT[id].followups)[0] : null,
+    grades: [],
   }));
-  questions.push({ prompt: theory.q, answer: theory.a, grades: [] });
+  if (theory) questions.push({ prompt: theory.q, answer: theory.a, grades: [] });
   launch('mock', { questions, index: 0, revealed: false, followup: false, deadline: Date.now() + 180000 });
 }
 
@@ -1280,7 +1326,7 @@ function renderMock() {
   const state = activity;
   const { questions, index, revealed, followup } = state;
   const question = questions[index];
-  const sections = followup
+  const sections = followup && question.followup
     ? [{ key: 'followup', heading: 'Examiner follow-up', values: [question.followup.a] }]
     : question.sections || [{ key: 'theory', heading: 'Theory answer', values: question.answer }];
   function advance() {
@@ -1291,7 +1337,7 @@ function renderMock() {
       const values = new FormData(form);
       question.grades.push(...sections.map(({ key, heading }) => ({ heading, grade: Number(values.get(key)) })));
       state.revealed = false;
-      if (question.id && !followup) state.followup = true;
+      if (question.id && !followup && question.followup) state.followup = true;
       else {
         if (question.id) {
           gradeCard(progress, question.id, Math.round(averageGrade(question.grades.slice(0, -1))));
@@ -1312,7 +1358,7 @@ function renderMock() {
     }
     render({ top: true, activate: true });
   }
-  const label = !revealed ? 'Reveal' : question.id && !followup ? 'Examiner follow-up'
+  const label = !revealed ? 'Reveal' : question.id && !followup && question.followup ? 'Examiner follow-up'
     : index + 1 === questions.length ? 'See results' : 'Next question';
   return `<div class="screen prompt">
     <div class="mock-header"><div class="eyebrow">Mock exam / ${index + 1} of ${questions.length}${followup ? ' / Follow-up' : ''}</div>
@@ -1393,12 +1439,13 @@ function weakestIds() {
 }
 
 function renderProgress() {
-  const totalStars = LEVELS.reduce((total, level) => total + stars(level.id).filter(Boolean).length, 0);
+  const pathLevels = requiredLevels();
+  const totalStars = pathLevels.reduce((total, level) => total + stars(level.id).filter(Boolean).length, 0);
   const seconds = Object.values(progress.activity).reduce((sum, duration) => sum + (Number(duration) || 0), 0);
   const weakest = weakestIds();
   return `<div class="screen progress">
     <div class="page-head"><h1>Progress</h1></div>
-    <div class="metrics"><div><b>${totalStars}</b><span>of ${LEVELS.length * 3} stars</span></div>
+    <div class="metrics"><div><b>${totalStars}</b><span>of ${pathLevels.length * 3} stars</span></div>
       <div><b>${streak(progress)}</b><span>day streak</span></div><div><b>${seconds < 60 ? `${seconds}s` : `${Math.floor(seconds / 60)}m`}</b><span>study time</span></div></div>
     <div class="study-row"><div><h2>Weakest structures</h2><p>${weakest.map(id => escape(ITEMS[id].pt)).join(' · ')}</p></div>
       ${weakest.length ? button('Drill weakest', () => beginRecall(weakest, 'weak'), { class: 'primary' }) : ''}</div>
@@ -1408,7 +1455,7 @@ function renderProgress() {
       ${button('Mock exam', startMock)}</div>
     <h2>Mastery by region</h2>
     ${REGIONS.map(region => `<details><summary>${escape(region.title)} <span class="muted">${region.ids.filter(id => progress.cards[id]?.box === 5).length}/${region.ids.length} mastered</span></summary>
-      <div class="progress-levels">${region.levels.map(level => `<div><span>${escape(level.title)}</span>${starsHTML(level.id)}</div>`).join('')}</div>
+      <div class="progress-levels">${region.levels.map(level => `<div><span>${escape(level.title)}${level.bonus ? ' <span class="bonus-tag">Bonus</span>' : ''}</span>${starsHTML(level.id)}</div>`).join('')}</div>
       <div class="mastery">${region.ids.map(id => {
         const card = progress.cards[id];
         const value = (card?.box || 0) * 20;
@@ -1503,7 +1550,7 @@ function renderAtlas() {
   const anyMatch = ATLAS_GROUPS.some(group => group.ids.some(id => !query || atlasSearchText(id).includes(query)));
   queueMicrotask(syncAtlasGroups);
   return `<div class="atlas-content">
-    <div class="page-head"><h1>Atlas</h1><p>All ${ATLAS_IDS.length} structures on one model. Show or hide parts, then click a name or the model to focus it. The thoracic skeleton starts hidden; tick it in the list to show it.</p></div>
+    <div class="page-head"><h1>Atlas</h1><p>All ${ATLAS_IDS.length} structures on one model. Show or hide parts, then click a name or the model to focus it. ${escape(pack.atlasNote || '')}</p></div>
     <button type="button" class="button atlas-drawer-toggle" id="atlas-drawer-toggle" data-atlas-drawer="open" aria-controls="atlas-panel" aria-expanded="false">${icon('layers', 16)}Structures <b id="atlas-drawer-count">${visible.length}</b></button>
     ${atlasDetailMarkup()}
     <aside class="atlas-panel" id="atlas-panel" aria-label="Atlas structures">
@@ -1870,8 +1917,10 @@ function closeThemePopover(returnFocus = true) {
 }
 
 themeToggle.addEventListener('click', () => {
-  if (themePopover.hidden) openThemePopover();
-  else closeThemePopover();
+  if (themePopover.hidden) {
+    closeSubjectMenu(false);
+    openThemePopover();
+  } else closeThemePopover();
 });
 themePopover.addEventListener('change', event => {
   const input = event.target.closest?.('input[name="theme-choice"]');
@@ -1899,6 +1948,84 @@ themeQuery.addEventListener('change', () => {
   viewer?.refreshTheme?.();
 });
 syncThemeChrome();
+
+// Subject switcher: populated from the registry so a new subject is one entry.
+const brandMenu = $('brand-menu');
+const subjectMenu = $('subject-menu');
+function syncSubjectChrome() {
+  document.title = `${pack.name} · ${pack.tagline}`;
+  document.querySelector('meta[name="description"]')?.setAttribute('content', pack.description || `${pack.tagline} with 3D anatomy and recall drills.`);
+  document.querySelector('.brand-name')?.replaceChildren(document.createTextNode(pack.name));
+  brandMenu?.setAttribute('aria-label', `${pack.name} subject menu`);
+  if (!THEORY.length) document.querySelector('nav [data-nav="theory"]')?.setAttribute('hidden', '');
+}
+function renderSubjectMenu() {
+  if (!subjectMenu) return;
+  subjectMenu.innerHTML = SUBJECTS.map(entry => `<button type="button" class="subject-item" role="menuitem"
+    data-subject-id="${escape(entry.id)}" aria-current="${entry.id === pack.id}">
+    <span class="subject-name">${escape(entry.name)}</span>
+    <span class="subject-tagline">${escape(entry.tagline)}</span></button>`).join('');
+}
+function subjectItems() { return [...(subjectMenu?.querySelectorAll('[data-subject-id]') || [])]; }
+function openSubjectMenu(focus = 'current') {
+  if (!brandMenu || !subjectMenu) return;
+  subjectMenu.hidden = false;
+  brandMenu.setAttribute('aria-expanded', 'true');
+  if (focus) {
+    const items = subjectItems();
+    const current = items.find(item => item.dataset.subjectId === pack.id);
+    (focus === 'first' ? items[0] : current || items[0])?.focus();
+  }
+}
+function closeSubjectMenu(returnFocus = true) {
+  if (!brandMenu || !subjectMenu || subjectMenu.hidden) return;
+  subjectMenu.hidden = true;
+  brandMenu.setAttribute('aria-expanded', 'false');
+  if (returnFocus) brandMenu.focus();
+}
+syncSubjectChrome();
+renderSubjectMenu();
+brandMenu?.addEventListener('click', () => {
+  if (subjectMenu.hidden) {
+    closeThemePopover(false);
+    openSubjectMenu();
+  } else closeSubjectMenu();
+});
+brandMenu?.addEventListener('keydown', event => {
+  if (['ArrowDown', 'Enter', ' '].includes(event.key)) {
+    event.preventDefault();
+    openSubjectMenu(event.key === 'ArrowDown' ? 'current' : 'first');
+  }
+});
+subjectMenu?.addEventListener('click', event => {
+  const item = event.target.closest?.('[data-subject-id]');
+  if (!item) return;
+  if (item.dataset.subjectId === pack.id) return closeSubjectMenu(true);
+  location.assign(subjectUrl(item.dataset.subjectId));
+});
+subjectMenu?.addEventListener('keydown', event => {
+  const items = subjectItems();
+  const index = items.indexOf(document.activeElement);
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    event.preventDefault();
+    const step = event.key === 'ArrowDown' ? 1 : -1;
+    items[(index + step + items.length) % items.length]?.focus();
+  } else if (event.key === 'Home' || event.key === 'End') {
+    event.preventDefault();
+    (event.key === 'Home' ? items[0] : items[items.length - 1])?.focus();
+  } else if (event.key === 'Escape') {
+    event.preventDefault();
+    event.stopPropagation();
+    closeSubjectMenu();
+  } else if (event.key === 'Tab') {
+    closeSubjectMenu(false);
+  }
+});
+document.addEventListener('pointerdown', event => {
+  if (!subjectMenu || subjectMenu.hidden) return;
+  if (subjectMenu.contains(event.target) || brandMenu?.contains(event.target)) return;
+  closeSubjectMenu(false);
+});
 function syncSoundToggle() {
   const toggle = $('sound-toggle');
   const off = isMuted();
@@ -1949,8 +2076,13 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=46');
-    viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore);
+    const { createViewer } = await import('./viewer.js?v=47');
+    viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore, { ...pack, ...pack.model });
+    viewer.onReady(() => {
+      if (activity?.type === 'recall') render();
+      else if (activity?.type === 'find') render();
+      else if (activity?.type === 'lesson' && activity.stage === 'find') render();
+    });
     viewerStatus = 'ready';
     if ($('view-isolate').getAttribute('aria-pressed') === 'true') viewer.setIsolate(true);
     const ghost = Number($('view-ghost').value) / 100;

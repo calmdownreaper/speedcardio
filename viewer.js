@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { COLORS, DEFAULT_COLOR } from './data.js?v=46';
-import { ITEMS } from './study.js?v=46';
+import { ITEMS } from './study.js?v=47';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -12,34 +11,45 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-function baseColor(id) {
-  if (COLORS[id]) return COLORS[id];
-  const deck = ITEMS[id]?.deck.id;
-  if (deck === 'coronarias') return '#d35b54';
-  if (deck === 'valvas') return id.startsWith('pap') ? '#d77a6e' : '#f0dcc4';
-  if (deck === 'segd' || deck === 'sege') {
-    const segment = id.slice(3);
-    if (['apical', 'post', 'ant'].includes(segment)) return '#67b39b';
-    if (['lat', 'med', 'lsup', 'linf'].includes(segment)) return '#d6aa6c';
-    return '#759ebc';
-  }
-  return DEFAULT_COLOR;
+const VERSION = '?v=47';
+
+function fetchJSON(url) {
+  return fetch(url, { cache: 'force-cache' }).then(response => {
+    if (!response.ok) throw new Error('Model index unavailable');
+    return response.json();
+  });
 }
 
-export async function createViewer(host, onPick, onUnavailable, onExplore) {
-  const [meta, buffer] = await Promise.all([
-    fetch('./models.json?v=40').then(response => {
-      if (!response.ok) throw new Error('Model index unavailable');
-      return response.json();
-    }),
-    fetch('./models.bin?v=40').then(response => {
-      if (!response.ok) throw new Error('Model geometry unavailable');
-      return response.arrayBuffer();
-    }),
-  ]);
-  const IndexArray = meta.indexBytes === 2 ? Uint16Array : Uint32Array;
-  const bytes = meta.bytes ?? Math.max(...Object.values(meta.parts).map(part => part.i[0] + part.i[1] * IndexArray.BYTES_PER_ELEMENT));
-  if (buffer.byteLength !== bytes) throw new Error('Model geometry does not match its index');
+export async function createViewer(host, onPick, onUnavailable, onExplore, source = {}) {
+  const baseColor = source.baseColor || (id => source.colors?.[id] || source.defaultColor || '#d9b38c');
+  const markerSource = source.markers || {};
+  const regionMode = source.kind === 'regions';
+  const markerPoints = new Map();
+  let packs = new Map();
+  let manifest = null;
+  let meta;
+  let buffer;
+  let IndexArray;
+  if (regionMode) {
+    manifest = await fetchJSON(`${source.manifest}${VERSION}`);
+    meta = { center: manifest.center, scale: manifest.scale, parts: {} };
+    for (const [region, info] of Object.entries(manifest.regions)) {
+      for (const id of Object.keys(info.parts)) meta.parts[id] = { region };
+    }
+    for (const [id, points] of Object.entries(markerSource)) markerPoints.set(id, points);
+  } else {
+    [meta, buffer] = await Promise.all([
+      fetchJSON(`${source.manifest || './models.json'}${VERSION}`),
+      fetch(`${source.parts || './models.bin'}${VERSION}`).then(response => {
+        if (!response.ok) throw new Error('Model geometry unavailable');
+        return response.arrayBuffer();
+      }),
+    ]);
+    IndexArray = meta.indexBytes === 2 ? Uint16Array : Uint32Array;
+    const bytes = meta.bytes ?? Math.max(...Object.values(meta.parts).map(part => part.i[0] + part.i[1] * IndexArray.BYTES_PER_ELEMENT));
+    if (buffer.byteLength !== bytes) throw new Error('Model geometry does not match its index');
+    for (const [id, points] of Object.entries(markerSource)) markerPoints.set(id, points);
+  }
   function readTone() {
     const css = getComputedStyle(document.documentElement);
     const token = (name, fallback) => css.getPropertyValue(name).trim() || css.getPropertyValue(fallback).trim();
@@ -88,15 +98,62 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
 
   const meshes = new Map();
   let pickable = [];
+
+  function loadPack(region) {
+    if (packs.has(region)) return Promise.resolve(packs.get(region));
+    const info = manifest.regions[region];
+    const url = new URL(info.file, new URL(source.manifest, location.href)).href;
+    return fetch(`${url}${VERSION}`).then(response => {
+      if (!response.ok) throw new Error('Model geometry unavailable');
+      return response.arrayBuffer();
+    }).then(bytes => {
+      const Type = info.indexBytes === 2 ? Uint16Array : Uint32Array;
+      if (info.bytes && bytes.byteLength !== info.bytes) throw new Error('Model geometry does not match its index');
+      const pack = { meta: info, buffer: bytes, IndexArray: Type };
+      packs.set(region, pack);
+      return pack;
+    });
+  }
+
+  function ensurePacks(ids) {
+    if (!regionMode) return null;
+    const regions = new Set();
+    for (const id of ids) {
+      const region = meta.parts[id]?.region;
+      if (region && !packs.has(region)) regions.add(region);
+    }
+    if (!regions.size) return null;
+    return Promise.all([...regions].map(loadPack));
+  }
+
+  function loadedFor(ids) {
+    return ids.every(id => markerPoints.has(id) || meshes.has(id));
+  }
+
   function meshFor(id) {
     if (meshes.has(id)) return meshes.get(id);
     if (!Object.hasOwn(meta.parts, id)) return;
-    const part = meta.parts[id];
-    const packed = new Int16Array(buffer, part.p[0], part.p[1]);
+    let part;
+    let partBuffer;
+    let PartIndex;
+    if (regionMode) {
+      const region = meta.parts[id].region;
+      const pack = packs.get(region);
+      if (!pack) return;
+      part = pack.meta.parts[id];
+      partBuffer = pack.buffer;
+      PartIndex = pack.IndexArray;
+    } else {
+      part = meta.parts[id];
+      partBuffer = buffer;
+      PartIndex = IndexArray;
+    }
+    if (!part) return;
+    const packed = new Int16Array(partBuffer, part.p[0], part.p[1]);
     const positions = Float32Array.from(packed, value => value / 32767);
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setIndex(new THREE.BufferAttribute(new IndexArray(buffer, part.i[0], part.i[1]), 1));
+    geometry.setIndex(new THREE.BufferAttribute(new PartIndex(partBuffer, part.i[0], part.i[1]), 1));
     geometry.computeVertexNormals();
     geometry.computeBoundingBox();
     const material = new THREE.MeshStandardMaterial({
@@ -109,6 +166,39 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
     meshes.set(id, mesh);
     scene.add(mesh);
     return mesh;
+  }
+
+  // Point markers stand in for structures that have no mesh (foramina, joint
+  // spaces, ligaments). They live in the same normalized frame as vertices.
+  const markerMeshes = new Map();
+  const markerGeometry = new THREE.SphereGeometry(1, 14, 10);
+  const markerSize = source.markerSize || .018;
+  function markerPosition(raw) {
+    const point = new THREE.Vector3(raw[0], raw[1], raw[2]);
+    if (source.markerSpace === 'world' && meta.center && meta.scale) {
+      point.set((raw[0] - meta.center[0]) / meta.scale,
+        (raw[1] - meta.center[1]) / meta.scale,
+        (raw[2] - meta.center[2]) / meta.scale);
+    }
+    return point;
+  }
+  for (const [id, points] of markerPoints) {
+    const list = (Array.isArray(points[0]) ? points : [points]).map(raw => {
+      const material = new THREE.MeshBasicMaterial({
+        color: tone.select, transparent: true, opacity: .9, depthTest: false,
+        depthWrite: false, toneMapped: false,
+      });
+      const marker = new THREE.Mesh(markerGeometry, material);
+      marker.position.copy(markerPosition(raw));
+      marker.scale.setScalar(markerSize);
+      marker.userData.id = id;
+      marker.userData.marker = true;
+      marker.renderOrder = 1001;
+      marker.visible = false;
+      scene.add(marker);
+      return marker;
+    });
+    markerMeshes.set(id, list);
   }
 
   // Focus annotations belong to the focus API, independent of model geometry.
@@ -212,6 +302,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
     for (const id of ids) {
       const mesh = meshFor(id);
       if (mesh) box.union(mesh.geometry.boundingBox);
+      for (const marker of markerMeshes.get(id) || []) box.expandByPoint(marker.position);
     }
     return box;
   }
@@ -273,12 +364,25 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
     schedule();
   }
 
+  let onModelReady;
   function paint(config, preserveCamera = false) {
     current = config;
     hideTip();
     applyStyles();
+    const wanted = [...new Set([...(config.ids || []), ...(config.context || []),
+      ...(config.focus || []), ...(config.pickIds || [])])];
+    const pending = ensurePacks(wanted);
     if (preserveCamera) schedule();
     else frame(config.view);
+    if (pending) {
+      pending.then(() => {
+        if (unavailable || current !== config) return;
+        applyStyles();
+        if (!preserveCamera) frame(config.view);
+        else schedule();
+        onModelReady?.();
+      }).catch(() => fail());
+    }
   }
 
   const display = { isolate: false, ghost: 1 };
@@ -297,6 +401,11 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
     selectDeep.set(tone.selectDeep);
     tint.set(tone.tint);
     axisTube?.material.color.set(tone.axis);
+    for (const list of markerMeshes.values()) {
+      for (const marker of list) {
+        marker.material.color.set((current.focus || []).includes(marker.userData.id) ? tone.axis : baseColor(marker.userData.id));
+      }
+    }
     for (const child of axis.children) {
       const label = child.userData.label;
       if (!label) continue;
@@ -355,6 +464,17 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
       mesh.visible = material.opacity > 0;
       if (mesh.visible && (!pickOnly || pickOnly.has(id))) pickable.push(mesh);
     }
+    for (const [id, list] of markerMeshes) {
+      const on = visible.has(id);
+      const active = highlight.has(id);
+      for (const marker of list) {
+        marker.visible = on;
+        marker.material.color.set(active ? tone.axis : baseColor(id));
+        marker.material.opacity = active ? 1 : on ? .72 : 0;
+        marker.scale.setScalar(markerSize * (active ? 1.35 : 1));
+        if (on && (!pickOnly || pickOnly.has(id))) pickable.push(marker);
+      }
+    }
   }
 
   function zoom(scale) {
@@ -405,6 +525,10 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
       }
       axisTube?.geometry.dispose();
       axisTube?.material.dispose();
+      markerGeometry.dispose();
+      for (const list of markerMeshes.values()) {
+        for (const marker of list) marker.material.dispose();
+      }
       for (const label of axis.children) {
         label.material.map?.dispose();
         label.material.dispose();
@@ -425,10 +549,16 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
   function pickId(x, y) {
     scene.updateMatrixWorld(true);
     ray.setFromCamera({ x, y }, camera);
-    const hits = ray.intersectObjects(pickable, false);
+    const meshesHere = pickable.filter(entry => !entry.userData.marker);
+    const meshHits = ray.intersectObjects(meshesHere, false);
     // The translucent ventricular wall surrounds the two ventricle meshes.
-    const hit = hits.find(entry => entry.object.userData.id !== 'paredev') || hits[0];
-    return hit?.object.userData.id;
+    const meshHit = meshHits.find(entry => entry.object.userData.id !== 'paredev') || meshHits[0];
+    // Markers sit on or just inside bone; accept them only when they are at
+    // least as close as the mesh, so a marker never steals a mesh pick.
+    const markerHits = ray.intersectObjects(pickable.filter(entry => entry.userData.marker), false);
+    const markerHit = markerHits[0];
+    if (markerHit && (!meshHit || markerHit.distance <= meshHit.distance + .02)) return markerHit.object.userData.id;
+    return meshHit?.object.userData.id;
   }
   function pick(x, y) {
     if (!current.pick) return;
@@ -527,6 +657,9 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
       controls.update();
       schedule();
     },
-    has(id) { return Object.hasOwn(meta.parts, id); },
+    has(id) { return Object.hasOwn(meta.parts, id) || markerPoints.has(id); },
+    loadedFor,
+    onReady(fn) { onModelReady = fn; },
+    pendingFor(ids) { return !loadedFor(ids); },
   };
 }

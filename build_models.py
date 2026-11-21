@@ -149,8 +149,8 @@ def english_name(path):
     return None
 
 
-def add_obj(path, key):
-    g = groups[key]
+def add_obj(path, key, group=None, flags=None):
+    g = groups[key] if group is None else group
     base = len(g['pos']) // 3
     with open(path, encoding='latin-1') as fh:
         for line in fh:
@@ -160,7 +160,265 @@ def add_obj(path, key):
                 vs = [int(t.split('/')[0]) - 1 + base for t in line.split()[1:]]
                 for i in range(1, len(vs) - 1):
                     g['idx'].extend((vs[0], vs[i], vs[i+1]))
-    seen[key] = True
+    if flags is None:
+        seen[key] = True
+
+
+# ---------------------------------------------------------------------------
+# SpeedMSK: one manifest + one .bin per curriculum region, all quantized
+# against a single whole-body box so every region aligns in the viewer.
+# Run: python3 build_models.py msk
+# ---------------------------------------------------------------------------
+MSK = {
+    'skull': {
+        'frontal': ['Frontal bone'],
+        'parietal': ['Left parietal bone', 'Right parietal bone'],
+        'temporal': ['Left temporal bone', 'Right temporal bone'],
+        'occipital': ['Occipital bone'],
+        'sphenoid': ['Sphenoid bone'],
+        'ethmoid': ['Ethmoid'],
+        'maxilla': ['Left maxilla', 'Right maxilla'],
+        'mandible': ['Mandible'],
+        'zygomatic': ['Left zygomatic bone', 'Right zygomatic bone'],
+        'nasal': ['Left nasal bone', 'Right nasal bone'],
+        'vomer': ['Vomer'],
+        'palatine': ['Left palatine bone', 'Right palatine bone'],
+    },
+    'spine': {
+        'atlas': ['Atlas'],
+        'axis': ['Axis'],
+        'cervical_vertebra': ['Third cervical vertebra', 'Fourth cervical vertebra', 'Fifth cervical vertebra',
+                              'Sixth cervical vertebra', 'Seventh cervical vertebra'],
+        'thoracic_vertebra': ['First thoracic vertebra', 'Second thoracic vertebra', 'Third thoracic vertebra',
+                              'Fourth thoracic vertebra', 'Fifth thoracic vertebra', 'Sixth thoracic vertebra',
+                              'Seventh thoracic vertebra', 'Eighth thoracic vertebra', 'Ninth thoracic vertebra',
+                              'Tenth thoracic vertebra', 'Eleventh thoracic vertebra', 'Twelfth thoracic vertebra'],
+        'lumbar_vertebra': ['First lumbar vertebra', 'Second lumbar vertebra', 'Third lumbar vertebra',
+                            'Fourth lumbar vertebra', 'Fifth lumbar vertebra'],
+        'sacrum': ['Sacrum'],
+        'iv_disc': ['Intervertebral disk', 'Intervertebral disk of axis',
+                    'Intervertebral disk of third cervical vertebra', 'Intervertebral disk of fourth cervical vertebra',
+                    'Intervertebral disk of fifth cervical vertebra', 'Intervertebral disk of sixth cervical vertebra',
+                    'Intervertebral disk of seventh cervical vertebra',
+                    'Intervertebral disk of first thoracic vertebra', 'Intervertebral disk of second thoracic vertebra',
+                    'Intervertebral disk of third thoracic vertebra', 'Intervertebral disk of fourth thoracic vertebra',
+                    'Intervertebral disk of fifth thoracic vertebra', 'Intervertebral disk of sixth thoracic vertebra',
+                    'Intervertebral disk of seventh thoracic vertebra', 'Intervertebral disk of eighth thoracic vertebra',
+                    'Intervertebral disk of ninth thoracic vertebra', 'Intervertebral disk of tenth thoracic vertebra',
+                    'Intervertebral disk of eleventh thoracic vertebra',
+                    'Intervertebral disk of first lumbar vertebra', 'Intervertebral disk of second lumbar vertebra',
+                    'Intervertebral disk of third lumbar vertebra', 'Intervertebral disk of fourth lumbar vertebra',
+                    'Intervertebral disk of fifth lumbar vertebra'],
+        'iliocostalis': ['Left iliocostalis cervicis', 'Right iliocostalis cervicis',
+                         'Left iliocostalis thoracis', 'Right iliocostalis thoracis',
+                         'Left iliocostalis lumborum', 'Right iliocostalis lumborum'],
+        'longissimus': ['Left longissimus capitis', 'Right longissimus capitis',
+                        'Left longissimus cervicis', 'Right longissimus cervicis',
+                        'Left longissimus thoracis', 'Right longissimus thoracis'],
+        'spinalis': ['Left spinalis thoracis', 'Right spinalis thoracis'],
+        'semispinalis': ['Left semispinalis capitis', 'Right semispinalis capitis',
+                         'Left semispinalis cervicis', 'Right semispinalis cervicis',
+                         'Left semispinalis thoracis', 'Right semispinalis thoracis'],
+        'splenius_capitis': ['Left splenius capitis', 'Right splenius capitis'],
+        'rectus_capitis_posterior_major': ['Left rectus capitis posterior major', 'Right rectus capitis posterior major'],
+        'longus_colli': ['Superior oblique part of left longus colli', 'Superior oblique part of right longus colli',
+                         'Inferior oblique part of left longus colli', 'Inferior oblique part of right longus colli'],
+        'scalenus_anterior': ['Left scalenus anterior', 'Right scalenus anterior'],
+    },
+    'thorax': {
+        'sternum': ['Manubrium', 'Body of sternum', 'Xiphoid process'],
+        'ribs': ['Left first rib', 'Right first rib', 'Left second rib', 'Right second rib',
+                 'Left third rib', 'Right third rib', 'Left fourth rib', 'Right fourth rib',
+                 'Left fifth rib', 'Right fifth rib', 'Left sixth rib', 'Right sixth rib',
+                 'Left seventh rib', 'Right seventh rib', 'Left eighth rib', 'Right eighth rib',
+                 'Left ninth rib', 'Right ninth rib', 'Left tenth rib', 'Right tenth rib',
+                 'Left eleventh rib', 'Right eleventh rib', 'Left twelfth rib', 'Right twelfth rib'],
+        'costal_cartilages': ['Left first costal cartilage', 'Right first costal cartilage',
+                              'Left second costal cartilage', 'Right second costal cartilage',
+                              'Left third costal cartilage', 'Right third costal cartilage',
+                              'Left fourth costal cartilage', 'Right fourth costal cartilage',
+                              'Left fifth costal cartilage', 'Right fifth costal cartilage',
+                              'Left sixth costal cartilage', 'Right sixth costal cartilage',
+                              'Left seventh costal cartilage', 'Right seventh costal cartilage'],
+        'intercostals_external': ['External intercostal muscle'],
+        'intercostals_internal': ['Internal intercostal muscle'],
+        'intercostals_innermost': ['Innermost intercostal muscle'],
+        'diaphragm': ['Diaphragm'],
+        'transversus_thoracis': ['Left transversus thoracis', 'Right transversus thoracis'],
+        'serratus_posterior_superior': ['Left serratus posterior superior', 'Right serratus posterior superior'],
+        'serratus_posterior_inferior': ['Left serratus posterior inferior', 'Right serratus posterior inferior'],
+        'levatores_costarum': ['Set of left levatores costarum breves', 'Set of left levatores costarum longi',
+                               'Set of right levatores costarum breves', 'Set of right levatores costarum longi'],
+    },
+    'pelvis': {
+        'hip_bone': ['Left hip bone', 'Right hip bone'],
+        'gluteus_maximus': ['Left gluteus maximus', 'Right gluteus maximus'],
+        'gluteus_medius': ['Left gluteus medius', 'Right gluteus medius'],
+        'gluteus_minimus': ['Left gluteus minimus', 'Right gluteus minimus'],
+        'piriformis': ['Left piriformis', 'Right piriformis'],
+        'obturator_internus': ['Left obturator internus', 'Right obturator internus'],
+        'iliacus': ['Left iliacus', 'Right iliacus'],
+        'psoas_major': ['Left psoas major', 'Right psoas major'],
+        'coccygeus': ['Left coccygeus', 'Right coccygeus'],
+        'pubococcygeus': ['Left pubococcygeus', 'Right pubococcygeus'],
+        'iliococcygeus': ['Left iliococcygeus', 'Right iliococcygeus'],
+    },
+    'abdomen': {
+        'external_oblique': ['Left external oblique', 'Right external oblique'],
+        'linea_alba': ['Linea alba'],
+    },
+    'lower': {
+        'femur': ['Left femur', 'Right femur'],
+        'tibia': ['Left tibia', 'Right tibia'],
+        'fibula': ['Left fibula', 'Right fibula'],
+        'patella': ['Left patella', 'Right patella'],
+        'tarsal_bones': ['Left calcaneus', 'Right calcaneus', 'Left talus', 'Right talus',
+                         'Navicular bone of left foot', 'Navicular bone of right foot',
+                         'Left cuboid bone', 'Right cuboid bone',
+                         'Left medial cuneiform bone', 'Right medial cuneiform bone',
+                         'Left intermediate cuneiform bone', 'Right intermediate cuneiform bone',
+                         'Left lateral cuneiform bone', 'Right lateral cuneiform bone'],
+        'metatarsals': ['Left first metatarsal bone', 'Right first metatarsal bone',
+                        'Left second metatarsal bone', 'Right second metatarsal bone',
+                        'Left third metatarsal bone', 'Right third metatarsal bone',
+                        'Left fourth metatarsal bone', 'Right fourth metatarsal bone',
+                        'Left fifth metatarsal bone', 'Right fifth metatarsal bone'],
+        'toe_phalanges': ['Proximal phalanx of left big toe', 'Proximal phalanx of right big toe',
+                          'Distal phalanx of left big toe', 'Distal phalanx of right big toe',
+                          'Proximal phalanx of left second toe', 'Proximal phalanx of right second toe',
+                          'Middle phalanx of left second toe', 'Middle phalanx of right second toe',
+                          'Distal phalanx of left second toe', 'Distal phalanx of right second toe',
+                          'Proximal phalanx of left third toe', 'Proximal phalanx of right third toe',
+                          'Middle phalanx of left third toe', 'Middle phalanx of right third toe',
+                          'Distal phalanx of left third toe', 'Distal phalanx of right third toe',
+                          'Proximal phalanx of left fourth toe', 'Proximal phalanx of right fourth toe',
+                          'Middle phalanx of left fourth toe', 'Middle phalanx of right fourth toe',
+                          'Distal phalanx of left fourth toe', 'Distal phalanx of right fourth toe',
+                          'Proximal phalanx of left little toe', 'Proximal phalanx of right little toe',
+                          'Middle phalanx of left little toe', 'Middle phalanx of right little toe',
+                          'Distal phalanx of left little toe', 'Distal phalanx of right little toe'],
+        'calcaneal_tendon': ['Left calcaneal tendon', 'Right calcaneal tendon'],
+        'long_plantar_lig': ['Left long plantar ligament', 'Right long plantar ligament'],
+        'sartorius': ['Left sartorius', 'Right sartorius'],
+        'rectus_femoris': ['Left rectus femoris', 'Right rectus femoris'],
+        'vastus_lateralis': ['Left vastus lateralis', 'Right vastus lateralis'],
+        'vastus_medialis': ['Left vastus medialis', 'Right vastus medialis'],
+        'vastus_intermedius': ['Left vastus intermedius', 'Right vastus intermedius'],
+        'biceps_femoris': ['Long head of left biceps femoris', 'Long head of right biceps femoris',
+                           'Short head of left biceps femoris', 'Short head of right biceps femoris'],
+        'semitendinosus': ['Left semitendinosus', 'Right semitendinosus'],
+        'semimembranosus': ['Left semimembranosus', 'Right semimembranosus'],
+        'adductor_longus': ['Left adductor longus', 'Right adductor longus'],
+        'adductor_magnus': ['Left adductor magnus', 'Right adductor magnus'],
+        'gracilis': ['Left gracilis', 'Right gracilis'],
+        'tensor_fasciae_latae': ['Left tensor fasciae latae', 'Right tensor fasciae latae'],
+        'iliotibial_tract': ['Left iliotibial tract', 'Right iliotibial tract'],
+        'gastrocnemius': ['Medial head of left gastrocnemius', 'Medial head of right gastrocnemius',
+                          'Lateral head of left gastrocnemius', 'Lateral head of right gastrocnemius'],
+        'soleus': ['Left soleus', 'Right soleus'],
+        'plantaris': ['Left plantaris', 'Right plantaris'],
+        'tibialis_anterior': ['Left tibialis anterior', 'Right tibialis anterior'],
+        'tibialis_posterior': ['Left tibialis posterior', 'Right tibialis posterior'],
+        'fibularis_longus': ['Left fibularis longus', 'Right fibularis longus'],
+        'fibularis_brevis': ['Left fibularis brevis', 'Right fibularis brevis'],
+        'popliteus': ['Left popliteus', 'Right popliteus'],
+        'extensor_digitorum_longus': ['Left extensor digitorum longus', 'Right extensor digitorum longus'],
+        'flexor_digitorum_longus': ['Left flexor digitorum longus', 'Right flexor digitorum longus'],
+        'flexor_hallucis_longus': ['Left flexor hallucis longus', 'Right flexor hallucis longus'],
+    },
+    'upper': {
+        'clavicle': ['Left clavicle', 'Right clavicle'],
+        'scapula': ['Left scapula', 'Right scapula'],
+        'humerus': ['Left humerus', 'Right humerus'],
+        'radius': ['Left radius', 'Right radius'],
+        'ulna': ['Left ulna', 'Right ulna'],
+        'supraspinatus': ['Left supraspinatus', 'Right supraspinatus'],
+        'infraspinatus': ['Left infraspinatus muscle', 'Right infraspinatus muscle'],
+        'teres_minor': ['Left teres minor', 'Right teres minor'],
+        'subscapularis': ['Left subscapularis', 'Right subscapularis'],
+        'deltoid': ['Acromial part of left deltoid', 'Acromial part of right deltoid',
+                    'Clavicular part of left deltoid', 'Clavicular part of right deltoid',
+                    'Spinal part of left deltoid', 'Spinal part of right deltoid'],
+        'teres_major': ['Left teres major', 'Right teres major'],
+        'pectoralis_major': ['Clavicular part of left pectoralis major', 'Clavicular part of right pectoralis major',
+                             'Sternocostal part of left pectoralis major', 'Sternocostal part of right pectoralis major',
+                             'Abdominal part of left pectoralis major', 'Abdominal part of right pectoralis major'],
+        'trapezius': ['Ascending part of left trapezius', 'Ascending part of right trapezius',
+                      'Descending part of left trapezius', 'Descending part of right trapezius',
+                      'Transverse part of left trapezius', 'Transverse part of right trapezius'],
+        'levator_scapulae': ['Left levator scapulae', 'Right levator scapulae'],
+        'rhomboid_major': ['Left rhomboid major', 'Right rhomboid major'],
+        'rhomboid_minor': ['Left rhomboid minor', 'Right rhomboid minor'],
+        'serratus_anterior': ['Left serratus anterior', 'Right serratus anterior'],
+        'biceps_brachii': ['Long head of left biceps brachii', 'Long head of right biceps brachii',
+                           'Short head of left biceps brachii', 'Short head of right biceps brachii'],
+        'brachialis': ['Left brachialis', 'Right brachialis'],
+        'coracobrachialis': ['Left coracobrachialis', 'Right coracobrachialis'],
+        'triceps_brachii': ['Long head of left triceps brachii', 'Long head of right triceps brachii',
+                            'Lateral head of left triceps brachii', 'Lateral head of right triceps brachii',
+                            'Medial head of left triceps brachii', 'Medial head of right triceps brachii'],
+        'brachioradialis': ['Left brachioradialis', 'Right brachioradialis'],
+        'flexor_carpi_radialis': ['Left flexor carpi radialis', 'Right flexor carpi radialis'],
+        'flexor_carpi_ulnaris': ['Humeral head of left flexor carpi ulnaris', 'Humeral head of right flexor carpi ulnaris',
+                                 'Ulnar head of left flexor carpi ulnaris', 'Ulnar head of right flexor carpi ulnaris'],
+        'extensor_digitorum': ['Left extensor digitorum', 'Right extensor digitorum'],
+    },
+}
+
+
+def build_msk():
+    wanted = {name: (region, key) for region, parts in MSK.items() for key, names in parts.items() for name in names}
+    found = {region: {key: {'pos': [], 'idx': []} for key in parts} for region, parts in MSK.items()}
+    seen_names = set()
+    for name in sorted(os.listdir(ISA)):
+        if not name.endswith('.obj'):
+            continue
+        path = os.path.join(ISA, name)
+        english = english_name(path)
+        target = wanted.get(english)
+        if not target:
+            continue
+        region, key = target
+        add_obj(path, key, group=found[region][key], flags=seen_names)
+    missing = [(region, key) for region, parts in MSK.items() for key in parts
+               if not found[region][key]['pos'] or not found[region][key]['idx']]
+    if missing:
+        print('MISSING MSK', missing, file=sys.stderr)
+        sys.exit(1)
+
+    allp = [c for parts in found.values() for g in parts.values() for c in g['pos']]
+    mn = [min(allp[i::3]) for i in range(3)]
+    mx = [max(allp[i::3]) for i in range(3)]
+    ctr = [(a + b) / 2 for a, b in zip(mn, mx)]
+    ext = max(b - a for a, b in zip(mn, mx)) / 2
+
+    os.makedirs(os.path.join(HERE, 'msk'), exist_ok=True)
+    manifest = {'center': ctr, 'scale': ext, 'regions': {}}
+    for region, parts in found.items():
+        index_bytes = 2 if all(max(g['idx']) <= 65535 for g in parts.values()) else 4
+        index_format = 'H' if index_bytes == 2 else 'I'
+        out = bytearray()
+        meta = {'file': f'{region}.bin', 'indexBytes': index_bytes, 'parts': {}}
+        for key, g in parts.items():
+            q = [max(-32767, min(32767, round((c - ctr[i % 3]) / ext * 32767))) for i, c in enumerate(g['pos'])]
+            off = len(out)
+            out += struct.pack('<%dh' % len(q), *q)
+            if len(out) % 4:
+                out += b'\0' * (4 - len(out) % 4)
+            ioff = len(out)
+            out += struct.pack(f"<{len(g['idx'])}{index_format}", *g['idx'])
+            meta['parts'][key] = {'p': [off, len(q)], 'i': [ioff, len(g['idx'])]}
+        open(os.path.join(HERE, 'msk', meta['file']), 'wb').write(out)
+        meta['bytes'] = len(out)
+        manifest['regions'][region] = meta
+        print('msk', region, len(out) // 1024, 'KB', len(parts), 'parts')
+    json.dump(manifest, open(os.path.join(HERE, 'msk', 'models.json'), 'w'))
+    print('msk ok', len(manifest['regions']), 'regions')
+
+
+if 'msk' in sys.argv[1:]:
+    build_msk()
+    sys.exit(0)
 
 
 # 1. canonical part-of-body meshes
