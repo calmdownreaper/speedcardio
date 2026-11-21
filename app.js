@@ -1,11 +1,11 @@
-import * as material from './content.js?v=45';
-import { TERRITORIES } from './territories.js?v=45';
-import { LESSONS } from './lessons.js?v=45';
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=45';
+import * as material from './content.js?v=46';
+import { TERRITORIES } from './territories.js?v=46';
+import { LESSONS } from './lessons.js?v=46';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=46';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=45';
+} from './study.js?v=46';
 
 const REGION_PURPOSES = {
   "orientation": "Learn directions and the landmarks used throughout the path.",
@@ -1801,6 +1801,104 @@ $('view-direction').addEventListener('change', event => {
   if (page === 'atlas') atlas.view = direction;
   viewer?.view(direction);
 });
+const THEMES = new Set(['light', 'dark', 'system']);
+const ACCENTS = new Set(['violet', 'blue', 'teal', 'amber', 'rose', 'slate']);
+const THEME_LABELS = { light: 'Light', dark: 'Dark', system: 'System' };
+const themeQuery = matchMedia('(prefers-color-scheme: light)');
+
+function resolvedMode() {
+  const setting = document.documentElement.dataset.theme;
+  if (setting === 'light' || setting === 'dark') return setting;
+  return themeQuery.matches ? 'light' : 'dark';
+}
+
+function syncThemeChrome() {
+  const root = document.documentElement;
+  const setting = THEMES.has(root.dataset.theme) ? root.dataset.theme : 'dark';
+  const accent = ACCENTS.has(root.dataset.accent) ? root.dataset.accent : 'violet';
+  root.dataset.theme = setting;
+  root.dataset.accent = accent;
+  const toggle = $('theme-toggle');
+  const label = THEME_LABELS[setting];
+  toggle.setAttribute('aria-label', `Theme settings (${label})`);
+  toggle.title = `Theme: ${label}`;
+  for (const input of document.querySelectorAll('input[name="theme-choice"]')) {
+    input.checked = input.value === setting;
+  }
+  for (const swatch of document.querySelectorAll('[data-accent-choice]')) {
+    swatch.setAttribute('aria-pressed', String(swatch.dataset.accentChoice === accent));
+  }
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) {
+    const computed = getComputedStyle(root).getPropertyValue('--bg').trim();
+    meta.setAttribute('content', computed || (resolvedMode() === 'light' ? '#f6f7fb' : '#08090b'));
+  }
+}
+
+function setTheme(value) {
+  if (!THEMES.has(value)) return;
+  document.documentElement.dataset.theme = value;
+  try { localStorage.setItem('sc2_theme', value); } catch { /* storage unavailable */ }
+  syncThemeChrome();
+  viewer?.refreshTheme?.();
+}
+
+function setAccent(value) {
+  if (!ACCENTS.has(value)) return;
+  document.documentElement.dataset.accent = value;
+  try { localStorage.setItem('sc2_accent', value); } catch { /* storage unavailable */ }
+  syncThemeChrome();
+  viewer?.refreshTheme?.();
+}
+
+const themeToggle = $('theme-toggle');
+const themePopover = $('theme-popover');
+
+function openThemePopover() {
+  themePopover.hidden = false;
+  themeToggle.setAttribute('aria-expanded', 'true');
+  const checked = themePopover.querySelector('input[name="theme-choice"]:checked')
+    || themePopover.querySelector('input[name="theme-choice"]');
+  checked?.focus();
+}
+
+function closeThemePopover(returnFocus = true) {
+  if (themePopover.hidden) return;
+  themePopover.hidden = true;
+  themeToggle.setAttribute('aria-expanded', 'false');
+  if (returnFocus) themeToggle.focus();
+}
+
+themeToggle.addEventListener('click', () => {
+  if (themePopover.hidden) openThemePopover();
+  else closeThemePopover();
+});
+themePopover.addEventListener('change', event => {
+  const input = event.target.closest?.('input[name="theme-choice"]');
+  if (input) setTheme(input.value);
+});
+themePopover.addEventListener('click', event => {
+  const swatch = event.target.closest?.('[data-accent-choice]');
+  if (swatch) setAccent(swatch.dataset.accentChoice);
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && !themePopover.hidden) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeThemePopover();
+  }
+}, true);
+document.addEventListener('pointerdown', event => {
+  if (themePopover.hidden) return;
+  if (themePopover.contains(event.target) || themeToggle.contains(event.target)) return;
+  closeThemePopover(false);
+});
+themeQuery.addEventListener('change', () => {
+  if ((document.documentElement.dataset.theme || 'dark') !== 'system') return;
+  syncThemeChrome();
+  viewer?.refreshTheme?.();
+});
+syncThemeChrome();
 function syncSoundToggle() {
   const toggle = $('sound-toggle');
   const off = isMuted();
@@ -1851,7 +1949,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=45');
+    const { createViewer } = await import('./viewer.js?v=46');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore);
     viewerStatus = 'ready';
     if ($('view-isolate').getAttribute('aria-pressed') === 'true') viewer.setIsolate(true);

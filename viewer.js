@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { COLORS, DEFAULT_COLOR } from './data.js?v=45';
-import { ITEMS } from './study.js?v=45';
+import { COLORS, DEFAULT_COLOR } from './data.js?v=46';
+import { ITEMS } from './study.js?v=46';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -40,20 +40,23 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
   const IndexArray = meta.indexBytes === 2 ? Uint16Array : Uint32Array;
   const bytes = meta.bytes ?? Math.max(...Object.values(meta.parts).map(part => part.i[0] + part.i[1] * IndexArray.BYTES_PER_ELEMENT));
   if (buffer.byteLength !== bytes) throw new Error('Model geometry does not match its index');
-  const css = getComputedStyle(document.documentElement);
-  const token = (name, fallback) => css.getPropertyValue(name).trim() || css.getPropertyValue(fallback).trim();
-  const tone = {
-    select: token('--model-select', '--accent'),
-    selectDeep: token('--model-select-deep', '--accent-soft'),
-    tint: token('--model-tint', '--soft'),
-    axis: token('--model-axis', '--accent-2'),
-    labelBg: token('--model-label-bg', '--model'),
-    labelInk: token('--model-label-ink', '--accent-2'),
-    sky: token('--model-light-sky', '--ink'),
-    ground: token('--model-light-ground', '--model'),
-    key: token('--model-light-key', '--ink'),
-    rim: token('--model-light-rim', '--accent-2'),
-  };
+  function readTone() {
+    const css = getComputedStyle(document.documentElement);
+    const token = (name, fallback) => css.getPropertyValue(name).trim() || css.getPropertyValue(fallback).trim();
+    return {
+      select: token('--model-select', '--accent'),
+      selectDeep: token('--model-select-deep', '--accent-soft'),
+      tint: token('--model-tint', '--soft'),
+      axis: token('--model-axis', '--accent-2'),
+      labelBg: token('--model-label-bg', '--model'),
+      labelInk: token('--model-label-ink', '--accent-2'),
+      sky: token('--model-light-sky', '--ink'),
+      ground: token('--model-light-ground', '--model'),
+      key: token('--model-light-key', '--ink'),
+      rim: token('--model-light-rim', '--accent-2'),
+    };
+  }
+  let tone = readTone();
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -65,7 +68,8 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
   const camera = new THREE.PerspectiveCamera(32, 1, .01, 50);
   camera.up.set(0, 0, 1);
   camera.position.set(0, -3, .5);
-  scene.add(new THREE.HemisphereLight(tone.sky, tone.ground, 1.25));
+  const hemi = new THREE.HemisphereLight(tone.sky, tone.ground, 1.25);
+  scene.add(hemi);
   const light = new THREE.DirectionalLight(tone.key, 2.1);
   camera.add(light);
   light.position.set(-2, 3, 4);
@@ -110,15 +114,19 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
   // Focus annotations belong to the focus API, independent of model geometry.
   const axis = new THREE.Group();
   let axisTube;
-  function endpointLabel(text, point, scale) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 256; canvas.height = 96;
+  function paintLabel(canvas, text) {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = tone.labelBg; ctx.fillRect(0, 0, 256, 96);
     ctx.font = 'bold 48px sans-serif'; ctx.textAlign = 'center';
     ctx.fillStyle = tone.labelInk; ctx.fillText(text, 128, 65);
+  }
+  function endpointLabel(text, point, scale) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256; canvas.height = 96;
+    paintLabel(canvas, text);
     const texture = new THREE.CanvasTexture(canvas);
     const label = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, depthTest: false, depthWrite: false, toneMapped: false }));
+    label.userData.label = { canvas, text };
     label.position.copy(point); label.position.x += scale * .12;
     label.scale.set(scale * .25, scale * .094, 1);
     label.renderOrder = 1000;
@@ -278,6 +286,26 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
   const select = new THREE.Color(tone.select);
   const selectDeep = new THREE.Color(tone.selectDeep);
   const off = new THREE.Color(0, 0, 0);
+
+  function refreshTheme() {
+    tone = readTone();
+    hemi.color.set(tone.sky);
+    hemi.groundColor.set(tone.ground);
+    light.color.set(tone.key);
+    rim.color.set(tone.rim);
+    select.set(tone.select);
+    selectDeep.set(tone.selectDeep);
+    tint.set(tone.tint);
+    axisTube?.material.color.set(tone.axis);
+    for (const child of axis.children) {
+      const label = child.userData.label;
+      if (!label) continue;
+      paintLabel(label.canvas, label.text);
+      if (child.material?.map) child.material.map.needsUpdate = true;
+    }
+    applyStyles();
+    schedule();
+  }
 
   function applyStyles() {
     const primary = new Set(current.ids || []);
@@ -472,6 +500,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore) {
     paint,
     focus,
     focusAxis,
+    refreshTheme,
     view(direction) { current.view = direction; frame(direction); },
     zoom,
     resetView,

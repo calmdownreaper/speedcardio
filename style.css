@@ -1,5 +1,7 @@
 :root {
   color-scheme: dark;
+
+  /* Dark neutral values (default) */
   --bg: #08090b;
   --surface: #101114;
   --surface-2: #16171b;
@@ -11,36 +13,246 @@
   --ink: #f1f3f7;
   --soft: #c8ccd6;
   --mute: #9399a6;
-  --ghost: #626876;
-  --accent: #7b83ff;
-  --accent-hover: #959bff;
-  --accent-ink: #0a0b1c;
-  --accent-soft: #1d2042;
-  --accent-2: #9db4ff;
-  --accent-2-soft: #18203a;
-  --good: #3ddc84;
-  --bad: #ff5a6a;
-  --bad-soft: #35151b;
-  --good-soft: #0f2a1c;
-  --focus: var(--accent-2);
+  --ghost: #7b8291;
   --shadow: #000000;
   --scrim: rgb(6 7 9 / .8);
   --overlay: #0c0d10f2;
+  --good: #3ddc84;
+  --bad: #ff5a6a;
+  --good-soft: #0f2a1c;
+  --bad-soft: #35151b;
+
+  /* Light source tokens */
+  --bg-light: #f6f7fb;
+  --surface-light: #ffffff;
+  --surface-2-light: #f0f2f7;
+  --surface-3-light: #e6e9f0;
+  --model-light: #eef1f7;
+  --model-glow-light: #ffffff;
+  --line-light: #dfe3eb;
+  --line-strong-light: #c6ccd9;
+  --ink-light: #12151d;
+  --soft-light: #363d4b;
+  --mute-light: #5b6371;
+  --ghost-light: #677080;
+  --shadow-light: #1a2230;
+  --scrim-light: rgb(16 22 34 / .48);
+  --overlay-light: #fffffff2;
+  --good-light: #0b6e3b;
+  --bad-light: #c22a3a;
+  --good-soft-light: #dcf7e7;
+  --bad-soft-light: #fde8ea;
+  --model-select-light: #c98a00;
+  --model-label-bg-light: #ffffff;
+  --model-tint-light: #1f2937;
+  --panel-shadow-light: 0 24px 60px -36px rgb(26 34 48 / .16);
+
+  /* Viewer / model tokens */
   --model-select: #ffd84a;
   --model-select-deep: #6b5310;
-  --model-axis: #9db4ff;
-  --model-label-bg: #0c0d10;
-  --model-label-ink: #c9d4ff;
+  --model-axis: var(--accent-2);
+  --model-label-bg: var(--surface);
+  --model-label-ink: var(--accent-2);
   --model-tint: #e6e9f2;
   --model-light-sky: #f4f6ff;
   --model-light-ground: #101218;
   --model-light-key: #fbfcff;
   --model-light-rim: #b9c8ff;
+  --panel-shadow: 0 30px 80px -40px #000;
+
+  /* Accent sources: violet is the default */
+  --accent-dark: #7b83ff;
+  --accent-hover-dark: #959bff;
+  --accent-ink-dark: #0a0b1c;
+  --accent-soft-dark: #1d2042;
+  --accent-2-dark: #9db4ff;
+  --accent-2-soft-dark: #18203a;
+  --accent-light: #574fd6;
+  --accent-hover-light: #4a42c4;
+  --accent-ink-light: #ffffff;
+  --accent-soft-light: #ecebff;
+  --accent-2-light: #4f46c8;
+  --accent-2-soft-light: #e7e5ff;
+
+  --accent: var(--accent-dark);
+  --accent-hover: var(--accent-hover-dark);
+  --accent-ink: var(--accent-ink-dark);
+  --accent-soft: var(--accent-soft-dark);
+  --accent-2: var(--accent-2-dark);
+  --accent-2-soft: var(--accent-2-soft-dark);
+  --focus: var(--accent-2);
+
+  /* Swatch sources */
+  --swatch-violet: #7b83ff;
+  --swatch-blue: #4f8cff;
+  --swatch-teal: #2ec4a6;
+  --swatch-amber: #f5a524;
+  --swatch-rose: #ff6b9d;
+  --swatch-slate: #9aa7bd;
+  --swatch-violet-light: #574fd6;
+  --swatch-blue-light: #1b5bb8;
+  --swatch-teal-light: #06745f;
+  --swatch-amber-light: #a34a08;
+  --swatch-rose-light: #c0265c;
+  --swatch-slate-light: #475569;
+
   --gutter: clamp(16px, 4vw, 60px);
   --ease: 170ms ease;
   font: 400 15px/1.5 Geist, system-ui, sans-serif;
   background: var(--bg);
   color: var(--ink);
+}
+
+/* Accent presets override the source tokens only, so the light mapping still wins. */
+:root[data-accent="blue"] {
+  --accent-dark: #4f8cff;
+  --accent-hover-dark: #6fa2ff;
+  --accent-ink-dark: #06101f;
+  --accent-soft-dark: #16233f;
+  --accent-2-dark: #8fc0ff;
+  --accent-2-soft-dark: #101d33;
+  --accent-light: #1b5bb8;
+  --accent-hover-light: #164e9e;
+  --accent-ink-light: #ffffff;
+  --accent-soft-light: #e8f0ff;
+  --accent-2-light: #1b5fbd;
+  --accent-2-soft-light: #e3edff;
+}
+:root[data-accent="teal"] {
+  --accent-dark: #2ec4a6;
+  --accent-hover-dark: #48d6b8;
+  --accent-ink-dark: #03130f;
+  --accent-soft-dark: #0d2b26;
+  --accent-2-dark: #6ee7c8;
+  --accent-2-soft-dark: #0b2620;
+  --accent-light: #06745f;
+  --accent-hover-light: #056351;
+  --accent-ink-light: #ffffff;
+  --accent-soft-light: #e0f7f1;
+  --accent-2-light: #0a735e;
+  --accent-2-soft-light: #d9f4ec;
+}
+:root[data-accent="amber"] {
+  --accent-dark: #f5a524;
+  --accent-hover-dark: #ffb947;
+  --accent-ink-dark: #1c1203;
+  --accent-soft-dark: #33240d;
+  --accent-2-dark: #ffc76b;
+  --accent-2-soft-dark: #2b1f0c;
+  --accent-light: #a34a08;
+  --accent-hover-light: #8f4106;
+  --accent-ink-light: #ffffff;
+  --accent-soft-light: #fdf0dc;
+  --accent-2-light: #944104;
+  --accent-2-soft-light: #fbead2;
+}
+:root[data-accent="rose"] {
+  --accent-dark: #ff6b9d;
+  --accent-hover-dark: #ff8ab3;
+  --accent-ink-dark: #240712;
+  --accent-soft-dark: #3a1424;
+  --accent-2-dark: #ff9cbf;
+  --accent-2-soft-dark: #33101d;
+  --accent-light: #c0265c;
+  --accent-hover-light: #a61f4e;
+  --accent-ink-light: #ffffff;
+  --accent-soft-light: #fce7ef;
+  --accent-2-light: #b01f55;
+  --accent-2-soft-light: #f9e2ea;
+}
+:root[data-accent="slate"] {
+  --accent-dark: #9aa7bd;
+  --accent-hover-dark: #b5c0d2;
+  --accent-ink-dark: #0b111b;
+  --accent-soft-dark: #232a36;
+  --accent-2-dark: #b8c5d9;
+  --accent-2-soft-dark: #1b212c;
+  --accent-light: #475569;
+  --accent-hover-light: #3b475a;
+  --accent-ink-light: #ffffff;
+  --accent-soft-light: #e9edf3;
+  --accent-2-light: #475569;
+  --accent-2-soft-light: #e5eaf1;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: var(--bg-light);
+  --surface: var(--surface-light);
+  --surface-2: var(--surface-2-light);
+  --surface-3: var(--surface-3-light);
+  --model: var(--model-light);
+  --model-glow: var(--model-glow-light);
+  --line: var(--line-light);
+  --line-strong: var(--line-strong-light);
+  --ink: var(--ink-light);
+  --soft: var(--soft-light);
+  --mute: var(--mute-light);
+  --ghost: var(--ghost-light);
+  --shadow: var(--shadow-light);
+  --scrim: var(--scrim-light);
+  --overlay: var(--overlay-light);
+  --good: var(--good-light);
+  --bad: var(--bad-light);
+  --good-soft: var(--good-soft-light);
+  --bad-soft: var(--bad-soft-light);
+  --model-select: var(--model-select-light);
+  --model-label-bg: var(--model-label-bg-light);
+  --model-tint: var(--model-tint-light);
+  --accent: var(--accent-light);
+  --accent-hover: var(--accent-hover-light);
+  --accent-ink: var(--accent-ink-light);
+  --accent-soft: var(--accent-soft-light);
+  --accent-2: var(--accent-2-light);
+  --accent-2-soft: var(--accent-2-soft-light);
+  --swatch-violet: var(--swatch-violet-light);
+  --swatch-blue: var(--swatch-blue-light);
+  --swatch-teal: var(--swatch-teal-light);
+  --swatch-amber: var(--swatch-amber-light);
+  --swatch-rose: var(--swatch-rose-light);
+  --swatch-slate: var(--swatch-slate-light);
+  --panel-shadow: var(--panel-shadow-light);
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme="system"] {
+    color-scheme: light;
+    --bg: var(--bg-light);
+    --surface: var(--surface-light);
+    --surface-2: var(--surface-2-light);
+    --surface-3: var(--surface-3-light);
+    --model: var(--model-light);
+    --model-glow: var(--model-glow-light);
+    --line: var(--line-light);
+    --line-strong: var(--line-strong-light);
+    --ink: var(--ink-light);
+    --soft: var(--soft-light);
+    --mute: var(--mute-light);
+    --ghost: var(--ghost-light);
+    --shadow: var(--shadow-light);
+    --scrim: var(--scrim-light);
+    --overlay: var(--overlay-light);
+    --good: var(--good-light);
+    --bad: var(--bad-light);
+    --good-soft: var(--good-soft-light);
+    --bad-soft: var(--bad-soft-light);
+    --model-select: var(--model-select-light);
+    --model-label-bg: var(--model-label-bg-light);
+    --model-tint: var(--model-tint-light);
+    --accent: var(--accent-light);
+    --accent-hover: var(--accent-hover-light);
+    --accent-ink: var(--accent-ink-light);
+    --accent-soft: var(--accent-soft-light);
+    --accent-2: var(--accent-2-light);
+    --accent-2-soft: var(--accent-2-soft-light);
+    --swatch-violet: var(--swatch-violet-light);
+    --swatch-blue: var(--swatch-blue-light);
+    --swatch-teal: var(--swatch-teal-light);
+    --swatch-amber: var(--swatch-amber-light);
+    --swatch-rose: var(--swatch-rose-light);
+    --swatch-slate: var(--swatch-slate-light);
+    --panel-shadow: var(--panel-shadow-light);
+  }
 }
 
 html { scrollbar-color: var(--line-strong) var(--bg); }
@@ -86,7 +298,7 @@ nav button[aria-current] { color: var(--ink); background: var(--surface); }
 nav button:hover { color: var(--ink); background: var(--surface-2); }
 nav .icon { width: 16px; height: 16px; }
 #due-badge { color: var(--accent-2); font-variant-numeric: tabular-nums; }
-.header-tools { justify-self: end; display: flex; align-items: center; gap: 10px; }
+.header-tools { justify-self: end; position: relative; display: flex; align-items: center; gap: 10px; }
 .header-streak { color: var(--accent-2); font-size: 13px; text-align: right; }
 main { flex: 1; min-width: 0; }
 [data-enter] { animation: enter .36s ease-out; }
@@ -503,7 +715,7 @@ nav button[aria-current] { background: var(--accent-soft); color: var(--ink); }
 .prompt .actions .button.primary { margin-left: 0; }
 
 /* Workspace panels share one radius and border */
-.model-shell { border-radius: var(--r-lg); border-color: var(--line); box-shadow: 0 30px 80px -40px #000; }
+.model-shell { border-radius: var(--r-lg); border-color: var(--line); box-shadow: var(--panel-shadow); }
 .map-layout .model-shell, .atlas-layout .model-shell { top: 88px; }
 
 /* Map */
@@ -831,10 +1043,98 @@ h1 { letter-spacing: -.035em; }
 .find-chip .swatch { margin-top: 1px; }
 
 /* Sound toggle */
-.sound-toggle { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--soft); }
-.sound-toggle:hover { color: var(--ink); background: var(--surface-2); }
+.sound-toggle, .theme-toggle { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--soft); }
+.sound-toggle:hover, .theme-toggle:hover { color: var(--ink); background: var(--surface-2); }
 .sound-toggle[aria-pressed="true"] { color: var(--mute); }
+.theme-toggle[aria-expanded="true"] { color: var(--ink); background: var(--surface-2); }
 .level-list-title { scroll-margin-top: 84px; }
 .lesson-more { margin-top: 10px; }
-.lesson-more summary { cursor: pointer; color: var(--muted, #9aa3ad); font-size: .9em; }
+.lesson-more summary { cursor: pointer; color: var(--mute); font-size: .9em; }
 .lesson-more[open] summary { margin-bottom: 6px; }
+
+/* Theme toggle: only the icon that matches the active mode is shown */
+.theme-toggle .theme-icon { display: none; }
+[data-theme="light"] .theme-icon-sun,
+[data-theme="dark"] .theme-icon-moon,
+[data-theme="system"] .theme-icon-system { display: block; }
+
+.theme-popover {
+  position: absolute;
+  inset-inline-end: 0;
+  top: calc(100% + 10px);
+  z-index: 40;
+  width: min(300px, calc(100vw - 2 * var(--gutter)));
+  padding: 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 18px 44px -24px color-mix(in srgb, var(--shadow) 55%, transparent);
+  max-height: min(420px, calc(100dvh - 96px));
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.theme-popover fieldset { margin: 0; border: 0; padding: 0; min-width: 0; }
+.theme-popover legend,
+.theme-popover .theme-label {
+  display: block;
+  margin: 0 0 6px;
+  padding: 0;
+  color: var(--mute);
+  font-size: 12px;
+  font-weight: 500;
+}
+.theme-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+.theme-choices label { position: relative; display: block; cursor: pointer; }
+.theme-choices input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.theme-choices label > span {
+  display: grid;
+  place-items: center;
+  min-height: 36px;
+  padding: 0 4px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--soft);
+  font-size: 13px;
+  transition: background var(--ease), border-color var(--ease), color var(--ease);
+}
+.theme-choices input:checked + span {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-weight: 600;
+}
+.theme-choices input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.theme-accent { margin-top: 12px; }
+.theme-swatches { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.theme-swatch {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  padding: 3px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--swatch);
+  background-clip: content-box;
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+.theme-swatch:hover { border-color: var(--mute); }
+.theme-swatch[aria-pressed="true"] {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px var(--ink);
+}
+.theme-swatch:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.theme-swatch[data-accent-choice="violet"] { --swatch: var(--swatch-violet); }
+.theme-swatch[data-accent-choice="blue"] { --swatch: var(--swatch-blue); }
+.theme-swatch[data-accent-choice="teal"] { --swatch: var(--swatch-teal); }
+.theme-swatch[data-accent-choice="amber"] { --swatch: var(--swatch-amber); }
+.theme-swatch[data-accent-choice="rose"] { --swatch: var(--swatch-rose); }
+.theme-swatch[data-accent-choice="slate"] { --swatch: var(--swatch-slate); }
