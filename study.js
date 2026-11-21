@@ -1,4 +1,4 @@
-import { DECKS } from './data.js?v=44';
+import { DECKS } from './data.js?v=45';
 
 const SHORT_NAMES = {
   pap_vd_ant: 'Anterior RV papillary muscle',
@@ -21,6 +21,16 @@ export const ITEMS = Object.fromEntries(DECKS.flatMap(deck => deck.itens.map(ite
 export const IDS = Object.keys(ITEMS);
 
 const CURRICULUM = [
+  ['laringe', 'Larynx', [
+    ['Cartilages and hyoid', 'lar_hio lar_tir lar_cri lar_epi lar_ari lar_cor'],
+    ['Membranes and ligaments', 'lar_mth lar_mct lar_vl lar_he lar_te'],
+    ['Intrinsic muscles', 'lar_ct lar_pca lar_lca lar_arit lar_ta lar_voc'],
+  ]],
+  ['coronarias', 'Coronary arteries', [
+    ['Coronary trunks and major branches', 'acd tce dae cx dp'],
+    ['Anterior and septal branches', 'diag vent_ant_d_dae cone_e sept_da sept_dp'],
+    ['Right coronary branches', 'marg_d vent_ant_acd vent_post_acd'],
+  ]],
   ['camaras', 'Chambers', [
     ['Atria and ventricles', 'ad ae vd ve paredev'],
   ]],
@@ -35,11 +45,6 @@ const CURRICULUM = [
     ['Atrioventricular leaflets', 'tri_ant tri_post tri_sep mit_ant mit_post'],
     ['Semilunar cusps', 'pulm_ant_d pulm_ant_e pulm_post ao_ant ao_post_e ao_post_d'],
     ['Papillary muscles', 'pap_vd_ant pap_vd_post pap_vd_sep pap_ve_al'],
-  ]],
-  ['coronarias', 'Coronary arteries', [
-    ['Coronary trunks and major branches', 'acd tce dae cx dp'],
-    ['Anterior and septal branches', 'diag vent_ant_d_dae cone_e sept_da sept_dp'],
-    ['Right coronary branches', 'marg_d vent_ant_acd vent_post_acd'],
   ]],
   ['veias', 'Cardiac veins', [
     ['Venous drainage of the heart', 'seio vcmagna vcmedia vcparva vpve'],
@@ -80,7 +85,7 @@ export const REGIONS = CURRICULUM.map(([id, title, chapters]) => {
     const end = Math.round((part + 1) * mixed.length / runs);
     levels.push({ id: `${id}-speed-${part + 1}`, region: id, title: `Speed run${suffix}`, ids: mixed.slice(start, end), speed: true });
   }
-  return { id, title, levels, ids: [...new Set(mixed)], area: ['vias', 'segd', 'sege'].includes(id) ? 'Lungs' : id === 'mediastino' ? 'Thorax' : 'Heart' };
+  return { id, title, levels, ids: [...new Set(mixed)], area: ['vias', 'segd', 'sege'].includes(id) ? 'Lungs' : id === 'mediastino' ? 'Thorax' : id === 'laringe' ? 'Neck' : 'Heart' };
 });
 export const LEVELS = REGIONS.flatMap(region => region.levels);
 

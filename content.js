@@ -1785,6 +1785,23 @@ export const THEORY = [
 ];
 
 export const LESSON_CUES = {
+  "lar_hio": "U-shaped bone above the larynx, suspended by muscles",
+  "lar_tir": "Largest cartilage, two plates meeting in front as the prominence",
+  "lar_cri": "The only complete ring, narrow in front and tall behind",
+  "lar_epi": "Leaf-shaped elastic cartilage behind the tongue root",
+  "lar_ari": "Paired pyramids on the cricoid lamina that move the vocal folds",
+  "lar_cor": "Small horn-like nodules on top of the arytenoids",
+  "lar_mth": "Sheet between the hyoid and the upper thyroid border",
+  "lar_mct": "Midline band between the thyroid and cricoid, the site of emergency airway access",
+  "lar_vl": "Free upper edges of the conus elasticus inside the vocal folds",
+  "lar_he": "Ties the front of the epiglottis to the hyoid",
+  "lar_te": "Attaches the epiglottic stalk to the thyroid angle",
+  "lar_ct": "Only intrinsic muscle on the outside; tenses the cords",
+  "lar_pca": "The only muscle that opens the glottis",
+  "lar_lca": "Rotates the arytenoids inward to close the glottis",
+  "lar_arit": "Unpaired transverse plus crossed oblique fibres between the arytenoids",
+  "lar_ta": "Runs beside the vocal fold and shortens it",
+  "lar_voc": "Deep medial part of the thyroarytenoid along the vocal ligament",
   "ad": "Look for the chamber at the patient's right border, between the great veins entering superiorly and inferiorly.",
   "ae": "Look from the posterior view: this superior chamber receives the pulmonary veins and forms the base, the superior-posterior part of the heart.",
   "vd": "Look for the broad anterior chamber deep to the sternum. It leads superiorly toward the pulmonary trunk.",
@@ -2139,6 +2156,23 @@ export const ORIENTATION = [
 ];
 
 export const ROUND_CLUES = {
+  "lar_hio": "The U-shaped bone at the top of the airway, at C3",
+  "lar_tir": "The largest cartilage, two plates joined in front at C4–C5",
+  "lar_cri": "The only complete cartilage ring, at C6",
+  "lar_epi": "Leaf-shaped flap behind the root of the tongue",
+  "lar_ari": "Paired pyramids sitting on the back of the ring below",
+  "lar_cor": "Tiny horns perched on the paired pyramids",
+  "lar_mth": "The sheet hanging the larynx from the U-shaped bone",
+  "lar_mct": "Midline band between the large plate and the ring below",
+  "lar_vl": "Paired bands running from the back of the large plate to the paired pyramids",
+  "lar_he": "Connects the front of the leaf-shaped flap to the U-shaped bone",
+  "lar_te": "Anchors the stalk of the leaf-shaped flap to the large plate",
+  "lar_ct": "The only intrinsic muscle on the outside, front of the larynx",
+  "lar_pca": "On the back of the ring, pulling the paired pyramids outward",
+  "lar_lca": "On the side of the ring, pulling the muscular process forward",
+  "lar_arit": "Fibres bridging the back of the two pyramids",
+  "lar_ta": "From inside the large plate back to the paired pyramids, beside the cords",
+  "lar_voc": "The fine muscle lying right against the vocal ligament",
   "ad": "At the patient’s right border, between the veins entering superiorly and inferiorly.",
   "ae": "Posterior to the right atrium, receiving four pulmonary veins at the superior-posterior part of the heart.",
   "paredev": "The muscular covering around both ventricles, the inferior chambers.",
@@ -2651,6 +2685,7 @@ export const LESSON_DETAIL = {
 };
 
 export const REGION_OVERVIEW = {
+  laringe: "The larynx is the cartilage box at the top of the trachea, from C3 to C6. A frame of cartilages, joined by membranes and ligaments, carries the vocal folds; small intrinsic muscles open, close and tense them. Exam key: the posterior cricoarytenoid is the only opener, and every intrinsic muscle is supplied by the recurrent laryngeal nerve except the cricothyroid.",
   camaras: "The heart has four chambers: two thin-walled atria that receive blood and two ventricles that pump it out. They sit in the middle mediastinum behind the sternum, with the right side serving the lungs and the left side the body.",
   vasos: "The great vessels are the large conduits that enter and leave the heart. The aorta and its branches carry systemic blood, the venae cavae return it, and the pulmonary arteries and veins connect the right ventricle and left atrium to the lungs.",
   valvas: "The heart valves keep blood moving in one direction. Atrioventricular valves guard the inlet orifices and semilunar valves guard the outflow tracts; all are anchored to the fibrous skeleton of the heart and open or close with the pressure changes of the cardiac cycle.",
@@ -2663,6 +2698,9 @@ export const REGION_OVERVIEW = {
 };
 
 export const LEVEL_OVERVIEW = {
+  "laringe-1": "The laryngeal skeleton: the hyoid above, the large thyroid cartilage, the cricoid ring below at C6, the epiglottis guarding the inlet, and the small arytenoid and corniculate cartilages that move the vocal folds.",
+  "laringe-2": "Membranes and ligaments tie the cartilages together. The thyrohyoid membrane hangs the larynx from the hyoid; the cricothyroid ligament closes the gap below and rises as the conus elasticus, whose free edges are the vocal ligaments.",
+  "laringe-3": "Intrinsic muscles move the vocal folds. Posterior cricoarytenoid opens; lateral cricoarytenoid and interarytenoids close; cricothyroid tenses; thyroarytenoid and vocalis relax and fine-tune. All are recurrent laryngeal except the cricothyroid (external superior laryngeal).",
   "camaras-1": "The heart has four chambers: two thin-walled atria that receive blood and two ventricles that pump it out. They sit in the middle mediastinum behind the sternum, with the right side serving the lungs and the left side the body. This level shows the chambers and the shared muscular wall that gives the heart its shape.",
   "vasos-1": "The aorta is the body's main arterial trunk. It leaves the left ventricle, ascends, arches over the left main bronchus and descends behind the heart, giving three branches to the head, neck and arms. This level follows that course and the branches that spring from the arch.",
   "vasos-2": "The venae cavae return systemic blood to the right atrium. The superior vena cava drains the head, neck, arms and thorax; the inferior vena cava drains everything below the diaphragm. Both enter the right atrium, and the brachiocephalic veins form the upper one behind the sternum.",
@@ -2688,6 +2726,9 @@ export const LEVEL_OVERVIEW = {
 };
 
 export const LEVEL_CONTRAST = {
+  "laringe-1": { a: "lar_tir", b: "lar_cri", title: "Thyroid or cricoid", text: "The thyroid is the large open shield with two plates meeting in front. The cricoid lies below it at C6 and is the only complete ring, tall at the back where the arytenoids sit." },
+  "laringe-2": { a: "lar_mth", b: "lar_mct", title: "Thyrohyoid membrane or cricothyroid ligament", text: "The thyrohyoid membrane is above the thyroid cartilage and is pierced by the internal laryngeal nerve. The cricothyroid ligament is below it, between thyroid and cricoid, and is where a cricothyrotomy goes." },
+  "laringe-3": { a: "lar_pca", b: "lar_lca", title: "Posterior or lateral cricoarytenoid", text: "Both pull on the arytenoid muscular process. The posterior one, on the back of the cricoid, rotates the folds apart and is the only opener; the lateral one, on the side, rotates them together and closes." },
   "camaras-1": {
     a: "vd", b: "ve", title: "Right or left ventricle",
     text: "Both are lower chambers, but the right ventricle is anterior, crescent-shaped and 3–5 mm thick, with a moderator band and an outflow conus. The left ventricle forms the apex, has a 10–15 mm wall and a smooth aortic vestibule. On the model, the apex belongs to the left; the broad front belongs to the right.",
@@ -2779,6 +2820,23 @@ export const LEVEL_CONTRAST = {
 };
 
 export const LEVEL_CHECK = {
+  "laringe-1": [
+    { q: "Which laryngeal cartilage is the only complete ring?", options: ["Cricoid", "Thyroid", "Arytenoid", "Epiglottis"], answer: 0, why: "The cricoid is a full signet ring at C6; the thyroid is open behind.", exam: true },
+    { q: "At what vertebral level is the cricoid cartilage?", options: ["C6", "C3", "C4", "T4"], answer: 0, why: "C6 marks the cricoid and the start of the trachea and esophagus; the hyoid is at C3.", exam: true },
+    { q: "Which cartilages do almost all intrinsic muscles act on?", options: ["Arytenoids", "Corniculates", "Epiglottis", "Hyoid"], answer: 0, why: "The arytenoids pivot on the cricoid; their movement opens and closes the rima glottidis.", exam: true },
+  ],
+  "laringe-2": [
+    { q: "Emergency airway access below the vocal folds goes through which structure?", options: ["Median cricothyroid ligament", "Thyrohyoid membrane", "Hyoepiglottic ligament", "First tracheal ring"], answer: 0, why: "Cricothyrotomy passes through the cricothyroid ligament, just under the skin below the vocal folds.", exam: true },
+    { q: "Which nerve pierces the thyrohyoid membrane?", options: ["Internal branch of the superior laryngeal nerve", "Recurrent laryngeal nerve", "External branch of the superior laryngeal nerve", "Vagus trunk"], answer: 0, why: "The internal laryngeal nerve and superior laryngeal artery pierce the membrane; the nerve gives sensation above the vocal folds.", exam: true },
+    { q: "The vocal ligament is the free upper edge of which structure?", options: ["Conus elasticus (cricothyroid membrane)", "Thyrohyoid membrane", "Quadrangular membrane", "Hyoepiglottic ligament"], answer: 0, why: "The conus elasticus rises from the cricoid; its free upper border thickens as the vocal ligament.", exam: true },
+  ],
+  "laringe-3": [
+    { q: "Which is the only muscle that opens the rima glottidis?", options: ["Posterior cricoarytenoid", "Lateral cricoarytenoid", "Cricothyroid", "Interarytenoid"], answer: 0, why: "The posterior cricoarytenoid is the only abductor; all the others close, tense or relax.", exam: true },
+    { q: "Which intrinsic laryngeal muscle is not supplied by the recurrent laryngeal nerve?", options: ["Cricothyroid", "Posterior cricoarytenoid", "Thyroarytenoid", "Lateral cricoarytenoid"], answer: 0, why: "The cricothyroid is supplied by the external branch of the superior laryngeal nerve.", exam: true },
+    { q: "Which muscle tenses the vocal folds to raise pitch?", options: ["Cricothyroid", "Thyroarytenoid", "Posterior cricoarytenoid", "Interarytenoid"], answer: 0, why: "Cricothyroid tilts the thyroid forward, lengthening the folds; thyroarytenoid does the opposite.", exam: true },
+    { q: "Which muscle shortens and relaxes the vocal folds?", options: ["Thyroarytenoid", "Cricothyroid", "Posterior cricoarytenoid", "Lateral cricoarytenoid"], answer: 0, why: "Thyroarytenoid pulls the arytenoids toward the thyroid, slackening the folds.", exam: true },
+    { q: "Bilateral recurrent laryngeal nerve injury causes what?", options: ["Stridor, because neither fold can open", "Monotone voice only", "Loss of sensation above the folds", "No effect on breathing"], answer: 0, why: "Losing both posterior cricoarytenoids leaves the folds near the midline, blocking the airway.", exam: true },
+  ],
   "camaras-1": [
     { q: "Which chamber forms the apex and has the thickest wall?", options: ["Left ventricle", "Right ventricle", "Right atrium", "Left atrium"], answer: 0, why: "The left ventricle forms the apex and its wall is 10–15 mm thick, about three times the right ventricular wall." },
     { q: "Which chamber receives the superior and inferior venae cavae?", options: ["Right atrium", "Left atrium", "Right ventricle", "Left ventricle"], answer: 0, why: "The right atrium forms the right border and receives the SVC above, the IVC below and the coronary sinus behind." },
@@ -2822,21 +2880,26 @@ export const LEVEL_CHECK = {
   "valvas-3": [
     { q: "Which papillary muscle receives the moderator band?", options: ["Anterior right ventricular papillary muscle", "Posterior right ventricular papillary muscle", "Septal right ventricular papillary muscle", "Anterolateral left ventricular papillary muscle"], answer: 0, why: "The septomarginal trabecula, or moderator band, crosses the right ventricular cavity to the base of the anterior papillary muscle." },
     { q: "Which papillary muscle has a dual blood supply?", options: ["Anterolateral left ventricular papillary muscle", "Anterior right ventricular papillary muscle", "Septal right ventricular papillary muscle", "Posterior right ventricular papillary muscle"], answer: 0, why: "The anterolateral muscle is supplied by both the LAD and circumflex, making it more resistant to ischaemia." },
+    { q: "Which papillary muscle is most likely to rupture after an inferior infarction, and why?", options: ["Posteromedial, because it has a single supply from the PDA", "Anterolateral, because it has a single supply from the LAD", "Anterolateral, because the circumflex is end-arterial", "Septal, because the septal branches are absent"], answer: 0, why: "The posteromedial muscle usually depends on the PDA alone; the anterolateral muscle has dual supply from LAD diagonals and circumflex marginals.", exam: true },
   ],
   "coronarias-1": [
     { q: "Which artery runs in the right atrioventricular groove?", options: ["Right coronary artery", "Circumflex artery", "LAD", "Posterior descending artery"], answer: 0, why: "The right coronary artery curves around the right border in the right atrioventricular groove." },
     { q: "The left main coronary artery divides into which branches?", options: ["LAD and circumflex", "RCA and circumflex", "LAD and PDA", "RCA and PDA"], answer: 0, why: "The short left main trunk divides into the anterior interventricular and circumflex arteries." },
     { q: "Which artery supplies the SA node in about 60% of people?", options: ["Right coronary artery", "Left circumflex artery", "LAD", "Left main coronary artery"], answer: 0, why: "A branch of the right coronary artery reaches the SA node in most hearts." },
+    { q: "Occlusion of the circumflex artery mainly affects which wall?", options: ["Lateral wall of the left ventricle", "Anterior septum", "Inferior right ventricle", "Apex"], answer: 0, why: "The circumflex and its obtuse marginal branches supply the lateral LV wall (leads I, aVL, V5–V6).", exam: true },
   ],
   "coronarias-2": [
     { q: "Which vessel runs in the anterior interventricular groove?", options: ["LAD", "Circumflex", "RCA", "PDA"], answer: 0, why: "The anterior interventricular branch, or LAD, runs in the anterior groove toward the apex." },
     { q: "Septal branches of the LAD supply which part of the septum?", options: ["The anterior two-thirds", "The posterior third", "The whole right atrium", "The mitral valve"], answer: 0, why: "Anterior septal perforators supply the anterior two-thirds of the interventricular septum." },
     { q: "Diagonal branches of the LAD run where?", options: ["Across the anterior left ventricular wall", "Into the interventricular septum", "Along the right border", "In the posterior groove"], answer: 0, why: "Diagonal branches leave the LAD at an acute angle and cross the anterolateral left ventricular wall." },
+    { q: "A proximal LAD occlusion causes infarction of which wall?", options: ["Anterior wall and anterior septum of the left ventricle", "Inferior wall", "Lateral wall only", "Posterior wall of the right ventricle"], answer: 0, why: "The LAD supplies the anterior LV wall, the apex and the anterior two-thirds of the septum (ECG leads V1–V4).", exam: true },
   ],
   "coronarias-3": [
     { q: "Which artery defines coronary dominance?", options: ["The artery that gives the posterior descending branch", "The right coronary artery in every heart", "The circumflex in every heart", "The left main coronary artery"], answer: 0, why: "Dominance is defined by which artery supplies the posterior descending branch and the inferior septum." },
     { q: "The right marginal branch runs along which margin?", options: ["The acute margin of the right ventricle", "The obtuse margin of the left ventricle", "The anterior interventricular groove", "The posterior interventricular groove"], answer: 0, why: "The right marginal branch follows the acute inferior margin of the right ventricle." },
     { q: "Posterior ventricular branches of the RCA supply which surface?", options: ["The diaphragmatic surface of the left ventricle in right-dominant hearts", "The anterior right atrium", "The septum only", "The pulmonary trunk"], answer: 0, why: "Posterolateral branches cross the diaphragmatic surface toward the left ventricle in right-dominant hearts." },
+    { q: "An RCA occlusion in a right-dominant heart typically affects which wall?", options: ["Inferior wall", "Anterior wall", "Lateral wall", "Apex only"], answer: 0, why: "In right dominance the RCA gives the PDA, supplying the inferior LV wall and posterior third of the septum (leads II, III, aVF).", exam: true },
+    { q: "Inferior myocardial infarction often causes heart block because the RCA usually supplies which structure?", options: ["AV node", "SA node only", "Left bundle branch", "Bundle of His via the LAD"], answer: 0, why: "The AV nodal artery comes from the dominant artery at the crux, the RCA in about 80%.", exam: true },
   ],
   "veias-1": [
     { q: "Most cardiac veins drain into which structure?", options: ["Coronary sinus", "Superior vena cava", "Pulmonary veins", "Inferior vena cava"], answer: 0, why: "The coronary sinus collects most myocardial venous blood and opens into the right atrium." },
@@ -2852,11 +2915,14 @@ export const LEVEL_CHECK = {
     { q: "Which segments form the right upper lobe?", options: ["Apical, posterior and anterior", "Lateral and medial", "Superior and basal", "Apical and lingular"], answer: 0, why: "The right upper lobe has apical B1, posterior B2 and anterior B3 segments." },
     { q: "Which middle lobe segment lies against the heart?", options: ["Medial segment B5", "Lateral segment B4", "Superior segment B6", "Posterior segment B2"], answer: 0, why: "The medial segment B5 lies next to the right heart border and can produce a silhouette sign." },
     { q: "Which segment is a classic site of reactivation tuberculosis?", options: ["Posterior segment of the right upper lobe B2", "Medial segment of the middle lobe B5", "Anterior basal segment B8", "Apical segment B1"], answer: 0, why: "The posterior segment B2 is a classic site for reactivation tuberculosis and supine aspiration." },
+    { q: "Which upper-lobe segments are separate on the right but usually fused on the left?", options: ["Apical and posterior (B1 and B2)", "Anterior and lingular (B3 and B4)", "Lateral and medial (B4 and B5)", "Apical and anterior (B1 and B3)"], answer: 0, why: "On the left, B1 and B2 commonly share one bronchus as the apicoposterior segment.", exam: true },
+    { q: "Which right lobe has exactly two segments?", options: ["Middle lobe: lateral and medial", "Upper lobe: apical and posterior", "Lower lobe: superior and basal", "Upper lobe: anterior and lingular"], answer: 0, why: "The right middle lobe has lateral B4 and medial B5 segments; the left lingula is its counterpart.", exam: true },
   ],
   "segd-2": [
     { q: "Which right lower lobe segment is at the top of the lobe?", options: ["Superior segment B6", "Posterior basal B10", "Medial basal B7", "Lateral basal B9"], answer: 0, why: "The superior segment B6 caps the lower lobe behind the hilum." },
     { q: "Which segment is a common aspiration site when upright?", options: ["Posterior basal segment B10", "Superior segment B6", "Anterior segment B3", "Medial segment B5"], answer: 0, why: "Gravity directs aspirated material to the posterior basal segments in an upright patient." },
     { q: "Which basal segment is consistently separate only on the right?", options: ["Medial basal B7", "Anterior basal B8", "Lateral basal B9", "Posterior basal B10"], answer: 0, why: "The right medial basal segment B7 is usually independent, while on the left B7 often fuses with B8." },
+    { q: "A patient aspirates while lying supine. Which segment is most often affected?", options: ["Right superior segment B6", "Right posterior basal segment B10", "Medial segment of the middle lobe B5", "Right anterior segment B3"], answer: 0, why: "Supine, the superior segment of the right lower lobe is the most dependent; its bronchus points straight back. Upright, the posterior basal is affected.", exam: true },
   ],
   "sege-1": [
     { q: "The lingula corresponds to which right lung structure?", options: ["The middle lobe", "The upper lobe", "The lower lobe", "The superior segment"], answer: 0, why: "The lingula is the tongue-like part of the left upper lobe and corresponds to the right middle lobe." },

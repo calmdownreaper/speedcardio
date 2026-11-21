@@ -2,6 +2,25 @@
 const S = (id, pt, en, alt, dica, fatos, cor) => ({ id, pt, en, alt, dica, fatos, cor });
 
 export const DECKS = [
+{ id:'laringe', titulo:'Larynx', cor:'#c0504d', ctx:[], itens:[
+ S('lar_hio',"Hyoid bone","Hyoid bone",["hyoid", "os hyoideum"],"U-shaped bone above the larynx, suspended by muscles",["Anchors the larynx and tongue; it rises with the larynx when swallowing."]),
+ S('lar_tir',"Thyroid cartilage","Thyroid cartilage",["thyroid", "adams apple", "laryngeal prominence"],"Largest cartilage, two plates meeting in front as the prominence",["Shields the vocal folds; its inferior horns form the cricothyroid joints, letting it tilt to tense the folds."]),
+ S('lar_cri',"Cricoid cartilage","Cricoid cartilage",["cricoid"],"The only complete ring, narrow in front and tall behind",["Keeps the airway open and is the base on which the arytenoids pivot. C6 also marks the start of the trachea and esophagus."]),
+ S('lar_epi',"Epiglottis","Epiglottis",["epiglottic cartilage"],"Leaf-shaped elastic cartilage behind the tongue root",["Folds back over the laryngeal inlet when swallowing, steering food toward the esophagus."]),
+ S('lar_ari',"Arytenoid cartilages","Arytenoid cartilages",["arytenoid", "arytenoids", "arytenoid cartilage"],"Paired pyramids on the cricoid lamina that move the vocal folds",["Their rotation opens or closes the rima glottidis; every intrinsic muscle except the cricothyroid acts on them."]),
+ S('lar_cor',"Corniculate cartilages","Corniculate cartilages",["corniculate", "corniculates"],"Small horn-like nodules on top of the arytenoids",["Reinforce the aryepiglottic folds; minor structural role."]),
+ S('lar_mth',"Thyrohyoid membrane","Thyrohyoid membrane",["thyrohyoid", "thyrohyoid ligament", "median thyrohyoid ligament"],"Sheet between the hyoid and the upper thyroid border",["Suspends the larynx so it rises with the hyoid; the internal laryngeal nerve passing through it gives sensation above the vocal folds."]),
+ S('lar_mct',"Median cricothyroid ligament","Median cricothyroid ligament",["cricothyroid ligament", "cricothyroid membrane", "conus elasticus"],"Midline band between the thyroid and cricoid, the site of emergency airway access",["Site of emergency cricothyrotomy: it lies just under the skin, below the vocal folds."]),
+ S('lar_vl',"Vocal ligaments","Vocal ligaments",["vocal ligament", "vocal cords", "true vocal cords"],"Free upper edges of the conus elasticus inside the vocal folds",["Vibrate to make sound; tension and position set pitch and whether the airway is open."]),
+ S('lar_he',"Hyoepiglottic ligament","Hyoepiglottic ligament",["hyo-epiglottic ligament", "hyoepiglottic"],"Ties the front of the epiglottis to the hyoid",["Holds the epiglottis forward; the vallecula above it is where the laryngoscope blade tip goes."]),
+ S('lar_te',"Thyroepiglottic ligament","Thyroepiglottic ligament",["thyro-epiglottic ligament", "thyroepiglottic"],"Attaches the epiglottic stalk to the thyroid angle",["Fixes the lower end of the epiglottis so its upper part can tip back."]),
+ S('lar_ct',"Cricothyroid","Cricothyroid muscle",["cricothyroid muscle", "cricothyroideus"],"Only intrinsic muscle on the outside; tenses the cords",["Tilts the thyroid forward on the cricoid, lengthening and **tensing** the vocal ligaments to raise pitch. Injury gives a weak, monotone voice."]),
+ S('lar_pca',"Posterior cricoarytenoid","Posterior cricoarytenoid muscle",["posterior crico-arytenoid", "posterior cricoarytenoid muscle", "PCA", "posticus"],"The only muscle that opens the glottis",["Rotates the arytenoids outward, **opening** the glottis for breathing. Bilateral recurrent nerve injury leaves the folds closed: stridor."]),
+ S('lar_lca',"Lateral cricoarytenoid","Lateral cricoarytenoid muscle",["lateral crico-arytenoid", "lateral cricoarytenoid muscle", "LCA"],"Rotates the arytenoids inward to close the glottis",["Rotates the arytenoids inward, **closing** the rima glottidis (intermembranous part)."]),
+ S('lar_arit',"Interarytenoid muscles","Transverse and oblique arytenoid muscles",["arytenoid muscle", "arytenoideus", "transverse arytenoid", "oblique arytenoid", "interarytenoid", "transverse and oblique arytenoids"],"Unpaired transverse plus crossed oblique fibres between the arytenoids",["**Close** the posterior (intercartilaginous) glottis; the oblique part helps narrow the laryngeal inlet."]),
+ S('lar_ta',"Thyroarytenoid","Thyroarytenoid muscle",["thyro-arytenoid", "thyroarytenoid muscle"],"Runs beside the vocal fold and shortens it",["Pulls the arytenoids forward, **shortening and relaxing** the vocal folds (lowers pitch); also helps close the glottis."]),
+ S('lar_voc',"Vocalis","Vocalis muscle",["vocalis muscle", "vocal muscle"],"Deep medial part of the thyroarytenoid along the vocal ligament",["Fine-tunes tension along parts of the vocal fold for pitch and voice quality."]),
+]},
 { id:'camaras', titulo:'Chambers', cor:'#c0443a', ctx:['aoasc','tp','vcs','vci'], itens:[
  S('ad','Right atrium','Right atrium',['RA'],'Receives the SVC, IVC, and coronary sinus',['Forms the right border of the cardiac silhouette.', 'Contains the crista terminalis, pectinate muscles, fossa ovalis, and sinoatrial node (at the SVC junction).', 'The right atrial appendage overlaps the aortic root.']),
  S('ae','Left atrium','Left atrium',['LA'],'Most posterior chamber, receiving four pulmonary veins',['Forms most of the base (posterior surface) of the heart.', 'Lies next to the esophagus. An enlarged left atrium can compress the esophagus and cause dysphagia.', 'The left atrial appendage is the main site of thrombus formation in atrial fibrillation.']),
@@ -142,6 +161,7 @@ export const DECKS = [
 
 // Default color for each structure
 export const COLORS = {
+ lar_hio:'#e8dcc0',lar_tir:'#dccfa8',lar_cri:'#d3c49a',lar_epi:'#e3d7b0',lar_ari:'#cdbf96',lar_cor:'#e0d2a8',lar_mth:'#bfae84',lar_mct:'#c4b07e',lar_vl:'#b89f6e',lar_he:'#c9b88c',lar_te:'#cbb98a',lar_ct:'#c0504d',lar_pca:'#b23c3a',lar_lca:'#a8463f',lar_arit:'#9e3f3c',lar_ta:'#b5524a',lar_voc:'#c86a5e',
  ad:'#c65a4e',paredev:'#9e3b34',ae:'#b85466',vd:'#d0705a',ve:'#a83a3a',
  aoasc:'#c8443c',arco:'#c8443c',aodesc:'#c8443c',tbc:'#c8443c',ccd:'#c8443c',cce:'#c8443c',scd:'#c8443c',sce:'#c8443c',
  tp:'#5a7fc0',apd:'#5a7fc0',ape:'#5a7fc0',lobsupd:'#5a7fc0',

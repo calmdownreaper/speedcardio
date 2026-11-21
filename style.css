@@ -835,3 +835,6 @@ h1 { letter-spacing: -.035em; }
 .sound-toggle:hover { color: var(--ink); background: var(--surface-2); }
 .sound-toggle[aria-pressed="true"] { color: var(--mute); }
 .level-list-title { scroll-margin-top: 84px; }
+.lesson-more { margin-top: 10px; }
+.lesson-more summary { cursor: pointer; color: var(--muted, #9aa3ad); font-size: .9em; }
+.lesson-more[open] summary { margin-bottom: 6px; }

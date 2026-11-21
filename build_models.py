@@ -86,6 +86,24 @@ MAP = {
  'vertebras_toracicas':['First thoracic vertebra','Second thoracic vertebra','Third thoracic vertebra','Fourth thoracic vertebra',
                         'Fifth thoracic vertebra','Sixth thoracic vertebra','Seventh thoracic vertebra','Eighth thoracic vertebra',
                         'Ninth thoracic vertebra','Tenth thoracic vertebra','Eleventh thoracic vertebra','Twelfth thoracic vertebra'],
+ # larynx (ISA-only, see FILES)
+ 'lar_hio':[],
+ 'lar_tir':[],
+ 'lar_cri':[],
+ 'lar_epi':[],
+ 'lar_ari':[],
+ 'lar_cor':[],
+ 'lar_mth':[],
+ 'lar_mct':[],
+ 'lar_vl':[],
+ 'lar_he':[],
+ 'lar_te':[],
+ 'lar_ct':[],
+ 'lar_pca':[],
+ 'lar_lca':[],
+ 'lar_arit':[],
+ 'lar_ta':[],
+ 'lar_voc':[],
 }
 
 # Parts that live only in the ISA tree, addressed by file id.
@@ -95,6 +113,23 @@ FILES = {
  'icv_ant_e':['FJ1985.obj'],       # left set of anterior intercostal veins
  'pica_d1':['FJ1939.obj'], 'pica_e1':['FJ1973.obj'],
  'pica_d2':['FJ1950.obj'], 'pica_e2':['FJ1974.obj'],
+ 'lar_hio':['FJ2772.obj'],
+ 'lar_tir':['FJ2808.obj'],
+ 'lar_cri':['FJ2440.obj'],
+ 'lar_epi':['FJ2770.obj'],
+ 'lar_ari':['FJ2775.obj', 'FJ2792.obj'],
+ 'lar_cor':['FJ2776.obj', 'FJ2793.obj'],
+ 'lar_mth':['FJ2786.obj', 'FJ2804.obj', 'FJ2790.obj', 'FJ2779.obj', 'FJ2797.obj'],
+ 'lar_mct':['FJ2789.obj'],
+ 'lar_vl':['FJ2787.obj', 'FJ2805.obj'],
+ 'lar_he':['FJ2771.obj'],
+ 'lar_te':['FJ2807.obj'],
+ 'lar_ct':['FJ2783.obj', 'FJ2801.obj', 'FJ2781.obj', 'FJ2799.obj'],
+ 'lar_pca':['FJ2782.obj', 'FJ2800.obj'],
+ 'lar_lca':['FJ2778.obj', 'FJ2796.obj'],
+ 'lar_arit':['FJ2809.obj', 'FJ2780.obj', 'FJ2798.obj'],
+ 'lar_ta':['FJ2784.obj', 'FJ2802.obj'],
+ 'lar_voc':['FJ2788.obj', 'FJ2806.obj'],
 }
 # id -> source id mirrored across the midsagittal plane (x -> -x, winding reversed).
 MIRROR = {'itv_e':'itv_d'}

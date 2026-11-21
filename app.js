@@ -1,17 +1,18 @@
-import * as material from './content.js?v=44';
-import { TERRITORIES } from './territories.js?v=44';
-import { LESSONS } from './lessons.js?v=44';
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=44';
+import * as material from './content.js?v=45';
+import { TERRITORIES } from './territories.js?v=45';
+import { LESSONS } from './lessons.js?v=45';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=45';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=44';
+} from './study.js?v=45';
 
 const REGION_PURPOSES = {
   "orientation": "Learn directions and the landmarks used throughout the path.",
   "camaras": "Locate the four chambers and their shared muscle wall.",
   "vasos": "Trace the large vessels entering and leaving the heart.",
   "valvas": "Find the one-way valve flaps and their supporting muscles.",
+  "laringe": "Name the cartilages, ligaments and the muscles that move the vocal folds.",
   "coronarias": "Follow the arteries across the heart’s surface.",
   "veias": "Trace the veins returning blood from the heart muscle.",
   "vias": "Follow the airway fork into the two lungs.",
@@ -476,10 +477,12 @@ function lessonStepper(level, stage, mode) {
 function lessonBlocks(id) {
   const blocks = LESSONS[id];
   if (!blocks) return `<p class="lesson-body">${markdown(detailFor(id).text)}</p>`;
-  const rows = [['Where', blocks.where], ['Relations', blocks.relations], ['Function', blocks.function], ['Name', blocks.name]]
-    .filter(([, text]) => text);
+  const facts = rows => `<dl class="lesson-facts">${rows.filter(([, text]) => text)
+    .map(([label, text]) => `<div><dt>${label}</dt><dd>${markdown(text)}</dd></div>`).join('')}</dl>`;
+  const more = [['Relations', blocks.relations], ['Name', blocks.name]].filter(([, text]) => text);
   return `${blocks.lead ? `<p class="lesson-lead">${markdown(blocks.lead)}</p>` : ''}
-    <dl class="lesson-facts">${rows.map(([label, text]) => `<div><dt>${label}</dt><dd>${markdown(text)}</dd></div>`).join('')}</dl>`;
+    ${facts([['Where', blocks.where], ['Function', blocks.function]])}
+    ${more.length ? `<details class="lesson-more"><summary>More detail</summary>${facts(more)}</details>` : ''}`;
 }
 
 function renderLesson() {
@@ -1087,7 +1090,8 @@ function findPick(id, reveal = false) {
 }
 
 function startRelations(level) {
-  const questions = shuffle(level.ids.flatMap(id => availableQuestions(id).slice(0, 1).map(question => ({ question, id }))));
+  const exam = (LEVEL_CHECK[level.id] || []).filter(question => question.exam && validQuestion(question)).map(question => ({ question: shuffledQuestion(question) }));
+  const questions = shuffle([...level.ids.flatMap(id => availableQuestions(id).slice(0, 1).map(question => ({ question, id }))), ...exam]);
   launch('quiz', { level, questions, index: 0, correct: 0, title: 'Relations', label: level.title });
 }
 
@@ -1847,7 +1851,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=44');
+    const { createViewer } = await import('./viewer.js?v=45');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore);
     viewerStatus = 'ready';
     if ($('view-isolate').getAttribute('aria-pressed') === 'true') viewer.setIsolate(true);
