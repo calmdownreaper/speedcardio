@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ITEMS } from './study.js?v=57';
+import { ITEMS } from './study.js?v=60';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=57';
+const VERSION = '?v=60';
 
 function fetchJSON(url) {
   return fetch(url, { cache: 'force-cache' }).then(response => {
@@ -24,6 +24,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   const baseColor = source.baseColor || (id => source.colors?.[id] || source.defaultColor || '#d9b38c');
   const markerSource = source.markers || {};
   const regionMode = source.kind === 'regions';
+  const depthOnlyMaterial = new THREE.MeshBasicMaterial({ colorWrite: false, side: THREE.DoubleSide });
   const markerPoints = new Map();
   let packs = new Map();
   let manifest = null;
@@ -174,6 +175,16 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     mesh.visible = false;
     meshes.set(id, mesh);
     scene.add(mesh);
+    if (regionMode) {
+      // Depth-only twin drawn just before translucent MSK bones: each bone then
+      // blends only its nearest surface instead of a triangle-order patchwork
+      // of its outer and inner tables.
+      const depth = new THREE.Mesh(geometry, depthOnlyMaterial);
+      depth.visible = false;
+      depth.raycast = () => {};
+      mesh.add(depth);
+      mesh.userData.depth = depth;
+    }
     return mesh;
   }
 
@@ -674,6 +685,12 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       material.depthWrite = material.opacity >= .8;
       mesh.renderOrder = active ? 2 : material.depthWrite ? 0 : 1;
       mesh.visible = material.opacity > 0;
+      const depth = mesh.userData.depth;
+      if (depth) {
+        const prepass = mesh.visible && material.opacity < 1;
+        depth.visible = prepass;
+        if (prepass) { depth.renderOrder = 3; mesh.renderOrder = 4; }
+      }
       if (mesh.visible && (!pickOnly || pickOnly.has(id))) pickable.push(mesh);
     }
     for (const [id, list] of markerMeshes) {

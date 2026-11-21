@@ -1,8 +1,8 @@
-import { COLORS, DECKS, DEFAULT_COLOR } from './data.js?v=57';
-import * as material from './content.js?v=57';
-import { LESSONS } from './lessons.js?v=57';
-import { TERRITORIES } from './territories.js?v=57';
-import { buildRegions, REGION_CONTEXT } from './curriculum.js?v=57';
+import { COLORS, DECKS, DEFAULT_COLOR } from './data.js?v=60';
+import * as material from './content.js?v=60';
+import { LESSONS } from './lessons.js?v=60';
+import { TERRITORIES } from './territories.js?v=60';
+import { buildRegions, REGION_CONTEXT } from './curriculum.js?v=60';
 
 const ITEMS = Object.fromEntries(DECKS.flatMap(deck => deck.itens.map(item => [item.id, { ...item, deck }])));
 

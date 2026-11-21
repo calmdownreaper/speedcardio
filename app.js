@@ -1,9 +1,9 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=57';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=57';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=60';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=60';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=57';
+} from './study.js?v=60';
 
 // Boot the selected subject before any UI state is derived. The subject pack is
 // a dynamic import, so the other subject's data is never downloaded.
@@ -2165,7 +2165,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=57');
+    const { createViewer } = await import('./viewer.js?v=60');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore, { ...pack, ...pack.model });
     viewer.onReady(() => {
       syncModelStatus();
