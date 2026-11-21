@@ -3,8 +3,9 @@
 
 The cache stores every named object as flat float positions already converted
 to SpeedMSK's frame (millimetres, z up, anterior -y, right -x) plus triangle
-indices. Parsing the three 9-40 MB FBX files takes minutes; exporting regions
-from the cache takes seconds.
+indices, wound so the surface points out of the bone. Parsing the three
+9-40 MB FBX files takes seconds; exporting regions from the cache takes
+seconds.
 
 Usage: python3 tools/zanatomy/extract.py [--force]
 """
@@ -15,6 +16,8 @@ import re
 import sys
 import time
 from array import array
+
+import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.join(HERE, '.cache')
@@ -65,10 +68,65 @@ def triangulate(polygon_index):
     return triangles
 
 
+def determinant(R):
+    return (R[0][0] * (R[1][1] * R[2][2] - R[1][2] * R[2][1])
+            - R[0][1] * (R[1][0] * R[2][2] - R[1][2] * R[2][0])
+            + R[0][2] * (R[1][0] * R[2][1] - R[1][1] * R[2][0]))
+
+
+def flip_winding(triangles):
+    """Swap the last two indices of every triangle.
+
+    Z-Anatomy mirrors the right-side instances with a negative scale. The
+    composed transform then has a negative determinant: positions come out
+    correct, but the triangles keep their original winding and every face
+    points into the bone. Flip them back when that happens.
+    """
+    flipped = array('I', triangles)
+    for index in range(0, len(flipped), 3):
+        flipped[index + 1], flipped[index + 2] = flipped[index + 2], flipped[index + 1]
+    return flipped
+
+
+def closed(positions, indices):
+    """True when no edge is used by a single face, i.e. the shell is closed."""
+    if not indices:
+        return False
+    points = np.asarray(positions, dtype=np.float64).reshape(-1, 3)
+    faces = np.asarray(indices, dtype=np.int64).reshape(-1, 3)
+    edges = np.sort(np.concatenate((faces[:, [0, 1]], faces[:, [1, 2]], faces[:, [2, 0]])), axis=1)
+    _, counts = np.unique(edges, axis=0, return_counts=True)
+    return not (counts == 1).any()
+
+
+def signed_volume(positions, indices):
+    points = np.asarray(positions, dtype=np.float64).reshape(-1, 3)
+    faces = np.asarray(indices, dtype=np.int64).reshape(-1, 3)
+    if not len(faces):
+        return 0.0
+    a, b, c = points[faces[:, 0]], points[faces[:, 1]], points[faces[:, 2]]
+    return float(np.einsum('ij,ij->i', a, np.cross(b, c)).sum() / 6)
+
+
+def orient(positions, indices):
+    """Return the indices wound with the surface pointing out of the bone.
+
+    A closed shell has a well-defined inside: its signed volume must be
+    positive. Open shells (fascia sheets, sinus linings) have no inside; for
+    them the determinant flip is the only meaningful correction.
+    """
+    if closed(positions, indices) and signed_volume(positions, indices) < 0:
+        return flip_winding(indices)
+    return indices
+
+
 def extract(key, path, force=False):
     os.makedirs(CACHE, exist_ok=True)
     target = os.path.join(CACHE, key + '.pkl')
-    if not force and os.path.exists(target) and os.path.getmtime(target) >= os.path.getmtime(path):
+    helpers = [os.path.join(HERE, name) for name in ('extract.py', 'fbxcore.py', 'props.py', 'xform.py')]
+    parser = max(os.path.getmtime(name) for name in helpers)
+    if (not force and os.path.exists(target)
+            and os.path.getmtime(target) >= max(os.path.getmtime(path), parser)):
         print(f'{key}: cache up to date')
         return
 
@@ -97,6 +155,9 @@ def extract(key, path, force=False):
             positions[i + 1] = R[1][0] * x + R[1][1] * y + R[1][2] * z + T[1]
             positions[i + 2] = R[2][0] * x + R[2][1] * y + R[2][2] * z + T[2]
         indices = triangulate(pidx.get(geometry_id, ()))
+        if determinant(R) < 0:
+            indices = flip_winding(indices)
+        indices = orient(positions, indices)
         if not indices:
             continue
         if name in objects:

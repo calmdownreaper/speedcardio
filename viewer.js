@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ITEMS } from './study.js?v=54';
+import { ITEMS } from './study.js?v=55';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=54';
+const VERSION = '?v=55';
 
 function fetchJSON(url) {
   return fetch(url, { cache: 'force-cache' }).then(response => {
