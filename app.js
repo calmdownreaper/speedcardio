@@ -732,7 +732,8 @@ function renderMap() {
   }
   const requiredIds = region ? region.ids.filter(id => region.levels.some(level => !level.bonus && level.ids.includes(id))) : [];
   const overviewIds = region && REGION_CONTEXT[region.id] ? requiredIds.filter(id => !SKELETON_IDS.includes(id)) : requiredIds;
-  setModel(overviewIds?.length ? overviewIds : MAP_DEFAULT_IDS, {
+  const meshOverviewIds = overviewIds.filter(id => !pack.markers?.[id]);
+  setModel(meshOverviewIds.length ? meshOverviewIds : overviewIds?.length ? overviewIds : MAP_DEFAULT_IDS, {
     title: region?.title || 'Thoracic anatomy', layout: 'map-layout', view: pack.regionView?.[region?.id] || 'ant',
     context: region ? (REGION_CONTEXT[region.id] || ITEMS[region.ids[0]].deck.ctx) : [],
     ...(pack.regionPadding?.[region?.id] ? { padding: pack.regionPadding[region.id] } : {}),
