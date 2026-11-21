@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ITEMS } from './study.js?v=56';
+import { ITEMS } from './study.js?v=55';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=56';
+const VERSION = '?v=55';
 
 function fetchJSON(url) {
   return fetch(url, { cache: 'force-cache' }).then(response => {
@@ -671,14 +671,8 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
           : faint.has(id) ? .04 : (current.contextOpacity ?? .10);
         if (!active && highlight.size) material.opacity *= display.ghost;
       }
-      // MSK (Z-Anatomy) bones are closed shells with clean winding: a translucent
-      // bone writes depth and shows only its front faces, so it can't blend
-      // with its own far side into triangle shards.
-      const selfSort = regionMode && material.opacity < .8;
-      material.depthWrite = material.opacity >= .8 || selfSort;
-      material.side = selfSort ? THREE.FrontSide : THREE.DoubleSide;
-      if (material.userData.side !== material.side) { material.userData.side = material.side; material.needsUpdate = true; }
-      mesh.renderOrder = active ? 2 : material.opacity >= .8 ? 0 : 1;
+      material.depthWrite = material.opacity >= .8;
+      mesh.renderOrder = active ? 2 : material.depthWrite ? 0 : 1;
       mesh.visible = material.opacity > 0;
       if (mesh.visible && (!pickOnly || pickOnly.has(id))) pickable.push(mesh);
     }
