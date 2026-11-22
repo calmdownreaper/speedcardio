@@ -72,7 +72,7 @@ const ATLAS_GROUPS = pack.atlasHomeDeck
   })).filter(group => group.ids.length);
 const ATLAS_REGION = Object.fromEntries(ATLAS_GROUPS.flatMap(group => group.ids.map(id => [id, group.title])));
 const ATLAS_SET = new Set(ATLAS_IDS);
-const atlas = { query: '', hidden: new Set(pack.atlasHidden || []), focus: [], active: null, open: false, view: 'ant' };
+const atlas = { query: '', hidden: new Set([...(pack.atlasHidden || []), ...ATLAS_IDS.filter(id => pack.markers?.[id])]), focus: [], active: null, open: false, view: 'ant' };
 const sectionTitles = {
   definition: 'Definition', location: 'Location and projection', relations: 'Relations',
   function: 'Function and action', origin: 'Origin', insertion: 'Insertion', nerve: 'Nerve supply',
@@ -289,6 +289,7 @@ function modelLoaded() {
 
 function updateModel() {
   if (!model) {
+    if (pack.markers && Object.keys(pack.markers).length) viewer?.paint({ ids: [] }, true);
     viewer?.focusAxis(false);
     return;
   }
@@ -305,7 +306,11 @@ function updateModel() {
   $('pick-center').hidden = !(viewer && model.pick);
   const refocus = model.clickedFocus || model.frameFocus;
   const config = refocus ? { ...model, close: model.frameFocus || model.close, subtleFocus: false } : model;
-  viewer?.paint(config, model.preserveCamera && !refocus);
+  // Only the step focus, an unhighlighted Find target, or checked Atlas
+  // entries can request landmarks. Context and anchors are mesh support.
+  const markerIds = (model.atlas ? model.ids : [...model.focus, model.markerTarget])
+    .filter(id => pack.markers?.[id]);
+  viewer?.paint({ ...config, markerIds }, model.preserveCamera && !refocus);
   viewer?.focusAxis(activity?.type === 'orientation' && activity.index === 0);
 }
 
@@ -607,9 +612,11 @@ function renderLesson() {
     const allFound = !target;
     const feedback = activity.findFeedback;
     const preferred = target && pack.markerMeta?.[target] ? markerView(target) : null;
+    const foundMeshes = found.filter(id => !pack.markers?.[id]);
     levelModel(level, {
+      markerTarget: target,
       view: activity.findView || preferred || lessonView(level), controls: true, pick: !allFound && modelLoaded(), explore: false,
-      focus: activity.revealed && target ? [...found, target] : found, close: false,
+      focus: activity.revealed && target ? [...foundMeshes, target] : foundMeshes, close: false,
       pickIds: order, preserveCamera: (found.length > 0 || activity.revealed) && !(activity.revealed && pack.markerMeta?.[target]),
     });
     const ready = modelLoaded();
@@ -733,7 +740,7 @@ function renderMap() {
   const requiredIds = region ? region.ids.filter(id => region.levels.some(level => !level.bonus && level.ids.includes(id))) : [];
   const overviewIds = region && REGION_CONTEXT[region.id] ? requiredIds.filter(id => !SKELETON_IDS.includes(id)) : requiredIds;
   const meshOverviewIds = overviewIds.filter(id => !pack.markers?.[id]);
-  setModel(meshOverviewIds.length ? meshOverviewIds : overviewIds?.length ? overviewIds : MAP_DEFAULT_IDS, {
+  setModel(overviewIds.length ? meshOverviewIds : MAP_DEFAULT_IDS, {
     title: region?.title || 'Thoracic anatomy', layout: 'map-layout', view: pack.regionView?.[region?.id] || 'ant',
     context: region ? (REGION_CONTEXT[region.id] || ITEMS[region.ids[0]].deck.ctx) : [],
     ...(pack.regionPadding?.[region?.id] ? { padding: pack.regionPadding[region.id] } : {}),
@@ -1103,7 +1110,7 @@ function renderFind() {
   setModel(level.ids, {
     title: REGION_CONTEXT[level.region] ? regions[level.region]?.title : ITEMS[id].deck.titulo,
     palette: levelPalette(level),
-    ...levelContext(level), focus: done ? [id] : [],
+    ...levelContext(level), focus: done ? [id] : [], markerTarget: id,
     view: state.direction || (pack.findViewUsesTeaching ? teachingView(id) : 'ant'),
     controls: true, pick: Boolean(viewer && !done && modelLoaded()),
     preserveCamera: Boolean(tries) && !(done && pack.markerMeta?.[id]),
@@ -2165,7 +2172,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=63');
+    const { createViewer } = await import('./viewer.js?v=64');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore, { ...pack, ...pack.model });
     viewer.onReady(() => {
       syncModelStatus();

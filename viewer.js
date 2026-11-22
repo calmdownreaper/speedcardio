@@ -27,6 +27,42 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   const markerSource = source.markers || {};
   const regionMode = source.kind === 'regions';
   const markerPoints = new Map();
+  // Landmark spots: the active landmark is painted onto the bone surface as a
+  // glowing disc with a rim, so a foramen or joint reads on the bone itself
+  // instead of as a floating dot.
+  const MAX_SPOTS = 8;
+  const spotUniforms = {
+    uSpots: { value: Array.from({ length: MAX_SPOTS }, () => new THREE.Vector4()) },
+    uSpotCount: { value: 0 },
+    uSpotColor: { value: new THREE.Color() },
+  };
+  function addSpots(material) {
+    material.onBeforeCompile = shader => {
+      Object.assign(shader.uniforms, spotUniforms);
+      shader.vertexShader = shader.vertexShader
+        .replace('#include <common>', '#include <common>\nvarying vec3 vSpotWorld;')
+        .replace('#include <project_vertex>', '#include <project_vertex>\nvSpotWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+      shader.fragmentShader = shader.fragmentShader
+        .replace('#include <common>', `#include <common>
+varying vec3 vSpotWorld;
+uniform vec4 uSpots[${MAX_SPOTS}];
+uniform int uSpotCount;
+uniform vec3 uSpotColor;`)
+        .replace('#include <opaque_fragment>', `#include <opaque_fragment>
+float spot = 0.0;
+for (int i = 0; i < ${MAX_SPOTS}; i++) {
+  if (i >= uSpotCount) break;
+  float r = uSpots[i].w;
+  float d = distance(vSpotWorld, uSpots[i].xyz);
+  float fill = 1.0 - smoothstep(r * 0.45, r, d);
+  float rim = 1.0 - smoothstep(0.0, r * 0.12, abs(d - r * 0.9));
+  spot = max(spot, max(fill * 0.5, rim * 0.95));
+}
+gl_FragColor.rgb = mix(gl_FragColor.rgb, uSpotColor, spot);
+gl_FragColor.a = max(gl_FragColor.a, spot * 0.9);`);
+    };
+    material.customProgramCacheKey = () => 'spots';
+  }
   let packs = new Map();
   let manifest = null;
   let meta;
@@ -184,6 +220,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       color: baseColor(id), roughness: .52, side: THREE.DoubleSide,
       transparent: !regionMode, forceSinglePass: true,
     });
+    if (regionMode) addSpots(material);
     const mesh = new THREE.Mesh(geometry, material);
     mesh.userData.id = id;
     mesh.visible = false;
@@ -195,7 +232,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   // Point markers stand in for structures that have no mesh (foramina, joint
   // spaces, ligaments). They live in the same normalized frame as vertices.
   const markerMeshes = new Map();
-  const markerGeometry = new THREE.SphereGeometry(1, 14, 10);
+  let markerGeometry;
   const markerSize = source.markerSize || .018;
   function haloTexture() {
     const canvas = document.createElement('canvas');
@@ -217,11 +254,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     ctx.stroke();
     return new THREE.CanvasTexture(canvas);
   }
-  const haloMap = haloTexture();
-  const haloMaterial = new THREE.SpriteMaterial({
-    map: haloMap, color: tone.axis, transparent: true, opacity: .68,
-    depthTest: false, depthWrite: false, toneMapped: false,
-  });
+  let haloMaterial;
   function markerPosition(raw) {
     const point = new THREE.Vector3(raw[0], raw[1], raw[2]);
     if (source.markerSpace === 'world' && meta.center && meta.scale) {
@@ -231,7 +264,15 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     }
     return point;
   }
-  for (const [id, points] of markerPoints) {
+  function createMarkers(id) {
+    markerGeometry ??= new THREE.SphereGeometry(1, 14, 10);
+    if (!haloMaterial) {
+      haloMaterial = new THREE.SpriteMaterial({
+        map: haloTexture(), color: tone.axis, transparent: true, opacity: .68,
+        depthTest: false, depthWrite: false, toneMapped: false,
+      });
+    }
+    const points = markerPoints.get(id);
     const list = (Array.isArray(points[0]) ? points : [points]).map(raw => {
       const material = new THREE.MeshBasicMaterial({
         color: '#24262c', transparent: true, opacity: .9, depthTest: false,
@@ -259,6 +300,16 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       return marker;
     });
     markerMeshes.set(id, list);
+    return list;
+  }
+
+  function removeMarkers(id, list) {
+    for (const marker of list) {
+      scene.remove(marker);
+      marker.material.dispose();
+      marker.userData.fill.dispose();
+    }
+    markerMeshes.delete(id);
   }
 
   // Labels are DOM pins: the text stays crisp at every zoom and follows the
@@ -337,25 +388,13 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     pin.line.style.width = `${length - gap}px`;
     pin.line.style.transform = `rotate(${angle}rad)`;
   }
+  let labeledIds = [];
   function updateLabels() {
-    const labelsOn = Boolean(current.markerLabels && current.focus?.length && regionMode);
-    annotationLayer.hidden = !labelsOn;
-    if (!labelsOn) {
-      for (const pin of labelPins.values()) hidePin(pin);
-      return;
-    }
     const width = host.clientWidth;
     const height = host.clientHeight;
-    const focused = new Set(current.focus);
-    let shown = 0;
-    for (const [id, pin] of labelPins) {
-      if (!focused.has(id)) hidePin(pin);
-    }
-    for (const id of focused) {
-      if (!markerPoints.has(id) || shown >= 6) continue;
+    for (const id of labeledIds) {
+      const list = markerMeshes.get(id);
       const pin = labelPin(id);
-      const list = (markerMeshes.get(id) || []).filter(marker => marker.visible);
-      if (!list.length) { hidePin(pin); continue; }
       let nearest = list[0];
       let best = Infinity;
       for (const marker of list) {
@@ -366,7 +405,6 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
         }
       }
       placeLabel(pin, nearest, width, height);
-      shown++;
     }
   }
 
@@ -460,7 +498,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       else schedule();
     }
     controls.update();
-    if (regionMode) {
+    if (regionMode && markerMeshes.size) {
       camera.getWorldDirection(cameraDirection);
       const pixelScale = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / oldHeight;
       const pulseOn = !reduced.matches;
@@ -468,17 +506,16 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
         const active = current.focus?.includes(id);
         const wave = active && pulseOn ? Math.sin((now || 0) / 300) : 0;
         for (const marker of list) {
-          if (!marker.visible) continue;
           const depth = Math.max(0, markerOffset.copy(marker.position).sub(camera.position).dot(cameraDirection));
           // Markers keep a readable screen size instead of ballooning when the
           // camera moves in close on a small foramen.
           const pixels = (active ? 10 : current.pick ? 7 : 5) * (pulseOn ? 1 + .16 * wave : 1);
           marker.scale.setScalar(Math.max(.0004, pixels * depth * pixelScale));
-          marker.userData.halo.visible = active;
+          marker.userData.halo.visible = active && !regionMode;
           marker.userData.halo.material.opacity = .68 + .1 * wave;
         }
       }
-      updateLabels();
+      if (labeledIds.length) updateLabels();
       if (pulseOn && current.focus?.some(id => markerMeshes.has(id))) schedule();
     }
     try {
@@ -722,20 +759,44 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       mesh.visible = material.opacity > 0;
       if (mesh.visible && (!pickOnly || pickOnly.has(id))) pickable.push(mesh);
     }
-    for (const [id, list] of markerMeshes) {
-      const on = visible.has(id);
+    let spotCount = 0;
+    spotUniforms.uSpotColor.value.set(tone.axis);
+    const shownMarkers = new Set();
+    for (const id of current.markerIds || []) {
+      if (!markerPoints.has(id) || (isolate && !highlight.has(id))) continue;
       const active = highlight.has(id);
+      const opacity = active ? 1 : (anchorFocus ? .16 : .78) * (highlight.size ? display.ghost : 1);
+      if (opacity <= 0) continue;
+      shownMarkers.add(id);
+      const list = markerMeshes.get(id) || createMarkers(id);
       for (const marker of list) {
-        const opacity = active ? 1 : (anchorFocus ? .16 : .78) * (highlight.size ? display.ghost : 1);
-        marker.visible = on && opacity > 0;
+        marker.visible = true;
         marker.userData.fill.color.set(active ? tone.axis : (current.palette?.[id] || baseColor(id)));
         marker.userData.fill.opacity = opacity;
         marker.material.color.set(tone.labelBg);
         marker.material.opacity = opacity;
         marker.userData.halo.visible = active;
-        marker.scale.setScalar(markerSize * (active ? 1.75 : 1));
+        marker.scale.setScalar(markerSize * (active && regionMode ? .8 : active ? 1.75 : 1));
+        if (regionMode && active && spotCount < MAX_SPOTS) {
+          marker.userData.halo.visible = false;
+          spotUniforms.uSpots.value[spotCount++].set(marker.position.x, marker.position.y, marker.position.z, markerSize * 1.0);
+        }
         if (marker.visible && (!pickOnly || pickOnly.has(id))) pickable.push(marker);
       }
+    }
+    spotUniforms.uSpotCount.value = spotCount;
+    for (const [id, list] of markerMeshes) {
+      if (!shownMarkers.has(id)) removeMarkers(id, list);
+    }
+    labeledIds = regionMode && current.markerLabels
+      ? [...highlight].filter(id => shownMarkers.has(id)).slice(0, 6)
+      : [];
+    annotationLayer.hidden = !labeledIds.length;
+    for (const [id, pin] of labelPins) {
+      if (labeledIds.includes(id)) continue;
+      pin.line.remove();
+      pin.tag.remove();
+      labelPins.delete(id);
     }
   }
 
@@ -787,16 +848,11 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
       }
       axisTube?.geometry.dispose();
       axisTube?.material.dispose();
-      markerGeometry.dispose();
-      haloMap.dispose();
-      haloMaterial.dispose();
+      markerGeometry?.dispose();
+      haloMaterial?.map.dispose();
+      haloMaterial?.dispose();
       annotationLayer.remove();
-      for (const list of markerMeshes.values()) {
-        for (const marker of list) {
-          marker.material.dispose();
-          marker.userData.fill.dispose();
-        }
-      }
+      for (const [id, list] of markerMeshes) removeMarkers(id, list);
       for (const label of axis.children) {
         label.material.map?.dispose();
         label.material.dispose();
