@@ -31,6 +31,21 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   // glowing disc with a rim, so a foramen or joint reads on the bone itself
   // instead of as a floating dot.
   const MAX_SPOTS = 8;
+  // Anatomical radius of each landmark's spot, in millimetres. Small
+  // foramina stay pinpoint so neighbours (glabella/nasion) never overlap.
+  const SPOT_MM = {
+    bregma: 4, pterion: 7, nasion: 3, glabella: 5, inion: 4, mastoid_process: 7,
+    foramen_magnum: 16, foramen_ovale: 4, foramen_rotundum: 2.5, foramen_spinosum: 2,
+    jugular_foramen: 5, internal_acoustic_meatus: 3, optic_canal: 3,
+    superior_orbital_fissure: 5, infraorbital_foramen: 3, mental_foramen: 2.5,
+    atlantooccipital_joint: 7, atlantoaxial_joint: 6, zygapophyseal_joint: 4,
+    costovertebral_joint: 4, costotransverse_joint: 4, costochondral_joint: 4,
+    sternocostal_joint: 4, manubriosternal_joint: 5, xiphisternal_joint: 4,
+    radiate_sternocostal_ligament: 5, sacroiliac_joint: 9, ankle_joint: 9,
+    patellar_ligament: 9, superficial_inguinal_ring: 6, deep_inguinal_ring: 6,
+    rectus_sheath: 9, arcuate_line: 7,
+  };
+  const spotBase = new Float32Array(MAX_SPOTS);
   const spotUniforms = {
     uSpots: { value: Array.from({ length: MAX_SPOTS }, () => new THREE.Vector4()) },
     uSpotCount: { value: 0 },
@@ -528,12 +543,12 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
           marker.userData.halo.material.opacity = .68 + .1 * wave;
         }
       }
-      // Keep each surface spot at least ~9 px wide on screen, so it still
+      // Keep each surface spot at least ~6 px wide on screen, so it still
       // reads when the whole region is in view; close up it stays anatomical.
       for (let i = 0; i < spotUniforms.uSpotCount.value; i++) {
         const spot = spotUniforms.uSpots.value[i];
         const depth = Math.max(0, markerOffset.set(spot.x, spot.y, spot.z).sub(camera.position).dot(cameraDirection));
-        spot.w = Math.min(markerSize * 2, Math.max(markerSize * .85, 9 * depth * pixelScale));
+        spot.w = Math.max(spotBase[i], 6 * depth * pixelScale);
       }
       if (labeledIds.length) updateLabels();
       if (pulseOn && hasFocusedMarker) schedule();
@@ -808,7 +823,9 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
         marker.scale.setScalar(markerSize * (active && regionMode ? .8 : active ? 1.75 : 1));
         if (regionMode && active && spotCount < MAX_SPOTS) {
           marker.userData.halo.visible = false;
-          spotUniforms.uSpots.value[spotCount++].set(marker.position.x, marker.position.y, marker.position.z, markerSize * 0.85);
+          const radius = (SPOT_MM[id] ?? 4) / (meta.scale || 848.8);
+          spotBase[spotCount] = radius;
+          spotUniforms.uSpots.value[spotCount++].set(marker.position.x, marker.position.y, marker.position.z, radius);
         }
         if (marker.visible && (!pickOnly || pickOnly.has(id))) pickable.push(marker);
       }
