@@ -45,7 +45,6 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
     patellar_ligament: 9, superficial_inguinal_ring: 6, deep_inguinal_ring: 6,
     rectus_sheath: 9, arcuate_line: 7,
   };
-  const spotBase = new Float32Array(MAX_SPOTS);
   const spotUniforms = {
     uSpots: { value: Array.from({ length: MAX_SPOTS }, () => new THREE.Vector4()) },
     uSpotCount: { value: 0 },
@@ -69,20 +68,14 @@ float shade = 0.0;
 for (int i = 0; i < ${MAX_SPOTS}; i++) {
   if (i >= uSpotCount) break;
   float r = uSpots[i].w;
-  // Measure across the line of sight so a joint buried between two bones
-  // still lights the bone surface that covers it; fade with depth offset.
-  vec3 toFrag = vSpotWorld - uSpots[i].xyz;
-  vec3 sight = normalize(uSpots[i].xyz - cameraPosition);
-  float along = dot(toFrag, sight);
-  float d = length(toFrag - along * sight);
-  float reach = 1.0 - smoothstep(r * 4.0, r * 7.0, abs(along));
+  float d = distance(vSpotWorld, uSpots[i].xyz);
   float fill = 1.0 - smoothstep(r * 0.7, r * 0.85, d);
   float rim = 1.0 - smoothstep(0.0, r * 0.1, abs(d - r * 0.92));
   // A dark band just outside the rim separates the spot from pale bone.
   float edge = 1.0 - smoothstep(0.0, r * 0.18, abs(d - r * 1.12));
-  float here = max(fill * 0.85, rim) * reach;
+  float here = max(fill * 0.85, rim);
   spot = max(spot, here);
-  shade = max(shade, edge * reach * (1.0 - spot));
+  shade = max(shade, edge * (1.0 - spot));
 }
 gl_FragColor.rgb = mix(gl_FragColor.rgb, uSpotColor, spot);
 gl_FragColor.rgb *= 1.0 - 0.55 * shade;
@@ -543,13 +536,6 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
           marker.userData.halo.material.opacity = .68 + .1 * wave;
         }
       }
-      // Keep each surface spot at least ~6 px wide on screen, so it still
-      // reads when the whole region is in view; close up it stays anatomical.
-      for (let i = 0; i < spotUniforms.uSpotCount.value; i++) {
-        const spot = spotUniforms.uSpots.value[i];
-        const depth = Math.max(0, markerOffset.set(spot.x, spot.y, spot.z).sub(camera.position).dot(cameraDirection));
-        spot.w = Math.max(spotBase[i], 6 * depth * pixelScale);
-      }
       if (labeledIds.length) updateLabels();
       if (pulseOn && hasFocusedMarker) schedule();
     }
@@ -824,7 +810,6 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
         if (regionMode && active && spotCount < MAX_SPOTS) {
           marker.userData.halo.visible = false;
           const radius = (SPOT_MM[id] ?? 4) / (meta.scale || 848.8);
-          spotBase[spotCount] = radius;
           spotUniforms.uSpots.value[spotCount++].set(marker.position.x, marker.position.y, marker.position.z, radius);
         }
         if (marker.visible && (!pickOnly || pickOnly.has(id))) pickable.push(marker);
