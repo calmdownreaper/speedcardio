@@ -50,16 +50,28 @@ uniform int uSpotCount;
 uniform vec3 uSpotColor;`)
         .replace('#include <opaque_fragment>', `#include <opaque_fragment>
 float spot = 0.0;
+float shade = 0.0;
 for (int i = 0; i < ${MAX_SPOTS}; i++) {
   if (i >= uSpotCount) break;
   float r = uSpots[i].w;
-  float d = distance(vSpotWorld, uSpots[i].xyz);
-  float fill = 1.0 - smoothstep(r * 0.45, r, d);
-  float rim = 1.0 - smoothstep(0.0, r * 0.12, abs(d - r * 0.9));
-  spot = max(spot, max(fill * 0.72, rim));
+  // Measure across the line of sight so a joint buried between two bones
+  // still lights the bone surface that covers it; fade with depth offset.
+  vec3 toFrag = vSpotWorld - uSpots[i].xyz;
+  vec3 sight = normalize(uSpots[i].xyz - cameraPosition);
+  float along = dot(toFrag, sight);
+  float d = length(toFrag - along * sight);
+  float reach = 1.0 - smoothstep(r * 4.0, r * 7.0, abs(along));
+  float fill = 1.0 - smoothstep(r * 0.7, r * 0.85, d);
+  float rim = 1.0 - smoothstep(0.0, r * 0.1, abs(d - r * 0.92));
+  // A dark band just outside the rim separates the spot from pale bone.
+  float edge = 1.0 - smoothstep(0.0, r * 0.18, abs(d - r * 1.12));
+  float here = max(fill * 0.85, rim) * reach;
+  spot = max(spot, here);
+  shade = max(shade, edge * reach * (1.0 - spot));
 }
 gl_FragColor.rgb = mix(gl_FragColor.rgb, uSpotColor, spot);
-gl_FragColor.a = max(gl_FragColor.a, spot);`);
+gl_FragColor.rgb *= 1.0 - 0.55 * shade;
+gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     };
     material.customProgramCacheKey = () => 'spots';
   }
@@ -516,6 +528,13 @@ gl_FragColor.a = max(gl_FragColor.a, spot);`);
           marker.userData.halo.material.opacity = .68 + .1 * wave;
         }
       }
+      // Keep each surface spot at least ~9 px wide on screen, so it still
+      // reads when the whole region is in view; close up it stays anatomical.
+      for (let i = 0; i < spotUniforms.uSpotCount.value; i++) {
+        const spot = spotUniforms.uSpots.value[i];
+        const depth = Math.max(0, markerOffset.set(spot.x, spot.y, spot.z).sub(camera.position).dot(cameraDirection));
+        spot.w = Math.min(markerSize * 2, Math.max(markerSize * .85, 9 * depth * pixelScale));
+      }
       if (labeledIds.length) updateLabels();
       if (pulseOn && hasFocusedMarker) schedule();
     }
@@ -789,7 +808,7 @@ gl_FragColor.a = max(gl_FragColor.a, spot);`);
         marker.scale.setScalar(markerSize * (active && regionMode ? .8 : active ? 1.75 : 1));
         if (regionMode && active && spotCount < MAX_SPOTS) {
           marker.userData.halo.visible = false;
-          spotUniforms.uSpots.value[spotCount++].set(marker.position.x, marker.position.y, marker.position.z, markerSize * 1.2);
+          spotUniforms.uSpots.value[spotCount++].set(marker.position.x, marker.position.y, marker.position.z, markerSize * 0.85);
         }
         if (marker.visible && (!pickOnly || pickOnly.has(id))) pickable.push(marker);
       }
