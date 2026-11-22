@@ -123,7 +123,7 @@ export const colors = {
 };
 
 export const markers = {
-  sacroiliac_joint: [[38.6, 24.2, 948.7], [-38.6, 24.2, 948.7]],
+  sacroiliac_joint: [[57.0, 32.2, 936.7], [-57.0, 32.2, 936.7]],
 };
 
 // Anchor bones for each point marker and the view that shows it best.

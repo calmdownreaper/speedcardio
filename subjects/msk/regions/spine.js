@@ -149,8 +149,8 @@ export const colors = {
 };
 
 export const markers = {
-  atlantooccipital_joint: [[18.5, 23.7, 1549.5], [-18.2, 24.8, 1546.1]],
-  atlantoaxial_joint: [[22.9, 29.4, 1538.4], [-22.9, 29.4, 1538.4]],
+  atlantooccipital_joint: [[19.6, 22.3, 1551.5], [-19.6, 22.3, 1551.5]],
+  atlantoaxial_joint: [[25.1, 13.6, 1533.3], [-25.1, 13.6, 1533.3]],
   zygapophyseal_joint: [[25.3, 44.3, 1003.2], [-25.3, 44.3, 1003.2]],
 };
 

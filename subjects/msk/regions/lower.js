@@ -241,8 +241,8 @@ export const colors = {
 };
 
 export const markers = {
-  patellar_ligament: [[84.6, -17.8, 406.5], [-84.7, -17.8, 406.5]],
-  ankle_joint: [[72.6, 37.5, 83.4], [-72.6, 37.5, 83.4]],
+  patellar_ligament: [[84.9, -4.1, 410.0], [-84.9, -4.1, 410.0]],
+  ankle_joint: [[61.9, 36.3, 87.0], [-61.9, 36.3, 87.0]],
 };
 
 // Anchor bones for each point marker and the view that shows it best.

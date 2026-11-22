@@ -56,10 +56,10 @@ for (int i = 0; i < ${MAX_SPOTS}; i++) {
   float d = distance(vSpotWorld, uSpots[i].xyz);
   float fill = 1.0 - smoothstep(r * 0.45, r, d);
   float rim = 1.0 - smoothstep(0.0, r * 0.12, abs(d - r * 0.9));
-  spot = max(spot, max(fill * 0.5, rim * 0.95));
+  spot = max(spot, max(fill * 0.72, rim));
 }
 gl_FragColor.rgb = mix(gl_FragColor.rgb, uSpotColor, spot);
-gl_FragColor.a = max(gl_FragColor.a, spot * 0.9);`);
+gl_FragColor.a = max(gl_FragColor.a, spot);`);
     };
     material.customProgramCacheKey = () => 'spots';
   }
@@ -510,7 +510,7 @@ gl_FragColor.a = max(gl_FragColor.a, spot * 0.9);`);
           const depth = Math.max(0, markerOffset.copy(marker.position).sub(camera.position).dot(cameraDirection));
           // Markers keep a readable screen size instead of ballooning when the
           // camera moves in close on a small foramen.
-          const pixels = (active ? 10 : current.pick ? 7 : 5) * (pulseOn ? 1 + .16 * wave : 1);
+          const pixels = (active ? (regionMode ? 4 : 10) : current.pick ? 7 : 5) * (pulseOn ? 1 + .16 * wave : 1);
           marker.scale.setScalar(Math.max(.0004, pixels * depth * pixelScale));
           marker.userData.halo.visible = active && !regionMode;
           marker.userData.halo.material.opacity = .68 + .1 * wave;
@@ -762,6 +762,13 @@ gl_FragColor.a = max(gl_FragColor.a, spot * 0.9);`);
     }
     let spotCount = 0;
     spotUniforms.uSpotColor.value.set(tone.axis);
+    {
+      // Pale accents vanish on white bone: push the spot to a saturated,
+      // mid-light version of the accent so it reads on any bone shade.
+      const hsl = {};
+      spotUniforms.uSpotColor.value.getHSL(hsl);
+      spotUniforms.uSpotColor.value.setHSL(hsl.h, Math.max(hsl.s, .85), .48);
+    }
     const shownMarkers = new Set();
     hasFocusedMarker = false;
     for (const id of current.markerIds || []) {
@@ -782,7 +789,7 @@ gl_FragColor.a = max(gl_FragColor.a, spot * 0.9);`);
         marker.scale.setScalar(markerSize * (active && regionMode ? .8 : active ? 1.75 : 1));
         if (regionMode && active && spotCount < MAX_SPOTS) {
           marker.userData.halo.visible = false;
-          spotUniforms.uSpots.value[spotCount++].set(marker.position.x, marker.position.y, marker.position.z, markerSize * 1.0);
+          spotUniforms.uSpots.value[spotCount++].set(marker.position.x, marker.position.y, marker.position.z, markerSize * 1.2);
         }
         if (marker.visible && (!pickOnly || pickOnly.has(id))) pickable.push(marker);
       }

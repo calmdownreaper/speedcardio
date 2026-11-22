@@ -125,12 +125,12 @@ export const colors = {
 };
 
 export const markers = {
-  costovertebral_joint: [[31.8, 39.3, 1327.6], [-30.5, 39.3, 1327.6]],
-  costotransverse_joint: [[57.8, 54.7, 1327.6], [-56.4, 54.7, 1327.6]],
-  costochondral_joint: [[57.8, -64.5, 1295.3], [-56.4, -64.5, 1295.3]],
-  sternocostal_joint: [[26.9, -88.0, 1318.6], [-26.9, -88.0, 1318.6]],
-  manubriosternal_joint: [-0.0, -86.1, 1341.3],
-  xiphisternal_joint: [-0.0, -102.6, 1220.9],
+  costovertebral_joint: [[17.8, 56.6, 1330.0], [-17.8, 56.6, 1330.0]],
+  costotransverse_joint: [[34.4, 82.8, 1330.0], [-34.4, 82.8, 1330.0]],
+  costochondral_joint: [[51.2, -73.2, 1312.3], [-51.2, -73.2, 1312.3]],
+  sternocostal_joint: [[16.6, -89.2, 1316.0], [-16.6, -89.2, 1316.0]],
+  manubriosternal_joint: [-0.0, -83.2, 1356.9],
+  xiphisternal_joint: [-0.0, -110.4, 1242.5],
   radiate_sternocostal_ligament: [-0.0, -87.4, 1285.0],
 };
 
