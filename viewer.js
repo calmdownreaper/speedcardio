@@ -389,6 +389,7 @@ gl_FragColor.a = max(gl_FragColor.a, spot * 0.9);`);
     pin.line.style.transform = `rotate(${angle}rad)`;
   }
   let labeledIds = [];
+  let hasFocusedMarker = false;
   function updateLabels() {
     const width = host.clientWidth;
     const height = host.clientHeight;
@@ -516,7 +517,7 @@ gl_FragColor.a = max(gl_FragColor.a, spot * 0.9);`);
         }
       }
       if (labeledIds.length) updateLabels();
-      if (pulseOn && current.focus?.some(id => markerMeshes.has(id))) schedule();
+      if (pulseOn && hasFocusedMarker) schedule();
     }
     try {
       renderer.render(scene, camera);
@@ -762,12 +763,14 @@ gl_FragColor.a = max(gl_FragColor.a, spot * 0.9);`);
     let spotCount = 0;
     spotUniforms.uSpotColor.value.set(tone.axis);
     const shownMarkers = new Set();
+    hasFocusedMarker = false;
     for (const id of current.markerIds || []) {
       if (!markerPoints.has(id) || (isolate && !highlight.has(id))) continue;
       const active = highlight.has(id);
       const opacity = active ? 1 : (anchorFocus ? .16 : .78) * (highlight.size ? display.ghost : 1);
       if (opacity <= 0) continue;
       shownMarkers.add(id);
+      if (active) hasFocusedMarker = true;
       const list = markerMeshes.get(id) || createMarkers(id);
       for (const marker of list) {
         marker.visible = true;

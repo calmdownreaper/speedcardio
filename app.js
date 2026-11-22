@@ -610,6 +610,9 @@ function renderLesson() {
     activity.found = found;
     const target = order[found.length];
     const allFound = !target;
+    const completion = order.some(id => pack.markers?.[id])
+      ? 'You located every structure in this level.'
+      : 'Each structure now keeps its lesson colour on the model.';
     const feedback = activity.findFeedback;
     const preferred = target && pack.markerMeta?.[target] ? markerView(target) : null;
     const foundMeshes = found.filter(id => !pack.markers?.[id]);
@@ -628,7 +631,7 @@ function renderLesson() {
     return `<div class="prompt lesson-find">${top}
       <div class="eyebrow">${memorize ? 'Memorize' : 'Learn'} · Find them · ${found.length} of ${order.length}</div>
       <h1>${allFound ? 'All found' : `Click the <span class="target-name">${escape(ITEMS[target].pt)}</span>`}</h1>
-      <p class="support">${!ready ? 'Loading the 3D region…' : allFound ? 'Each structure now keeps its lesson colour on the model.' : 'Rotate or zoom if it is hidden. Wrong clicks tell you what you touched.'}</p>
+      <p class="support">${!ready ? 'Loading the 3D region…' : allFound ? completion : 'Rotate or zoom if it is hidden. Wrong clicks tell you what you touched.'}</p>
       <div class="find-meter" role="progressbar" aria-valuemin="0" aria-valuemax="${order.length}" aria-valuenow="${found.length}" aria-label="Structures found"><span class="find-bar" style="width:${Math.round(found.length / order.length * 100)}%"></span></div>
       <p id="find-feedback" class="feedback ${feedback?.tone || ''}" role="status">${feedback ? escape(feedback.text) : ''}</p>
       <ul class="find-list" aria-label="Structures to find">${order.map(id => {
@@ -2172,7 +2175,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=64');
+    const { createViewer } = await import('./viewer.js?v=65');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore, { ...pack, ...pack.model });
     viewer.onReady(() => {
       syncModelStatus();
