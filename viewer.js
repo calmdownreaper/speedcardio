@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=60';
+const VERSION = '?v=62';
 const GHOST_ORDER = 1;
 const GHOST_DEFAULT = 40;
 

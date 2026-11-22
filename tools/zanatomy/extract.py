@@ -27,6 +27,8 @@ SOURCES = {
     'sk': os.path.expanduser('~/Downloads/SkeletalSystem100.fbx'),
     'mu': os.path.expanduser('~/Downloads/MuscularSystem100.fbx'),
     'jo': os.path.join(SCRATCH, 'zdl', 'Joints100.fbx'),
+    'cv': os.path.expanduser('~/Downloads/CardioVascular41.fbx'),
+    'vi': os.path.expanduser('~/Downloads/VisceralSystem100.fbx'),
 }
 
 # FBX is Y up, +Z anterior, +X left. SpeedMSK is Z up, -Y anterior, -X right.

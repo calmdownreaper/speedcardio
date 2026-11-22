@@ -25,13 +25,15 @@ const CURRICULUM = [
   ['valvas', 'Valves and papillary muscles', [
     ['Atrioventricular leaflets', 'tri_ant tri_post tri_sep mit_ant mit_post'],
     ['Semilunar cusps', 'pulm_ant_d pulm_ant_e pulm_post ao_ant ao_post_e ao_post_d'],
-    ['Papillary muscles', 'pap_vd_ant pap_vd_post pap_vd_sep pap_ve_al'],
+    ['Papillary muscles', 'pap_vd_ant pap_vd_post pap_vd_sep pap_ve_al pap_ve_pm'],
   ]],
   ['veias', 'Cardiac veins', [
     ['Venous drainage of the heart', 'seio vcmagna vcmedia vcparva vpve'],
   ]],
-  ['vias', 'Trachea and bronchi', [
+  ['vias', 'Airways and lung lobes', [
     ['Trachea and main bronchi', 'traqueia bpd bpe'],
+    ['Lobar bronchi', 'blob_sup_d bint_d blob_med_d blob_inf_d blob_sup_e blob_inf_e'],
+    ['Lung lobes', 'lobo_sup_d lobo_med_d lobo_inf_d lobo_sup_e lobo_inf_e'],
   ]],
   ['segd', 'Right lung segments', [
     ['Right upper and middle lobes', 'sd_apical sd_post sd_ant sd_lat sd_med'],
@@ -41,11 +43,21 @@ const CURRICULUM = [
     ['Left upper lobe and its tongue-like part (lingula)', 'se_apical se_post se_ant se_lsup se_linf'],
     ['Left lower lobe', 'se_sup se_bmed se_bant se_blat se_bpost'],
   ]],
+  ['artpulm', 'Pulmonary artery branches', [
+    ['Right upper lobe arteries', 'a_sd_apical a_sd_post a_sd_ant'],
+    ['Right middle and lower lobe arteries', 'lobmedd a_sd_lat a_sd_med lobinfd a_sd_sup a_sd_basal'],
+    ['Left lung arteries', 'a_se_apical a_se_post a_se_ant a_se_lsup a_se_linf a_se_sup a_se_basal'],
+  ]],
+  ['veipulm', 'Pulmonary vein tributaries', [
+    ['Right pulmonary vein tributaries', 'v_sd_apical v_sd_post v_sd_ant v_sd_lat v_sd_med v_sd_sup v_sd_bsup v_sd_binf'],
+    ['Left pulmonary vein tributaries', 'v_se_apicpost v_se_ant v_se_ling v_se_sup v_se_bsup v_se_binf'],
+  ]],
   ['mediastino', 'Mediastinum & thoracic wall', [
     ['Mediastinum: central compartment', 'esofago eso_art azigo hemiazigo azigo_acs timo_d timo_e'],
     ['Diaphragm and phrenic vessels', 'diafragma phren_inf_a_d phren_inf_a_e phren_inf_v phren_sup_v'],
     ['Thoracic wall vessels', 'ita_d ita_e itv_d itv_e pica_d1 pica_e1 pica_d2 pica_e2 pica_sup_d pica_sup_e icv_ant_d icv_ant_e'],
     ['Thoracic skeleton landmarks', 'manubrio esterno xifoide claviculas cart_costais costela_1 costela_2 costela_4 costela_5 costelas_rest vertebras_toracicas'],
+    ['Thoracic outlet and chest wall vessels', 'vsc_d vsc_e ttc_d ttc_e tcc_d tcc_e pica_rest_d pica_rest_e mfa_d mfa_e aes_d aes_e'],
   ]],
 ];
 
@@ -67,7 +79,7 @@ export function buildRegions(ITEMS) {
       const end = Math.round((part + 1) * mixed.length / runs);
       levels.push({ id: `${id}-speed-${part + 1}`, region: id, title: `Speed run${suffix}`, ids: mixed.slice(start, end), speed: true });
     }
-    return { id, title, levels, ids: [...new Set(mixed)], area: ['vias', 'segd', 'sege'].includes(id) ? 'Lungs' : id === 'mediastino' ? 'Thorax' : id === 'laringe' ? 'Neck' : 'Heart' };
+    return { id, title, levels, ids: [...new Set(mixed)], area: ['vias', 'segd', 'sege', 'artpulm', 'veipulm'].includes(id) ? 'Lungs' : id === 'mediastino' ? 'Thorax' : id === 'laringe' ? 'Neck' : 'Heart' };
   });
 }
 
@@ -81,5 +93,6 @@ export const REGION_CONTEXT = {
     'icv_ant_d', 'icv_ant_e',
     'manubrio', 'esterno', 'xifoide', 'claviculas', 'cart_costais', 'costela_1', 'costela_2', 'costela_4',
     'costela_5', 'costelas_rest', 'vertebras_toracicas',
+    'scd', 'sce', 'vsc_d', 'vsc_e', 'ttc_d', 'ttc_e', 'tcc_d', 'tcc_e', 'mfa_d', 'mfa_e', 'aes_d', 'aes_e',
   ],
 };

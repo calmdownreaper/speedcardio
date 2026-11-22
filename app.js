@@ -1,5 +1,5 @@
 import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=60';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=60';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=61';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
@@ -2175,7 +2175,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=74');
+    const { createViewer } = await import('./viewer.js?v=76');
     viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore, { ...pack, ...pack.model });
     viewer.onReady(() => {
       syncModelStatus();

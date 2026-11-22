@@ -1131,6 +1131,604 @@ const mediastinum = {
   ]),
 };
 
+// Z-Anatomy additions: lobar bronchi, lobes, pulmonary vessel branches, outlet vessels.
+const zAnatomyExtras = {
+  blob_sup_d: card("right upper lobe bronchus", {
+    definition: ["Lobar airway of the right upper lobe arising from the right main bronchus."],
+    location: ["Leaves the right main bronchus 1–2.5 cm below the carina at about T5 and runs laterally."],
+    relations: ["Lies above the right pulmonary artery at the hilum, so it is eparterial. The azygos arch passes over the right main bronchus just medial to it."],
+    branches: ["Divides into apical B1, posterior B2 and anterior B3 segmental bronchi."],
+    clinical: ["A right-sided double-lumen tube must line up its side port with this early take-off, or the upper lobe is not ventilated."],
+    imaging: ["On coronal CT it is the first lateral branch off the right main bronchus."],
+  }, [
+    ["Where does it lie relative to the right pulmonary artery at the hilum?", "Above it (eparterial)", "Below it (hyparterial)", "Behind the pulmonary veins", "Inside the pericardium", "The right upper lobe bronchus is the only eparterial lobar bronchus."],
+    ["Which segmental bronchi arise from it?", "B1, B2 and B3", "B4 and B5", "B6 to B10", "B1+2 and B3 only", "The right upper lobe bronchus gives apical, posterior and anterior segmental bronchi."],
+  ]),
+  bint_d: card("bronchus intermedius", {
+    definition: ["Right-sided airway segment between the upper lobe bronchus and the middle and lower lobe bronchi."],
+    location: ["Runs about 3 cm downward from the upper lobe take-off."],
+    relations: ["The interlobar pulmonary artery lies anterolateral to it."],
+    branches: ["Ends by giving the middle lobe bronchus anteriorly and continuing as the lower lobe bronchus."],
+    clinical: ["A tumour here can obstruct both the middle and lower lobes together."],
+    imaging: ["On axial CT its posterior wall touches lung directly; thickening of that wall suggests oedema or tumour."],
+  }, [
+    ["Which lobes does it supply?", "Right middle and lower lobes", "Right upper lobe only", "Left upper lobe and lingula", "All three right lobes", "It lies between the upper lobe take-off and the middle and lower lobe bronchi."],
+    ["Does it have a left-sided counterpart?", "No, it is only on the right", "Yes, between the left upper and lower lobe bronchi", "Yes, the lingular bronchus", "Yes, the left main bronchus itself", "The left main bronchus divides directly into upper and lower lobe bronchi."],
+  ]),
+  blob_med_d: card("middle lobe bronchus", {
+    definition: ["Lobar airway of the right middle lobe."],
+    location: ["Arises from the anterior wall of the bronchus intermedius and runs anterolaterally."],
+    relations: ["Lies almost opposite the origin of the superior segment bronchus of the lower lobe."],
+    branches: ["Lateral B4 and medial B5 segmental bronchi."],
+    clinical: ["Middle lobe syndrome is recurrent collapse caused by node compression or weak collateral ventilation."],
+    imaging: ["A collapsed middle lobe blurs the right heart border on a frontal radiograph."],
+  }, [
+    ["Which segmental bronchi arise from it?", "B4 and B5", "B1, B2 and B3", "B6 and B7", "B4 and B5 of the lingula", "The middle lobe bronchus divides into lateral B4 and medial B5."],
+    ["Why is the middle lobe prone to recurrent collapse?", "Its bronchus is long, narrow and ringed by nodes", "It has no pulmonary artery", "It lacks cartilage", "It is eparterial", "Node compression and poor collateral ventilation cause middle lobe syndrome."],
+  ]),
+  blob_inf_d: card("right lower lobe bronchus", {
+    definition: ["Lobar airway of the right lower lobe."],
+    location: ["Continues the bronchus intermedius downward and backward."],
+    relations: ["The lower lobe artery lies lateral to it; the inferior pulmonary vein lies below and medial."],
+    branches: ["Superior segment bronchus B6, then basal bronchi B7, B8, B9 and B10."],
+    clinical: ["Aspiration while upright favours its basal branches."],
+    imaging: ["Collapse produces a triangular opacity behind the heart that hides the right hemidiaphragm."],
+  }, [
+    ["Which branch leaves its posterior wall first?", "Superior segment bronchus B6", "Medial basal B7", "Middle lobe bronchus", "Posterior segment B2", "B6 arises from the posterior wall before the basal trunk."],
+    ["Which segments does its basal trunk supply?", "B7 to B10", "B4 and B5", "B1 to B3", "B6 only", "The basal trunk divides into medial, anterior, lateral and posterior basal bronchi."],
+  ]),
+  blob_sup_e: card("left upper lobe bronchus", {
+    definition: ["Lobar airway of the left upper lobe, including the lingula."],
+    location: ["Arises from the anterolateral left main bronchus about 5 cm from the carina."],
+    relations: ["The left pulmonary artery arches over it; the left superior pulmonary vein lies in front."],
+    branches: ["Upper division to B1+2 and B3; lingular division to B4 and B5."],
+    clinical: ["Left upper lobe collapse moves the lobe forward against the chest wall, giving a veil-like opacity."],
+    imaging: ["On axial CT the left pulmonary artery is seen crossing over it from front to back."],
+  }, [
+    ["Which two divisions does it form?", "Upper division and lingular division", "Middle and lower divisions", "Superior and basal divisions", "Apical and intermediate divisions", "The left upper lobe bronchus divides into an upper (culminal) and a lingular division."],
+    ["What arches over it at the left hilum?", "Left pulmonary artery", "Azygos vein", "Left superior pulmonary vein", "Thoracic duct", "The left pulmonary artery hooks over the left upper lobe bronchus, so every left lobar bronchus is hyparterial."],
+  ]),
+  blob_inf_e: card("left lower lobe bronchus", {
+    definition: ["Lobar airway of the left lower lobe."],
+    location: ["Continues the left main bronchus downward and backward."],
+    relations: ["The interlobar left pulmonary artery lies lateral to it; the descending aorta lies behind."],
+    branches: ["Superior segment bronchus B6, then anteromedial B7+8, lateral B9 and posterior B10."],
+    clinical: ["Left lower lobe collapse gives a triangle behind the heart and hides the medial left hemidiaphragm."],
+    imaging: ["On a frontal radiograph its collapse shows as a retrocardiac opacity."],
+  }, [
+    ["Which basal segments often share one bronchus on the left?", "B7 and B8", "B9 and B10", "B6 and B7", "B4 and B5", "On the left the medial and anterior basal bronchi usually form an anteromedial trunk."],
+    ["Which segment bronchus arises first from its posterior wall?", "B6", "B10", "B3", "B5", "As on the right, the superior segment bronchus leaves first, posteriorly."],
+  ]),
+  lobo_sup_d: card("right upper lobe", {
+    definition: ["Superior lobe of the right lung, made of apical, posterior and anterior segments."],
+    location: ["From the apex to the horizontal fissure in front and the oblique fissure behind."],
+    relations: ["Its apex rises above the first rib beside the subclavian vessels; medially it lies against the SVC and the azygos arch."],
+    branches: ["Aerated by the upper lobe bronchus with B1, B2 and B3."],
+    clinical: ["Upper lobe cavitation is typical of reactivation tuberculosis."],
+    imaging: ["Collapse pulls the horizontal fissure upward on a frontal radiograph."],
+  }, [
+    ["Which fissure separates it from the middle lobe?", "Horizontal fissure", "Oblique fissure", "Azygos fissure", "Inferior accessory fissure", "The horizontal fissure runs along the 4th costal cartilage."],
+    ["Which segments does it contain?", "Apical, posterior and anterior", "Lateral and medial", "Superior and four basal", "Apicoposterior, anterior and lingular", "The right upper lobe has three segments: S1, S2 and S3."],
+  ]),
+  lobo_med_d: card("right middle lobe", {
+    definition: ["Middle lobe of the right lung, made of lateral and medial segments."],
+    location: ["Front of the right lung between the horizontal and oblique fissures."],
+    relations: ["Its medial surface lies against the right atrium; it does not reach the posterior chest wall."],
+    branches: ["Aerated by the middle lobe bronchus with B4 and B5."],
+    clinical: ["Consolidation removes the right heart border on a frontal radiograph."],
+    imaging: ["On a lateral radiograph it is a wedge over the heart between the two fissures."],
+  }, [
+    ["Which border disappears when it consolidates?", "Right heart border", "Right hemidiaphragm", "Aortic knob", "Left heart border", "The medial middle lobe lies against the right atrium."],
+    ["Where is it best auscultated?", "Anterior chest, right 4th–6th ribs", "Posterior chest below the scapula", "Right supraclavicular fossa", "Left axilla", "The middle lobe lies at the front and does not reach the back."],
+  ]),
+  lobo_inf_d: card("right lower lobe", {
+    definition: ["Inferior lobe of the right lung, with one superior and four basal segments."],
+    location: ["Posterior and basal right lung, below the oblique fissure."],
+    relations: ["Its base rests on the right hemidiaphragm; the pulmonary ligament runs down from its hilum."],
+    branches: ["Aerated by the lower lobe bronchus: B6 and B7–B10."],
+    clinical: ["Common site of aspiration pneumonia."],
+    imaging: ["Consolidation silhouettes the right hemidiaphragm while the right heart border stays visible."],
+  }, [
+    ["How many segments does it contain?", "Five: superior plus four basal", "Three", "Two", "Four basal only", "The lower lobe has S6 and S7–S10."],
+    ["Which border does its consolidation obscure?", "Right hemidiaphragm", "Right heart border", "Left heart border", "Superior mediastinum", "Lower lobe disease silhouettes the diaphragm; middle lobe disease silhouettes the heart."],
+  ]),
+  lobo_sup_e: card("left upper lobe", {
+    definition: ["Superior lobe of the left lung, including the lingula."],
+    location: ["Above and in front of the oblique fissure."],
+    relations: ["The cardiac notch indents its anterior border; medially it lies against the aortic arch and left ventricle."],
+    branches: ["Aerated by the upper lobe bronchus: upper division to B1+2 and B3, lingular division to B4 and B5."],
+    clinical: ["Lingular consolidation silhouettes the left heart border."],
+    imaging: ["Collapse moves it forward, giving a hazy veil over the left hemithorax."],
+  }, [
+    ["Which part of it corresponds to the right middle lobe?", "The lingula", "The apicoposterior segment", "The cardiac notch", "The superior segment", "The lingula has superior and inferior segments, like the middle lobe has lateral and medial."],
+    ["Which fissure does the left lung have?", "Oblique only", "Horizontal only", "Oblique and horizontal", "None", "The left lung usually lacks a horizontal fissure, so it has two lobes."],
+  ]),
+  lobo_inf_e: card("left lower lobe", {
+    definition: ["Inferior lobe of the left lung."],
+    location: ["Posterior and basal left lung, behind the heart."],
+    relations: ["Its medial surface is grooved by the descending aorta; its base rests on the left hemidiaphragm."],
+    branches: ["Aerated by the lower lobe bronchus: B6, B7+8, B9 and B10."],
+    clinical: ["Retrocardiac collapse is easily missed on a frontal radiograph."],
+    imaging: ["Collapse hides the descending aortic outline and the medial left hemidiaphragm."],
+  }, [
+    ["Which large vessel grooves its medial surface?", "Descending aorta", "Superior vena cava", "Inferior vena cava", "Right pulmonary artery", "The descending thoracic aorta lies against the medial left lower lobe."],
+    ["Where does its collapse appear on a frontal radiograph?", "Behind the heart", "Above the aortic knob", "Along the right heart border", "In the right costophrenic angle", "A collapsed left lower lobe forms a retrocardiac triangle."],
+  ]),
+  a_sd_apical: card("right apical segmental artery (A1)", {
+    definition: ["Pulmonary arterial branch to the apical segment of the right upper lobe."],
+    course: ["Arises from the anterior trunk and ascends beside B1."],
+    relations: ["Runs with the segmental bronchus; the veins run between segments."],
+    supply: ["Apical segment S1 of the right upper lobe."],
+    clinical: ["Segmental pulmonary emboli appear as filling defects in these branches on CT pulmonary angiography."],
+    imaging: ["Trace it from the anterior trunk on thin-section CT angiography."],
+  }, [
+    ["From which trunk does it usually arise?", "Anterior trunk of the right pulmonary artery", "Interlobar artery", "Middle lobe artery", "Right bronchial artery", "A1 and A3 usually share the anterior trunk."],
+    ["Which structure runs beside it in the segment?", "Apical bronchus B1", "Apical vein V1", "Horizontal fissure", "Azygos arch", "Pulmonary arteries follow their bronchi; veins run between segments."],
+  ]),
+  a_sd_post: card("right posterior segmental artery (A2)", {
+    definition: ["Pulmonary arterial branch to the posterior segment of the right upper lobe."],
+    course: ["Arises from the anterior trunk or as an ascending branch of the interlobar artery and runs backward beside B2."],
+    relations: ["Runs with B2 in the posterior upper lobe."],
+    supply: ["Posterior segment S2 of the right upper lobe."],
+    clinical: ["A missed ascending A2 bleeds during upper lobectomy."],
+    imaging: ["CT angiography identifies whether it arises from the interlobar artery."],
+  }, [
+    ["Where does it often arise besides the anterior trunk?", "Interlobar artery", "Middle lobe artery", "Left pulmonary artery", "Superior vena cava", "An ascending A2 from the interlobar artery is common."],
+    ["Which bronchus does it accompany?", "B2", "B1", "B3", "B6", "Segmental arteries run beside the bronchus of the same number."],
+  ]),
+  a_sd_ant: card("right anterior segmental artery (A3)", {
+    definition: ["Pulmonary arterial branch to the anterior segment of the right upper lobe."],
+    course: ["Leaves the anterior trunk with A1 and runs forward beside B3."],
+    relations: ["Lies above the horizontal fissure."],
+    supply: ["Anterior segment S3 of the right upper lobe."],
+    clinical: ["Segmentectomy of S3 divides A3 and B3 at the segment hilum."],
+    imaging: ["Seen on CT running forward from the upper hilum."],
+  }, [
+    ["Which branch does it usually share a trunk with?", "A1", "A6", "Middle lobe artery", "A2 only", "The anterior trunk usually gives A1 and A3."],
+    ["Which fissure lies below its territory?", "Horizontal fissure", "Left oblique fissure", "Azygos fissure", "No fissure", "The anterior segment sits above the horizontal fissure."],
+  ]),
+  lobmedd: card("middle lobe artery", {
+    definition: ["Lobar pulmonary artery to the right middle lobe."],
+    course: ["Arises from the anterior side of the interlobar artery and runs forward beside the middle lobe bronchus."],
+    relations: ["Lies roughly opposite the superior segment artery A6."],
+    branches: ["Lateral A4 and medial A5."],
+    clinical: ["Two separate middle lobe arteries are a common variant."],
+    imaging: ["On CT it leaves the interlobar artery in the oblique fissure."],
+  }, [
+    ["From which vessel does it arise?", "Interlobar part of the right pulmonary artery", "Anterior trunk", "Left pulmonary artery", "Right superior pulmonary vein", "The middle lobe artery leaves the front of the interlobar artery."],
+    ["Which branches does it give?", "A4 and A5", "A1 and A3", "A6 only", "A7 to A10", "The middle lobe artery supplies the lateral and medial segments."],
+  ]),
+  a_sd_lat: card("lateral segmental artery of the middle lobe (A4)", {
+    definition: ["Segmental pulmonary artery to the lateral segment of the right middle lobe."],
+    course: ["Arises from the middle lobe artery and runs laterally beside B4."],
+    relations: ["Lies between the horizontal and oblique fissures."],
+    supply: ["Lateral segment S4."],
+    clinical: ["May arise directly from the interlobar artery as a separate middle lobe branch."],
+    imaging: ["Seen on CT running laterally from the middle lobe artery."],
+  }, [
+    ["Which artery gives it?", "Middle lobe artery", "Anterior trunk", "Lower lobe artery", "Lingular artery", "A4 is a branch of the middle lobe artery."],
+    ["Which bronchus runs beside it?", "B4", "B5", "B3", "B8", "A4 accompanies the lateral segmental bronchus."],
+  ]),
+  a_sd_med: card("medial segmental artery of the middle lobe (A5)", {
+    definition: ["Segmental pulmonary artery to the medial segment of the right middle lobe."],
+    course: ["Arises from the middle lobe artery and runs medially beside B5."],
+    relations: ["Its segment lies against the right atrium."],
+    supply: ["Medial segment S5."],
+    clinical: ["Its territory produces the silhouette sign at the right heart border when consolidated."],
+    imaging: ["Seen on CT running medially from the middle lobe artery."],
+  }, [
+    ["Which artery gives it?", "Middle lobe artery", "Anterior trunk", "Lingular artery", "Right bronchial artery", "A5 is the medial branch of the middle lobe artery."],
+    ["Toward which structure does its segment face?", "Right atrium", "Lateral chest wall", "Right hemidiaphragm", "Vertebral column", "The medial middle lobe segment lies against the right heart border."],
+  ]),
+  lobinfd: card("right lower lobe artery", {
+    definition: ["Lobar pulmonary artery of the right lower lobe."],
+    course: ["Continues the interlobar artery downward, lateral to the lower lobe bronchus."],
+    relations: ["The inferior pulmonary vein lies below and medial to it."],
+    branches: ["Superior segment artery A6 and basal arteries A7–A10."],
+    clinical: ["A common site for lobar pulmonary emboli."],
+    imaging: ["CT pulmonary angiography shows it lateral to the lower lobe bronchus."],
+  }, [
+    ["Which artery does it continue?", "Interlobar part of the right pulmonary artery", "Anterior trunk", "Left pulmonary artery", "Middle lobe artery", "The lower lobe artery is the end of the interlobar artery."],
+    ["Where does it lie relative to its bronchus?", "Lateral", "Medial", "Inside the lumen", "Above the trachea", "At the lower hilum the artery lies lateral to the bronchus."],
+  ]),
+  a_sd_sup: card("right superior segmental artery (A6)", {
+    definition: ["Segmental pulmonary artery to the superior segment of the right lower lobe."],
+    course: ["Arises from the back of the interlobar artery and runs backward beside B6."],
+    relations: ["Arises almost opposite the middle lobe artery."],
+    supply: ["Superior segment S6."],
+    clinical: ["Can be injured during middle lobectomy because of its level."],
+    imaging: ["Seen on CT running posteriorly from the interlobar artery."],
+  }, [
+    ["Which artery does it arise almost opposite?", "Middle lobe artery", "Anterior trunk", "Left pulmonary artery", "A1", "A6 leaves the back of the interlobar artery at about the level the middle lobe artery leaves the front."],
+    ["Which bronchus accompanies it?", "B6", "B10", "B2", "B5", "A6 runs with the superior segment bronchus."],
+  ]),
+  a_sd_basal: card("right basal segmental arteries (A7–A10)", {
+    definition: ["Terminal branches of the right lower lobe artery to the four basal segments."],
+    course: ["Arise from the basal trunk and fan downward with the basal bronchi."],
+    relations: ["Lie above the right hemidiaphragm."],
+    supply: ["Basal segments S7, S8, S9 and S10."],
+    clinical: ["Gravity-dependent flow makes the basal arteries a common site of emboli."],
+    imaging: ["CT pulmonary angiography shows emboli as filling defects in these branches."],
+  }, [
+    ["How many basal segments do they supply on the right?", "Four", "Two", "Three", "Five", "The right lower lobe has medial, anterior, lateral and posterior basal segments."],
+    ["Why are emboli common in these branches?", "They receive most of the flow when upright", "They have no smooth muscle", "They arise from the aorta", "They are eparterial", "Pulmonary blood flow is greatest in the lung bases when upright."],
+  ]),
+  a_se_apical: card("left apical segmental artery (A1)", {
+    definition: ["Pulmonary arterial branch to the apical part of the left upper lobe."],
+    course: ["Arises from the left pulmonary artery as it arches over the bronchus and ascends."],
+    relations: ["Lies beside the aortic arch and left subclavian artery."],
+    supply: ["Apical part of the apicoposterior segment S1+2."],
+    clinical: ["Variable separate origins make left upper lobectomy demanding."],
+    imaging: ["CT angiography shows the left upper lobe branches leaving the arterial arch."],
+  }, [
+    ["How do the left upper lobe arteries usually arise?", "As several separate branches from the arching left pulmonary artery", "From one anterior trunk, as on the right", "From the aortic arch", "From the left superior pulmonary vein", "There is no anterior trunk on the left; 2–7 branches arise separately."],
+    ["Which artery does it often share a stem with?", "A2", "A6", "A4", "A8", "On the left A1 and A2 often arise together as A1+2."],
+  ]),
+  a_se_post: card("left posterior segmental artery (A2)", {
+    definition: ["Pulmonary arterial branch to the posterior part of the left upper lobe."],
+    course: ["Arises from the left pulmonary artery at the top of its arch and runs backward."],
+    relations: ["Often arises with A1."],
+    supply: ["Posterior part of the apicoposterior segment S1+2."],
+    clinical: ["A small posterior branch is easily torn during left upper lobectomy."],
+    imaging: ["Seen on CT leaving the posterior arch of the left pulmonary artery."],
+  }, [
+    ["Which bronchus does it run with?", "B1+2", "B3", "B4", "B6", "On the left the apical and posterior bronchi usually share a stem, B1+2."],
+    ["From which part of the left pulmonary artery does it arise?", "The top of its arch over the bronchus", "The pulmonary trunk", "The interlobar part below the fissure", "The lingular artery", "A2 leaves the arch as the artery crosses the bronchus."],
+  ]),
+  a_se_ant: card("left anterior segmental artery (A3)", {
+    definition: ["Pulmonary arterial branch to the anterior segment of the left upper lobe."],
+    course: ["Often the first branch of the left pulmonary artery, running forward with B3."],
+    relations: ["The left superior pulmonary vein lies in front of it."],
+    supply: ["Anterior segment S3."],
+    clinical: ["A short, early branch that can tear during dissection."],
+    imaging: ["Seen on CT as the first anterior branch of the left pulmonary artery."],
+  }, [
+    ["Which branch of the left pulmonary artery is it often?", "The first", "The last", "A branch of the lingular artery", "A branch of the basal trunk", "A3 often leaves the left pulmonary artery before the others."],
+    ["Which vein lies in front of it at the hilum?", "Left superior pulmonary vein", "Left inferior pulmonary vein", "Hemiazygos vein", "Left brachiocephalic vein", "At the left hilum the superior pulmonary vein is the most anterior structure."],
+  ]),
+  a_se_lsup: card("superior lingular artery (A4)", {
+    definition: ["Segmental pulmonary artery to the superior lingular segment."],
+    course: ["Arises from the left interlobar artery and runs forward beside B4."],
+    relations: ["Lies above A5 in the lingula."],
+    supply: ["Superior lingular segment S4."],
+    clinical: ["Lingulectomy divides the lingular artery or arteries in the oblique fissure."],
+    imaging: ["Seen on CT running anteriorly from the interlobar artery."],
+  }, [
+    ["Where does it usually arise?", "Interlobar part of the left pulmonary artery", "Anterior trunk of the right pulmonary artery", "Aortic arch", "Basal trunk", "Lingular arteries leave the front of the left interlobar artery."],
+    ["Which right-sided artery is its counterpart?", "Lateral middle lobe artery A4", "Right apical artery A1", "Right superior segment artery A6", "Right basal arteries", "The lingula corresponds to the right middle lobe."],
+  ]),
+  a_se_linf: card("inferior lingular artery (A5)", {
+    definition: ["Segmental pulmonary artery to the inferior lingular segment."],
+    course: ["Arises from the left interlobar artery and runs forward and down beside B5."],
+    relations: ["Its segment lies over the left ventricle."],
+    supply: ["Inferior lingular segment S5."],
+    clinical: ["Its territory blurs the left heart border when consolidated."],
+    imaging: ["Seen on CT running anteroinferiorly into the lingula."],
+  }, [
+    ["Which segment does it supply?", "Inferior lingular segment", "Superior lingular segment", "Anterior basal segment", "Medial middle lobe segment", "A5 runs with B5 to the inferior lingula."],
+    ["What lies medial to its segment?", "Left ventricle", "Aortic arch", "Descending aorta", "Left subclavian artery", "The inferior lingula lies against the left ventricle."],
+  ]),
+  a_se_sup: card("left superior segmental artery (A6)", {
+    definition: ["Segmental pulmonary artery to the superior segment of the left lower lobe."],
+    course: ["Arises from the back of the left interlobar artery and runs backward with B6."],
+    relations: ["Arises roughly level with the lingular arteries."],
+    supply: ["Superior segment S6 of the left lower lobe."],
+    clinical: ["S6 is a dependent segment when supine, a site of aspiration pneumonia."],
+    imaging: ["Seen on CT running posteriorly from the interlobar artery."],
+  }, [
+    ["From which side of the interlobar artery does it arise?", "Posterior", "Anterior", "Medial, toward the heart", "Superior, over the bronchus", "A6 leaves the back of the interlobar artery."],
+    ["Which bronchus accompanies it?", "B6", "B4", "B1+2", "B9", "A6 runs with the superior segment bronchus."],
+  ]),
+  a_se_basal: card("left basal segmental arteries (A7–A10)", {
+    definition: ["Terminal branches of the left pulmonary artery to the basal segments."],
+    course: ["Arise from the basal trunk and fan downward with the basal bronchi."],
+    relations: ["Lie above the left hemidiaphragm, lateral to the descending aorta."],
+    supply: ["Basal segments S7+8, S9 and S10."],
+    clinical: ["A common site of pulmonary emboli because of high basal flow."],
+    imaging: ["CT pulmonary angiography shows them as the terminal fan of the left pulmonary artery."],
+  }, [
+    ["Which two basal arteries often share a stem on the left?", "A7 and A8", "A9 and A10", "A6 and A7", "A4 and A5", "Like their bronchi, the medial and anterior basal arteries often arise together."],
+    ["Which artery do they terminate?", "Left pulmonary artery", "Descending aorta", "Left bronchial artery", "Left inferior pulmonary vein", "The basal arteries are the terminal branches of the left pulmonary artery."],
+  ]),
+  v_sd_apical: card("right apical vein (V1)", {
+    definition: ["Tributary of the right superior pulmonary vein draining the apical segment."],
+    course: ["Descends on the mediastinal side of the upper lobe to the right superior pulmonary vein."],
+    relations: ["Runs between segments, not beside B1."],
+    supply: ["Drains the apical segment S1."],
+    clinical: ["Intersegmental veins guide the plane of a segmentectomy."],
+    imaging: ["Seen on CT along the medial upper lobe, anterior to the bronchus."],
+  }, [
+    ["Into which vein does it drain?", "Right superior pulmonary vein", "Right inferior pulmonary vein", "Superior vena cava", "Azygos vein", "All upper and middle lobe veins drain to the right superior pulmonary vein."],
+    ["How do segmental veins run compared with arteries?", "Between segments", "Beside the bronchus", "Inside the bronchial wall", "Only on the pleural surface", "Arteries follow bronchi; veins run in the intersegmental planes."],
+  ]),
+  v_sd_post: card("right posterior vein (V2)", {
+    definition: ["Main tributary of the right superior pulmonary vein from the posterior upper lobe."],
+    course: ["Runs forward across the hilum to join the right superior pulmonary vein."],
+    relations: ["Lies in front of the interlobar artery."],
+    supply: ["Drains S2 and adjacent parts of S1 and S3."],
+    clinical: ["Must be handled to expose the interlobar artery during upper lobectomy."],
+    imaging: ["On CT it crosses in front of the interlobar artery at the right hilum."],
+  }, [
+    ["What artery does it cross in front of?", "Interlobar pulmonary artery", "Ascending aorta", "Right bronchial artery", "Anterior trunk", "The central vein lies in front of the interlobar artery."],
+    ["Into which vein does it drain?", "Right superior pulmonary vein", "Right inferior pulmonary vein", "Azygos vein", "Superior vena cava", "Upper lobe veins join the right superior pulmonary vein."],
+  ]),
+  v_sd_ant: card("right anterior vein (V3)", {
+    definition: ["Tributary of the right superior pulmonary vein from the anterior upper lobe."],
+    course: ["Runs medially across the front of the upper lobe to the right superior pulmonary vein."],
+    relations: ["Lies above the middle lobe vein, separated by the horizontal fissure."],
+    supply: ["Drains S3."],
+    clinical: ["Intersegmental branches mark the S3 boundary in segmentectomy."],
+    imaging: ["Seen on CT at the anterior upper hilum."],
+  }, [
+    ["Which segment does it drain?", "Anterior segment of the right upper lobe", "Medial middle lobe segment", "Superior segment of the lower lobe", "Anterior basal segment", "V3 drains S3."],
+    ["Into which vein does it empty?", "Right superior pulmonary vein", "Right inferior pulmonary vein", "Right internal thoracic vein", "Right brachiocephalic vein", "Upper lobe veins drain to the superior pulmonary vein."],
+  ]),
+  v_sd_lat: card("lateral middle lobe vein (V4)", {
+    definition: ["Tributary of the middle lobe vein draining the lateral segment."],
+    course: ["Runs medially and joins V5 to form the middle lobe vein."],
+    relations: ["Lies between the horizontal and oblique fissures."],
+    supply: ["Drains S4."],
+    clinical: ["The middle lobe vein is preserved during right upper lobectomy."],
+    imaging: ["Seen on CT as the lowest tributary of the right superior pulmonary vein."],
+  }, [
+    ["The middle lobe vein drains into which vein?", "Right superior pulmonary vein", "Right inferior pulmonary vein", "Azygos vein", "Inferior vena cava", "The middle lobe vein is the lowest tributary of the right superior pulmonary vein."],
+    ["Why must it be spared in a right upper lobectomy?", "It joins the same superior pulmonary vein", "It carries the bronchial arteries", "It drains the liver", "It is the azygos", "Ligating the whole superior vein would leave the middle lobe without venous drainage."],
+  ]),
+  v_sd_med: card("medial middle lobe vein (V5)", {
+    definition: ["Tributary of the middle lobe vein draining the medial segment."],
+    course: ["Joins V4 as the middle lobe vein, which enters the right superior pulmonary vein."],
+    relations: ["Lies against the right atrium."],
+    supply: ["Drains S5."],
+    clinical: ["Preserved with V4 during right upper lobectomy."],
+    imaging: ["Seen on CT next to the right heart border."],
+  }, [
+    ["Which segment does it drain?", "Medial segment of the middle lobe", "Lateral segment of the middle lobe", "Medial basal segment", "Apical segment", "V5 drains S5."],
+    ["What lies medial to its segment?", "Right atrium", "Descending aorta", "Esophagus", "Left atrium", "The medial middle lobe touches the right heart border."],
+  ]),
+  v_sd_sup: card("right superior segmental vein (V6)", {
+    definition: ["Tributary of the right inferior pulmonary vein draining the superior segment."],
+    course: ["Runs forward from the back of the lower lobe to the inferior pulmonary vein."],
+    relations: ["The highest tributary of the inferior pulmonary vein."],
+    supply: ["Drains S6."],
+    clinical: ["Marks the S6 boundary in a superior segmentectomy."],
+    imaging: ["Seen on CT entering the top of the inferior pulmonary vein."],
+  }, [
+    ["Into which vein does it drain?", "Right inferior pulmonary vein", "Right superior pulmonary vein", "Azygos vein", "Coronary sinus", "Lower lobe veins drain to the inferior pulmonary vein."],
+    ["Which segment does it drain?", "Superior segment of the lower lobe", "Posterior segment of the upper lobe", "Posterior basal segment", "Lateral middle lobe segment", "V6 drains S6."],
+  ]),
+  v_sd_bsup: card("right superior basal vein", {
+    definition: ["Tributary of the common basal vein of the right lower lobe."],
+    course: ["Joins the inferior basal vein to form the common basal vein."],
+    relations: ["Lies above the inferior basal vein."],
+    supply: ["Drains mainly the anterior and lateral basal segments."],
+    clinical: ["Basal veins are divided with the inferior pulmonary vein in a lower lobectomy."],
+    imaging: ["Seen on CT converging on the right inferior pulmonary vein."],
+  }, [
+    ["Which vein does it help form?", "Common basal vein", "Middle lobe vein", "Azygos vein", "Right superior pulmonary vein", "The superior and inferior basal veins form the common basal vein."],
+    ["The common basal vein drains into which vessel?", "Right inferior pulmonary vein", "Inferior vena cava", "Right superior pulmonary vein", "Hepatic vein", "With V6, the common basal vein forms the right inferior pulmonary vein."],
+  ]),
+  v_sd_binf: card("right inferior basal vein", {
+    definition: ["Tributary of the common basal vein of the right lower lobe."],
+    course: ["Runs upward to join the superior basal vein."],
+    relations: ["Lies close to the pulmonary ligament."],
+    supply: ["Drains mainly the posterior basal segment."],
+    clinical: ["Can be torn when the pulmonary ligament is divided."],
+    imaging: ["Seen on CT at the lowest part of the right hilum."],
+  }, [
+    ["Which segment does it mainly drain?", "Posterior basal segment", "Anterior segment of the upper lobe", "Medial middle lobe segment", "Superior segment", "The inferior basal vein drains mainly S10."],
+    ["Which fold of pleura lies just below the inferior pulmonary vein?", "Pulmonary ligament", "Horizontal fissure", "Cupula", "Costomediastinal recess", "The pulmonary ligament hangs down from the lower hilum."],
+  ]),
+  v_se_apicpost: card("left apicoposterior vein (V1+2)", {
+    definition: ["Tributary of the left superior pulmonary vein from the apicoposterior segment."],
+    course: ["Descends in front of the left pulmonary artery to the superior pulmonary vein."],
+    relations: ["The highest tributary of the left superior pulmonary vein."],
+    supply: ["Drains S1+2."],
+    clinical: ["Intersegmental branches guide an apicoposterior segmentectomy."],
+    imaging: ["Seen on CT in front of the left pulmonary artery."],
+  }, [
+    ["Into which vein does it drain?", "Left superior pulmonary vein", "Left inferior pulmonary vein", "Left brachiocephalic vein", "Hemiazygos vein", "All left upper lobe veins drain to the left superior pulmonary vein."],
+    ["Which segment does it drain?", "Apicoposterior segment", "Superior lingular segment", "Superior segment of the lower lobe", "Anterior basal segment", "V1+2 drains S1+2."],
+  ]),
+  v_se_ant: card("left anterior vein (V3)", {
+    definition: ["Tributary of the left superior pulmonary vein from the anterior segment."],
+    course: ["Runs medially to the left superior pulmonary vein."],
+    relations: ["Enters between the apicoposterior and lingular tributaries."],
+    supply: ["Drains S3."],
+    clinical: ["Preserved in a lingulectomy, which divides only the lingular vein."],
+    imaging: ["Seen on CT at the anterior left hilum."],
+  }, [
+    ["Which tributary enters below it?", "Lingular vein", "Apicoposterior vein", "Superior segmental vein V6", "Common basal vein", "The lingular vein is the lowest tributary of the left superior pulmonary vein."],
+    ["Into which vein does it drain?", "Left superior pulmonary vein", "Left inferior pulmonary vein", "Coronary sinus", "Left internal thoracic vein", "Upper lobe veins join the superior pulmonary vein."],
+  ]),
+  v_se_ling: card("lingular vein", {
+    definition: ["Lowest tributary of the left superior pulmonary vein, draining the lingula."],
+    course: ["Formed by superior and inferior lingular branches, it runs medially to the superior pulmonary vein."],
+    relations: ["Lies over the left ventricle and auricle."],
+    supply: ["Drains S4 and S5."],
+    clinical: ["Divided alone in a lingulectomy."],
+    imaging: ["Seen on CT at the lower border of the left superior pulmonary vein."],
+  }, [
+    ["Which right-sided vein does it mirror?", "Middle lobe vein", "Right apical vein", "Right superior basal vein", "Azygos vein", "The lingula corresponds to the right middle lobe."],
+    ["Into which vein does it drain?", "Left superior pulmonary vein", "Left inferior pulmonary vein", "Great cardiac vein", "Hemiazygos vein", "The lingular vein is the lowest tributary of the left superior pulmonary vein."],
+  ]),
+  v_se_sup: card("left superior segmental vein (V6)", {
+    definition: ["Tributary of the left inferior pulmonary vein draining the superior segment."],
+    course: ["Runs forward from the back of the lower lobe to the inferior pulmonary vein."],
+    relations: ["The highest tributary of the left inferior pulmonary vein."],
+    supply: ["Drains S6."],
+    clinical: ["Marks the S6 boundary in a superior segmentectomy."],
+    imaging: ["Seen on CT entering the top of the left inferior pulmonary vein."],
+  }, [
+    ["Into which vein does it drain?", "Left inferior pulmonary vein", "Left superior pulmonary vein", "Hemiazygos vein", "Coronary sinus", "Lower lobe veins drain to the inferior pulmonary vein."],
+    ["Which segment does it drain?", "Superior segment of the lower lobe", "Apicoposterior segment", "Inferior lingular segment", "Lateral basal segment", "V6 drains S6."],
+  ]),
+  v_se_bsup: card("left superior basal vein", {
+    definition: ["Tributary of the common basal vein of the left lower lobe."],
+    course: ["Joins the inferior basal vein to form the common basal vein."],
+    relations: ["Lies above the inferior basal vein."],
+    supply: ["Drains mainly the anteromedial and lateral basal segments."],
+    clinical: ["Divided with the inferior pulmonary vein in a left lower lobectomy."],
+    imaging: ["Seen on CT converging on the left inferior pulmonary vein."],
+  }, [
+    ["Which vein does it help form?", "Common basal vein", "Lingular vein", "Hemiazygos vein", "Left superior pulmonary vein", "The superior and inferior basal veins form the common basal vein."],
+    ["Which pulmonary vein receives the common basal vein?", "Left inferior pulmonary vein", "Left superior pulmonary vein", "Right inferior pulmonary vein", "Coronary sinus", "With V6, the common basal vein forms the left inferior pulmonary vein."],
+  ]),
+  v_se_binf: card("left inferior basal vein", {
+    definition: ["Tributary of the common basal vein of the left lower lobe."],
+    course: ["Runs upward to join the superior basal vein."],
+    relations: ["Lies close to the pulmonary ligament and descending aorta."],
+    supply: ["Drains mainly the posterior basal segment."],
+    clinical: ["Can be torn when the pulmonary ligament is divided."],
+    imaging: ["Seen on CT at the lowest part of the left hilum."],
+  }, [
+    ["Which segment does it mainly drain?", "Posterior basal segment", "Inferior lingular segment", "Anterior segment", "Superior segment", "The inferior basal vein drains mainly S10."],
+    ["Which large vessel lies medial to it?", "Descending aorta", "Superior vena cava", "Pulmonary trunk", "Ascending aorta", "The left lower hilum lies beside the descending aorta."],
+  ]),
+  pap_ve_pm: card("posteromedial papillary muscle", {
+    definition: ["Left ventricular papillary muscle on the inferior wall that tensions mitral chordae in systole."],
+    location: ["Arises from the inferior wall of the left ventricle near the septum."],
+    relations: ["Sends chordae to the posteromedial parts of both mitral leaflets."],
+    supply: ["Usually only the posterior descending artery."],
+    clinical: ["Rupture after inferior infarction causes acute severe mitral regurgitation."],
+    imaging: ["Echocardiography shows a flail mitral leaflet when it ruptures."],
+  }, [
+    ["Which artery usually supplies it alone?", "Posterior descending artery", "LAD", "Circumflex marginals and diagonals together", "Conus artery", "Single supply from the PDA makes it vulnerable to ischaemia."],
+    ["Which infarct most often ruptures it?", "Inferior infarction", "Anterior infarction", "Lateral infarction", "Right atrial infarction", "The PDA supplies the inferior wall, so inferior infarction threatens this muscle."],
+  ]),
+  vsc_d: card("right subclavian vein", {
+    definition: ["Continuation of the axillary vein from the first rib to the venous angle."],
+    course: ["Arches over the first rib in front of the anterior scalene and joins the internal jugular vein behind the sternoclavicular joint."],
+    relations: ["The anterior scalene separates it from the subclavian artery behind."],
+    branches: ["Receives the external jugular vein; the thoracic duct ends at the left venous angle."],
+    clinical: ["Central venous catheterisation risks pneumothorax because the pleural dome lies just below."],
+    imaging: ["Ultrasound guides cannulation and shows thrombosis."],
+  }, [
+    ["What separates it from the subclavian artery?", "Anterior scalene muscle", "Middle scalene muscle", "Clavicle", "First rib", "The vein lies in front of the anterior scalene, the artery behind it."],
+    ["With which vein does it form the brachiocephalic vein?", "Internal jugular vein", "External jugular vein", "Azygos vein", "Vertebral vein", "Subclavian and internal jugular veins meet behind the sternoclavicular joint."],
+  ]),
+  vsc_e: card("left subclavian vein", {
+    definition: ["Continuation of the axillary vein from the first rib to the venous angle."],
+    course: ["Arches over the first rib in front of the anterior scalene and joins the internal jugular vein behind the sternoclavicular joint."],
+    relations: ["The anterior scalene separates it from the subclavian artery behind."],
+    branches: ["Receives the external jugular vein; the thoracic duct ends at the left venous angle."],
+    clinical: ["Central venous catheterisation risks pneumothorax because the pleural dome lies just below."],
+    imaging: ["Ultrasound guides cannulation and shows thrombosis."],
+  }, [
+    ["What separates it from the subclavian artery?", "Anterior scalene muscle", "Middle scalene muscle", "Clavicle", "First rib", "The vein lies in front of the anterior scalene, the artery behind it."],
+    ["With which vein does it form the brachiocephalic vein?", "Internal jugular vein", "External jugular vein", "Azygos vein", "Vertebral vein", "Subclavian and internal jugular veins meet behind the sternoclavicular joint."],
+  ]),
+  ttc_d: card("right thyrocervical trunk", {
+    definition: ["Short branch of the first part of the subclavian artery."],
+    course: ["Rises at the medial border of the anterior scalene and divides almost at once."],
+    relations: ["The inferior thyroid artery loops medially behind the carotid sheath near the recurrent laryngeal nerve."],
+    branches: ["Inferior thyroid, suprascapular and transverse cervical arteries."],
+    clinical: ["Its branches form collaterals around the scapula when the subclavian or axillary artery is blocked."],
+    imaging: ["Seen on subclavian angiography just distal to the vertebral artery."],
+  }, [
+    ["From which part of the subclavian artery does it arise?", "First part, medial to the anterior scalene", "Second part, behind the scalene", "Third part, lateral to the scalene", "Axillary artery", "The vertebral, internal thoracic and thyrocervical trunk come from the first part."],
+    ["Which of these is one of its branches?", "Inferior thyroid artery", "Superior thyroid artery", "Vertebral artery", "Internal thoracic artery", "The superior thyroid comes from the external carotid."],
+  ]),
+  ttc_e: card("left thyrocervical trunk", {
+    definition: ["Short branch of the first part of the subclavian artery."],
+    course: ["Rises at the medial border of the anterior scalene and divides almost at once."],
+    relations: ["The inferior thyroid artery loops medially behind the carotid sheath near the recurrent laryngeal nerve."],
+    branches: ["Inferior thyroid, suprascapular and transverse cervical arteries."],
+    clinical: ["Its branches form collaterals around the scapula when the subclavian or axillary artery is blocked."],
+    imaging: ["Seen on subclavian angiography just distal to the vertebral artery."],
+  }, [
+    ["From which part of the subclavian artery does it arise?", "First part, medial to the anterior scalene", "Second part, behind the scalene", "Third part, lateral to the scalene", "Axillary artery", "The vertebral, internal thoracic and thyrocervical trunk come from the first part."],
+    ["Which of these is one of its branches?", "Inferior thyroid artery", "Superior thyroid artery", "Vertebral artery", "Internal thoracic artery", "The superior thyroid comes from the external carotid."],
+  ]),
+  tcc_d: card("right costocervical trunk", {
+    definition: ["Branch of the subclavian artery to the deep neck and the first two intercostal spaces."],
+    course: ["Arches backward over the cervical pleura to the neck of the first rib."],
+    relations: ["Lies above the pleural dome and near the cervicothoracic ganglion."],
+    branches: ["Deep cervical artery and superior intercostal artery."],
+    clinical: ["Rib notching in coarctation spares ribs 1 and 2 because their intercostals arise from this trunk."],
+    imaging: ["Seen on subclavian angiography heading posteriorly."],
+  }, [
+    ["Which two branches does it give?", "Deep cervical and superior intercostal arteries", "Inferior thyroid and suprascapular arteries", "Vertebral and internal thoracic arteries", "Musculophrenic and superior epigastric arteries", "The costocervical trunk divides at the neck of the first rib."],
+    ["Why are ribs 1–2 spared from notching in coarctation?", "Their intercostal arteries arise from this trunk", "They have no costal groove", "They are not ossified", "They lie below the coarctation", "The first two posterior intercostals come from the superior intercostal branch, not the aorta."],
+  ]),
+  tcc_e: card("left costocervical trunk", {
+    definition: ["Branch of the subclavian artery to the deep neck and the first two intercostal spaces."],
+    course: ["Arches backward over the cervical pleura to the neck of the first rib."],
+    relations: ["Lies above the pleural dome and near the cervicothoracic ganglion."],
+    branches: ["Deep cervical artery and superior intercostal artery."],
+    clinical: ["Rib notching in coarctation spares ribs 1 and 2 because their intercostals arise from this trunk."],
+    imaging: ["Seen on subclavian angiography heading posteriorly."],
+  }, [
+    ["Which two branches does it give?", "Deep cervical and superior intercostal arteries", "Inferior thyroid and suprascapular arteries", "Vertebral and internal thoracic arteries", "Musculophrenic and superior epigastric arteries", "The costocervical trunk divides at the neck of the first rib."],
+    ["Why are ribs 1–2 spared from notching in coarctation?", "Their intercostal arteries arise from this trunk", "They have no costal groove", "They are not ossified", "They lie below the coarctation", "The first two posterior intercostals come from the superior intercostal branch, not the aorta."],
+  ]),
+  pica_rest_d: card("right posterior intercostal arteries 3–11", {
+    definition: ["Paired segmental branches of the descending thoracic aorta to intercostal spaces 3–11."],
+    course: ["Leave the back of the aorta and run laterally in the costal groove of the rib above."],
+    relations: ["The right arteries are longer and cross the vertebral bodies; in the groove the order is vein, artery, nerve."],
+    branches: ["Dorsal branches to the back muscles and spinal cord, collateral branches, and lateral cutaneous branches."],
+    clinical: ["Rib notching in coarctation; a chest drain goes above the rib to avoid the neurovascular bundle."],
+    imaging: ["CT angiography shows them enlarged and tortuous in coarctation."],
+  }, [
+    ["What is the order of the bundle in the costal groove from above down?", "Vein, artery, nerve", "Nerve, artery, vein", "Artery, vein, nerve", "Vein, nerve, artery", "VAN: vein highest, nerve lowest."],
+    ["Why does a chest drain go just above a rib?", "To avoid the neurovascular bundle in the groove below the rib above", "Because the pleura is thinner there", "To enter the pericardium", "To avoid the internal thoracic artery", "The intercostal vessels and nerve run under the lower border of each rib."],
+  ]),
+  pica_rest_e: card("left posterior intercostal arteries 3–11", {
+    definition: ["Paired segmental branches of the descending thoracic aorta to intercostal spaces 3–11."],
+    course: ["Leave the back of the aorta and run laterally in the costal groove of the rib above."],
+    relations: ["The right arteries are longer and cross the vertebral bodies; in the groove the order is vein, artery, nerve."],
+    branches: ["Dorsal branches to the back muscles and spinal cord, collateral branches, and lateral cutaneous branches."],
+    clinical: ["Rib notching in coarctation; a chest drain goes above the rib to avoid the neurovascular bundle."],
+    imaging: ["CT angiography shows them enlarged and tortuous in coarctation."],
+  }, [
+    ["What is the order of the bundle in the costal groove from above down?", "Vein, artery, nerve", "Nerve, artery, vein", "Artery, vein, nerve", "Vein, nerve, artery", "VAN: vein highest, nerve lowest."],
+    ["Why does a chest drain go just above a rib?", "To avoid the neurovascular bundle in the groove below the rib above", "Because the pleura is thinner there", "To enter the pericardium", "To avoid the internal thoracic artery", "The intercostal vessels and nerve run under the lower border of each rib."],
+  ]),
+  mfa_d: card("right musculophrenic artery", {
+    definition: ["Lateral terminal branch of the internal thoracic artery."],
+    course: ["Runs from the 6th intercostal space along the costal margin behind the cartilages."],
+    relations: ["Lies on the diaphragm at the costal margin."],
+    branches: ["Anterior intercostal arteries to spaces 7–9 and diaphragmatic branches."],
+    clinical: ["Anastomoses with the lower posterior intercostals and can carry collateral flow."],
+    imaging: ["Seen on CT angiography along the costal margin."],
+  }, [
+    ["Where does it arise?", "6th intercostal space, from the internal thoracic artery", "From the descending aorta at T10", "From the inferior phrenic artery", "From the costocervical trunk", "The internal thoracic artery divides in the 6th intercostal space."],
+    ["Which anterior intercostal arteries does it give?", "Spaces 7–9", "Spaces 1–6", "Spaces 10–11", "None", "Spaces 1–6 are supplied directly by the internal thoracic artery."],
+  ]),
+  mfa_e: card("left musculophrenic artery", {
+    definition: ["Lateral terminal branch of the internal thoracic artery."],
+    course: ["Runs from the 6th intercostal space along the costal margin behind the cartilages."],
+    relations: ["Lies on the diaphragm at the costal margin."],
+    branches: ["Anterior intercostal arteries to spaces 7–9 and diaphragmatic branches."],
+    clinical: ["Anastomoses with the lower posterior intercostals and can carry collateral flow."],
+    imaging: ["Seen on CT angiography along the costal margin."],
+  }, [
+    ["Where does it arise?", "6th intercostal space, from the internal thoracic artery", "From the descending aorta at T10", "From the inferior phrenic artery", "From the costocervical trunk", "The internal thoracic artery divides in the 6th intercostal space."],
+    ["Which anterior intercostal arteries does it give?", "Spaces 7–9", "Spaces 1–6", "Spaces 10–11", "None", "Spaces 1–6 are supplied directly by the internal thoracic artery."],
+  ]),
+  aes_d: card("right superior epigastric artery", {
+    definition: ["Medial terminal branch of the internal thoracic artery."],
+    course: ["Descends through the sternocostal triangle into the rectus sheath."],
+    relations: ["Runs behind rectus abdominis to meet the inferior epigastric artery."],
+    branches: ["Muscular and cutaneous branches to the upper abdominal wall."],
+    clinical: ["Collateral route between subclavian and external iliac territories."],
+    imaging: ["CT angiography shows it enlarged in aortic obstruction."],
+  }, [
+    ["Which artery does it anastomose with?", "Inferior epigastric artery", "Superficial epigastric artery", "Musculophrenic artery", "Inferior phrenic artery", "The superior and inferior epigastric arteries meet in the rectus sheath."],
+    ["Through which gap does it leave the thorax?", "Sternocostal triangle of the diaphragm", "Aortic hiatus", "Esophageal hiatus", "Caval opening", "It passes between the sternal and costal parts of the diaphragm."],
+  ]),
+  aes_e: card("left superior epigastric artery", {
+    definition: ["Medial terminal branch of the internal thoracic artery."],
+    course: ["Descends through the sternocostal triangle into the rectus sheath."],
+    relations: ["Runs behind rectus abdominis to meet the inferior epigastric artery."],
+    branches: ["Muscular and cutaneous branches to the upper abdominal wall."],
+    clinical: ["Collateral route between subclavian and external iliac territories."],
+    imaging: ["CT angiography shows it enlarged in aortic obstruction."],
+  }, [
+    ["Which artery does it anastomose with?", "Inferior epigastric artery", "Superficial epigastric artery", "Musculophrenic artery", "Inferior phrenic artery", "The superior and inferior epigastric arteries meet in the rectus sheath."],
+    ["Through which gap does it leave the thorax?", "Sternocostal triangle of the diaphragm", "Aortic hiatus", "Esophageal hiatus", "Caval opening", "It passes between the sternal and costal parts of the diaphragm."],
+  ]),
+};
+
 export const CONTENT = {
   ...chambers,
   ...valves,
@@ -1140,6 +1738,7 @@ export const CONTENT = {
   ...airways,
   ...lungSegments,
   ...mediastinum,
+  ...zAnatomyExtras,
 };
 
 const clinicalFollowups = {
@@ -1917,7 +2516,61 @@ export const LESSON_CUES = {
   "costela_4": "A mid-chest rib at nipple level.",
   "costela_5": "The rib at the level of the heart’s apex.",
   "costelas_rest": "The remaining ribs around the sides and back of the chest.",
-  "vertebras_toracicas": "The twelve bones of the spine behind the chest, each with facets for ribs."
+  "vertebras_toracicas": "The twelve bones of the spine behind the chest, each with facets for ribs.",
+  "blob_sup_d": "Find it as the first branch leaving the right main bronchus, running laterally above the pulmonary artery.",
+  "bint_d": "Find the short continuation of the right main bronchus below the upper lobe branch, before it divides again.",
+  "blob_med_d": "Find it leaving the front of the bronchus intermedius, heading forward and laterally.",
+  "blob_inf_d": "Find the downward continuation of the bronchus intermedius, below the middle lobe branch.",
+  "blob_sup_e": "Find it leaving the front of the left main bronchus, about 5 cm from the carina, heading forward and up.",
+  "blob_inf_e": "Find the downward continuation of the left main bronchus behind the upper lobe branch.",
+  "lobo_sup_d": "Find the top of the right lung, above the horizontal fissure.",
+  "lobo_med_d": "Find the small wedge at the front of the right lung, between the two fissures.",
+  "lobo_inf_d": "Find the back and base of the right lung, below the oblique fissure.",
+  "lobo_sup_e": "Find the front and top of the left lung, in front of the oblique fissure.",
+  "lobo_inf_e": "Find the back and base of the left lung, below the oblique fissure.",
+  "a_sd_apical": "Find it climbing from the anterior trunk to the right apex, beside B1.",
+  "a_sd_post": "Find it running back into the posterior part of the right upper lobe beside B2.",
+  "a_sd_ant": "Find it running forward from the anterior trunk into the front of the right upper lobe.",
+  "lobmedd": "Find it leaving the front of the interlobar artery toward the front of the right lung.",
+  "a_sd_lat": "Find the outer branch of the middle lobe artery, beside B4.",
+  "a_sd_med": "Find the inner branch of the middle lobe artery, beside B5 and toward the heart.",
+  "lobinfd": "Find the downward continuation of the right interlobar artery, beside the lower lobe bronchus.",
+  "a_sd_sup": "Find it leaving the back of the interlobar artery toward the top of the right lower lobe.",
+  "a_sd_basal": "Find the terminal fan of the right lower lobe artery spreading over the base of the lung.",
+  "a_se_apical": "Find it rising from the top of the left pulmonary artery as it arches over the bronchus.",
+  "a_se_post": "Find it leaving the top of the left pulmonary artery arch toward the back of the upper lobe.",
+  "a_se_ant": "Find it leaving the front of the left pulmonary artery toward the front of the upper lobe.",
+  "a_se_lsup": "Find the upper branch running forward from the left interlobar artery into the lingula.",
+  "a_se_linf": "Find the lower branch running forward and down into the lingula tip.",
+  "a_se_sup": "Find it leaving the back of the left interlobar artery toward the top of the lower lobe.",
+  "a_se_basal": "Find the terminal fan of the left pulmonary artery spreading over the base of the left lung.",
+  "v_sd_apical": "Find it descending from the right apex along the medial edge of the upper lobe toward the superior pulmonary vein.",
+  "v_sd_post": "Find the large vein coming forward from the back of the right upper lobe to the superior pulmonary vein.",
+  "v_sd_ant": "Find it running from the front of the right upper lobe to the superior pulmonary vein.",
+  "v_sd_lat": "Find it leaving the outer middle lobe and joining the lowest tributary of the superior pulmonary vein.",
+  "v_sd_med": "Find it running from the inner middle lobe, next to the right atrium, to the superior pulmonary vein.",
+  "v_sd_sup": "Find it running forward from the top of the right lower lobe to the inferior pulmonary vein.",
+  "v_sd_bsup": "Find the upper vein from the base of the right lower lobe, joining the common basal vein.",
+  "v_sd_binf": "Find the lower vein from the base of the right lower lobe, joining the common basal vein.",
+  "v_se_apicpost": "Find it descending from the left apex to the top of the superior pulmonary vein.",
+  "v_se_ant": "Find it running from the front of the left upper lobe to the superior pulmonary vein.",
+  "v_se_ling": "Find it running from the lingula, over the left ventricle, to the bottom of the superior pulmonary vein.",
+  "v_se_sup": "Find it running forward from the top of the left lower lobe to the inferior pulmonary vein.",
+  "v_se_bsup": "Find the upper vein from the base of the left lower lobe, joining the common basal vein.",
+  "v_se_binf": "Find the lower vein from the base of the left lower lobe, joining the common basal vein.",
+  "pap_ve_pm": "Find it inside the left ventricle, rising from the inferior wall near the septum.",
+  "vsc_d": "Find it crossing the right first rib in front of the subclavian artery, toward the brachiocephalic vein.",
+  "vsc_e": "Find it crossing the left first rib in front of the subclavian artery, toward the brachiocephalic vein.",
+  "ttc_d": "Find the short trunk rising from the right subclavian artery just medial to the anterior scalene.",
+  "ttc_e": "Find the short trunk rising from the left subclavian artery just medial to the anterior scalene.",
+  "tcc_d": "Find the short trunk arching backward from the right subclavian artery over the dome of the pleura.",
+  "tcc_e": "Find the short trunk arching backward from the left subclavian artery over the dome of the pleura.",
+  "pica_rest_d": "Find the ladder of segmental arteries leaving the back of the descending aorta into the right intercostal spaces.",
+  "pica_rest_e": "Find the ladder of segmental arteries leaving the back of the descending aorta into the left intercostal spaces.",
+  "mfa_d": "Find it running down and laterally along the right costal margin from the end of the internal thoracic artery.",
+  "mfa_e": "Find it running down and laterally along the left costal margin from the end of the internal thoracic artery.",
+  "aes_d": "Find it continuing straight down from the right internal thoracic artery below the costal margin.",
+  "aes_e": "Find it continuing straight down from the left internal thoracic artery below the costal margin.",
 };
 export const ORIENTATION = [
   {
@@ -2288,7 +2941,61 @@ export const ROUND_CLUES = {
   "costela_4": "Mid-chest rib at nipple level.",
   "costela_5": "Rib at the level of the cardiac apex.",
   "costelas_rest": "Remaining ribs around the sides and back of the chest.",
-  "vertebras_toracicas": "Twelve vertebrae with costal facets behind the chest."
+  "vertebras_toracicas": "Twelve vertebrae with costal facets behind the chest.",
+  "blob_sup_d": "First lateral branch of the right main airway, above its artery.",
+  "bint_d": "Short right airway segment between two lobar take-offs.",
+  "blob_med_d": "Forward branch from the front of the short right intermediate airway.",
+  "blob_inf_d": "Downward continuation of the right intermediate airway after the forward branch.",
+  "blob_sup_e": "Forward branch of the long left main airway, splitting into upper and tongue divisions.",
+  "blob_inf_e": "Downward continuation of the long left main airway.",
+  "lobo_sup_d": "Top part of the three-lobed lung, above the horizontal fissure.",
+  "lobo_med_d": "Small wedge between the two fissures at the front of the right side.",
+  "lobo_inf_d": "Back and base of the three-lobed lung, behind the oblique fissure.",
+  "lobo_sup_e": "Front and top of the two-lobed lung, with a tongue below.",
+  "lobo_inf_e": "Back and base of the two-lobed lung, behind the oblique fissure.",
+  "a_sd_apical": "Climbs from the upper lobar trunk to the right apex, beside B1.",
+  "a_sd_post": "Runs back into the posterior part of the right upper lobe beside B2.",
+  "a_sd_ant": "Runs forward from the upper lobar trunk beside B3.",
+  "lobmedd": "Forward branch of the right interlobar artery to the small wedge-shaped lobe.",
+  "a_sd_lat": "Outer branch to the small wedge-shaped right lobe.",
+  "a_sd_med": "Inner branch to the small wedge-shaped right lobe, toward the heart.",
+  "lobinfd": "Downward continuation of the right interlobar artery behind the fissure.",
+  "a_sd_sup": "Backward branch of the right interlobar artery to the top of the lower lobe.",
+  "a_sd_basal": "Terminal fan of the right lower lobar artery toward the diaphragm.",
+  "a_se_apical": "Rises from the top of the left arterial arch toward the apex.",
+  "a_se_post": "Leaves the top of the left arterial arch toward the back of the upper lobe.",
+  "a_se_ant": "First forward branch of the left arterial arch, toward the front of the upper lobe.",
+  "a_se_lsup": "Upper branch to the tongue-like part of the left upper lobe.",
+  "a_se_linf": "Lower branch to the tongue-like part of the left upper lobe.",
+  "a_se_sup": "Backward branch of the left interlobar artery to the top of the lower lobe.",
+  "a_se_basal": "Terminal fan of the left lower lobar artery toward the diaphragm.",
+  "v_sd_apical": "Descends from the right apex toward the upper right pulmonary vein.",
+  "v_sd_post": "Large vein coming forward from the back of the right upper lobe.",
+  "v_sd_ant": "Drains the front of the right upper lobe toward the upper hilum.",
+  "v_sd_lat": "Drains the outer part of the small wedge-shaped right lobe.",
+  "v_sd_med": "Drains the inner part of the small wedge-shaped right lobe, beside the heart.",
+  "v_sd_sup": "Drains the top of the right lower lobe toward the lower hilum.",
+  "v_sd_bsup": "Upper of the two veins from the base of the right lung.",
+  "v_sd_binf": "Lower of the two veins from the base of the right lung.",
+  "v_se_apicpost": "Drains the top and back of the left upper lobe.",
+  "v_se_ant": "Drains the front of the left upper lobe.",
+  "v_se_ling": "Drains the tongue-like part of the left upper lobe.",
+  "v_se_sup": "Drains the top of the left lower lobe toward the lower hilum.",
+  "v_se_bsup": "Upper of the two veins from the base of the left lung.",
+  "v_se_binf": "Lower of the two veins from the base of the left lung.",
+  "pap_ve_pm": "Inside the left ventricle, rising from the inferior wall near the septum.",
+  "vsc_d": "Crosses the right first rib in front of the artery and the anterior scalene.",
+  "vsc_e": "Crosses the left first rib in front of the artery and the anterior scalene.",
+  "ttc_d": "Short right subclavian branch rising medial to the scalene, toward the thyroid and shoulder.",
+  "ttc_e": "Short left subclavian branch rising medial to the scalene, toward the thyroid and shoulder.",
+  "tcc_d": "Short right subclavian branch arching back over the pleural dome.",
+  "tcc_e": "Short left subclavian branch arching back over the pleural dome.",
+  "pica_rest_d": "Ladder of right segmental branches from the back of the descending aorta.",
+  "pica_rest_e": "Ladder of left segmental branches from the back of the descending aorta.",
+  "mfa_d": "Lateral terminal branch of the right internal thoracic artery along the costal margin.",
+  "mfa_e": "Lateral terminal branch of the left internal thoracic artery along the costal margin.",
+  "aes_d": "Medial terminal branch of the right internal thoracic artery, heading into the abdominal wall.",
+  "aes_e": "Medial terminal branch of the left internal thoracic artery, heading into the abdominal wall.",
 };
 
 // ── Rich lesson content (lessons v2) ───────────────────────────────────────
@@ -2682,6 +3389,169 @@ export const LESSON_DETAIL = {
   vertebras_toracicas: {
     text: "**Thoracic vertebrae** are twelve vertebrae with costal facets that form the posterior thoracic wall. T1–T10 bear demifacets for rib heads, while T11–T12 have single facets; they contribute to the thoracic kyphosis. Their intervertebral foramina transmit thoracic spinal nerves. On the model, find the column behind the ribs.",
   },
+  // Z-Anatomy additions
+  blob_sup_d: {
+    text: "**Right upper lobe bronchus** leaves the lateral wall of the right main bronchus only 1–2.5 cm below the carina. It is the only eparterial bronchus: it lies above the right pulmonary artery at the hilum. After about 1 cm it splits into B1, B2 and B3. On the model, find the short branch heading laterally from the top of the right main bronchus.",
+  },
+  bint_d: {
+    text: "**Bronchus intermedius** is the 3 cm stretch of the right bronchial tree between the origin of the upper lobe bronchus and the origin of the middle lobe bronchus. It has no left counterpart. The interlobar pulmonary artery crosses in front of and lateral to it. On the model, follow the right main bronchus down past the upper lobe branch.",
+  },
+  blob_med_d: {
+    text: "**Middle lobe bronchus** arises from the anterior wall of the bronchus intermedius, almost opposite the superior segment bronchus of the lower lobe. It runs forward and laterally for 1–2 cm and divides into lateral B4 and medial B5. Its narrow lumen and surrounding nodes make it prone to obstruction. On the model, look for the forward branch off the bronchus intermedius.",
+  },
+  blob_inf_d: {
+    text: "**Right lower lobe bronchus** continues the bronchus intermedius downward and backward. It first gives the superior segment bronchus B6 from its posterior wall, then a basal trunk that divides into B7, B8, B9 and B10. Its steep course makes it the usual destination of aspirated material in an upright patient. On the model, follow the airway below the middle lobe branch.",
+  },
+  blob_sup_e: {
+    text: "**Left upper lobe bronchus** arises from the anterolateral wall of the left main bronchus about 5 cm below the carina. It divides into an upper (culminal) division for B1+2 and B3, and a lingular division for B4 and B5. The left pulmonary artery hooks over it from front to back. On the model, find the forward branch at the end of the left main bronchus.",
+  },
+  blob_inf_e: {
+    text: "**Left lower lobe bronchus** continues the left main bronchus downward and backward. Like its right counterpart it gives the superior segment bronchus B6 from its posterior wall, then basal branches; the anteromedial B7+8 often share a trunk. The interlobar part of the left pulmonary artery lies lateral to it. On the model, follow the left main bronchus down past the upper lobe branch.",
+  },
+  lobo_sup_d: {
+    text: "**Right upper lobe** fills the top of the right lung. The horizontal fissure, along the 4th costal cartilage, separates it from the middle lobe; the oblique fissure separates it from the lower lobe behind. It contains the apical, posterior and anterior segments and reaches the root of the neck. On the model, find the cap of the right lung.",
+  },
+  lobo_med_d: {
+    text: "**Right middle lobe** is the smallest lobe, a wedge at the front of the right lung between the horizontal fissure above and the oblique fissure below. Its medial surface lies against the right atrium. It contains the lateral and medial segments and is auscultated anteriorly, between the 4th and 6th ribs. On the model, find it at the front of the right lung.",
+  },
+  lobo_inf_d: {
+    text: "**Right lower lobe** is the largest right lobe, lying behind and below the oblique fissure, which runs from about T3 behind to the 6th costal cartilage in front. Its base rests on the right dome of the diaphragm over the liver. It contains the superior segment and four basal segments. On the model, view the right lung from behind.",
+  },
+  lobo_sup_e: {
+    text: "**Left upper lobe** lies in front of and above the oblique fissure of the left lung. It has no horizontal fissure; its lower part, the lingula, plays the role of the right middle lobe. Its anterior border is indented by the cardiac notch, where the heart touches the chest wall. On the model, find the front of the left lung.",
+  },
+  lobo_inf_e: {
+    text: "**Left lower lobe** lies behind and below the oblique fissure of the left lung. Its base rests on the left dome of the diaphragm, and its medial surface lies against the descending aorta and the back of the heart. It contains a superior segment and basal segments, with the anteromedial B7+8 often fused. On the model, view the left lung from behind.",
+  },
+  a_sd_apical: {
+    text: "**Right apical segmental artery** (A1) supplies the apical segment of the right upper lobe. It usually arises from the anterior trunk, the first branch of the right pulmonary artery, together with A3. It runs upward beside B1 into the apex. On the model, find the vessel rising from the upper lobar artery toward the top of the lung.",
+  },
+  a_sd_post: {
+    text: "**Right posterior segmental artery** (A2) supplies the posterior segment of the right upper lobe. It may come from the anterior trunk, but often arises separately as an ascending branch of the interlobar artery. It runs with B2. On the model, find the branch running backward into the upper lobe.",
+  },
+  a_sd_ant: {
+    text: "**Right anterior segmental artery** (A3) supplies the anterior segment of the right upper lobe. It usually leaves the anterior trunk with A1 and runs forward and laterally beside B3, above the horizontal fissure. On the model, find the forward branch of the upper lobar artery.",
+  },
+  lobmedd: {
+    text: "**Middle lobe artery** arises from the anterior side of the interlobar part of the right pulmonary artery, roughly opposite the superior segment artery A6. It runs forward beside the middle lobe bronchus and divides into A4 and A5. On the model, find the forward branch of the right pulmonary artery between the upper and lower lobe vessels.",
+  },
+  a_sd_lat: {
+    text: "**Lateral segmental artery of the middle lobe** (A4) is the outer branch of the middle lobe artery. It runs with B4 toward the lateral chest wall. On the model, follow the middle lobe artery and take its lateral branch.",
+  },
+  a_sd_med: {
+    text: "**Medial segmental artery of the middle lobe** (A5) is the inner branch of the middle lobe artery. It runs with B5 toward the medial surface of the lobe, which lies against the right atrium. On the model, follow the middle lobe artery and take its medial branch.",
+  },
+  lobinfd: {
+    text: "**Right lower lobe artery** continues the interlobar artery downward after the middle lobe artery and A6 leave it. It runs lateral to the lower lobe bronchus and ends as the basal arteries A7–A10. On the model, follow the right pulmonary artery down and back into the lower lobe.",
+  },
+  a_sd_sup: {
+    text: "**Right superior segmental artery** (A6) supplies the superior segment of the right lower lobe. It arises from the posterior side of the interlobar artery, roughly opposite the middle lobe artery, and runs backward with B6. On the model, view from behind and find the branch to the top of the lower lobe.",
+  },
+  a_sd_basal: {
+    text: "**Right basal segmental arteries** (A7–A10) are the terminal branches of the right lower lobe artery. They fan out with the basal bronchi into the medial, anterior, lateral and posterior basal segments above the diaphragm. Their branching pattern varies, so the model shows them as one group. On the model, find the fan of vessels at the base of the right lung.",
+  },
+  a_se_apical: {
+    text: "**Left apical segmental artery** (A1) supplies the apical part of the left upper lobe. Unlike the right side, there is no single upper lobar trunk: the left pulmonary artery gives several separate branches as it arches over the left main bronchus, and A1 is one of the first. It often shares a stem with A2. On the model, find the vessel rising to the left apex.",
+  },
+  a_se_post: {
+    text: "**Left posterior segmental artery** (A2) supplies the posterior part of the left upper lobe. It arises from the upper side of the left pulmonary artery as the artery crosses over the left main bronchus to reach its posterior side, often together with A1. On the model, find the branch heading backward from the top of the arch.",
+  },
+  a_se_ant: {
+    text: "**Left anterior segmental artery** (A3) supplies the anterior segment of the left upper lobe. It is often the first branch of the left pulmonary artery, leaving its anterosuperior side before the arch. It runs forward with B3. On the model, find the first forward branch of the left pulmonary artery.",
+  },
+  a_se_lsup: {
+    text: "**Superior lingular artery** (A4) supplies the upper half of the lingula. It arises from the front of the interlobar part of the left pulmonary artery, in the oblique fissure, alone or with A5 as a common lingular artery. It runs forward with B4. On the model, find the upper forward branch into the lingula.",
+  },
+  a_se_linf: {
+    text: "**Inferior lingular artery** (A5) supplies the lower half of the lingula, which lies over the left ventricle. It arises from the interlobar part of the left pulmonary artery, alone or with A4 as a common lingular artery, and runs forward and down with B5. On the model, find the lower branch into the lingula.",
+  },
+  a_se_sup: {
+    text: "**Left superior segmental artery** (A6) supplies the superior segment of the left lower lobe. It leaves the posterior side of the interlobar part of the left pulmonary artery, at about the level of the lingular branches, and runs backward with B6. On the model, view from behind and find the branch to the top of the left lower lobe.",
+  },
+  a_se_basal: {
+    text: "**Left basal segmental arteries** (A7–A10) are the terminal branches of the left pulmonary artery in the lower lobe. They fan out with the basal bronchi above the left hemidiaphragm; A7 and A8 often share a stem, as their bronchi do. The model shows them as one group. On the model, find the fan of vessels at the base of the left lung.",
+  },
+  v_sd_apical: {
+    text: "**Right apical vein** (V1) drains the apical segment of the right upper lobe. It runs down along the medial, mediastinal side of the upper lobe and joins the right superior pulmonary vein at the hilum. Like all pulmonary veins it runs between segments rather than with the bronchus. On the model, find it descending from the apex to the upper hilum.",
+  },
+  v_sd_post: {
+    text: "**Right posterior vein** (V2) is the largest vein of the right upper lobe. It collects blood from the posterior segment and neighbouring parts of S1 and S3, runs forward across the hilum in front of the interlobar artery, and joins the right superior pulmonary vein. On the model, find the large vein entering the superior pulmonary vein from behind.",
+  },
+  v_sd_ant: {
+    text: "**Right anterior vein** (V3) drains the anterior segment of the right upper lobe. It runs medially across the front of the lobe and joins the right superior pulmonary vein, often with V1. On the model, find the vein running from the front of the upper lobe to the hilum.",
+  },
+  v_sd_lat: {
+    text: "**Lateral middle lobe vein** (V4) drains the lateral segment of the middle lobe. It joins the medial vein V5 to form the middle lobe vein, which enters the right superior pulmonary vein as its lowest tributary. On the model, find it running medially from the outer middle lobe.",
+  },
+  v_sd_med: {
+    text: "**Medial middle lobe vein** (V5) drains the medial segment of the middle lobe, which lies against the right atrium. It joins V4 to form the middle lobe vein, entering the right superior pulmonary vein. On the model, find the short vein beside the right heart border.",
+  },
+  v_sd_sup: {
+    text: "**Right superior segmental vein** (V6) drains the superior segment of the right lower lobe. It runs forward and down from the back of the lung and enters the right inferior pulmonary vein as its highest tributary. On the model, view from behind and find the vein leaving the top of the lower lobe.",
+  },
+  v_sd_bsup: {
+    text: "**Right superior basal vein** drains mainly the anterior and lateral basal segments of the right lower lobe. It joins the inferior basal vein to form the common basal vein, which, with V6, makes up the right inferior pulmonary vein. On the model, find the upper of the two veins leaving the base of the lung.",
+  },
+  v_sd_binf: {
+    text: "**Right inferior basal vein** drains mainly the posterior and medial basal parts of the right lower lobe. It runs up to join the superior basal vein as the common basal vein, close to the top of the pulmonary ligament. On the model, find the lower of the two veins leaving the base of the lung.",
+  },
+  v_se_apicpost: {
+    text: "**Left apicoposterior vein** (V1+2) drains the apicoposterior segment of the left upper lobe. It descends in front of the left pulmonary artery and joins the left superior pulmonary vein as its highest tributary. On the model, find the vein descending from the left apex.",
+  },
+  v_se_ant: {
+    text: "**Left anterior vein** (V3) drains the anterior segment of the left upper lobe. It joins the left superior pulmonary vein between the apicoposterior vein above and the lingular vein below. On the model, find it running medially from the front of the upper lobe.",
+  },
+  v_se_ling: {
+    text: "**Lingular vein** drains the lingula through its superior (V4) and inferior (V5) branches. It is the lowest tributary of the left superior pulmonary vein, mirroring the middle lobe vein on the right. On the model, find the vein leaving the lingula over the left ventricle.",
+  },
+  v_se_sup: {
+    text: "**Left superior segmental vein** (V6) drains the superior segment of the left lower lobe. It runs forward from the back of the lung and enters the left inferior pulmonary vein as its highest tributary. On the model, view from behind and find the vein leaving the top of the left lower lobe.",
+  },
+  v_se_bsup: {
+    text: "**Left superior basal vein** drains mainly the anteromedial and lateral basal segments of the left lower lobe. It joins the inferior basal vein to form the common basal vein, which with V6 makes up the left inferior pulmonary vein. On the model, find the upper of the two veins leaving the base of the left lung.",
+  },
+  v_se_binf: {
+    text: "**Left inferior basal vein** drains mainly the posterior basal segment of the left lower lobe. It runs up to join the superior basal vein as the common basal vein, near the top of the pulmonary ligament and close to the descending aorta. On the model, find the lower of the two veins leaving the base of the left lung.",
+  },
+  pap_ve_pm: {
+    text: "**Posteromedial papillary muscle** arises from the inferior (diaphragmatic) wall of the left ventricle near the septum and sends chordae to the posteromedial halves of both mitral leaflets. It usually depends on a single artery, the posterior descending artery, so it ruptures far more often than the anterolateral muscle after an inferior infarction. On the model, look inside the left ventricle along its inferior wall.",
+  },
+  vsc_d: {
+    text: "**Right subclavian vein** continues the axillary vein from the outer border of the first rib. It arches over the rib in front of the anterior scalene, which separates it from the subclavian artery, and joins the internal jugular vein behind the sternoclavicular joint to form the brachiocephalic vein. On the model, find it above the right first rib.",
+  },
+  vsc_e: {
+    text: "**Left subclavian vein** continues the axillary vein from the outer border of the first rib. It arches over the rib in front of the anterior scalene, which separates it from the subclavian artery, and joins the internal jugular vein behind the sternoclavicular joint to form the brachiocephalic vein. On the model, find it above the left first rib.",
+  },
+  ttc_d: {
+    text: "**Right thyrocervical trunk** is a short branch of the first part of the subclavian artery, rising just medial to the anterior scalene. It divides into the inferior thyroid, suprascapular and transverse cervical arteries. On the model, find the short vessel rising from the right subclavian artery.",
+  },
+  ttc_e: {
+    text: "**Left thyrocervical trunk** is a short branch of the first part of the subclavian artery, rising just medial to the anterior scalene. It divides into the inferior thyroid, suprascapular and transverse cervical arteries. On the model, find the short vessel rising from the left subclavian artery.",
+  },
+  tcc_d: {
+    text: "**Right costocervical trunk** arises from the back of the subclavian artery, behind the anterior scalene on the right and usually medial to it on the left. It arches backward over the dome of the pleura to the neck of the first rib, where it divides into the deep cervical artery and the superior intercostal artery. On the model, find the short vessel heading back toward the first rib.",
+  },
+  tcc_e: {
+    text: "**Left costocervical trunk** arises from the back of the subclavian artery, behind the anterior scalene on the right and usually medial to it on the left. It arches backward over the dome of the pleura to the neck of the first rib, where it divides into the deep cervical artery and the superior intercostal artery. On the model, find the short vessel heading back toward the first rib.",
+  },
+  pica_rest_d: {
+    text: "**Right posterior intercostal arteries 3–11** arise in pairs from the back of the descending thoracic aorta. The right ones are longer and cross the vertebral bodies behind the esophagus, thoracic duct and azygos vein. Each runs in the costal groove between the vein above and the nerve below and anastomoses in front with an anterior intercostal artery. On the model, view from behind and follow the ladder of vessels.",
+  },
+  pica_rest_e: {
+    text: "**Left posterior intercostal arteries 3–11** arise in pairs from the back of the descending thoracic aorta. The right ones are longer and cross the vertebral bodies behind the esophagus, thoracic duct and azygos vein. Each runs in the costal groove between the vein above and the nerve below and anastomoses in front with an anterior intercostal artery. On the model, view from behind and follow the ladder of vessels.",
+  },
+  mfa_d: {
+    text: "**Right musculophrenic artery** is the lateral terminal branch of the internal thoracic artery, formed in the 6th intercostal space. It runs down and laterally behind the costal cartilages along the costal margin, giving anterior intercostal arteries to spaces 7–9 and branches to the diaphragm. On the model, follow the internal thoracic artery to its end and take the lateral branch.",
+  },
+  mfa_e: {
+    text: "**Left musculophrenic artery** is the lateral terminal branch of the internal thoracic artery, formed in the 6th intercostal space. It runs down and laterally behind the costal cartilages along the costal margin, giving anterior intercostal arteries to spaces 7–9 and branches to the diaphragm. On the model, follow the internal thoracic artery to its end and take the lateral branch.",
+  },
+  aes_d: {
+    text: "**Right superior epigastric artery** is the medial terminal branch of the internal thoracic artery. It descends through the sternocostal triangle between the sternal and costal parts of the diaphragm and enters the rectus sheath behind rectus abdominis, where it meets the inferior epigastric artery. On the model, follow the internal thoracic artery straight down past the costal margin.",
+  },
+  aes_e: {
+    text: "**Left superior epigastric artery** is the medial terminal branch of the internal thoracic artery. It descends through the sternocostal triangle between the sternal and costal parts of the diaphragm and enters the rectus sheath behind rectus abdominis, where it meets the inferior epigastric artery. On the model, follow the internal thoracic artery straight down past the costal margin.",
+  },
 };
 
 export const REGION_OVERVIEW = {
@@ -2691,10 +3561,12 @@ export const REGION_OVERVIEW = {
   valvas: "The heart valves keep blood moving in one direction. Atrioventricular valves guard the inlet orifices and semilunar valves guard the outflow tracts; all are anchored to the fibrous skeleton of the heart and open or close with the pressure changes of the cardiac cycle.",
   coronarias: "The coronary arteries arise from the aortic sinuses and run in the grooves on the heart's surface. The right coronary artery follows the right atrioventricular groove, while the left main trunk divides into the anterior interventricular and circumflex branches.",
   veias: "Most cardiac veins drain into the coronary sinus, a wide channel in the posterior atrioventricular groove that opens into the right atrium. The great, middle and small cardiac veins follow the main arterial grooves and return blood from the myocardium.",
-  vias: "The trachea is the main airway between the larynx and the lungs. It descends in the midline, divides at the carina into two main bronchi, and each bronchus enters a hilum to supply one lung.",
+  vias: "The trachea is the main airway between the larynx and the lungs. It descends in the midline, divides at the carina into two main bronchi, and each bronchus enters a hilum to supply one lung. Inside the lung, each main bronchus divides into lobar bronchi, one for each of the five lobes.",
   segd: "The right lung has three lobes divided by oblique and horizontal fissures. Each lobe is made of bronchopulmonary segments with their own bronchus and artery, which is why this region is taught segment by segment.",
   sege: "The left lung has two lobes divided by the oblique fissure. Its upper lobe includes the lingula, a tongue-like part corresponding to the right middle lobe, and its lower lobe mirrors the right lower lobe segments.",
   mediastino: "The mediastinum is the central compartment between the two pleural cavities. It holds the heart and pericardium, the great vessels, the airway, the esophagus and the thoracic duct, and its contents are arranged from the sternum in front to the vertebral column behind.",
+  artpulm: "The pulmonary arteries branch with the airways: every lobar and segmental bronchus has an artery running beside it. On the right, the anterior trunk feeds most of the upper lobe and the interlobar artery continues to the middle and lower lobes; on the left, separate branches leave the artery one by one as it arches over the bronchus. This pattern is the basis of lobectomy and of reading pulmonary emboli on CT.",
+  veipulm: "Pulmonary veins do not follow the bronchi: they run between segments and converge on four pulmonary veins. The upper and middle lobes (or the lingula) drain to the superior pulmonary vein; each lower lobe drains to the inferior pulmonary vein through its superior segmental vein and the common basal vein. Surgeons follow these intersegmental veins as the planes of a segmentectomy.",
 };
 
 export const LEVEL_OVERVIEW = {
@@ -2709,7 +3581,7 @@ export const LEVEL_OVERVIEW = {
   "vasos-5": "The mediastinum holds the heart and the structures around it. Behind the heart run the azygos and hemiazygos veins and the esophagus; in front of the great vessels lies the thymus. This level introduces those neighbours, which explain many of the heart's posterior and anterior relations.",
   "valvas-1": "The atrioventricular valves guard the openings between atria and ventricles. The tricuspid valve on the right has three leaflets; the mitral valve on the left has two. They hang from fibrous rings, are tethered by chordae to papillary muscles, and close during ventricular systole.",
   "valvas-2": "The semilunar valves guard the two outflow tracts. The pulmonary valve sits anterior and superior, leading to the lungs; the aortic valve sits centrally, leading to the body. Each has three thin cusps with a nodule and lunules, and neither has chordae.",
-  "valvas-3": "Papillary muscles are ventricular muscles that anchor the atrioventricular valve leaflets through chordae tendineae. They contract during systole, tightening the chordae so the leaflets meet without prolapsing. This level contrasts the three right ventricular muscles with the large anterolateral muscle of the left ventricle.",
+  "valvas-3": "Papillary muscles are ventricular muscles that anchor the atrioventricular valve leaflets through chordae tendineae. They contract during systole, tightening the chordae so the leaflets meet without prolapsing. This level contrasts the three right ventricular muscles with the two left ventricular muscles: the anterolateral, with a dual blood supply, and the posteromedial, with a single one.",
   "coronarias-1": "The coronary arteries arise from the aortic sinuses and run in the grooves on the heart's surface. The right coronary artery follows the right atrioventricular groove; the left main trunk divides into the anterior interventricular and circumflex branches. Together they supply the entire myocardium.",
   "coronarias-2": "The anterior interventricular artery, or LAD, runs in the anterior groove toward the apex. Its diagonal branches cross the anterior left ventricular wall, while its septal perforators dive into the interventricular septum. This level follows those branches and their smaller ventricular twigs.",
   "coronarias-3": "The right coronary artery gives branches to the right ventricular walls and, at the crux, the posterior descending artery. The right marginal branch follows the acute margin; posterior ventricular branches cross the diaphragmatic surface. Their territory depends on coronary dominance.",
@@ -2723,6 +3595,14 @@ export const LEVEL_OVERVIEW = {
   "mediastino-2": "The diaphragm is the muscular floor of the thorax and the principal muscle of breathing. Its right and left domes are supplied by the phrenic nerves and by vessels that reach them from above and below. This level follows the inferior and superior phrenic vessels onto its surfaces.",
   "mediastino-3": "The thoracic wall is supplied by two arterial systems that meet around each rib. The internal thoracic artery runs behind the costal cartilages in front; posterior intercostal arteries run behind the pleura at the back. Their veins follow the same routes. This level traces those vessels.",
   "mediastino-4": "The thoracic skeleton is the bony frame that protects the heart and lungs. The sternum forms the front, the ribs and costal cartilages form the sides, and the thoracic vertebrae form the back. This level identifies the landmarks used to count ribs and locate the heart.",
+  "vias-2": "Each main bronchus divides into lobar bronchi, one per lobe. On the right, the upper lobe bronchus leaves early and above its artery; the short bronchus intermedius then splits into the middle and lower lobe bronchi. On the left, the long main bronchus divides under the arching pulmonary artery into the upper and lower lobe bronchi. This level maps the six lobar airways.",
+  "vias-3": "The right lung has three lobes, split by the oblique and horizontal fissures; the left lung has two, split by the oblique fissure alone, with the lingula standing in for a middle lobe. The upper lobes face forward and up, the lower lobes backward and down. This level places the five lobes and the borders they hide on a radiograph.",
+  "artpulm-1": "The right upper lobe gets its blood mainly from the anterior trunk, the first branch of the right pulmonary artery. That trunk gives the apical and anterior segmental arteries; the posterior segmental artery often arises separately, as an ascending branch of the interlobar artery. Each artery runs beside the bronchus of the same number.",
+  "artpulm-2": "After the anterior trunk, the right pulmonary artery continues as the interlobar artery in the depth of the oblique fissure. It gives the middle lobe artery forward and the superior segmental artery backward at almost the same level, then continues as the lower lobe artery and ends as the basal arteries.",
+  "artpulm-3": "The left pulmonary artery hooks over the left main bronchus. As it arches it gives several separate branches to the upper lobe; below the arch, in the oblique fissure, it gives the lingular arteries forward and the superior segmental artery backward, then ends as the basal arteries.",
+  "veipulm-1": "On the right, the superior pulmonary vein collects the apical, posterior and anterior veins of the upper lobe plus the middle lobe veins; the inferior pulmonary vein collects the superior segmental vein and the common basal vein. The veins run between segments, not beside the bronchi.",
+  "veipulm-2": "On the left, the superior pulmonary vein collects the apicoposterior, anterior and lingular veins; the inferior pulmonary vein collects the superior segmental vein and the basal veins. The lingular vein mirrors the right middle lobe vein.",
+  "mediastino-5": "The thoracic outlet and chest wall vessels link the subclavian vessels above with the aorta and the abdominal wall below. The subclavian vein crosses the first rib in front of the anterior scalene; the thyrocervical and costocervical trunks leave the subclavian artery; the aortic posterior intercostal arteries supply spaces 3–11; and the internal thoracic artery ends as the musculophrenic and superior epigastric arteries.",
 };
 
 export const LEVEL_CONTRAST = {
@@ -2816,6 +3696,38 @@ export const LEVEL_CONTRAST = {
   "mediastino-4": {
     a: "manubrio", b: "esterno", title: "Manubrium or body of the sternum",
     text: "Both are parts of the sternum. The manubrium is the upper plate between the clavicles, bearing the jugular notch; the body is the long plate below it, from the sternal angle to the xiphoid. The angle of Louis is the joint between them.",
+  },
+  "vias-2": {
+    a: "blob_sup_d", b: "blob_sup_e", title: "Right or left upper lobe bronchus",
+    text: "The right one leaves the main bronchus only 1–2.5 cm below the carina and runs above its artery (eparterial). The left one leaves the end of a 5 cm main bronchus, below the arching left pulmonary artery, and splits into an upper division and the lingular bronchus.",
+  },
+  "vias-3": {
+    a: "lobo_med_d", b: "lobo_inf_d", title: "Middle or lower lobe",
+    text: "The middle lobe is a small anterior wedge against the right atrium: its consolidation hides the right heart border and is heard at the front. The lower lobe is large and posterior, resting on the diaphragm: its consolidation hides the hemidiaphragm and is heard at the back.",
+  },
+  "artpulm-1": {
+    a: "a_sd_apical", b: "a_sd_post", title: "Apical or posterior segmental artery",
+    text: "Both supply the right upper lobe. The apical artery climbs from the anterior trunk to the apex with B1. The posterior artery runs backward with B2 and often arises separately from the interlobar artery, a branch easily missed in an upper lobectomy.",
+  },
+  "artpulm-2": {
+    a: "lobmedd", b: "a_sd_sup", title: "Middle lobe artery or superior segmental artery",
+    text: "Both leave the interlobar artery at almost the same level. The middle lobe artery goes forward to the small wedge between the fissures; the superior segmental artery goes backward to the top of the lower lobe.",
+  },
+  "artpulm-3": {
+    a: "a_se_ant", b: "a_se_lsup", title: "Anterior segmental or superior lingular artery",
+    text: "Both run forward in the left upper lobe. The anterior segmental artery is usually the first branch, leaving the artery before its arch. The superior lingular artery leaves later, from the interlobar part in the oblique fissure, and runs down into the tongue of the lobe.",
+  },
+  "veipulm-1": {
+    a: "v_sd_lat", b: "v_sd_sup", title: "Middle lobe vein or superior segmental vein",
+    text: "The lateral middle lobe vein drains forward lung into the superior pulmonary vein, which is why that vein must not be tied whole in an upper lobectomy. The superior segmental vein drains the top of the lower lobe into the inferior pulmonary vein.",
+  },
+  "veipulm-2": {
+    a: "v_se_ling", b: "v_se_sup", title: "Lingular vein or superior segmental vein",
+    text: "The lingular vein is the lowest tributary of the left superior pulmonary vein, draining the tongue of the upper lobe. The superior segmental vein is the highest tributary of the left inferior pulmonary vein, draining the top of the lower lobe.",
+  },
+  "mediastino-5": {
+    a: "ttc_d", b: "tcc_d", title: "Thyrocervical or costocervical trunk",
+    text: "Both are short branches of the subclavian artery. The thyrocervical trunk rises in front, medial to the anterior scalene, toward the thyroid and shoulder. The costocervical trunk arches backward over the pleural dome to the first rib and gives the first two intercostal arteries.",
   },
 };
 
@@ -2953,5 +3865,45 @@ export const LEVEL_CHECK = {
     { q: "Which sternal landmark marks the level of T4–T5?", options: ["The sternal angle", "The jugular notch", "The xiphisternal joint", "The clavicular notch"], answer: 0, why: "The sternal angle, or angle of Louis, marks the manubriosternal joint at T4–T5." },
     { q: "Which rib's costal cartilage marks the sternal angle?", options: ["Second", "First", "Fourth", "Seventh"], answer: 0, why: "The second costal cartilage articulates at the sternal angle, a key surface landmark." },
     { q: "Which ribs are floating ribs?", options: ["Ribs 11 and 12", "Ribs 8–10", "Ribs 1–7", "Ribs 3–5"], answer: 0, why: "Ribs 11 and 12 have no anterior attachment and end free in the muscles of the abdominal wall." },
+  ],
+  "vias-2": [
+    {"q": "Which lobar bronchus is eparterial?", "options": ["Right upper lobe bronchus", "Left upper lobe bronchus", "Middle lobe bronchus", "Right lower lobe bronchus"], "answer": 0, "why": "Only the right upper lobe bronchus lies above its pulmonary artery.", "exam": true},
+    {"q": "Which airway lies between the right upper lobe bronchus and the middle lobe bronchus?", "options": ["Bronchus intermedius", "Right main bronchus", "Lingular bronchus", "Basal trunk"], "answer": 0, "why": "The bronchus intermedius is the 3 cm right airway that carries air to the middle and lower lobes.", "exam": true},
+    {"q": "Which segmental bronchi come from the left upper lobe bronchus?", "options": ["B1+2, B3, B4 and B5", "B1, B2 and B3 only", "B6 to B10", "B4 and B5 only"], "answer": 0, "why": "Its upper division gives B1+2 and B3; its lingular division gives B4 and B5."},
+  ],
+  "vias-3": [
+    {"q": "Consolidation of which lobe hides the right heart border?", "options": ["Right middle lobe", "Right lower lobe", "Right upper lobe", "Left lower lobe"], "answer": 0, "why": "The middle lobe lies against the right atrium (silhouette sign).", "exam": true},
+    {"q": "Which fissure is found only in the right lung?", "options": ["Horizontal fissure", "Oblique fissure", "Cardiac notch", "Pulmonary ligament"], "answer": 0, "why": "The horizontal fissure separates the right upper and middle lobes along the 4th costal cartilage.", "exam": true},
+    {"q": "Where should you listen for the lower lobes?", "options": ["Over the back", "Over the front, 4th–6th ribs", "Above the clavicle", "Over the sternum"], "answer": 0, "why": "The lower lobes are mostly posterior, below the oblique fissure."},
+  ],
+  "artpulm-1": [
+    {"q": "Which artery usually gives the right apical and anterior segmental arteries?", "options": ["Anterior trunk", "Interlobar artery", "Middle lobe artery", "Right bronchial artery"], "answer": 0, "why": "The anterior trunk, the first branch of the right pulmonary artery, gives A1 and A3.", "exam": true},
+    {"q": "Which right upper lobe artery often arises from the interlobar artery?", "options": ["Posterior segmental artery (A2)", "Apical segmental artery (A1)", "Anterior segmental artery (A3)", "Middle lobe artery"], "answer": 0, "why": "An ascending A2 from the interlobar artery is a common variant and a surgical hazard.", "exam": true},
+    {"q": "Which structure does each segmental pulmonary artery follow?", "options": ["Its segmental bronchus", "The intersegmental vein", "The fissure", "The bronchial artery"], "answer": 0, "why": "Arteries run with the bronchi; veins run between segments."},
+  ],
+  "artpulm-2": [
+    {"q": "Which artery leaves the interlobar artery almost opposite the middle lobe artery?", "options": ["Superior segmental artery (A6)", "Apical artery (A1)", "Basal arteries", "Anterior trunk"], "answer": 0, "why": "A6 leaves the back of the interlobar artery at about the level the middle lobe artery leaves the front.", "exam": true},
+    {"q": "Which segments does the middle lobe artery supply?", "options": ["Lateral and medial", "Apical and anterior", "Superior and basal", "Superior and inferior lingular"], "answer": 0, "why": "It divides into A4 and A5."},
+    {"q": "Where do the basal arteries lead?", "options": ["Toward the diaphragmatic surface of the lower lobe", "To the apex", "To the middle lobe", "To the mediastinal pleura"], "answer": 0, "why": "A7–A10 fan out with the basal bronchi above the diaphragm."},
+  ],
+  "artpulm-3": [
+    {"q": "How do the left upper lobe arteries usually arise?", "options": ["As several separate branches from the arching left pulmonary artery", "From a single anterior trunk", "From the aortic arch", "From the bronchial arteries"], "answer": 0, "why": "There is no anterior trunk on the left; 2–7 separate branches arise.", "exam": true},
+    {"q": "From which part of the left pulmonary artery do the lingular arteries arise?", "options": ["Interlobar part in the oblique fissure", "The top of the arch", "The pulmonary trunk", "The basal trunk"], "answer": 0, "why": "Lingular arteries leave the front of the interlobar part."},
+    {"q": "What does the left pulmonary artery hook over at the hilum?", "options": ["Left main bronchus", "Left superior pulmonary vein", "Aortic arch", "Esophagus"], "answer": 0, "why": "The artery arches over the bronchus, so all left lobar bronchi are hyparterial."},
+  ],
+  "veipulm-1": [
+    {"q": "Into which vein does the right middle lobe vein drain?", "options": ["Right superior pulmonary vein", "Right inferior pulmonary vein", "Azygos vein", "Superior vena cava"], "answer": 0, "why": "It is the lowest tributary of the right superior pulmonary vein.", "exam": true},
+    {"q": "Which veins form the right inferior pulmonary vein?", "options": ["Superior segmental vein and common basal vein", "Apical and anterior veins", "Middle lobe veins", "Bronchial veins"], "answer": 0, "why": "V6 and the common basal vein join to form the inferior pulmonary vein.", "exam": true},
+    {"q": "Where do segmental veins run?", "options": ["Between segments", "Beside the segmental bronchi", "Inside the fissures only", "With the bronchial arteries"], "answer": 0, "why": "Pulmonary veins are intersegmental and mark the surgical planes."},
+  ],
+  "veipulm-2": [
+    {"q": "Which vein of the left lung mirrors the right middle lobe vein?", "options": ["Lingular vein", "Apicoposterior vein", "Superior segmental vein", "Superior basal vein"], "answer": 0, "why": "The lingula corresponds to the right middle lobe.", "exam": true},
+    {"q": "Into which vein does the left superior segmental vein drain?", "options": ["Left inferior pulmonary vein", "Left superior pulmonary vein", "Hemiazygos vein", "Coronary sinus"], "answer": 0, "why": "Lower lobe veins drain to the inferior pulmonary vein."},
+    {"q": "Which tributaries form the left superior pulmonary vein?", "options": ["Apicoposterior, anterior and lingular veins", "Superior and basal veins", "Bronchial veins", "Anterior intercostal veins"], "answer": 0, "why": "All left upper lobe veins, including the lingular, join the superior vein."},
+  ],
+  "mediastino-5": [
+    {"q": "What separates the subclavian vein from the subclavian artery?", "options": ["Anterior scalene muscle", "Middle scalene muscle", "Clavicle", "First rib"], "answer": 0, "why": "The vein lies in front of the anterior scalene; the artery lies behind it.", "exam": true},
+    {"q": "Why are ribs 1 and 2 spared from notching in coarctation?", "options": ["Their intercostal arteries come from the costocervical trunk", "They have no costal groove", "Their intercostal arteries come from the aorta", "They are cartilaginous"], "answer": 0, "why": "The first two posterior intercostals arise from the superior intercostal branch of the costocervical trunk.", "exam": true},
+    {"q": "Into which two branches does the internal thoracic artery divide?", "options": ["Musculophrenic and superior epigastric", "Thyrocervical and costocervical", "Deep cervical and superior intercostal", "Inferior thyroid and suprascapular"], "answer": 0, "why": "It divides in the 6th intercostal space.", "exam": true},
   ],
 };
