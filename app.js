@@ -1,14 +1,30 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=60';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=61';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=85';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=85';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=60';
+} from './study.js?v=85';
 
-// Boot the selected subject before any UI state is derived. The subject pack is
-// a dynamic import, so the other subject's data is never downloaded.
+// Boot the selected subject before any UI state is derived. Start fetching the
+// viewer module and model assets in parallel so the 3D scene doesn't wait on
+// the subject pack waterfall.
+const V = '?v=85';
 const subjectId = subjectFromUrl();
 const subject = SUBJECTS.find(entry => entry.id === subjectId) || SUBJECTS[0];
+let viewerModulePromise = import(`./viewer.js${V}`);
+const preloadManifestUrl = subject.id === 'msk' ? './msk/models.json' : './models.json';
+let modelPreload = {
+  manifest: fetch(`${preloadManifestUrl}${V}`, { cache: 'force-cache' }).then(r => {
+    if (!r.ok) throw new Error('Model index unavailable');
+    return r.json();
+  }).catch(() => null),
+  buffer: subject.id === 'cardio'
+    ? fetch(`./models.bin${V}`, { cache: 'force-cache' }).then(r => {
+      if (!r.ok) throw new Error('Model geometry unavailable');
+      return r.arrayBuffer();
+    }).catch(() => null)
+    : null,
+};
 const pack = (await subject.load()).default;
 initStudy(pack);
 document.documentElement.dataset.subject = pack.id;
@@ -72,6 +88,10 @@ const ATLAS_GROUPS = pack.atlasHomeDeck
   })).filter(group => group.ids.length);
 const ATLAS_REGION = Object.fromEntries(ATLAS_GROUPS.flatMap(group => group.ids.map(id => [id, group.title])));
 const ATLAS_SET = new Set(ATLAS_IDS);
+const ATLAS_SEARCH_TEXT = new Map(ATLAS_IDS.map(id => {
+  const item = ITEMS[id];
+  return [id, item ? fold(`${item.pt} ${ATLAS_REGION[id] || ''} ${item.deck.titulo}`) : ''];
+}));
 const atlas = { query: '', hidden: new Set([...(pack.atlasHidden || []), ...ATLAS_IDS.filter(id => pack.markers?.[id])]), focus: [], active: null, open: false, view: 'ant' };
 const sectionTitles = {
   definition: 'Definition', location: 'Location and projection', relations: 'Relations',
@@ -85,6 +105,7 @@ const views = {
   esq: 'Left lateral', sup: 'Superior', inf: 'Inferior',
 };
 const coarsePointer = matchMedia('(pointer: coarse)');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const answerCharacters = /[^\p{L}\p{M}\p{N} ()+'’‘–—-]/gu;
 let page = 'map';
 const firstNext = nextLevel();
@@ -106,7 +127,7 @@ function button(label, run, options = {}) {
   if (options.key) shortcuts.set(options.key, run);
   const start = options.icon ? icon(options.icon, 16) : '';
   const end = options.iconEnd ? icon(options.iconEnd, 16) : '';
-  return `<button type="button" class="button ${options.class || ''}" data-action="${index}" ${options.disabled ? 'disabled' : ''}>${start}${label}${end}${options.key === 'Enter' ? `<kbd>${icon('enter', 12)}</kbd>` : ''}</button>`;
+  return `<button type="button" class="button ${options.class || ''}" data-action="${index}" ${options.disabled ? 'disabled' : ''}>${start}${label}${end}${options.key === 'Enter' ? `<kbd aria-hidden="true">${icon('enter', 12)}</kbd>` : ''}</button>`;
 }
 
 // Ask before abandoning a recall run that is under way.
@@ -137,7 +158,7 @@ function scrollBelowHeader(element) {
   const headerHeight = document.querySelector('.app-header').offsetHeight;
   window.scrollBy({
     top: element.getBoundingClientRect().top - headerHeight - 8,
-    behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    behavior: reducedMotion.matches ? 'auto' : 'smooth',
   });
 }
 
@@ -785,7 +806,7 @@ function renderLevelRow(level, selected) {
   const label = level === selected ? 'selected' : '';
   return `<div class="level-item ${label}">
     <div class="level-heading"><h2>${escape(level.title)}${level.bonus ? ' <span class="bonus-tag">Bonus</span>' : ''}</h2>${starsHTML(level.id)}</div>
-    <p>${level.ids.length} structures · ${!open ? (level.bonus ? 'Pass the previous level to open the bonus' : 'Pass the previous level to unlock') : passedLevel(level) ? 'Passed' : savedLevel(level.id).clearedOn ? 'Replay the recall rounds to pass' : level.bonus ? 'Optional · not required to progress' : 'Ready'}</p>
+    <p>${level.ids.length} structures · ${!open ? (previousRequired(level) ? `Pass ${escape(previousRequired(level).title)} to ${level.bonus ? 'open this bonus' : 'unlock'}` : level.bonus ? 'Pass the previous level to open the bonus' : 'Pass the previous level to unlock') : passedLevel(level) ? 'Passed' : savedLevel(level.id).clearedOn ? 'Replay the recall rounds to pass' : level.bonus ? 'Optional · not required to progress' : 'Ready'}</p>
     ${open ? `<div class="actions">${button(passedLevel(level) ? 'Name it' : savedLevel(level.id).lesson ? 'Start rounds' : 'Memorize',
       () => openLevel(level), { class: level === selected ? 'primary' : '' })}
       ${savedLevel(level.id).lesson ? button('Memorize again', () => startMemorize(level), { icon: 'rotate-ccw' }) : ''}
@@ -841,6 +862,7 @@ function renderRecall() {
     </div>
     <p class="view-banner">${escape(views[view])} view</p><div class="answer-area">
       <label for="typer" id="word" class="word" aria-hidden="true"></label>
+      <p id="typing-warning" class="typing-warning" role="status" hidden></p>
       ${item.tag && round === 1 ? `<span class="segment-tag">${escape(item.tag)} · segment code</span>` : ''}
       <p id="clue" class="subline">${escape(clue)}</p>
       <p id="feedback" class="feedback" role="status"></p>
@@ -885,6 +907,11 @@ function typeText(text) {
   if (run.round !== 1) $('typer').value = run.typed;
   drawWord(wrong);
   if (wrong) wrongKeySound(); else keySound();
+  const warning = $('typing-warning');
+  if (warning) {
+    warning.textContent = wrong ? 'That key doesn’t match. Type the next letter shown.' : '';
+    warning.hidden = !wrong;
+  }
   if (wrong) {
     clearTimeout(wrongTimer);
     navigator.vibrate?.(50);
@@ -908,7 +935,7 @@ function drawWord(wrong = false) {
   }).join('') + typed.slice(name.length) : typed;
   const cursor = round === 1 ? position : hint ? Math.max(1, entered.length) : typed.length;
   word.className = `word ${shown.length > 17 ? 'long' : shown.length > 11 ? 'medium' : ''} ${feedback ? feedback.correct ? 'solved' : 'revealed' : ''}`;
-  if (wrong && !feedback && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (wrong && !feedback && !reducedMotion.matches) {
     word.getAnimations().forEach(animation => animation.cancel());
     word.animate([
       { transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' },
@@ -968,7 +995,7 @@ function showRecallFeedback() {
     line.className = 'feedback good verdict';
     line.innerHTML = `<strong class="verdict-tag">${icon('check', 15)}Correct</strong>${round === 1 ? '' : ` <span>${escape(item.pt)} · ${escape(lessonCue(item.id))}</span>`}`;
     if (round > 1) $('continue-actions').hidden = false;
-    advanceTimer = setTimeout(advanceRecall, round === 1 ? 520 : 1100);
+    if (round === 1) advanceTimer = setTimeout(advanceRecall, 520);
     return;
   }
   line.className = 'feedback bad';
@@ -1486,8 +1513,8 @@ function renderComplete() {
 }
 
 function weakestIds() {
-  const seen = IDS.filter(id => progress.cards[id]);
-  return (seen.length ? seen : LEVELS[0].ids).slice().sort((left, right) => {
+  // A mastered card is not a weak card.
+  return IDS.filter(id => progress.cards[id] && (progress.cards[id].box || 0) < 5).sort((left, right) => {
     const a = progress.cards[left];
     const b = progress.cards[right];
     return (a?.box || 0) - (b?.box || 0) || (b?.lapses || 0) - (a?.lapses || 0)
@@ -1496,6 +1523,7 @@ function weakestIds() {
 }
 
 function renderProgress() {
+  const today = day();
   const pathLevels = requiredLevels();
   const totalStars = pathLevels.reduce((total, level) => total + stars(level.id).filter(Boolean).length, 0);
   const seconds = Object.values(progress.activity).reduce((sum, duration) => sum + (Number(duration) || 0), 0);
@@ -1504,7 +1532,7 @@ function renderProgress() {
     <div class="page-head"><h1>Progress</h1></div>
     <div class="metrics"><div><b>${totalStars}</b><span>of ${pathLevels.length * 3} stars</span></div>
       <div><b>${streak(progress)}</b><span>day streak</span></div><div><b>${seconds < 60 ? `${seconds}s` : `${Math.floor(seconds / 60)}m`}</b><span>study time</span></div></div>
-    <div class="study-row"><div><h2>Weakest structures</h2><p>${weakest.map(id => escape(ITEMS[id].pt)).join(' · ')}</p></div>
+    <div class="study-row"><div><h2>Weakest structures</h2><p>${weakest.length ? weakest.map(id => escape(ITEMS[id].pt)).join(' · ') : Object.keys(progress.cards).length ? 'Every studied structure is mastered.' : 'Finish a recall round to start tracking.'}</p></div>
       ${weakest.length ? button('Drill weakest', () => beginRecall(weakest, 'weak'), { class: 'primary' }) : ''}</div>
     <div class="study-row"><div><h2>Mock oral exam</h2>
       ${progress.mocks.length ? list(progress.mocks.slice(-5).reverse().map(entry => `${entry.date} · ${mockScore(entry)}`))
@@ -1517,14 +1545,13 @@ function renderProgress() {
         const card = progress.cards[id];
         const value = (card?.box || 0) * 20;
         return `<div><span>${escape(ITEMS[id].pt)}</span><meter max="100" value="${value}" aria-label="${escape(ITEMS[id].pt)} mastery"></meter>
-          <span>${value}%</span><span class="muted">${card ? card.due <= day() ? 'Due' : shortDate(card.due) : 'Unstudied'}</span></div>`;
+          <span>${value}%</span><span class="muted">${card ? card.due <= today ? 'Due' : shortDate(card.due) : 'Unstudied'}</span></div>`;
       }).join('')}</div></details>`).join('')}
   </div>`;
 }
 
 function atlasSearchText(id) {
-  const item = ITEMS[id];
-  return fold(`${item.pt} ${ATLAS_REGION[id] || ''} ${item.deck.titulo}`);
+  return ATLAS_SEARCH_TEXT.get(id) || '';
 }
 
 function atlasActiveId() {
@@ -1567,20 +1594,24 @@ function atlasRenderDetail() {
 }
 
 function atlasRows(query) {
+  const focusSet = new Set(atlas.focus);
   return ATLAS_GROUPS.map(group => {
-    const shown = group.ids.filter(id => !atlas.hidden.has(id)).length;
+    let shown = 0;
+    let matched = 0;
     const rows = group.ids.map(id => {
       const item = ITEMS[id];
       if (!item) return '';
+      const hidden = atlas.hidden.has(id);
+      if (!hidden) shown++;
       const filtered = query ? !atlasSearchText(id).includes(query) : false;
-      const selected = atlas.focus.includes(id);
+      if (!filtered) matched++;
+      const selected = focusSet.has(id);
       return `<div class="atlas-item" data-atlas-item ${filtered ? 'hidden' : ''}>
-        <label class="atlas-visibility"><input type="checkbox" data-atlas-toggle="${id}" ${atlas.hidden.has(id) ? '' : 'checked'} aria-label="Show ${escape(item.pt)}"></label>
+        <label class="atlas-visibility"><input type="checkbox" data-atlas-toggle="${id}" ${hidden ? '' : 'checked'} aria-label="Show ${escape(item.pt)}"></label>
         <button type="button" class="atlas-name${selected ? ' chosen' : ''}" data-atlas-id="${id}" aria-pressed="${selected}">${escape(item.pt)}</button>
       </div>`;
     }).join('');
-    const filteredOut = query ? !group.ids.some(id => !atlasSearchText(id).includes(query)) : false;
-    return `<section class="atlas-group" ${filteredOut ? 'hidden' : ''}>
+    return `<section class="atlas-group" ${query && !matched ? 'hidden' : ''}>
       <label class="atlas-group-head">
         <input type="checkbox" data-atlas-region="${group.id}" ${shown === group.ids.length ? 'checked' : ''} aria-label="Show all structures in ${escape(group.title)}">
         <span>${escape(group.title)}</span><small>${shown}/${group.ids.length}</small>
@@ -1613,7 +1644,8 @@ function renderAtlas() {
     <aside class="atlas-panel" id="atlas-panel" aria-labelledby="atlas-panel-title"${atlasNarrow.matches ? ' inert' : ''}>
       <div class="atlas-panel-head"><h2 id="atlas-panel-title">Structures</h2><span id="atlas-visible-count">${visible.length} of ${ATLAS_IDS.length} shown</span>
         <button type="button" class="atlas-close" data-atlas-drawer="close" aria-label="Close structure list" title="Close structure list">${icon('x', 20)}</button></div>
-      <input id="atlas-search" type="search" value="${escape(atlas.query)}" placeholder="Search by name or region" aria-label="Search structures" autocomplete="off">
+      <div class="atlas-search-field"><input id="atlas-search" type="search" value="${escape(atlas.query)}" placeholder="Search by name or region" aria-label="Search structures" autocomplete="off">
+        <button type="button" class="atlas-search-clear" id="atlas-search-clear" data-atlas-search-clear aria-label="Clear search" title="Clear search"${atlas.query ? '' : ' hidden'}>${icon('x', 16)}</button></div>
       <div class="atlas-tools">
         <button type="button" class="button" data-atlas-action="show">${icon('eye', 16)}Show all</button>
         <button type="button" class="button" data-atlas-action="hide">${icon('eye-off', 16)}Hide all</button>
@@ -1626,18 +1658,50 @@ function renderAtlas() {
   </div>`;
 }
 
+let atlasDom = null;
+function getAtlasDom() {
+  const listEl = $('atlas-list');
+  if (!listEl) { atlasDom = null; return null; }
+  if (atlasDom && atlasDom.list === listEl) return atlasDom;
+  const groups = [];
+  const rows = [];
+  const groupById = new Map(ATLAS_GROUPS.map(g => [g.id, g]));
+  for (const section of listEl.querySelectorAll('.atlas-group')) {
+    const checkbox = section.querySelector('[data-atlas-region]');
+    const label = section.querySelector('.atlas-group-head small');
+    const groupData = groupById.get(checkbox?.dataset.atlasRegion);
+    const groupIndex = groups.length;
+    groups.push({ el: section, checkbox, label, ids: groupData?.ids || [] });
+    for (const row of section.querySelectorAll('[data-atlas-item]')) {
+      const box = row.querySelector('[data-atlas-toggle]');
+      const button = row.querySelector('.atlas-name[data-atlas-id]');
+      const id = box?.dataset.atlasToggle;
+      if (id) rows.push({ row, box, button, id, search: atlasSearchText(id), groupIndex });
+    }
+  }
+  atlasDom = { list: listEl, groups, rows, groupMatches: new Int32Array(groups.length) };
+  return atlasDom;
+}
+
 function syncAtlasChecks() {
-  document.querySelectorAll('[data-atlas-toggle]').forEach(box => {
-    box.checked = !atlas.hidden.has(box.dataset.atlasToggle);
-  });
+  const dom = getAtlasDom();
+  if (!dom) return;
+  for (let i = 0; i < dom.rows.length; i++) {
+    const entry = dom.rows[i];
+    entry.box.checked = !atlas.hidden.has(entry.id);
+  }
 }
 
 function syncAtlasSelection() {
-  document.querySelectorAll('.atlas-name[data-atlas-id]').forEach(node => {
-    const on = atlas.focus.includes(node.dataset.atlasId);
-    node.classList.toggle('chosen', on);
-    node.setAttribute('aria-pressed', String(on));
-  });
+  const dom = getAtlasDom();
+  if (!dom) return;
+  const focusSet = new Set(atlas.focus);
+  for (let i = 0; i < dom.rows.length; i++) {
+    const entry = dom.rows[i];
+    const on = focusSet.has(entry.id);
+    entry.button.classList.toggle('chosen', on);
+    entry.button.setAttribute('aria-pressed', String(on));
+  }
 }
 
 function syncAtlasGroups() {
@@ -1649,14 +1713,18 @@ function syncAtlasGroups() {
   if (count) count.textContent = `${shown} of ${total} shown`;
   const drawer = $('atlas-drawer-count');
   if (drawer) drawer.textContent = shown;
-  for (const group of ATLAS_GROUPS) {
-    const box = document.querySelector(`[data-atlas-region="${group.id}"]`);
-    if (!box) continue;
-    const visible = group.ids.filter(id => !atlas.hidden.has(id)).length;
-    box.checked = visible === group.ids.length;
-    box.indeterminate = visible > 0 && visible < group.ids.length;
-    const label = box.closest('.atlas-group-head')?.querySelector('small');
-    if (label) label.textContent = `${visible}/${group.ids.length}`;
+  const dom = getAtlasDom();
+  if (!dom) return;
+  for (let i = 0; i < dom.groups.length; i++) {
+    const group = dom.groups[i];
+    if (!group.checkbox) continue;
+    let visible = 0;
+    for (let j = 0; j < group.ids.length; j++) {
+      if (!atlas.hidden.has(group.ids[j])) visible++;
+    }
+    group.checkbox.checked = visible === group.ids.length;
+    group.checkbox.indeterminate = visible > 0 && visible < group.ids.length;
+    if (group.label) group.label.textContent = `${visible}/${group.ids.length}`;
   }
 }
 
@@ -1727,21 +1795,32 @@ function atlasSetAll(show) {
 function filterAtlas(value) {
   atlas.query = value;
   const query = fold(value.trim());
+  const dom = getAtlasDom();
   let matches = 0;
-  for (const row of document.querySelectorAll('#atlas-list [data-atlas-item]')) {
-    const id = row.querySelector('[data-atlas-toggle]')?.dataset.atlasToggle;
-    const show = !query || Boolean(id && atlasSearchText(id).includes(query));
-    row.hidden = !show;
-    if (show) matches++;
-  }
-  for (const group of document.querySelectorAll('#atlas-list .atlas-group')) {
-    group.hidden = ![...group.querySelectorAll('[data-atlas-item]')].some(row => !row.hidden);
+  if (dom) {
+    const { rows, groups, groupMatches } = dom;
+    groupMatches.fill(0);
+    for (let i = 0; i < rows.length; i++) {
+      const entry = rows[i];
+      const show = !query || entry.search.includes(query);
+      if (entry.row.hidden !== !show) entry.row.hidden = !show;
+      if (show) {
+        matches++;
+        groupMatches[entry.groupIndex]++;
+      }
+    }
+    for (let i = 0; i < groups.length; i++) {
+      const hideGroup = groupMatches[i] === 0;
+      if (groups[i].el.hidden !== hideGroup) groups[i].el.hidden = hideGroup;
+    }
   }
   const empty = $('atlas-empty');
   if (empty) {
     empty.hidden = matches > 0;
     empty.textContent = `No structures match “${value.trim()}”.`;
   }
+  const clear = $('atlas-search-clear');
+  if (clear) clear.hidden = !value.trim();
 }
 
 const atlasNarrow = matchMedia('(max-width: 770px)');
@@ -1785,6 +1864,13 @@ document.addEventListener('click', event => {
   if (drawer) {
     event.preventDefault();
     setAtlasDrawer(drawer.dataset.atlasDrawer === 'open');
+    return;
+  }
+  if (event.target.closest('[data-atlas-search-clear]')) {
+    event.preventDefault();
+    const search = $('atlas-search');
+    if (search) { search.value = ''; search.focus({ preventScroll: true }); }
+    filterAtlas('');
     return;
   }
   const action = event.target.closest('[data-atlas-action]');
@@ -2169,19 +2255,30 @@ function showViewFallback() {
   else updateModel();
 }
 
+let initialFit = true;
 async function loadViewer() {
   viewerStatus = 'loading';
+  initialFit = true;
   $('model-status').hidden = false;
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const { createViewer } = await import('./viewer.js?v=76');
-    viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore, { ...pack, ...pack.model });
+    const modPromise = viewerModulePromise || import(`./viewer.js${V}`);
+    viewerModulePromise = null;
+    const preload = modelPreload;
+    modelPreload = null;
+    const { createViewer } = await modPromise;
+    viewer = await createViewer($('view'), findPick, showViewFallback, handleExplore, { ...pack, ...pack.model, preload });
     viewer.onReady(() => {
       syncModelStatus();
       if (activity?.type === 'recall') render();
       else if (activity?.type === 'find') render();
       else if (activity?.type === 'lesson' && activity.stage === 'find') render();
+      else if (!activity && initialFit && modelLoaded()) {
+        // Region packs can finish after the first fit; recentre once.
+        initialFit = false;
+        viewer.resetView();
+      }
     });
     viewerStatus = 'ready';
     if ($('view-isolate').getAttribute('aria-pressed') === 'true') viewer.setIsolate(true);
@@ -2201,6 +2298,10 @@ async function loadViewer() {
     showViewFallback();
   }
 }
+
+$('view-retry')?.addEventListener('click', () => {
+  if (viewerStatus !== 'loading') void loadViewer();
+});
 
 render();
 void loadViewer();

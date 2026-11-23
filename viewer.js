@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ITEMS } from './study.js?v=60';
+import { ITEMS } from './study.js?v=85';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=62';
+const VERSION = '?v=85';
 const GHOST_ORDER = 1;
 const GHOST_DEFAULT = 40;
 
@@ -48,7 +48,7 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
   const spotUniforms = {
     uSpots: { value: Array.from({ length: MAX_SPOTS }, () => new THREE.Vector4()) },
     uSpotCount: { value: 0 },
-    uSpotColor: { value: new THREE.Color() },
+    uSpotColors: { value: Array.from({ length: MAX_SPOTS }, () => new THREE.Color()) },
   };
   function addSpots(material) {
     material.onBeforeCompile = shader => {
@@ -61,10 +61,11 @@ export async function createViewer(host, onPick, onUnavailable, onExplore, sourc
 varying vec3 vSpotWorld;
 uniform vec4 uSpots[${MAX_SPOTS}];
 uniform int uSpotCount;
-uniform vec3 uSpotColor;`)
+uniform vec3 uSpotColors[${MAX_SPOTS}];`)
         .replace('#include <opaque_fragment>', `#include <opaque_fragment>
 float spot = 0.0;
 float shade = 0.0;
+vec3 spotColor = vec3(0.0);
 for (int i = 0; i < ${MAX_SPOTS}; i++) {
   if (i >= uSpotCount) break;
   float r = uSpots[i].w;
@@ -74,10 +75,11 @@ for (int i = 0; i < ${MAX_SPOTS}; i++) {
   // A dark band just outside the rim separates the spot from pale bone.
   float edge = 1.0 - smoothstep(0.0, r * 0.18, abs(d - r * 1.12));
   float here = max(fill * 0.85, rim);
+  if (here > spot) spotColor = uSpotColors[i];
   spot = max(spot, here);
   shade = max(shade, edge * (1.0 - spot));
 }
-gl_FragColor.rgb = mix(gl_FragColor.rgb, uSpotColor, spot);
+gl_FragColor.rgb = mix(gl_FragColor.rgb, spotColor, spot);
 gl_FragColor.rgb *= 1.0 - 0.55 * shade;
 gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     };
@@ -89,7 +91,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
   let buffer;
   let IndexArray;
   if (regionMode) {
-    manifest = await fetchJSON(`${source.manifest}${VERSION}`);
+    manifest = (await source.preload?.manifest) || await fetchJSON(`${source.manifest}${VERSION}`);
     meta = { center: manifest.center, scale: manifest.scale, parts: {} };
     for (const [region, info] of Object.entries(manifest.regions)) {
       for (const id of Object.keys(info.parts)) meta.parts[id] = { region };
@@ -97,8 +99,12 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     for (const [id, points] of Object.entries(markerSource)) markerPoints.set(id, points);
   } else {
     [meta, buffer] = await Promise.all([
-      fetchJSON(`${source.manifest || './models.json'}${VERSION}`),
-      fetch(`${source.parts || './models.bin'}${VERSION}`).then(response => {
+      (source.preload?.manifest?.then(m => m || fetchJSON(`${source.manifest || './models.json'}${VERSION}`)))
+        || fetchJSON(`${source.manifest || './models.json'}${VERSION}`),
+      (source.preload?.buffer?.then(b => b || fetch(`${source.parts || './models.bin'}${VERSION}`, { cache: 'force-cache' }).then(response => {
+        if (!response.ok) throw new Error('Model geometry unavailable');
+        return response.arrayBuffer();
+      }))) || fetch(`${source.parts || './models.bin'}${VERSION}`, { cache: 'force-cache' }).then(response => {
         if (!response.ok) throw new Error('Model geometry unavailable');
         return response.arrayBuffer();
       }),
@@ -168,15 +174,44 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
   controls.zoomToCursor = true;
 
   const meshes = new Map();
-  let pickable = [];
+  let pickableMeshes = [];
+  let pickableMarkers = [];
 
   const loadingPacks = new Map();
+  const regionTouch = new Map();
+  let touchSeq = 0;
+  function evictUnusedRegions(activeRegions) {
+    if (!regionMode) return;
+    const MAX_CACHED_REGIONS = 2;
+    for (const region of activeRegions) regionTouch.set(region, ++touchSeq);
+    if (packs.size <= Math.max(MAX_CACHED_REGIONS, activeRegions.size)) return;
+    const evictable = [...packs.keys()]
+      .filter(region => !activeRegions.has(region))
+      .sort((a, b) => (regionTouch.get(a) || 0) - (regionTouch.get(b) || 0));
+    const toDrop = packs.size - Math.max(MAX_CACHED_REGIONS, activeRegions.size);
+    for (let i = 0; i < toDrop && i < evictable.length; i++) {
+      const region = evictable[i];
+      const info = manifest.regions[region];
+      if (info) {
+        for (const id of Object.keys(info.parts)) {
+          const mesh = meshes.get(id);
+          if (!mesh) continue;
+          scene.remove(mesh);
+          mesh.geometry.dispose();
+          mesh.material.dispose();
+          meshes.delete(id);
+        }
+      }
+      packs.delete(region);
+      regionTouch.delete(region);
+    }
+  }
   function loadPack(region) {
     if (packs.has(region)) return Promise.resolve(packs.get(region));
     if (loadingPacks.has(region)) return loadingPacks.get(region);
     const info = manifest.regions[region];
     const url = new URL(info.file, new URL(source.manifest, location.href)).href;
-    const request = fetch(`${url}${VERSION}`).then(response => {
+    const request = fetch(`${url}${VERSION}`, { cache: 'force-cache' }).then(response => {
       if (!response.ok) throw new Error('Model geometry unavailable');
       return response.arrayBuffer();
     }).then(bytes => {
@@ -230,18 +265,55 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     }
     if (!part) return;
     const packed = new Int16Array(partBuffer, part.p[0], part.p[1]);
-    const positions = Float32Array.from(packed, value => value / 32767);
+    const indices = new PartIndex(partBuffer, part.i[0], part.i[1]);
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setIndex(new THREE.BufferAttribute(new PartIndex(partBuffer, part.i[0], part.i[1]), 1));
-    geometry.computeVertexNormals();
-    geometry.computeBoundingBox();
+    geometry.setAttribute('position', new THREE.BufferAttribute(packed, 3, true));
+    geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+    const normals = new Float32Array(packed.length);
+    for (let i = 0, len = indices.length; i < len; i += 3) {
+      const a = indices[i] * 3;
+      const b = indices[i + 1] * 3;
+      const c = indices[i + 2] * 3;
+      const pBx = packed[b], pBy = packed[b + 1], pBz = packed[b + 2];
+      const cbX = packed[c] - pBx, cbY = packed[c + 1] - pBy, cbZ = packed[c + 2] - pBz;
+      const abX = packed[a] - pBx, abY = packed[a + 1] - pBy, abZ = packed[a + 2] - pBz;
+      const nx = cbY * abZ - cbZ * abY;
+      const ny = cbZ * abX - cbX * abZ;
+      const nz = cbX * abY - cbY * abX;
+      normals[a] += nx; normals[a + 1] += ny; normals[a + 2] += nz;
+      normals[b] += nx; normals[b + 1] += ny; normals[b + 2] += nz;
+      normals[c] += nx; normals[c + 1] += ny; normals[c + 2] += nz;
+    }
+    let minX = Infinity, minY = Infinity, minZ = Infinity;
+    let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
+    for (let i = 0, len = packed.length; i < len; i += 3) {
+      const px = packed[i], py = packed[i + 1], pz = packed[i + 2];
+      if (px < minX) minX = px; if (px > maxX) maxX = px;
+      if (py < minY) minY = py; if (py > maxY) maxY = py;
+      if (pz < minZ) minZ = pz; if (pz > maxZ) maxZ = pz;
+      const nx = normals[i], ny = normals[i + 1], nz = normals[i + 2];
+      const invLen = Math.hypot(nx, ny, nz);
+      if (invLen > 0) {
+        const s = 1 / invLen;
+        normals[i] = nx * s;
+        normals[i + 1] = ny * s;
+        normals[i + 2] = nz * s;
+      }
+    }
+    geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
+    const norm = v => Math.max(v / 32767, -1);
+    geometry.boundingBox = new THREE.Box3(
+      new THREE.Vector3(norm(minX), norm(minY), norm(minZ)),
+      new THREE.Vector3(norm(maxX), norm(maxY), norm(maxZ)),
+    );
     const material = new THREE.MeshStandardMaterial({
       color: baseColor(id), roughness: .52, side: THREE.DoubleSide,
       transparent: !regionMode, forceSinglePass: true,
     });
     if (regionMode) addSpots(material);
     const mesh = new THREE.Mesh(geometry, material);
+    mesh.matrixAutoUpdate = false;
+    mesh.updateMatrix();
     mesh.userData.id = id;
     mesh.visible = false;
     meshes.set(id, mesh);
@@ -350,13 +422,14 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     tag.className = 'marker-tag';
     tag.hidden = true;
     annotationLayer.append(line, tag);
-    pin = { id, line, tag, text: '' };
+    pin = { id, line, tag, text: '', width: 0, height: 0, lastKey: '' };
     labelPins.set(id, pin);
     return pin;
   }
   function hidePin(pin) {
-    pin.line.hidden = true;
-    pin.tag.hidden = true;
+    if (!pin.line.hidden) pin.line.hidden = true;
+    if (!pin.tag.hidden) pin.tag.hidden = true;
+    pin.lastKey = '';
   }
   const labelPoint = new THREE.Vector3();
   function placeLabel(pin, marker, width, height) {
@@ -371,10 +444,15 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     if (pin.text !== name) {
       pin.tag.textContent = name;
       pin.text = name;
+      pin.width = 0;
     }
-    pin.tag.hidden = false;
-    const tagWidth = pin.tag.offsetWidth;
-    const tagHeight = pin.tag.offsetHeight;
+    if (pin.tag.hidden) pin.tag.hidden = false;
+    if (!pin.width) {
+      pin.width = pin.tag.offsetWidth;
+      pin.height = pin.tag.offsetHeight;
+    }
+    const tagWidth = pin.width;
+    const tagHeight = pin.height;
     // Short views (phone atlas, lesson stages) need the label closer so it can
     // sit between the focused structure's markers instead of across them.
     const compact = height < 260;
@@ -393,6 +471,9 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
       tagHeight * .5 + 10,
       Math.max(tagHeight * .5 + 10, height - tagHeight * .5 - 10),
     );
+    const key = `${Math.round(x * 2)},${Math.round(y * 2)},${Math.round(tagX * 2)},${Math.round(tagY * 2)}`;
+    if (pin.lastKey === key) return;
+    pin.lastKey = key;
     pin.tag.style.left = `${tagX}px`;
     pin.tag.style.top = `${tagY}px`;
     const dx = tagX - x;
@@ -401,8 +482,9 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     const angle = Math.atan2(dy, dx);
     // Start at the rim of the 10 px marker instead of its centre.
     const gap = 9;
-    pin.line.hidden = length - gap < 8;
-    if (pin.line.hidden) return;
+    const hideLine = length - gap < 8;
+    if (pin.line.hidden !== hideLine) pin.line.hidden = hideLine;
+    if (hideLine) return;
     pin.line.style.left = `${x + Math.cos(angle) * gap}px`;
     pin.line.style.top = `${y + Math.sin(angle) * gap}px`;
     pin.line.style.width = `${length - gap}px`;
@@ -411,8 +493,8 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
   let labeledIds = [];
   let hasFocusedMarker = false;
   function updateLabels() {
-    const width = host.clientWidth;
-    const height = host.clientHeight;
+    const width = oldWidth;
+    const height = oldHeight;
     for (const id of labeledIds) {
       const list = markerMeshes.get(id);
       const pin = labelPin(id);
@@ -509,7 +591,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
 
   function draw(now) {
     scheduled = false;
-    if (unavailable || !host.clientWidth) return;
+    if (unavailable || !oldWidth || !oldHeight) return;
     if (animation) {
       const fraction = Math.min(1, (now - animation.start) / 350);
       const ease = 1 - (1 - fraction) ** 3;
@@ -684,6 +766,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
       paintLabel(label.canvas, label.text);
       if (child.material?.map) child.material.map.needsUpdate = true;
     }
+    for (const pin of labelPins.values()) { pin.width = 0; pin.lastKey = ''; }
     applyStyles();
     schedule();
   }
@@ -699,11 +782,20 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     const visible = isolate
       ? new Set([...highlight, ...(anchorFocus ? anchors : [])])
       : new Set([...primary, ...context, ...highlight, ...(anchorFocus ? anchors : [])]);
+    if (regionMode && visible.size) {
+      const activeRegions = new Set();
+      for (const id of visible) {
+        const region = meta.parts[id]?.region;
+        if (region) activeRegions.add(region);
+      }
+      if (activeRegions.size) evictUnusedRegions(activeRegions);
+    }
     const pickOnly = current.pickIds ? new Set(current.pickIds) : null;
     for (const [id, mesh] of meshes) {
       if (!visible.has(id)) mesh.visible = false;
     }
-    pickable = [];
+    pickableMeshes = [];
+    pickableMarkers = [];
     for (const id of visible) {
       const mesh = meshFor(id);
       if (!mesh) continue;
@@ -778,17 +870,17 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
         mesh.renderOrder = active ? 2 : material.depthWrite ? 0 : 1;
       }
       mesh.visible = material.opacity > 0;
-      if (mesh.visible && (!pickOnly || pickOnly.has(id))) pickable.push(mesh);
+      if (mesh.visible && (!pickOnly || pickOnly.has(id))) pickableMeshes.push(mesh);
     }
     let spotCount = 0;
-    spotUniforms.uSpotColor.value.set(tone.axis);
-    {
-      // Pale accents vanish on white bone: push the spot to a saturated,
-      // mid-light version of the accent so it reads on any bone shade.
-      const hsl = {};
-      spotUniforms.uSpotColor.value.getHSL(hsl);
-      spotUniforms.uSpotColor.value.setHSL(hsl.h, Math.max(hsl.s, .85), .48);
-    }
+    // Each spot takes its landmark's own colour. Pale colours vanish on white
+    // bone, so push it to a saturated, mid-light version that reads on bone.
+    const spotHsl = {};
+    const setSpotColor = (index, id) => {
+      const color = spotUniforms.uSpotColors.value[index].set(current.palette?.[id] || baseColor(id));
+      color.getHSL(spotHsl);
+      color.setHSL(spotHsl.h, Math.max(spotHsl.s, .85), .48);
+    };
     const shownMarkers = new Set();
     hasFocusedMarker = false;
     for (const id of current.markerIds || []) {
@@ -801,7 +893,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
       const list = markerMeshes.get(id) || createMarkers(id);
       for (const marker of list) {
         marker.visible = true;
-        marker.userData.fill.color.set(active ? tone.axis : (current.palette?.[id] || baseColor(id)));
+        marker.userData.fill.color.set(active && !regionMode ? tone.axis : (current.palette?.[id] || baseColor(id)));
         marker.userData.fill.opacity = opacity;
         marker.material.color.set(tone.labelBg);
         marker.material.opacity = opacity;
@@ -810,9 +902,10 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
         if (regionMode && active && spotCount < MAX_SPOTS) {
           marker.userData.halo.visible = false;
           const radius = (SPOT_MM[id] ?? 4) / (meta.scale || 848.8);
+          setSpotColor(spotCount, id);
           spotUniforms.uSpots.value[spotCount++].set(marker.position.x, marker.position.y, marker.position.z, radius);
         }
-        if (marker.visible && (!pickOnly || pickOnly.has(id))) pickable.push(marker);
+        if (marker.visible && (!pickOnly || pickOnly.has(id))) pickableMarkers.push(marker);
       }
     }
     spotUniforms.uSpotCount.value = spotCount;
@@ -858,6 +951,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     if (!width || !height || (width === oldWidth && height === oldHeight)) return;
     oldWidth = width;
     oldHeight = height;
+    for (const pin of labelPins.values()) { pin.width = 0; pin.lastKey = ''; }
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);
@@ -902,28 +996,62 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
 
   const ray = new THREE.Raycaster();
   const projectedMarker = new THREE.Vector3();
+  const boxHitPoint = new THREE.Vector3();
+  const rayCandidates = [];
+  const singleHits = [];
   function pickId(x, y) {
-    scene.updateMatrixWorld(true);
+    camera.updateMatrixWorld();
     ray.setFromCamera({ x, y }, camera);
-    const meshesHere = pickable.filter(entry => !entry.userData.marker);
-    const meshHits = ray.intersectObjects(meshesHere, false);
-    // The translucent ventricular wall surrounds the two ventricle meshes.
-    const meshHit = meshHits.find(entry => entry.object.userData.id !== 'paredev') || meshHits[0];
     // Markers are small, depth-independent points, so a direct hit wins over
-    // the bone behind it; otherwise a surface marker could never be clicked.
-    const markerHits = ray.intersectObjects(pickable.filter(entry => entry.userData.marker), false);
-    let nearestMarker;
-    let nearestDistance = Infinity;
-    for (const { object } of markerHits) {
-      const center = projectedMarker.copy(object.position).project(camera);
-      const distance = ((center.x - x) * camera.aspect) ** 2 + (center.y - y) ** 2;
-      if (distance < nearestDistance) {
-        nearestMarker = object;
-        nearestDistance = distance;
+    // the bone behind it; check them first to skip mesh raycasts on hit.
+    if (pickableMarkers.length) {
+      for (const marker of pickableMarkers) marker.updateMatrixWorld();
+      const markerHits = ray.intersectObjects(pickableMarkers, false);
+      let nearestMarker;
+      let nearestDistance = Infinity;
+      for (const { object } of markerHits) {
+        const center = projectedMarker.copy(object.position).project(camera);
+        const distance = ((center.x - x) * camera.aspect) ** 2 + (center.y - y) ** 2;
+        if (distance < nearestDistance) {
+          nearestMarker = object;
+          nearestDistance = distance;
+        }
+      }
+      if (nearestMarker) return nearestMarker.userData.id;
+    }
+    // Front-to-back AABB ordering lets us stop raycasting occluded meshes
+    // once a confirmed triangle hit is closer than the next bounding box.
+    const origin = ray.ray.origin;
+    rayCandidates.length = 0;
+    for (let i = 0; i < pickableMeshes.length; i++) {
+      const mesh = pickableMeshes[i];
+      const box = mesh.geometry.boundingBox;
+      if (!box) continue;
+      if (box.containsPoint(origin)) {
+        rayCandidates.push({ mesh, distSq: 0 });
+      } else if (ray.ray.intersectBox(box, boxHitPoint)) {
+        rayCandidates.push({ mesh, distSq: origin.distanceToSquared(boxHitPoint) });
       }
     }
-    if (nearestMarker) return nearestMarker.userData.id;
-    return meshHit?.object.userData.id;
+    if (!rayCandidates.length) return undefined;
+    if (rayCandidates.length > 1) rayCandidates.sort((a, b) => a.distSq - b.distSq);
+    let bestHit = null;
+    let bestParedev = null;
+    for (let i = 0; i < rayCandidates.length; i++) {
+      const candidate = rayCandidates[i];
+      if (bestHit && bestHit.distance * bestHit.distance < candidate.distSq) break;
+      singleHits.length = 0;
+      ray.intersectObject(candidate.mesh, false, singleHits);
+      if (!singleHits.length) continue;
+      const hit = singleHits[0];
+      // The translucent ventricular wall surrounds the two ventricle meshes.
+      if (candidate.mesh.userData.id === 'paredev') {
+        if (!bestParedev || hit.distance < bestParedev.distance) bestParedev = hit;
+      } else if (!bestHit || hit.distance < bestHit.distance) {
+        bestHit = hit;
+      }
+    }
+    return (bestHit || bestParedev)?.object.userData.id;
   }
   function pick(x, y) {
     if (!current.pick) return;
