@@ -783,6 +783,7 @@ function renderMap() {
         next ? button(nextLabel, () => next.id === 'orientation' ? startOrientation() : openLevel(next), { class: 'primary', iconEnd: 'arrow-right' }) : button('Open Daily', () => setPage('daily'), { class: 'primary' }))}
       ${TERRITORIES.length ? mode('crosshair', 'Coronary territories', 'Match each wall to its artery.', button('Practice', startTerritories)) : ''}
       ${mode('calendar', 'Structure of the day', 'One structure from memory.', button('Recall', () => startDailyStructure()))}
+      ${mode('rotate-cw', 'All structures', `${IDS.length} structures · one continuous recall, including unstudied material.`, button('Recall all', () => startFullRecall()))}
     </div>
     <h2 class="section-title">Regions</h2>
     <div class="path" aria-label="Curriculum regions">${map.map((entry, index) => {
@@ -793,6 +794,8 @@ function renderMap() {
         () => chooseRegion(entry.id), { class: `path-stop ${entry.id === selectedRegion ? 'chosen' : ''}` });
     }).join('')}</div>
     <h2 class="section-title level-list-title" id="level-list-title" tabindex="-1">${escape(region?.title || 'Orientation')} · levels</h2>
+    ${region ? `<div class="study-row"><div><h2>Recall all of ${escape(region.title)}</h2><p>${regionRecallIds(region).length} structures · one continuous recall, including unstudied material.</p></div>
+      ${button('Recall region', () => startFullRecall(region))}</div>` : ''}
     <div class="level-list">
       ${!region ? `<div class="level-item"><div class="level-heading"><h2>Orientation tour</h2></div><p>Learn the heart’s surfaces, borders and axis on the 3D model.</p>
         <div class="actions">${button(savedLevel('orientation').passed ? 'Redo orientation' : 'Start orientation', startOrientation, { class: 'primary' })}</div></div>`
@@ -824,6 +827,18 @@ function beginRecall(ids, kind, level, challengeDate) {
   launch('recall', { level, challengeDate, run: new Recall(ids, kind) });
 }
 
+function regionRecallIds(region) {
+  const owned = IDS.filter(id => ITEMS[id].deck.id === region.id);
+  return [...new Set([...region.ids, ...owned])].filter(id => ITEMS[id]);
+}
+
+function startFullRecall(region) {
+  const ids = region ? regionRecallIds(region) : IDS;
+  if (!ids.length) return;
+  launch('recall', { recallTitle: region ? `${region.title} · full recall` : 'All structures',
+    run: new Recall(ids, 'full') });
+}
+
 function startDailyStructure(now = new Date()) {
   beginRecall([matchDaily(now)], 'day', undefined, day(0, now));
 }
@@ -843,7 +858,7 @@ function renderRecall() {
   const memory = round === 3;
   const view = memory ? memoryView(item.id) : teachingView(item.id);
   showStructure(item.id, { view, close: true, padding: 1.26, layout: 'recall-layout', controls: true, ...regionScope(level || activity.from) });
-  const title = kind === 'level' ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest', mistakes: 'Drill mistakes' }[kind];
+  const title = kind === 'full' ? activity.recallTitle : kind === 'level' ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest', mistakes: 'Drill mistakes' }[kind];
   if (!modelLoaded()) {
     const loading = viewerStatus === 'loading' || (viewerStatus === 'ready' && !modelLoaded());
     return `<div class="prompt"><h1>${escape(title)}</h1>
@@ -1057,7 +1072,7 @@ function finishRecall(run, level) {
     for (const id of run.ids) gradeCard(progress, id, last.missed.has(id) ? 0 : second.missed.has(id) ? 2 : 3);
   } else {
     for (const id of run.ids) gradeCard(progress, id, last.missed.has(id) ? 0 : last.hinted.has(id) ? 2 : 3);
-    if (run.kind === 'daily') recordLaterRecall(progress, last, today);
+    if (run.kind === 'daily' || run.kind === 'full') recordLaterRecall(progress, last, today);
     if (run.kind === 'day') {
       const date = activity.challengeDate;
       const outcome = last.missed.size ? 'missed' : last.hinted.size ? 'hint' : 'correct';
@@ -1081,12 +1096,12 @@ function renderRecallResults() {
   const next = level && LEVELS.slice(LEVELS.indexOf(level) + 1).find(entry => !entry.bonus);
   const wpm = displayWpm(run);
   const nextDue = run.ids.map(id => progress.cards[id]?.due).filter(Boolean).sort()[0];
-  const caption = level ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest', mistakes: 'Drill mistakes' }[run.kind];
+  const caption = run.kind === 'full' ? activity.recallTitle : level ? level.title : { daily: 'Daily review', day: 'Structure of the day', weak: 'Drill weakest', mistakes: 'Drill mistakes' }[run.kind];
   const title = level ? passedLevel(level) ? 'Level passed' : 'Rounds complete' : 'Recall complete';
   const clinical = level ? run.ids.map(id => CONTENT[id]?.oral?.clinical?.[0]).find(Boolean) : null;
   const mistakes = run.ids.filter(id => Object.values(run.results).some(round => round.missed.has(id) || round.hinted.has(id)));
   const from = level || activity.from;
-  const back = from ? ['Back to map', 'map'] : run.kind === 'weak' ? ['Back to progress', 'progress'] : ['Back to daily', 'daily'];
+  const back = from || run.kind === 'full' ? ['Back to map', 'map'] : run.kind === 'weak' ? ['Back to progress', 'progress'] : ['Back to daily', 'daily'];
   return `<div class="screen result">
     <div class="eyebrow">${escape(caption)} · ${day()}</div><h1>${title}</h1>
     ${level && !passedLevel(level) ? '<p>To unlock the next level, recall every structure at least once in both recall rounds.</p>' : ''}
