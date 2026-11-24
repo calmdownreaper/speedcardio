@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ITEMS } from './study.js?v=90';
+import { ITEMS } from './study.js?v=91';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=90';
+const VERSION = '?v=91';
 const GHOST_ORDER = 1;
 const GHOST_DEFAULT = 40;
 

@@ -1,14 +1,14 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=90';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=90';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=91';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=91';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=90';
+} from './study.js?v=91';
 
 // Boot the selected subject before any UI state is derived. Start fetching the
 // viewer module and model assets in parallel so the 3D scene doesn't wait on
 // the subject pack waterfall.
-const V = '?v=90';
+const V = '?v=91';
 const subjectId = subjectFromUrl();
 const subject = SUBJECTS.find(entry => entry.id === subjectId) || SUBJECTS[0];
 let viewerModulePromise = import(`./viewer.js${V}`);
@@ -30,7 +30,7 @@ try { savedLanguage = localStorage.getItem('anatomy_language') || 'en'; } catch 
 const requestedLanguage = new URLSearchParams(location.search).get('lang');
 const language = ['en', 'pt-BR'].includes(requestedLanguage) ? requestedLanguage : savedLanguage === 'pt-BR' ? 'pt-BR' : 'en';
 const sourcePack = (await subject.load()).default;
-const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=90') : null;
+const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=91') : null;
 const pack = localization ? localization.localizePack(sourcePack) : sourcePack;
 document.documentElement.lang = language;
 initStudy(pack);

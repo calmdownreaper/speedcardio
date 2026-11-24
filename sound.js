@@ -10,20 +10,44 @@ export function setMuted(value) {
   try { localStorage.setItem('sc2_muted', muted ? '1' : '0'); } catch { /* storage unavailable */ }
 }
 
+// Safari parks the context in 'suspended' or its own 'interrupted' state after
+// sleep, a tab switch, another tab playing media or an output change (AirPods),
+// and sometimes never lets that context run again. So: resume on any state but
+// 'running', wait for it before scheduling, and replace a context that stays
+// stuck. Resuming only works inside a user gesture, hence the listeners below.
+let stuckSince = 0;
 function audio() {
-  if (!ctx) {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return null;
-    ctx = new AC();
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return null;
+  if (ctx && ctx.state !== 'running' && stuckSince && performance.now() - stuckSince > 1500) {
+    ctx.close?.().catch(() => {});
+    ctx = null;
   }
-  if (ctx.state === 'suspended') ctx.resume();
+  if (!ctx || ctx.state === 'closed') { ctx = new AC(); stuckSince = 0; }
+  if (ctx.state !== 'running') {
+    stuckSince ||= performance.now();
+    ctx.resume?.().then(() => { if (ctx?.state === 'running') stuckSince = 0; }).catch(() => {});
+  } else {
+    stuckSince = 0;
+  }
   return ctx;
 }
+
+function wake() { if (ctx && ctx.state !== 'running') audio(); }
+for (const type of ['pointerdown', 'keydown', 'touchend']) addEventListener(type, wake, { capture: true, passive: true });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });
+addEventListener('pageshow', wake);
 
 function tone(freq, start, length, gain, type = 'sine') {
   if (muted) return;
   const a = audio();
   if (!a) return;
+  if (a.state !== 'running') {
+    // Play once the resume lands rather than scheduling into a frozen clock.
+    const play = () => { if (a.state === 'running') tone(freq, start, length, gain, type); };
+    a.resume?.().then(play).catch(() => {});
+    return;
+  }
   const t = a.currentTime + start;
   const osc = a.createOscillator();
   const amp = a.createGain();
