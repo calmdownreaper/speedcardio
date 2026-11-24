@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ITEMS } from './study.js?v=85';
+import { ITEMS } from './study.js?v=90';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=85';
+const VERSION = '?v=90';
 const GHOST_ORDER = 1;
 const GHOST_DEFAULT = 40;
 
@@ -393,6 +393,48 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     });
     markerMeshes.set(id, list);
     return list;
+  }
+
+  // Hand-cut landmark areas (msk/areas.bin): the real outline of a process,
+  // foramen or protuberance, drawn over the bone in the landmark's colour.
+  let areaPack = null;
+  let areaLoading = null;
+  const areaMeshes = new Map();
+  const hasArea = id => Boolean(manifest?.areas?.parts?.[id]);
+  function loadAreas() {
+    if (areaPack || areaLoading || !manifest?.areas) return;
+    const url = new URL(manifest.areas.file, new URL(source.manifest, location.href)).href;
+    areaLoading = fetch(`${url}${VERSION}`, { cache: 'force-cache' })
+      .then(response => response.ok ? response.arrayBuffer() : null)
+      .then(bytes => {
+        if (bytes && bytes.byteLength === manifest.areas.bytes) areaPack = bytes;
+        if (areaPack) { applyStyles(); schedule(); }
+      })
+      .catch(() => {});
+  }
+  function areaMesh(id) {
+    if (areaMeshes.has(id)) return areaMeshes.get(id);
+    const part = manifest.areas.parts[id];
+    const packed = new Int16Array(areaPack, part.p[0], part.p[1]);
+    const positions = new Float32Array(packed.length);
+    for (let i = 0; i < packed.length; i++) positions[i] = packed[i] / 32767;
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setIndex(new THREE.BufferAttribute(new Uint16Array(areaPack, part.i[0], part.i[1]), 1));
+    geometry.computeVertexNormals();
+    // Lift the cut a hair off the bone so it never sinks into the surface.
+    const lift = .35 / (meta.scale || 848.8);
+    const normals = geometry.attributes.normal.array;
+    for (let i = 0; i < positions.length; i++) positions[i] += normals[i] * lift;
+    const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
+      roughness: .5, metalness: 0, side: THREE.DoubleSide,
+      polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+    }));
+    mesh.renderOrder = 5;
+    mesh.visible = false;
+    scene.add(mesh);
+    areaMeshes.set(id, mesh);
+    return mesh;
   }
 
   function removeMarkers(id, list) {
@@ -882,6 +924,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
       color.setHSL(spotHsl.h, Math.max(spotHsl.s, .85), .48);
     };
     const shownMarkers = new Set();
+    const shownAreas = new Set();
     hasFocusedMarker = false;
     for (const id of current.markerIds || []) {
       if (!markerPoints.has(id) || (isolate && !highlight.has(id))) continue;
@@ -899,7 +942,17 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
         marker.material.opacity = opacity;
         marker.userData.halo.visible = active;
         marker.scale.setScalar(markerSize * (active && regionMode ? .8 : active ? 1.75 : 1));
-        if (regionMode && active && spotCount < MAX_SPOTS) {
+        if (regionMode && active && hasArea(id) && (loadAreas(), areaPack)) {
+          marker.userData.halo.visible = false;
+          const area = areaMesh(id);
+          area.visible = true;
+          area.material.color.set(current.palette?.[id] || tone.axis).getHSL(spotHsl);
+          area.material.color.setHSL(spotHsl.h, Math.max(spotHsl.s, .85), .48);
+          area.material.emissive.copy(area.material.color).multiplyScalar(.35);
+          shownAreas.add(id);
+          // The cut shows the landmark itself: the dot on top only hides it.
+          marker.visible = false;
+        } else if (regionMode && active && spotCount < MAX_SPOTS) {
           marker.userData.halo.visible = false;
           const radius = (SPOT_MM[id] ?? 4) / (meta.scale || 848.8);
           setSpotColor(spotCount, id);
@@ -909,6 +962,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
       }
     }
     spotUniforms.uSpotCount.value = spotCount;
+    for (const [id, area] of areaMeshes) area.visible = shownAreas.has(id);
     for (const [id, list] of markerMeshes) {
       if (!shownMarkers.has(id)) removeMarkers(id, list);
     }

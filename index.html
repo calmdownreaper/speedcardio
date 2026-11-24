@@ -29,11 +29,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=85">
+  <link rel="stylesheet" href="./style.css?v=90">
   <script type="importmap">
-    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js?v=85","three/addons/controls/OrbitControls.js":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js?v=85"}}
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js?v=90","three/addons/controls/OrbitControls.js":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js?v=90"}}
   </script>
-  <link rel="modulepreload" href="./viewer.js?v=85">
+  <link rel="modulepreload" href="./viewer.js?v=90">
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false" class="icon-sprite">
@@ -81,6 +81,10 @@
     </nav>
     <div class="header-tools">
       <span id="header-streak" class="header-streak"></span>
+      <select id="language-select" class="language-select" aria-label="Language / Idioma" translate="no">
+        <option value="en">English</option>
+        <option value="pt-BR">PT-BR</option>
+      </select>
       <button id="theme-toggle" class="sound-toggle theme-toggle" type="button" aria-expanded="false" aria-controls="theme-popover" aria-haspopup="dialog" aria-label="Theme settings" title="Theme settings">
         <svg class="icon theme-icon theme-icon-sun" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
         <svg class="icon theme-icon theme-icon-moon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-moon"/></svg>
@@ -160,7 +164,7 @@
     <section id="page" aria-label="Study page"></section>
     <noscript>SpeedCardio needs JavaScript to run.</noscript>
   </main>
-  <footer class="credits">3D anatomy by <a href="https://www.z-anatomy.com/" target="_blank" rel="noopener">Z-Anatomy</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> and <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D © DBCLS</a> · <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a></footer>
-  <script type="module" src="./app.js?v=86"></script>
+  <footer class="credits">3D anatomy by <a href="https://www.z-anatomy.com/" target="_blank" rel="noopener">Z-Anatomy</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> and <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D © DBCLS</a> · <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a> · Landmark areas from <a href="https://github.com/SampleSize1/Anatomy-Atlas" target="_blank" rel="noopener">SampleSize1 Bone Landmarks</a> · CC BY-SA 4.0</footer>
+  <script type="module" src="./app.js?v=90"></script>
 </body>
 </html>

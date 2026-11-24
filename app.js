@@ -1,14 +1,14 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=85';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=85';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=90';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=90';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=85';
+} from './study.js?v=90';
 
 // Boot the selected subject before any UI state is derived. Start fetching the
 // viewer module and model assets in parallel so the 3D scene doesn't wait on
 // the subject pack waterfall.
-const V = '?v=85';
+const V = '?v=90';
 const subjectId = subjectFromUrl();
 const subject = SUBJECTS.find(entry => entry.id === subjectId) || SUBJECTS[0];
 let viewerModulePromise = import(`./viewer.js${V}`);
@@ -25,8 +25,16 @@ let modelPreload = {
     }).catch(() => null)
     : null,
 };
-const pack = (await subject.load()).default;
+let savedLanguage = 'en';
+try { savedLanguage = localStorage.getItem('anatomy_language') || 'en'; } catch { /* storage unavailable */ }
+const requestedLanguage = new URLSearchParams(location.search).get('lang');
+const language = ['en', 'pt-BR'].includes(requestedLanguage) ? requestedLanguage : savedLanguage === 'pt-BR' ? 'pt-BR' : 'en';
+const sourcePack = (await subject.load()).default;
+const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=90') : null;
+const pack = localization ? localization.localizePack(sourcePack) : sourcePack;
+document.documentElement.lang = language;
 initStudy(pack);
+if (localization) localization.installInterfaceTranslation();
 document.documentElement.dataset.subject = pack.id;
 
 const material = pack.content;
@@ -57,9 +65,9 @@ const plural = (count, word) => `${count} ${word}${count === 1 ? '' : 's'}`;
 const shortDate = iso => {
   if (!iso) return '';
   const [year, month, date] = iso.split('-').map(Number);
-  return new Date(year, month - 1, date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  return new Date(year, month - 1, date).toLocaleDateString(language === 'pt-BR' ? 'pt-BR' : 'en-GB', { day: 'numeric', month: 'short' });
 };
-const todayLabel = () => new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+const todayLabel = () => new Date().toLocaleDateString(language === 'pt-BR' ? 'pt-BR' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 const studyTime = seconds => {
   const total = Number(seconds) || 0;
   if (total < 60) return `${Math.round(total)}s`;
@@ -134,7 +142,20 @@ function button(label, run, options = {}) {
 function leaveGuard() {
   const run = activity?.type === 'recall' || activity?.type === 'round' ? activity.run : null;
   if (!run || (!run.keys && run.round === 1 && !run.index)) return true;
-  return window.confirm('Leave this run? Your progress in these rounds will be lost.');
+  return window.confirm(language === 'pt-BR' ? 'Sair desta sessão? O progresso destas rodadas será perdido.' : 'Leave this run? Your progress in these rounds will be lost.');
+}
+
+const languageSelect = document.getElementById('language-select');
+if (languageSelect) {
+  languageSelect.value = language;
+  languageSelect.addEventListener('change', () => {
+    if (!leaveGuard()) { languageSelect.value = language; return; }
+    const nextLanguage = languageSelect.value === 'pt-BR' ? 'pt-BR' : 'en';
+    try { localStorage.setItem('anatomy_language', nextLanguage); } catch { /* URL preserves the selection */ }
+    const url = new URL(location.href);
+    url.searchParams.set('lang', nextLanguage);
+    location.assign(url.href);
+  });
 }
 
 function setPage(next) {
@@ -1015,13 +1036,17 @@ function showRecallFeedback() {
   }
   line.className = 'feedback bad';
   if (round === 3) $("clue").textContent = "Name the highlighted structure from memory.";
-  const intro = feedback.near ? `So close. It’s spelled ${item.typing}.`
-    : feedback.confusion ? `You named ${feedback.confusion.pt}. This is ${item.pt}.`
-    : feedback.reveal ? `This is ${item.pt}.` : `You typed “${feedback.guess}”. This is ${item.pt}.`;
+  const intro = language === 'pt-BR'
+    ? feedback.near ? `Quase! O nome é ${item.typing}.`
+      : feedback.confusion ? `Você respondeu ${feedback.confusion.pt}. Esta estrutura é ${item.pt}.`
+      : feedback.reveal ? `Esta estrutura é ${item.pt}.` : `Você digitou “${feedback.guess}”. Esta estrutura é ${item.pt}.`
+    : feedback.near ? `So close. It’s spelled ${item.typing}.`
+      : feedback.confusion ? `You named ${feedback.confusion.pt}. This is ${item.pt}.`
+      : feedback.reveal ? `This is ${item.pt}.` : `You typed “${feedback.guess}”. This is ${item.pt}.`;
   const clue = lessonCue(item.id).trimEnd();
   const punctuation = /[.!?…]$/.test(clue) ? '' : '.';
   line.className = 'feedback bad verdict';
-  line.innerHTML = `<strong class="verdict-tag">${icon('x', 15)}${feedback.reveal ? 'Revealed' : 'Not quite'}</strong> <span>${escape(`${intro} ${clue}${punctuation}${feedback.requeued ? ' It will come up again.' : ''}`)}</span>`;
+  line.innerHTML = `<strong class="verdict-tag">${icon('x', 15)}${feedback.reveal ? 'Revealed' : 'Not quite'}</strong> <span>${escape(`${intro} ${clue}${punctuation}${feedback.requeued ? language === 'pt-BR' ? ' Ela aparecerá novamente.' : ' It will come up again.' : ''}`)}</span>`;
   $('continue-actions').hidden = false;
   if (!coarsePointer.matches) focusTyper();
 }
@@ -2058,7 +2083,7 @@ function syncThemeChrome() {
   root.dataset.theme = setting;
   root.dataset.accent = accent;
   const toggle = $('theme-toggle');
-  const label = THEME_LABELS[setting];
+  const label = language === 'pt-BR' ? { light: 'Claro', dark: 'Escuro', system: 'Sistema' }[setting] : THEME_LABELS[setting];
   toggle.setAttribute('aria-label', `Theme settings (${label})`);
   toggle.title = `Theme: ${label}`;
   for (const input of document.querySelectorAll('input[name="theme-choice"]')) {

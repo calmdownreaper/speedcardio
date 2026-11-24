@@ -606,6 +606,7 @@ legend { padding-inline: 4px; color: var(--accent); }
 }
 @media (pointer: coarse) {
   .type-button { display: inline-block; }
+  .app-header button, nav [data-nav], .view-toolbar button, .exit, .view-back, .chip { min-height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -1236,3 +1237,18 @@ h1 { letter-spacing: -.035em; }
   .subject-menu:not([hidden]) { animation: none; }
   .brand-caret { transition: none; }
 }
+
+/* Small additions: wrong-key notice, search clear, 3D retry. */
+.typing-warning { margin: 6px 0 0; color: var(--bad); font-size: 13px; }
+.atlas-search-field { position: relative; }
+.atlas-search-field #atlas-search { padding-right: 44px; }
+.atlas-search-field #atlas-search::-webkit-search-cancel-button { -webkit-appearance: none; }
+.atlas-search-clear { position: absolute; right: 2px; bottom: 0; width: 44px; height: 44px; display: grid; place-items: center; color: var(--mute); background: none; border: 0; }
+.atlas-search-clear:hover { color: var(--ink); }
+#view-fallback { pointer-events: auto; }
+#view-fallback .button { margin-top: 4px; }
+
+/* Language preference */
+.language-select { min-height: 36px; max-width: 96px; padding: 0 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font: inherit; font-size: 13px; cursor: pointer; }
+.language-select:hover { background: var(--surface-2); }
+@media (max-width: 560px) { .header-streak { display: none; } .header-tools { gap: 6px; } .language-select { min-height: 44px; } }

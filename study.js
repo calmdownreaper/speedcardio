@@ -21,16 +21,18 @@ export let REGION_CONTEXT = {};
 export let storagePrefix = 'sc2_';
 export let subjectId = 'cardio';
 
-export function initStudy(pack) {
+export function initStudy(pack, { structureNames = {} } = {}) {
   subjectId = pack.id;
   storagePrefix = pack.storagePrefix || 'sc2_';
-  ITEMS = Object.fromEntries(pack.decks.flatMap(deck => deck.itens.map(item => [
-    item.id, { ...item, deck,
-      pt: item.pt.replace(/\s*\([^)]*\)/g, '').trim(),
-      tag: item.pt.match(/\([^)]*\)\s*$/)?.[0] || '',
-      typing: item.pt.replace(/\s*\([^)]*\)/g, '').trim(),
-    },
-  ])));
+  ITEMS = Object.fromEntries(pack.decks.flatMap(deck => deck.itens.map(item => {
+    const name = structureNames[item.id] || item.pt;
+    return [item.id, { ...item, deck,
+      pt: name.replace(/\s*\([^)]*\)/g, '').trim(),
+      tag: name.match(/\([^)]*\)\s*$/)?.[0] || '',
+      typing: name.replace(/\s*\([^)]*\)/g, '').trim(),
+      alt: structureNames[item.id] ? [...(item.alt || []), item.pt] : item.alt,
+    }];
+  })));
   IDS = Object.keys(ITEMS);
   REGIONS = pack.regions;
   LEVELS = REGIONS.flatMap(region => region.levels);
