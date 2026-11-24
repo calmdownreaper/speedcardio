@@ -1,14 +1,15 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=91';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=91';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=99';
+import { createEngine } from './aulas-engine.js?v=99';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=99';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=91';
+} from './study.js?v=99';
 
 // Boot the selected subject before any UI state is derived. Start fetching the
 // viewer module and model assets in parallel so the 3D scene doesn't wait on
 // the subject pack waterfall.
-const V = '?v=91';
+const V = '?v=99';
 const subjectId = subjectFromUrl();
 const subject = SUBJECTS.find(entry => entry.id === subjectId) || SUBJECTS[0];
 let viewerModulePromise = import(`./viewer.js${V}`);
@@ -30,7 +31,7 @@ try { savedLanguage = localStorage.getItem('anatomy_language') || 'en'; } catch 
 const requestedLanguage = new URLSearchParams(location.search).get('lang');
 const language = ['en', 'pt-BR'].includes(requestedLanguage) ? requestedLanguage : savedLanguage === 'pt-BR' ? 'pt-BR' : 'en';
 const sourcePack = (await subject.load()).default;
-const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=92') : null;
+const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=99') : null;
 const pack = localization ? localization.localizePack(sourcePack) : sourcePack;
 document.documentElement.lang = language;
 initStudy(pack);
@@ -39,7 +40,15 @@ document.documentElement.dataset.subject = pack.id;
 
 const material = pack.content;
 const TERRITORIES = pack.territories || [];
+const BRANCHES = pack.branches || [];
+const BRANCH_GROUPS = pack.branchGroups || {};
+const SLIDE_QUESTIONS = pack.slideQuestions || [];
+const SLIDE_UNITS = pack.slideUnits || {};
 const BLOOD_FLOW = pack.bloodFlow || [];
+const AULAS = pack.aulas || [];
+const AULAS_ORDER = AULAS.map(block => block.id);
+const aulas = createEngine({ packId: pack.id });
+const aulasQuestions = new Map(SLIDE_QUESTIONS.map(question => [question.id, question]));
 const VEIN_ARTERY_PAIRS = pack.veinArteryPairs || {};
 const PAIR_CONTRASTS = pack.pairContrasts || {};
 const LESSONS = pack.lessons || {};
@@ -122,6 +131,7 @@ let page = 'map';
 const firstNext = nextLevel();
 let selectedRegion = firstNext?.region || (ORIENTATION.length ? 'orientation' : REGIONS[0]?.id);
 let selectedLevel = firstNext?.id || (ORIENTATION.length ? undefined : REGIONS[0]?.levels[0]?.id);
+let mapTab = null;
 let activity;
 let viewer;
 let viewerStatus = 'loading';
@@ -129,6 +139,7 @@ let model;
 let advanceTimer;
 let wrongTimer;
 let mockTimer;
+let aulasTimer;
 let shortcuts = new Map();
 let actions = [];
 let started = performance.now();
@@ -138,7 +149,7 @@ function button(label, run, options = {}) {
   if (options.key) shortcuts.set(options.key, run);
   const start = options.icon ? icon(options.icon, 16) : '';
   const end = options.iconEnd ? icon(options.iconEnd, 16) : '';
-  return `<button type="button" class="button ${options.class || ''}" data-action="${index}" ${options.disabled ? 'disabled' : ''}>${start}${label}${end}${options.key === 'Enter' ? `<kbd aria-hidden="true">${icon('enter', 12)}</kbd>` : ''}</button>`;
+  return `<button type="button" class="button ${options.class || ''}" data-action="${index}"${options.attrs ? ` ${options.attrs}` : ''} ${options.disabled ? 'disabled' : ''}>${start}${label}${end}${options.key === 'Enter' ? `<kbd aria-hidden="true">${icon('enter', 12)}</kbd>` : ''}</button>`;
 }
 
 // Ask before abandoning a recall run that is under way.
@@ -191,6 +202,8 @@ function stopTimers() {
   clearTimeout(wrongTimer);
   clearInterval(mockTimer);
   mockTimer = undefined;
+  clearInterval(aulasTimer);
+  aulasTimer = undefined;
 }
 
 function recordActivity() {
@@ -256,8 +269,8 @@ function render({ top = false, activate = false } = {}) {
   const renderer = activity
     ? { orientation: renderOrientation, lesson: renderLesson, recall: renderRecall, round: renderRoundEnd,
       results: renderRecallResults, find: renderFind, quiz: renderQuiz, oral: renderOral, topic: renderTopic,
-      territories: renderTerritories, territoriesResults: renderTerritoryResults,
-      bloodflow: renderBloodFlow,
+      aulas: renderAulas,
+      aulasCatalog: renderAulasCatalog,
       mock: renderMock, mockResults: renderMockResults, complete: renderComplete }[activity.type]
     : { map: renderMap, atlas: renderAtlas, daily: renderDaily, theory: renderTheory, progress: renderProgress }[page];
   const html = renderer();
@@ -272,6 +285,10 @@ function render({ top = false, activate = false } = {}) {
   if (activity?.type === 'mock') {
     updateMockTimer();
     mockTimer ??= setInterval(updateMockTimer, 250);
+  }
+  if (activity?.type === 'aulas' && activity.stage === 'test') {
+    updateAulasTimer();
+    aulasTimer ??= setInterval(updateAulasTimer, 1000);
   }
   updateModel();
   const input = $('typer');
@@ -373,7 +390,23 @@ function syncModelStatus() {
 }
 
 function stepSnapshot() {
-  return { focus: [...model.focus], close: model.close, title: model.title, view: model.view };
+  return { ids: [...model.ids], context: [...(model.context || [])], focus: [...model.focus], close: model.close, title: model.title, view: model.view };
+}
+function syncTermFocusUI(activeId) {
+  for (const el of document.querySelectorAll('.term-3d')) {
+    el.classList.toggle('is-active', Boolean(activeId) && el.dataset.focusId === activeId);
+  }
+  const bar = $('aulas-focus-bar');
+  if (!bar) return;
+  if (!activeId || !ITEMS[activeId]) {
+    bar.hidden = true;
+    bar.innerHTML = '';
+    return;
+  }
+  const role = NOTES[activeId]?.role;
+  bar.hidden = false;
+  bar.innerHTML = `<span><strong>${escape(ITEMS[activeId].pt)}</strong>${role ? ` — <em>${escape(role)}</em>` : ''}</span>
+    <button type="button" class="button term-reset" data-focus-reset="1">${aulaText('Reset view', 'Restaurar vista')}</button>`;
 }
 function focusGroup(ids, title) {
   if (!model) return;
@@ -386,15 +419,21 @@ function focusStructure(id) {
   if (!model || !ITEMS[id]) return;
   if (model.clickedFocus && model.focus.length === 1 && model.focus[0] === id) return restoreStepView();
   const step = model.step || stepSnapshot();
-  model = { ...model, focus: [id], close: true, clickedFocus: true, title: ITEMS[id].pt, view: focusedStructureView([id], model.view), step };
-  updateModel();
+  const ids = model.ids.includes(id) ? model.ids : [...model.ids, id];
+  const isInternal = /^(tri_|mit_|ao_ant$|ao_post|pulm_|pap_)/.test(id);
+  const ghostBase = isInternal ? ['ad', 'ae', 'vd', 've', 'paredev'] : [];
+  const context = [...new Set([...(model.context || []), ...ghostBase])].filter(entry => entry !== id);
+  model = { ...model, ids, context, focus: [id], close: true, frameFocus: true, clickedFocus: true, title: ITEMS[id].pt, view: focusedStructureView([id], teachingView(id)), step };
+  updateModel(true);
+  syncTermFocusUI(id);
 }
 function restoreStepView() {
   if (!model?.step) return;
-  const { focus, close, title, view } = model.step;
-  model = { ...model, focus, close, title, view, clickedFocus: false };
+  const { ids, context, focus, close, title, view } = model.step;
+  model = { ...model, ids, context, focus, close, title, view, clickedFocus: false };
   delete model.step;
-  updateModel();
+  updateModel(true);
+  syncTermFocusUI(null);
 }
 function linkedText(text, ids) {
   const names = ids.map(id => [id, ITEMS[id]?.pt]).filter(([,name]) => name);
@@ -696,11 +735,13 @@ function renderLesson() {
     return `<div class="prompt lesson-structure">${top}
       <div class="eyebrow">${memorize ? 'Memorize' : 'Learn'} · ${escape(level.title)} · ${index + 1} of ${total}</div>
       <h1>${swatch(level, id, chipColor(id))}${escape(item.pt)}${item.tag ? ` <small translate="no">${escape(item.tag)}</small>` : ''}${item.abbr ? ` <small class="clinical-abbr" translate="no">${escape(item.abbr)}</small>` : ''}</h1>
+      ${meaningMarkup(id)}
       ${lungSeg ? lobeLegendMarkup() : ''}
       ${id === 'paredev' ? paredevHintMarkup() : ''}
       ${pair ? `<div class="pair-badge">${language === 'pt-BR' ? 'Artéria acompanhante:' : 'Accompanying artery:'} <strong translate="no">${escape(pair.label)}</strong></div>` : ''}
       ${veinToggleMarkup()}
       ${memorize ? `<p class="lesson-body">${markdown(detailFor(id).text)}</p>` : lessonBlocks(id)}
+      ${memorize ? '' : slotsMarkup(id)}
       ${clinical && !memorize ? `<aside class="clinical-note"><span class="clinical-label">Clinical note</span><p>${escape(clinical)}</p></aside>` : ''}
       ${level.region === 'mediastino' ? '<p class="support">Small vessel? Use Isolate to show only the highlighted structure.</p>' : ''}
       <div class="chips">${level.ids.map((key, position) => chip(key, key === id, () => key === id ? focusStructure(key) : jump(position))).join('')}</div>
@@ -861,63 +902,617 @@ function renderMap() {
     context: region ? (REGION_CONTEXT[region.id] || ITEMS[region.ids[0]].deck.ctx) : [],
     ...(pack.regionPadding?.[region?.id] ? { padding: pack.regionPadding[region.id] } : {}),
   });
-  const pct = Math.round(done / levels.length * 100);
+  const hasAulas = AULAS.length > 0;
+  const activeTab = (mapTab && (mapTab !== 'aulas' || hasAulas)) ? mapTab : (hasAulas ? 'aulas' : 'regions');
+  const setMapTab = tab => { mapTab = tab; render(); };
+
+  const aulasProgress = hasAulas ? aulas.getProgress().blocks : {};
+  const aulasDone = hasAulas ? AULAS.filter(block => aulasProgress[block.id]?.passed).length : 0;
+  const nextAula = hasAulas ? AULAS.find(block => !aulasProgress[block.id]?.passed && aulaOpen(block)) : null;
+  const troubleCount = troubleQuestions().length;
+  const totalPct = hasAulas
+    ? Math.round((aulasDone + done) / (AULAS.length + levels.length) * 100)
+    : Math.round(done / Math.max(1, levels.length) * 100);
   const nextLabel = next?.id === 'orientation' ? 'Start' : 'Continue';
-  const mode = (iconName, title, text, action) => `<article class="mode-card">
-      <div class="mode-icon">${icon(iconName, 18)}</div>
-      <div class="mode-text"><h2>${title}</h2><p>${text}</p></div>${action}</article>`;
-  const stopMarkup = (entry, index) => {
-    const required = entry.levels?.filter(item => !item.bonus) || [];
-    const count = required.filter(passedLevel).length;
-    const status = entry.levels ? `${count}/${required.length}` : savedLevel(entry.id).passed ? icon('check', 14) : '';
-    return button(`<span class="path-num">${String(index + 1).padStart(2, '0')}</span><span class="path-body"><b>${escape(entry.title)}</b><small>${escape(REGION_PURPOSES[entry.id])}</small></span><span class="path-count">${status}</span>`,
-      () => chooseRegion(entry.id), { class: `path-stop ${entry.id === selectedRegion ? 'chosen' : ''}` });
-  };
-  let regionsMarkup;
-  if (groupedAreas) {
-    const areaGroups = [];
-    const byArea = new Map();
-    map.forEach((entry, index) => {
-      const areaName = entry.area || (language === 'pt-BR' ? 'Outros' : 'Other');
-      if (!byArea.has(areaName)) {
-        const group = { area: areaName, items: [] };
-        byArea.set(areaName, group);
-        areaGroups.push(group);
-      }
-      byArea.get(areaName).items.push({ entry, index });
-    });
-    regionsMarkup = `<div class="map-areas" aria-label="Curriculum regions">${areaGroups.map(group => `
-      <section class="map-area" aria-label="${escape(group.area)}">
-        <h3 class="map-area-title"${language === 'pt-BR' ? ' translate="no"' : ''}>${escape(group.area)}</h3>
-        <div class="path">${group.items.map(({ entry, index }) => stopMarkup(entry, index)).join('')}</div>
-      </section>`).join('')}</div>`;
+
+  let primaryStrip;
+  if (nextAula) {
+    const unitLabel = SLIDE_UNITS[nextAula.unit || 'heart']?.label || '';
+    primaryStrip = `<section class="map-next" aria-label="${aulaText('Next step', 'Próximo passo')}" translate="no">
+      <div class="map-next-copy">
+        <h2>${escape(nextAula.title)}</h2>
+        <p>${escape(unitLabel)}${unitLabel ? ' · ' : ''}${aulaText('Study, practise and pass the test', 'Estudo, prática e teste')}</p>
+      </div>
+      <div class="map-next-actions">
+        ${troubleCount ? button(`${aulaText('Trouble spots', 'Pontos fracos')} (${troubleCount})`, startTrouble) : ''}
+        ${button(aulasDone ? aulaText('Continue', 'Continuar') : aulaText('Start', 'Começar'), () => startAula(nextAula), { class: 'primary', iconEnd: 'arrow-right' })}
+      </div>
+    </section>`;
   } else {
-    regionsMarkup = `<div class="path" aria-label="Curriculum regions">${map.map(stopMarkup).join('')}</div>`;
+    primaryStrip = `<section class="map-next" aria-label="${aulaText('Next step', 'Próximo passo')}">
+      <div class="map-next-copy">
+        <h2>${next ? escape(next.title) : LEVELS.some(l => l.bonus) ? 'Required levels passed' : 'All levels passed'}</h2>
+        <p>${next?.id === 'orientation' ? 'Start here: directions and landmarks.' : 'Your next level on the path.'}</p>
+      </div>
+      <div class="map-next-actions">
+        ${troubleCount ? button(`<span translate="no">${aulaText('Trouble spots', 'Pontos fracos')} (${troubleCount})</span>`, startTrouble) : ''}
+        ${next ? button(nextLabel, () => next.id === 'orientation' ? startOrientation() : openLevel(next), { class: 'primary', iconEnd: 'arrow-right' }) : button('Open Daily', () => setPage('daily'), { class: 'primary' })}
+      </div>
+    </section>`;
   }
+
+  const tabs = [
+    ...(hasAulas ? [{ id: 'aulas', label: aulaText('Lessons', 'Aulas'), count: `${aulasDone}/${AULAS.length}` }] : []),
+    { id: 'regions', label: aulaText('3D Regions', 'Regiões 3D'), count: `${done}/${levels.length}` },
+    { id: 'practice', label: aulaText('Practice', 'Prática'), count: troubleCount ? `${troubleCount}` : '' },
+  ];
+  const tabBar = `<div class="map-tabs" role="tablist" aria-label="${aulaText('Study views', 'Modos de navegação')}" translate="no">${tabs.map(tab =>
+    button(`<span>${escape(tab.label)}</span>${tab.count ? `<small>${escape(tab.count)}</small>` : ''}`,
+      () => setMapTab(tab.id),
+      { class: `map-tab ${activeTab === tab.id ? 'is-active' : ''}`, attrs: `role="tab" aria-selected="${activeTab === tab.id}"` })
+  ).join('')}</div>`;
+
+  let panelMarkup = '';
+  if (activeTab === 'aulas') {
+    panelMarkup = `<div class="map-panel" role="tabpanel">${renderAulasMap()}</div>`;
+  } else if (activeTab === 'regions') {
+    const stopMarkup = entry => {
+      const required = entry.levels?.filter(item => !item.bonus) || [];
+      const count = required.filter(passedLevel).length;
+      const status = entry.levels ? `${count}/${required.length}` : savedLevel(entry.id).passed ? icon('check', 14) : '';
+      return button(`<span class="path-name">${escape(entry.title)}</span><span class="path-count">${status}</span>`,
+        () => chooseRegion(entry.id), { class: `path-stop ${entry.id === selectedRegion ? 'chosen' : ''}` });
+    };
+    let regionsMarkup;
+    if (groupedAreas) {
+      const areaGroups = [];
+      const byArea = new Map();
+      map.forEach(entry => {
+        const areaName = entry.area || (language === 'pt-BR' ? 'Outros' : 'Other');
+        if (!byArea.has(areaName)) {
+          const group = { area: areaName, items: [] };
+          byArea.set(areaName, group);
+          areaGroups.push(group);
+        }
+        byArea.get(areaName).items.push(entry);
+      });
+      regionsMarkup = `<div class="map-areas" aria-label="Curriculum regions">${areaGroups.map(group => `
+        <section class="map-area" aria-label="${escape(group.area)}">
+          <h3 class="map-area-title"${language === 'pt-BR' ? ' translate="no"' : ''}>${escape(group.area)}</h3>
+          <div class="path">${group.items.map(stopMarkup).join('')}</div>
+        </section>`).join('')}</div>`;
+    } else {
+      regionsMarkup = `<div class="path" aria-label="Curriculum regions">${map.map(stopMarkup).join('')}</div>`;
+    }
+    const regionPurpose = REGION_PURPOSES[region?.id || 'orientation'] || '';
+    panelMarkup = `<div class="map-panel" role="tabpanel">
+      ${regionsMarkup}
+      <div class="region-detail">
+        <div class="region-detail-head">
+          <div>
+            <h2 class="level-list-title" id="level-list-title" tabindex="-1">${escape(region?.title || 'Orientation')}</h2>
+            ${regionPurpose ? `<p class="region-purpose">${escape(regionPurpose)}</p>` : ''}
+          </div>
+          ${region ? button('Recall region', () => startFullRecall(region), { class: 'region-recall-btn' }) : ''}
+        </div>
+        <div class="level-list">
+          ${!region ? `<div class="level-item"><div class="level-heading"><h2>Orientation tour</h2></div><p>Learn the heart’s surfaces, borders and axis on the 3D model.</p>
+            <div class="actions">${button(savedLevel('orientation').passed ? 'Redo orientation' : 'Start orientation', startOrientation, { class: 'primary' })}</div></div>`
+            : region.levels.map(entry => renderLevelRow(entry, level)).join('')}
+        </div>
+      </div>
+    </div>`;
+  } else {
+    const modeRow = (iconName, title, text, action, highlight = false) => `<li class="mode-row ${highlight ? 'is-featured' : ''}">
+      <span class="mode-row-icon" aria-hidden="true">${icon(iconName, 17)}</span>
+      <div class="mode-row-text"><h3>${title}</h3><p>${text}</p></div>
+      <div class="mode-row-action">${action}</div>
+    </li>`;
+    panelMarkup = `<div class="map-panel" role="tabpanel">
+      <ul class="mode-list" aria-label="Study modes">
+        ${troubleCount ? modeRow('crosshair', aulaText('Trouble spots', 'Pontos fracos'),
+          `<span translate="no">${aulaText(`${troubleCount} questions to fix · each leaves after 2 right in a row`, `${troubleCount} questões para corrigir · cada uma sai após 2 acertos seguidos`)}</span>`,
+          button(aulaText('Practise', 'Praticar'), startTrouble, { class: 'primary' }), true) : ''}
+        ${modeRow('arrow-right', next ? escape(next.title) : LEVELS.some(l => l.bonus) ? 'Required levels passed' : 'All levels passed',
+          next?.id === 'orientation' ? 'Start here: directions and landmarks.' : 'Your next level on the path.',
+          next ? button(nextLabel, () => next.id === 'orientation' ? startOrientation() : openLevel(next), { iconEnd: 'arrow-right' }) : button('Open Daily', () => setPage('daily')))}
+        ${BLOOD_FLOW.length ? modeRow('route', aulaText('Blood pathway', 'Trajeto do sangue'), aulaText('Follow the 12 steps of blood flow through the heart in 3D.', 'Acompanhe as 12 etapas do trajeto do sangue no coração em 3D.'), button(aulaText('Study', 'Estudar'), startBloodFlow)) : ''}
+        ${aulaSequences.map(sequence => modeRow('route', escape(sequence.title), sequence.unit === 'lymph'
+          ? aulaText('Follow lymph from the tissues to the veins.', 'Acompanhe a linfa dos tecidos até as veias.')
+          : aulaText('Follow cardiac development by week.', 'Acompanhe o desenvolvimento cardíaco semana a semana.'),
+          button(aulaText('Open', 'Abrir'), () => startAula(sequence)))).join('')}
+        ${TERRITORIES.length ? modeRow('crosshair', 'Coronary territories', 'Match each wall to its artery.', button(aulaText('Open', 'Abrir'), startTerritories)) : ''}
+        ${SLIDE_QUESTIONS.length ? modeRow('book', "Professor's slides", `<span translate="no">${aulaText(`${slidesMastered()} questions mastered`, `${slidesMastered()} questões dominadas`)}</span>`, button(aulaText('Open', 'Abrir'), startSlides)) : ''}
+        ${BRANCHES.length ? modeRow('route', 'Artery branching', 'Where each artery comes from, what it divides into, where it changes name.', button(aulaText('Open', 'Abrir'), startBranching)) : ''}
+        ${modeRow('calendar', 'Structure of the day', 'One structure from memory.', button('Recall', () => startDailyStructure()))}
+        ${modeRow('rotate-cw', 'All structures', `${IDS.length} structures · one continuous recall, including unstudied material.`, button('Recall all', () => startFullRecall()))}
+      </ul>
+    </div>`;
+  }
+
+  const progressSummary = hasAulas
+    ? `<span translate="no">${aulaText(`${aulasDone}/${AULAS.length} lessons · ${done}/${levels.length} 3D levels`, `${aulasDone}/${AULAS.length} aulas · ${done}/${levels.length} níveis 3D`)}</span>`
+    : `${done} of ${levels.length} levels passed`;
+
   return `<div class="map-content">
-    <div class="page-head map-head"><h1>${escape(pack.mapHeading || `${pack.name} map`)}</h1>
-      <div class="progress-line"><span style="--pct:${pct}%"></span></div>
-      <p>${done} of ${levels.length} levels passed · Pass by recalling every structure in Rounds 2 and 3.</p></div>
-    <div class="modes" aria-label="Study modes">
-      ${mode('arrow-right', next ? escape(next.title) : LEVELS.some(level => level.bonus) ? 'Required levels passed' : 'All levels passed', next?.id === 'orientation' ? 'Start here: directions and landmarks.' : 'Your next level on the path.',
-        next ? button(nextLabel, () => next.id === 'orientation' ? startOrientation() : openLevel(next), { class: 'primary', iconEnd: 'arrow-right' }) : button('Open Daily', () => setPage('daily'), { class: 'primary' }))}
-      ${BLOOD_FLOW.length ? mode('route', language === 'pt-BR' ? 'Trajeto do sangue' : 'Blood pathway', language === 'pt-BR' ? 'Ordene as 12 etapas do sangue venoso e arterial no modelo 3D.' : 'Order the 12-step path of venous and arterial blood in 3D.', button('Practice', () => startBloodFlow())) : ''}
-      ${TERRITORIES.length ? mode('crosshair', 'Coronary territories', 'Match each wall to its artery.', button('Practice', () => startTerritories())) : ''}
-      ${mode('calendar', 'Structure of the day', 'One structure from memory.', button('Recall', () => startDailyStructure()))}
-      ${mode('rotate-cw', 'All structures', `${IDS.length} structures · one continuous recall, including unstudied material.`, button('Recall all', () => startFullRecall()))}
+    <div class="page-head map-head">
+      <h1>${escape(pack.mapHeading || `${pack.name} map`)}</h1>
+      <div class="map-progress">
+        <div class="progress-line"><span style="--pct:${totalPct}%"></span></div>
+        <p class="map-progress-meta">${progressSummary}</p>
+      </div>
     </div>
-    <h2 class="section-title">Regions</h2>
-    ${regionsMarkup}
-    <h2 class="section-title level-list-title" id="level-list-title" tabindex="-1">${escape(region?.title || 'Orientation')} · levels</h2>
-    ${region ? `<div class="study-row"><div><h2>Recall all of ${escape(region.title)}</h2><p>${regionRecallIds(region).length} structures · one continuous recall, including unstudied material.</p></div>
-      ${button('Recall region', () => startFullRecall(region))}</div>` : ''}
-    <div class="level-list">
-      ${!region ? `<div class="level-item"><div class="level-heading"><h2>Orientation tour</h2></div><p>Learn the heart’s surfaces, borders and axis on the 3D model.</p>
-        <div class="actions">${button(savedLevel('orientation').passed ? 'Redo orientation' : 'Start orientation', startOrientation, { class: 'primary' })}</div></div>`
-        : region.levels.map(entry => renderLevelRow(entry, level)).join('')}
-    </div>
+    ${primaryStrip}
+    ${tabBar}
+    ${panelMarkup}
   </div>`;
 }
+
+const aulaText = (en, pt) => language === 'pt-BR' ? pt : en;
+const NOTES = pack.notes || {};
+const SLOT_LABELS = { from: ['From', 'Origem'], supplies: ['Supplies', 'Irriga/inerva'], suppliedBy: ['Supplied by', 'Irrigação / inervação'], drains: ['Drains', 'Drena'],
+  receives: ['Receives', 'Recebe'], sends: ['Sends to', 'Envia para'], clinical: ['Clinical', 'Clínica'] };
+let meaningHints = true;
+try { meaningHints = localStorage.getItem('meaning_hints') !== '0'; } catch (_) { /* default on */ }
+function toggleMeaningHints() {
+  meaningHints = !meaningHints;
+  try { localStorage.setItem('meaning_hints', meaningHints ? '1' : '0'); } catch (_) { /* session only */ }
+  render();
+}
+const meaningLabel = () => meaningHints ? aulaText('Hide meaning', 'Ocultar significado') : aulaText('Show meaning', 'Mostrar significado');
+function meaningMarkup(id, atlasMode = false) {
+  const role = NOTES[id]?.role;
+  if (!role) return '';
+  return `<p class="meaning-line" translate="no">${meaningHints ? `<span class="meaning-role">${escape(role)}</span>` : ''}
+    ${atlasMode ? `<button type="button" class="button meaning-toggle" data-atlas-action="meaning">${meaningLabel()}</button>`
+      : button(meaningLabel(), toggleMeaningHints, { class: 'meaning-toggle' })}</p>`;
+}
+function slotsMarkup(id) {
+  const slots = NOTES[id]?.slots;
+  if (!slots || !Object.keys(slots).length) return '';
+  return `<dl class="note-slots" translate="no">${Object.entries(SLOT_LABELS).filter(([key]) => slots[key]).map(([key, [en, pt]]) =>
+    `<div><dt>${aulaText(en, pt)}</dt><dd>${escape(slots[key])}</dd></div>`).join('')}</dl>`;
+}
+
+const TERM_3D_ALIASES = [
+  ['ascending aorta', 'aoasc'], ['aorta ascendente', 'aoasc'],
+  ['aortic arch', 'arco'], ['arch of aorta', 'arco'], ['arco aórtico', 'arco'], ['arco da aorta', 'arco'],
+  ['descending thoracic aorta', 'aodesc'], ['descending aorta', 'aodesc'], ['thoracic aorta', 'aodesc'],
+  ['aorta torácica descendente', 'aodesc'], ['aorta descendente', 'aodesc'], ['aorta torácica', 'aodesc'],
+  ['brachiocephalic trunk', 'tbc'], ['tronco braquiocefálico', 'tbc'],
+  ['right common carotid artery', 'ccd'], ['right common carotid', 'ccd'], ['carótida comum direita', 'ccd'],
+  ['left common carotid artery', 'cce'], ['left common carotid', 'cce'], ['carótida comum esquerda', 'cce'],
+  ['right subclavian artery', 'scd'], ['right subclavian', 'scd'], ['subclávia direita', 'scd'],
+  ['left subclavian artery', 'sce'], ['left subclavian', 'sce'], ['subclávia esquerda', 'sce'],
+  ['subclavian artery', 'scd'], ['artéria subclávia', 'scd'], ['subclávia', 'scd'],
+  ['internal thoracic artery', 'ita_d'], ['artéria torácica interna', 'ita_d'], ['internal thoracic vessels', 'ita_d'], ['vasos torácicos internos', 'ita_d'],
+  ['internal thoracic vein', 'itv_d'], ['veia torácica interna', 'itv_d'],
+  ['musculophrenic artery', 'mfa_d'], ['musculophrenic', 'mfa_d'], ['musculofrênica', 'mfa_d'],
+  ['superior epigastric artery', 'aes_d'], ['superior epigastric', 'aes_d'], ['epigástrica superior', 'aes_d'],
+  ['thyrocervical trunk', 'ttc_d'], ['tronco tireocervical', 'ttc_d'],
+  ['costocervical trunk', 'tcc_d'], ['tronco costocervical', 'tcc_d'],
+  ['vertebral artery', 'vert_d'], ['artéria vertebral', 'vert_d'],
+  ['inferior thyroid artery', 'tirinf_d'], ['artéria tireóidea inferior', 'tirinf_d'],
+  ['transverse cervical artery', 'tcerv_d'], ['cervical transversa', 'tcerv_d'],
+  ['suprascapular artery', 'supsc_d'], ['artéria supraescapular', 'supsc_d'],
+  ['dorsal scapular artery', 'dscap_d'], ['dorsal da escápula', 'dscap_d'],
+  ['deep cervical artery', 'cervprof_d'], ['cervical profunda', 'cervprof_d'],
+  ['axillary artery', 'axa_d'], ['artéria axilar', 'axa_d'],
+  ['lateral thoracic artery', 'torlat_d'], ['torácica lateral', 'torlat_d'],
+  ['subscapular artery', 'subsc_d'], ['artéria subescapular', 'subsc_d'],
+  ['circumflex scapular artery', 'circscap_d'], ['circunflexa da escápula', 'circscap_d'],
+  ['thoracodorsal artery', 'thdors_d'], ['toracodorsal', 'thdors_d'],
+  ['brachial artery', 'bra_d'], ['artéria braquial', 'bra_d'],
+  ['deep brachial artery', 'bprof_d'], ['braquial profunda', 'bprof_d'],
+  ['radial artery', 'rad_d'], ['artéria radial', 'rad_d'],
+  ['ulnar artery', 'uln_d'], ['artéria ulnar', 'uln_d'],
+  ['superficial palmar arch', 'arcsup_d'], ['arco palmar superficial', 'arcsup_d'],
+  ['deep palmar arch', 'arcprof_d'], ['arco palmar profundo', 'arcprof_d'],
+  ['superior vena cava', 'vcs'], ['veia cava superior', 'vcs'], ['SVC', 'vcs'], ['VCS', 'vcs'],
+  ['inferior vena cava', 'vci'], ['veia cava inferior', 'vci'], ['IVC', 'vci'], ['VCI', 'vci'],
+  ['right brachiocephalic vein', 'vbcd'], ['veia braquiocefálica direita', 'vbcd'],
+  ['left brachiocephalic vein', 'vbce'], ['veia braquiocefálica esquerda', 'vbce'],
+  ['brachiocephalic veins', 'vbcd'], ['veias braquiocefálicas', 'vbcd'],
+  ['subclavian vein', 'vsc_d'], ['veia subclávia', 'vsc_d'],
+  ['azygos vein', 'azigo'], ['veia ázigos', 'azigo'],
+  ['accessory hemiazygos vein', 'azigo_acs'], ['hemiázigos acessória', 'azigo_acs'],
+  ['hemiazygos vein', 'hemiazigo'], ['veia hemiázigos', 'hemiazigo'],
+  ['pulmonary trunk', 'tp'], ['tronco pulmonar', 'tp'],
+  ['right pulmonary artery', 'apd'], ['artéria pulmonar direita', 'apd'],
+  ['left pulmonary artery', 'ape'], ['artéria pulmonar esquerda', 'ape'],
+  ['pulmonary veins', 'vpse'], ['veias pulmonares', 'vpse'],
+  ['right atrium', 'ad'], ['átrio direito', 'ad'],
+  ['left atrium', 'ae'], ['átrio esquerdo', 'ae'],
+  ['right ventricle', 'vd'], ['ventrículo direito', 'vd'],
+  ['left ventricle', 've'], ['ventrículo esquerdo', 've'],
+  ['myocardium', 'paredev'], ['miocárdio', 'paredev'],
+  ['tricuspid valve', 'tri_ant'], ['valva tricúspide', 'tri_ant'], ['tricúspide', 'tri_ant'],
+  ['mitral valve', 'mit_ant'], ['valva mitral', 'mit_ant'], ['mitral', 'mit_ant'],
+  ['aortic valve', 'ao_ant'], ['valva aórtica', 'ao_ant'],
+  ['pulmonary valve', 'pulm_ant_e'], ['valva pulmonar', 'pulm_ant_e'],
+  ['right coronary artery', 'acd'], ['artéria coronária direita', 'acd'], ['RCA', 'acd'], ['ACD', 'acd'],
+  ['left coronary artery', 'tce'], ['artéria coronária esquerda', 'tce'], ['coronária esquerda', 'tce'], ['LCA', 'tce'], ['ACE', 'tce'],
+  ['anterior interventricular branch', 'dae'], ['ramo interventricular anterior', 'dae'], ['left anterior descending', 'dae'], ['LAD', 'dae'],
+  ['circumflex branch', 'cx'], ['circumflex artery', 'cx'], ['ramo circunflexo', 'cx'], ['artéria circunflexa', 'cx'],
+  ['posterior interventricular branch', 'dp'], ['posterior descending artery', 'dp'], ['ramo interventricular posterior', 'dp'], ['artéria descendente posterior', 'dp'], ['PDA', 'dp'],
+  ['coronary sinus', 'seio'], ['seio coronário', 'seio'],
+  ['great cardiac vein', 'vcmagna'], ['veia cardíaca magna', 'vcmagna'],
+  ['middle cardiac vein', 'vcmedia'], ['veia cardíaca média', 'vcmedia'],
+  ['small cardiac vein', 'vcparva'], ['pequena veia cardíaca', 'vcparva'], ['veia cardíaca parva', 'vcparva'],
+  ['posterior vein of the left ventricle', 'vpve'], ['veia posterior do ventrículo esquerdo', 'vpve'],
+  ['esophagus', 'esofago'], ['esôfago', 'esofago'],
+  ['diaphragm', 'diafragma'], ['diafragma', 'diafragma'],
+  ['sternum', 'esterno'], ['esterno', 'esterno'],
+  ['thymus gland', 'timo_d'], ['thymus', 'timo_d'], ['timo', 'timo_d'],
+  ['trachea', 'traqueia'], ['traqueia', 'traqueia'],
+  ['right main bronchus', 'bpd'], ['brônquio principal direito', 'bpd'],
+  ['left main bronchus', 'bpe'], ['brônquio principal esquerdo', 'bpe'],
+  ['thyroid cartilage', 'lar_tir'], ['cartilagem tireóidea', 'lar_tir'], ['cartilagem tireoide', 'lar_tir'],
+  ['cricoid cartilage', 'lar_cri'], ['cartilagem cricóidea', 'lar_cri'], ['cartilagem cricoide', 'lar_cri'],
+  ['epiglottis', 'lar_epi'], ['epiglote', 'lar_epi'],
+  ['arytenoid cartilage', 'lar_ari'], ['cartilagem aritenóidea', 'lar_ari'], ['aritenoide', 'lar_ari'],
+  ['corniculate cartilage', 'lar_cor'], ['cartilagem corniculada', 'lar_cor'],
+  ['hyoid bone', 'lar_hio'], ['osso hioide', 'lar_hio'], ['hioide', 'lar_hio'],
+  ['thyrohyoid membrane', 'lar_mth'], ['membrana tireo-hióidea', 'lar_mth'],
+  ['cricothyroid ligament', 'lar_mct'], ['ligamento cricotireóideo', 'lar_mct'],
+  ['posterior cricoarytenoid', 'lar_pca'], ['cricoaritenóideo posterior', 'lar_pca'],
+  ['lateral cricoarytenoid', 'lar_lca'], ['cricoaritenóideo lateral', 'lar_lca'],
+  ['cricothyroid', 'lar_ct'], ['cricotireóideo', 'lar_ct'],
+  ['vocal ligament', 'lar_vl'], ['ligamento vocal', 'lar_vl'],
+];
+
+function termCategory(id) {
+  const deck = ITEMS[id]?.deck.id;
+  if (deck === 'coronarias' || deck === 'artpulm' || deck === 'membro' || /^(aoasc|arco|aodesc|tbc|cc[de]|sc[de]|tp|ap[de]|ita_|mfa_|aes_|ttc_|tcc_|pica_|eso_art|phren_inf_a_)/.test(id)) return 'artery';
+  if (deck === 'veias' || deck === 'veipulm' || /^(vcs|vci|vbc[de]|azigo|hemiazigo|vsc_|itv_|icv_|phren_inf_v|phren_sup_v|vp[si][de])/.test(id)) return 'vein';
+  if (deck === 'valvas') return 'valve';
+  if (deck === 'camaras') return 'chamber';
+  if (deck === 'laringe' || deck === 'vias' || deck === 'segd' || deck === 'sege' || deck === 'lobos') return 'airway';
+  return 'other';
+}
+
+let termMatcherCache = null;
+function getTermMatcher() {
+  if (termMatcherCache) return termMatcherCache;
+  const byLower = new Map();
+  for (const [alias, id] of TERM_3D_ALIASES) {
+    if (ITEMS[id] && !byLower.has(alias.toLowerCase())) byLower.set(alias.toLowerCase(), id);
+  }
+  for (const [id, item] of Object.entries(ITEMS)) {
+    const label = item?.pt?.trim();
+    if (label && label.length >= 4 && !byLower.has(label.toLowerCase())) byLower.set(label.toLowerCase(), id);
+  }
+  const keys = [...byLower.keys()].sort((a, b) => b.length - a.length);
+  const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = keys.length ? new RegExp(`(?<![\\p{L}\\p{N}])(${keys.map(escRe).join('|')})(?![\\p{L}\\p{N}])`, 'giu') : null;
+  termMatcherCache = { byLower, regex };
+  return termMatcherCache;
+}
+
+const NUM_RE = /\b(?:\d+(?:[.,–-]\d+)?\s*(?:%|mL|cm|mmHg|µm|s\b|seconds?\b|segundos?\b|years?\b|anos?\b|°|degrees?\b|graus?\b)|[CTLS]\d+(?:[–-][CTLS]?\d+)?|(?:day|dia|week|semana)\s+\d+(?:[–-]\d+)?|\d+(?:st|nd|rd|th|º|ª))\b/giu;
+const KEY_RE = /(?<![\p{L}\p{N}])(pars membranacea|Valsalva|Arantius|Arâncio|Koch triangle|triângulo de Koch|Eustachian valve|valva de Eustáquio|Thebesian valve|valva de Tebésio|vein of Marshall|veia de Marshall|ligament of Marshall|ligamento de Marshall|diverticulum of Haller|divertículo de Haller|Legamento arterioso di Botallo|ligamentum arteriosum|ligamento arterioso|moderator band|banda moderadora|septomarginal trabecula|trabécula septomarginal|conus arteriosus|cone arterial|crista terminalis|crista terminal|fossa ovalis|fossa oval|ansa subclavia|alça subclávia|stellate ganglion|gânglio estrelado|cisterna chyli|cisterna do quilo|Kiesselbach|conus elasticus|cone elástico|subclavian steal|anisosphygmia|anisosfigmia|systole|sístole|diastole|diástole|acute margin|margem aguda|obtuse margin|margem obtusa|transverse pericardial sinus|seio pericárdico transverso|transverse sinus|seio transverso|oblique pericardial sinus|seio pericárdico oblíquo|oblique sinus|seio oblíquo|fibrous skeleton|esqueleto fibroso|bundle of His|feixe de His|Purkinje|sinoatrial \(SA\) node|SA node|nó sinoatrial|nó SA|AV node|nó AV|right dominance|dominância direita|left dominance|dominância esquerda|codominance|codominância|capacitance|capacitância|conducting|condutores|distributing|distribuidores|exchange|de troca|epicardium|epicárdio|endocardium|endocárdio|pericardium|pericárdio|noncoronary|não coronariana|bicuspid|bicúspide|abducts|abduz|adducts|aduz)(?![\p{L}\p{N}])/giu;
+
+function formatPlainSegment(text, isStart = false) {
+  let lead = '';
+  let body = text;
+  if (isStart) {
+    const colon = body.match(/^([^:]{2,48}:)(\s+)/);
+    if (colon) {
+      lead = `<strong class="term-lead">${escape(colon[1])}</strong>${colon[2]}`;
+      body = body.slice(colon[0].length);
+    }
+  }
+  const parts = [];
+  let cursor = 0;
+  const combined = new RegExp(`(${NUM_RE.source})|(${KEY_RE.source})`, 'giu');
+  for (const m of body.matchAll(combined)) {
+    if (m.index > cursor) parts.push(escape(body.slice(cursor, m.index)));
+    if (m[1]) parts.push(`<strong class="term-num">${escape(m[1])}</strong>`);
+    else if (m[2]) parts.push(`<em class="term-key">${escape(m[2])}</em>`);
+    cursor = m.index + m[0].length;
+  }
+  if (cursor < body.length) parts.push(escape(body.slice(cursor)));
+  return lead + parts.join('');
+}
+
+function richText(text, { link3d = true } = {}) {
+  const raw = String(text ?? '');
+  if (!raw) return '';
+  if (!link3d) return formatPlainSegment(raw, true);
+  const { byLower, regex } = getTermMatcher();
+  if (!regex) return formatPlainSegment(raw, true);
+  const out = [];
+  let cursor = 0;
+  let has3d = false;
+  for (const m of raw.matchAll(regex)) {
+    const matched = m[0];
+    const id = byLower.get(matched.toLowerCase());
+    if (!id) continue;
+    if (m.index > cursor) out.push(formatPlainSegment(raw.slice(cursor, m.index), cursor === 0));
+    const cat = termCategory(id);
+    const role = NOTES[id]?.role;
+    const tip = role ? `${ITEMS[id].pt} — ${role} (${aulaText('click to highlight in 3D', 'clique para destacar no 3D')})`
+      : `${ITEMS[id].pt} (${aulaText('click to highlight in 3D', 'clique para destacar no 3D')})`;
+    out.push(`<button type="button" class="term-3d term-3d--${cat}" data-focus-id="${escape(id)}" title="${escape(tip)}">${escape(matched)}</button>`);
+    has3d = true;
+    cursor = m.index + matched.length;
+  }
+  if (cursor < raw.length) out.push(formatPlainSegment(raw.slice(cursor), cursor === 0));
+  return out.join('');
+}
+
+const richList = (values, opts) => `<ul>${values.map(value => `<li>${richText(value, opts)}</li>`).join('')}</ul>`;
+
+document.addEventListener('click', event => {
+  const reset = event.target.closest('[data-focus-reset]');
+  if (reset) { restoreStepView(); return; }
+  const btn = event.target.closest('.term-3d[data-focus-id]');
+  if (!btn) return;
+  focusStructure(btn.dataset.focusId);
+});
+
+const aulaStageLabel = () => [aulaText('Study', 'Estudo'), aulaText('Practice', 'Prática'), aulaText('Test', 'Teste')];
+const aulaUnitOrder = unit => AULAS.filter(b => (b.unit || 'heart') === (unit || 'heart')).map(b => b.id);
+const aulaOpen = block => aulas.isUnlocked(block.id, aulaUnitOrder(block.unit));
+const aulaItems = block => (block.questions || block.questionIds.map(id => aulasQuestions.get(id))).filter(Boolean);
+const REVIEW_INTERVAL_MS = 3 * 24 * 60 * 60 * 1000;
+function startAula(block) {
+  if (!block?.cards.length || (AULAS.includes(block) && !aulaOpen(block))) return;
+  launch('aulas', { block, stage: 'study', cardIndex: 0 });
+}
+
+function renderAulasMap() {
+  if (!AULAS.length) return '';
+  const { blocks } = aulas.getProgress();
+  const groups = new Map();
+  for (const block of AULAS) {
+    const unit = block.unit || 'heart';
+    if (!groups.has(unit)) groups.set(unit, []);
+    const listInUnit = groups.get(unit);
+    const prev = listInUnit[listInUnit.length - 1]?.block;
+    listInUnit.push({ block, open: !prev || Boolean(blocks[prev.id]?.passed) });
+  }
+  const currentUnit = AULAS.find(block => !blocks[block.id]?.passed)?.unit || 'heart';
+  const nowMs = Date.now();
+  return `<section class="aulas-map" translate="no">
+    ${Array.from(groups, ([unit, entries]) => {
+      const completed = entries.filter(({ block }) => blocks[block.id]?.passed).length;
+      return `<details ${unit === currentUnit ? 'open' : ''}>
+        <summary><span>${escape(SLIDE_UNITS[unit]?.label || unit)}</span><small>${completed}/${entries.length}</small></summary>
+        <ol class="aulas-blocks">${entries.map(({ block, open }) => {
+      const record = blocks[block.id];
+      const reviewDue = Boolean(record?.passed && record.lastReviewedAt && nowMs - record.lastReviewedAt >= REVIEW_INTERVAL_MS);
+      const status = reviewDue ? aulaText('Review due', 'Revisar') : record?.passed ? aulaText('Passed', 'Concluído') : open ? aulaText('Ready', 'Disponível') : aulaText('Locked', 'Bloqueado');
+      const stateClass = record?.passed ? 'is-passed' : open ? 'aulas-available' : 'is-locked';
+      return `<li>${button(`<span>${escape(block.title)}</span><small>${record?.passed ? icon('check', 15) : ''}${status}</small>`, () => startAula(block),
+        { class: `aulas-block ${stateClass}`, disabled: !open })}</li>`;
+        }).join('')}</ol></details>`;
+    }).join('')}
+  </section>`;
+}
+
+function aulaScene(entry, unit, reveal = true, trail = []) {
+  const scene = entry.scene || SLIDE_UNITS[entry.unit || unit] || { visible: [], ghost: [], label: '' };
+  const ids = [...(entry.focus || [])];
+  if (reveal) ids.push(...(entry.reveal || []));
+  const focus = reveal || entry.highlight ? ids : [];
+  const trailIds = trail.flatMap(step => step.focus);
+  const palette = {};
+  const flowColor = blood => blood === 'venous' ? '#3b82f6' : '#ef4444';
+  if (entry.blood) {
+    for (const step of [...trail, entry]) {
+      for (const id of step.focus) palette[id] = flowColor(step.blood);
+    }
+    if (reveal) {
+      for (const id of entry.reveal || []) palette[id] = flowColor(entry.revealBlood || entry.blood);
+    }
+  }
+  const focusSet = new Set(focus);
+  const context = [...new Set([...(scene.ghost || []), ...(entry.ghost || [])])].filter(id => !focusSet.has(id));
+  const shown = [...scene.visible, ...trailIds, ...ids];
+  if (!shown.length) return;
+  setModel(shown, { title: scene.label, context, focus, palette, view: entry.view || scene.view || 'ant',
+    subtleContext: trailIds, controls: true, padding: 1.3, frameFocus: focus.length > 0 });
+}
+
+function changeAulaStage(stage) {
+  const state = activity;
+  stopTimers();
+  state.stage = stage;
+  const questions = aulaItems(state.block);
+  const previousSlides = stage === 'practice' ? slidesStats() : {};
+  const weakIds = new Set(questions.filter(question => previousSlides[question.id] === 0).map(question => question.id));
+  state.session = aulas.createSession({ mode: stage, blockId: state.block.id, questions, weakIds });
+  delete state.feedback;
+  render({ top: true, activate: true });
+}
+
+function updateAulasTimer() {
+  const clock = $('aulas-timer');
+  if (!clock || activity?.stage !== 'test') return;
+  const total = Math.max(0, Math.floor((Date.now() - activity.session.startedAt) / 1000));
+  clock.textContent = `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
+}
+
+function answerAula(index) {
+  const state = activity;
+  const { session } = state;
+  const question = session.current;
+  if (!question || state.feedback) return;
+  const testing = session.mode === 'test';
+  const correct = index === question.answer;
+  const hint = session.hintLevel;
+  if (!testing) state.feedback = { question, index, correct, hint };
+  aulas.answer(session, { correct });
+  if (aulasQuestions.has(question.id)) {
+    const stats = slidesStats();
+    stats[question.id] = Number(correct && !hint);
+    saveSlidesStats(stats);
+  }
+  if (testing && session.finished) {
+    state.stage = 'result';
+    stopTimers();
+    recordActivity();
+  }
+  render({ top: testing, activate: testing });
+  if (!testing) document.querySelector('.aulas-screen .primary')?.focus({ preventScroll: true });
+}
+
+function renderAulas() {
+  const state = activity;
+  const { block, stage } = state;
+  const labels = aulaStageLabel();
+  const activeStage = ['study', 'practice', 'test'].indexOf(stage === 'result' ? 'test' : stage);
+  const header = block.sequenceOnly ? '' : `<ol class="aulas-stages" aria-label="${aulaText('Lesson stages', 'Etapas da aula')}">${labels.map((label, index) =>
+    `<li ${index === activeStage ? 'aria-current="step"' : ''}>${index < activeStage ? icon('check', 14) : ''}${label}</li>`).join('')}</ol>`;
+  const back = button(aulaText('Back to map', 'Voltar ao mapa'), () => setPage('map'), { icon: 'arrow-left' });
+  if (stage === 'study') {
+    const index = state.cardIndex;
+    const card = block.cards[index];
+    const last = index === block.cards.length - 1;
+    aulaScene(card, block.unit || 'heart', true, card.blood ? block.cards.slice(0, index) : []);
+    const jump = target => { state.cardIndex = target; render({ top: true, activate: true }); };
+    const trail = block.sequence ? `<ol class="flow-track aulas-sequence" aria-label="${aulaText('Sequence steps', 'Etapas da sequência')}">${block.cards.map((step, index) =>
+      `<li ${index === state.cardIndex ? 'aria-current="step"' : ''}>${button(escape(step.short || step.title), () => jump(index),
+        { class: `flow-slot ${index === state.cardIndex ? 'current' : index < state.cardIndex ? 'done' : ''} ${step.blood || ''}` })}</li>`).join('')}</ol>` : '';
+    const legend = card.blood ? `<div class="flow-legend">
+      <span><i class="flow-dot venous" aria-hidden="true"></i>${aulaText('Oxygen-poor blood', 'Sangue pobre em oxigênio')}</span>
+      <span><i class="flow-dot arterial" aria-hidden="true"></i>${aulaText('Oxygen-rich blood', 'Sangue rico em oxigênio')}</span>
+    </div>` : '';
+    return `<div class="screen aulas-screen" translate="no">${header}
+      <h1>${escape(card.title)}</h1>
+      ${trail}${legend}
+      <div id="aulas-focus-bar" class="aulas-focus-bar" hidden></div>
+      ${richList(card.facts)}
+      ${block.unit === 'cardiogenesis'
+        ? `<p class="muted">${aulaText('The 3D model shows adult structures as reference points for development.', 'O modelo 3D mostra estruturas adultas como referências para entender o desenvolvimento.')}</p>`
+        : card.contextOnly || card.focus?.length === 0 ? `<p class="muted">${aulaText('The model shows the surrounding anatomy.', 'O modelo mostra a anatomia ao redor.')}</p>` : ''}
+      ${card.confusion ? `<p class="aulas-confusion"><strong>${aulaText('Common confusion', 'Confusão comum')}</strong> ${richText(card.confusion)}</p>` : ''}
+      <div class="actions">${back}
+        ${index ? button(block.sequence ? aulaText('Previous step', 'Etapa anterior') : aulaText('Previous card', 'Cartão anterior'), () => jump(index - 1)) : ''}
+        ${last && block.sequenceOnly ? '' : button(last ? aulaText('Start practice', 'Começar a prática') : block.sequence ? aulaText('Next step', 'Próxima etapa') : aulaText('Next card', 'Próximo cartão'), () => {
+          if (!last) return jump(index + 1);
+          aulas.completeStudy(block.id);
+          changeAulaStage('practice');
+        }, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}
+      </div></div>`;
+  }
+  const { session } = state;
+  if (stage === 'result') {
+    const { correct, total, score, passed, elapsedMs } = session.result;
+    const record = aulas.getProgress().blocks[block.id];
+    const placement = AULAS.indexOf(block);
+    const next = placement >= 0 ? AULAS[placement + 1] : null;
+    const misses = session.answers.filter(answer => !answer.correct).map(answer => aulaItems(block).find(question => question.id === answer.id)).filter(Boolean);
+    return `<div class="screen aulas-screen result" translate="no">${header}
+      <h1>${passed ? icon('check', 24) : ''} ${score}% · ${passed ? aulaText('Passed', 'Aprovado') : aulaText('Try again', 'Tente novamente')}</h1>
+      <p>${aulaText(`${correct} of ${total} correct · ${studyTime(elapsedMs / 1000)} · Best: ${record?.bestScore ?? score}%`, `${correct} de ${total} acertos · ${studyTime(elapsedMs / 1000)} · Melhor resultado: ${record?.bestScore ?? score}%`)}</p>
+      <p>${aulaText('Passing score: 90%.', 'Nota para aprovação: 90%.')}</p>
+      <div class="actions">${back}
+        ${button(aulaText('Practise again', 'Praticar de novo'), () => changeAulaStage('practice'))}
+        ${button(aulaText('Retake test', 'Refazer o teste'), () => changeAulaStage('test'))}
+        ${passed && next ? button(aulaText('Open next block', 'Abrir próximo bloco'), () => startAula(next), { class: 'primary', key: 'Enter' }) : ''}
+      </div>
+      ${misses.length ? `<h2>${aulaText('Review missed questions', 'Revisar questões erradas')}</h2>
+        <div class="detail-list">${misses.map(question => `<div><strong>${escape(question.q)}</strong>
+          <p>${escape(question.options[question.answer])}</p><p class="muted">${richText(question.why, { link3d: false })}</p></div>`).join('')}</div>` : ''}
+    </div>`;
+  }
+  const testing = stage === 'test';
+  if (session.finished && !state.feedback) {
+    return `<div class="screen aulas-screen" translate="no">${header}<h1>${escape(block.title)}</h1>
+      <p>${aulaText('You answered every question correctly without help.', 'Você respondeu a todas as questões corretamente e sem ajuda.')}</p>
+      <p>${aulaText('The test records your time, gives one attempt per question and has no hints. Pass with 90%.', 'O teste registra o tempo, dá uma tentativa por questão e não tem dicas. Para passar, obtenha 90%.')}</p>
+      <div class="actions">${back}${button(aulaText('Start timed test', 'Começar o teste cronometrado'), () => changeAulaStage('test'), { class: 'primary', key: 'Enter' })}</div>
+    </div>`;
+  }
+  const feedback = state.feedback;
+  const question = feedback?.question || session.current;
+  const right = feedback?.correct;
+  const name = question.options[question.answer];
+  const hint = feedback?.hint ?? session.hintLevel;
+  aulaScene(question, block.unit || 'heart', Boolean(feedback));
+  function advance() {
+    delete state.feedback;
+    render({ top: true, activate: true });
+  }
+  const refNum = ref => {
+    const m = String(ref || '').match(/^(R[12]-|[A-Z])(\d+)/);
+    return m ? [m[1], Number(m[2])] : null;
+  };
+  const matchCard = (blk, q) => {
+    const qRef = refNum(q.ref);
+    if (!qRef || !blk?.cards?.length) return null;
+    for (const c of blk.cards) {
+      for (const part of String(c.ref || '').split(',')) {
+        const bounds = part.trim().split(/[–-]/).map(s => s.trim()).filter(Boolean);
+        const start = refNum(bounds[0]);
+        if (!start || start[0] !== qRef[0]) continue;
+        const end = bounds[1] ? (refNum(bounds[1]) || [start[0], Number(bounds[1])]) : start;
+        if (qRef[1] >= start[1] && qRef[1] <= (end?.[1] ?? start[1])) return c;
+      }
+    }
+    return null;
+  };
+  const eliminated = (() => {
+    if (testing || feedback || hint < 1 || hint >= 3 || question.options.length < 4) return new Set();
+    const wrongs = question.options.map((_, i) => i).filter(i => i !== question.answer);
+    let hash = 0;
+    for (const ch of String(question.id)) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+    const keepWrong = wrongs[hash % wrongs.length];
+    return new Set(wrongs.filter(i => i !== keepWrong));
+  })();
+  const studyCard = !testing ? matchCard(block, question) : null;
+  const studyCardBody = c => `<strong>${escape(c.title)}${c.ref ? ` · Slide ${escape(c.ref)}` : ''}</strong>${richList(c.facts, { link3d: Boolean(feedback) })}${c.confusion ? `<p class="muted"><strong>${aulaText('Common confusion', 'Confusão comum')}:</strong> ${richText(c.confusion, { link3d: Boolean(feedback) })}</p>` : ''}`;
+  const learned = new Set(session.answers.filter(answer => answer.correct && !answer.assisted).map(answer => answer.id)).size;
+  const count = testing ? `${session.index + 1}/${session.total}` : aulaText(`${learned}/${session.total} learned`, `${learned}/${session.total} aprendidos`);
+  return `<div class="screen aulas-screen prompt" translate="no">${header}
+    <p class="aulas-count">${count}${testing ? ' · <time id="aulas-timer"></time>' : ''}</p>
+    <h1>${testing ? labels[2] : labels[1]}</h1>
+    <div class="quiz"><p class="question">${escape(question.q)}</p>
+      ${hint === 3 && !feedback ? `<form class="aulas-retype">
+        <label for="aulas-answer">${aulaText('Retype the answer', 'Digite a resposta novamente')} <strong>${escape(name)}</strong></label>
+        <input id="aulas-answer" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+        <button class="button" type="submit">${aulaText('Check answer', 'Conferir resposta')}</button>
+        <p id="aulas-retype-feedback" role="status"></p>
+      </form>` : `<div class="options">${question.options.map((option, index) => button(
+        `<span class="option-letter">${String.fromCharCode(65 + index)}</span>${escape(option)}`, () => answerAula(index), {
+          class: `option ${feedback && index === question.answer ? 'option-correct' : feedback && index === feedback.index ? 'option-wrong' : eliminated.has(index) ? 'option-eliminated' : ''}`, disabled: Boolean(feedback) || eliminated.has(index) })).join('')}</div>`}
+      ${feedback ? `<div id="aulas-focus-bar" class="aulas-focus-bar" hidden></div><p class="aulas-confusion" role="status"><strong>${right ? aulaText('Correct.', 'Correto.') : aulaText('Review the answer.', 'Revise a resposta.')}</strong>
+        ${richText(question.why)} ${!right || hint ? aulaText('You will see this question again.', 'Esta questão vai voltar na fila.') : ''}</p>
+        ${!right && studyCard ? `<details class="aulas-study-ref"><summary>${aulaText('Review study card', 'Rever cartão de estudo')}${studyCard.ref ? ` · Slide ${escape(studyCard.ref)}` : ''}</summary>${studyCardBody(studyCard)}</details>` : ''}` : ''}
+      ${!feedback && hint === 1 ? `<p class="muted" role="status">${aulaText('Two wrong options eliminated.', 'Duas alternativas incorretas eliminadas.')}</p>` : ''}
+      ${!feedback && hint === 2 ? (studyCard
+        ? `<div class="aulas-study-ref" role="status">${studyCardBody(studyCard)}</div>`
+        : `<p role="status">${aulaText('First letter', 'Primeira letra')}: ${escape(name.match(/\p{L}/u)?.[0] || name[0])}</p>`) : ''}
+    </div>
+    <div class="actions">${back}
+      ${!testing && !feedback && hint < 3 ? button([
+        aulaText('Eliminate 2 wrong options', 'Eliminar 2 incorretas'),
+        studyCard ? aulaText('Show study card', 'Ver cartão de estudo') : aulaText('Show first letter', 'Mostrar primeira letra'),
+        aulaText('Show answer to retype', 'Mostrar resposta para redigitar')
+      ][hint], () => {
+        aulas.useHint(session);
+        render();
+        ($('aulas-answer') || document.querySelector('.aulas-hint'))?.focus({ preventScroll: true });
+      }, { class: 'aulas-hint' }) : ''}
+      ${feedback ? button(aulaText('Continue', 'Continuar'), advance, { class: 'primary', key: 'Enter' }) : ''}
+    </div></div>`;
+}
+
+document.addEventListener('submit', event => {
+  if (!event.target.matches('.aulas-retype')) return;
+  event.preventDefault();
+  const question = activity?.session?.current;
+  if (!question) return;
+  const input = $('aulas-answer');
+  if (fold(input.value.trim()) !== fold(question.options[question.answer])) {
+    $('aulas-retype-feedback').textContent = aulaText('Match the answer shown above.', 'Digite a resposta como aparece acima.');
+    input.focus();
+    return;
+  }
+  answerAula(question.answer);
+});
 
 function renderLevelRow(level, selected) {
   const open = unlocked(level);
@@ -1380,199 +1975,109 @@ function startRelations(level) {
   launch('quiz', { level, questions, index: 0, correct: 0, title: 'Relations', label: level.title });
 }
 
-function startTerritories(mode = 'all') {
-  const pool = mode === 'all' ? TERRITORIES : TERRITORIES.filter(entry => (entry.mode || 'standard') === mode);
-  launch('territories', { mode, questions: shuffle(pool), index: 0, correct: 0, log: [] });
+const SLIDES_KEY = `slides_stats_${pack.id || 'pack'}`;
+function slidesStats() {
+  try {
+    const value = JSON.parse(localStorage.getItem(SLIDES_KEY) || '{}');
+    return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+  } catch { return {}; }
+}
+function saveSlidesStats(stats) {
+  try { localStorage.setItem(SLIDES_KEY, JSON.stringify(stats)); } catch { /* Storage is optional. */ }
+}
+function slidesMastered(pool = SLIDE_QUESTIONS) {
+  const stats = slidesStats();
+  return `${pool.filter(entry => stats[entry.id] === 1).length}/${pool.length}`;
 }
 
-function renderTerritories() {
-  const state = activity;
-  const { questions, index, mode = 'all' } = state;
-  const question = questions[index];
-  const answered = state.answer !== undefined;
-  const isReverse = question.mode === 'reverse';
-  const baseIds = ['ad', 'ae', 'vd', 've', 'paredev', 'aoasc', 'arco', 'tp', 'vcs', 'vci'];
-  const focusIds = answered ? [...question.focus, ...(question.reveal || [])] : question.focus;
-  const visibleIds = [...new Set([...baseIds, ...focusIds])];
-  const palette = {};
-  if (isReverse) {
-    for (const id of question.focus) palette[id] = '#ff5a6a';
-    if (answered) for (const id of (question.reveal || [])) palette[id] = '#5b9dff';
-  } else {
-    for (const id of question.focus) palette[id] = '#5b9dff';
-    if (answered) for (const id of (question.reveal || [])) palette[id] = '#ff5a6a';
-  }
-  setModel(visibleIds, {
-    title: 'Coronary territories', context: ['aoasc', 'arco', 'tp', 'vcs', 'vci'],
-    focus: focusIds, palette, view: question.view, controls: true, padding: 1.22,
-    frameFocus: !answered, preserveCamera: answered,
-  });
-  function next() {
-    const correct = state.answer === question.answer;
-    if (correct) state.correct++;
-    state.log.push({ label: question.label, correct, answer: question.options[question.answer], why: question.why });
-    if (index + 1 === questions.length) {
-      recordActivity();
-      activity = { type: 'territoriesResults', mode, correct: state.correct, total: questions.length, log: state.log };
-    } else {
-      state.index++;
-      delete state.answer;
-    }
-    render({ top: true, activate: true });
-  }
-  const modeButton = (value, label) => button(label, () => startTerritories(value), { class: `mode-filter-btn ${mode === value ? 'chosen' : ''}` });
-  const legendMarkup = answered
-    ? `<div class="contrast-legend territory-legend"><span class="contrast-pill good"><i></i>${language === 'pt-BR' ? 'Território / estrutura' : 'Territory / structure'}</span><span class="contrast-pill bad"><i></i>${language === 'pt-BR' ? (isReverse ? 'Artéria ocluída' : 'Artéria culpada') : (isReverse ? 'Occluded artery' : 'Culprit artery')}</span>${question.ecg ? `<span class="ecg-pill" translate="no">ECG: ${escape(question.ecg)}</span>` : ''}</div>`
-    : isReverse
-      ? `<div class="contrast-legend territory-legend"><span class="contrast-pill bad"><i></i>${language === 'pt-BR' ? 'Artéria ocluída destacada' : 'Occluded artery highlighted'}</span></div>`
-      : '';
-  return `<div class="screen prompt"><div class="eyebrow"><span>Coronary territories · ${index + 1} of ${questions.length}</span> <span translate="no">· ${isReverse ? (language === 'pt-BR' ? 'Artéria ocluída → Território' : 'Occluded artery → Territory') : (language === 'pt-BR' ? 'Território → Artéria' : 'Territory → Artery')}</span></div>
-    <div class="territory-modes" role="group" aria-label="${language === 'pt-BR' ? 'Modo de prática' : 'Practice mode'}">
-      ${modeButton('all', language === 'pt-BR' ? 'Todos' : 'All')}
-      ${modeButton('standard', language === 'pt-BR' ? 'Território → Artéria' : 'Territory → Artery')}
-      ${modeButton('reverse', language === 'pt-BR' ? 'Artéria ocluída → Território' : 'Occluded artery → Territory')}
-    </div>
-    <h1>${escape(question.label)}</h1>
-    ${legendMarkup}
-    ${quizMarkup({ ...question, q: question.prompt }, state)}
-    <div class="actions">${answered ? button(index + 1 === questions.length ? 'See results' : 'Next case', next, { class: 'primary', key: 'Enter' }) : ''}</div></div>`;
+const territoryQuestions = TERRITORIES.map((question, index) => ({
+  ...question, id: `territory:${sourcePack.territories[index].prompt}`, q: question.prompt, highlight: true,
+}));
+const branchingQuestions = BRANCHES.map((question, index) => ({
+  ...question, id: `branch:${sourcePack.branches[index].prompt}`, q: question.prompt, highlight: true,
+  scene: BRANCH_GROUPS[question.group],
+}));
+const bloodFlowDrill = pack.createBloodFlowDrill?.(BLOOD_FLOW, aulaText);
+const aulaSequences = pack.createAulaSequences?.(aulaText) || [];
+const arteryTree = (pack.arteryTree || []).map(card => ({ ...card, scene: BRANCH_GROUPS[card.group] }));
+
+function startBloodFlow() { startAula(bloodFlowDrill); }
+
+function troubleQuestions() {
+  const trouble = aulas.getProgress().trouble;
+  const pool = new Map();
+  for (const question of [...SLIDE_QUESTIONS, ...territoryQuestions, ...branchingQuestions,
+    ...(bloodFlowDrill?.questions || []), ...aulaSequences.flatMap(sequence => sequence.questions || []),
+    ...AULAS.flatMap(block => block.questions || [])]) pool.set(String(question.id), question);
+  return Object.keys(trouble).map(id => pool.get(id)).filter(Boolean);
 }
 
-function renderTerritoryResults() {
-  const { correct, total, mode = 'all', log = [] } = activity;
-  return `<div class="screen result"><div class="eyebrow">Coronary territories</div>
-    <h1>${correct} of ${total}</h1>
-    <p>${correct === total ? 'Every territory matched its usual arterial supply.'
-      : 'Review the explanations, then run the cases again. Dominance changes the inferior and septal answers.'}</p>
-    <div class="actions">${button('Play again', () => startTerritories(mode), { class: 'primary', key: 'Enter' })}
-      ${button('Back to map', () => setPage('map'), { icon: 'arrow-left' })}</div>
-    <h2>Case review</h2>
-    <div class="detail-list">${log.map(entry => `<div><strong>${escape(entry.label)}</strong>
-      <p>${escape(entry.answer)}. ${escape(entry.why)}</p>
-      <span class="${entry.correct ? 'good' : 'bad'}">${entry.correct ? 'Correct' : 'Review'}</span></div>`).join('')}</div></div>`;
+function startTrouble() {
+  const questions = troubleQuestions();
+  if (!questions.length) return;
+  const title = aulaText('Trouble spots', 'Pontos fracos');
+  startAula({ id: 'drill-trouble', title, unit: 'heart', questions, cards: [{
+    id: 'trouble-intro', title, ref: '', focus: [],
+    facts: [aulaText(`${questions.length} questions you missed or needed help with, from every lesson and drill.`, `${questions.length} questões que você errou ou em que precisou de ajuda, de todas as aulas e treinos.`),
+      aulaText('Each one leaves this list after 2 right answers in a row without help.', 'Cada uma sai desta lista após 2 acertos seguidos sem ajuda.')],
+  }] });
 }
 
-function startBloodFlow() {
-  if (!BLOOD_FLOW.length) return;
-  launch('bloodflow', {
-    completed: 0,
-    choices: shuffle(BLOOD_FLOW.map((_, index) => index)),
-    misses: 0,
-    feedback: null,
-    wrongIndex: null,
-  });
+function startTerritories() {
+  const title = aulaText('Coronary territories', 'Territórios coronários');
+  const cards = AULAS.find(block => block.id === 'coronary')?.cards.slice(0, 4) || [];
+  const choices = [
+    ['all', aulaText('Both directions', 'Os dois sentidos')],
+    ['standard', aulaText('Territory to artery', 'Do território à artéria')],
+    ['reverse', aulaText('Artery to territory', 'Da artéria ao território')],
+  ];
+  openAulasCatalog(title, [{ entries: choices.map(([mode, label]) => ({
+    label, open: () => startAula({
+      id: `drill-territory-${mode}`, title: `${title} · ${label}`, unit: 'heart',
+      cards, questions: territoryQuestions.filter(question => mode === 'all' || question.mode === mode),
+    }),
+  })) }]);
 }
 
-function renderBloodFlow() {
-  const state = activity;
-  const steps = BLOOD_FLOW;
-  const done = state.completed >= steps.length;
-  const currentStep = state.completed > 0 ? steps[state.completed - 1] : null;
-  const heartContext = ['ad', 'ae', 'vd', 've', 'paredev', 'aoasc', 'arco', 'aodesc', 'tp', 'vcs', 'vci', 'vpsd', 'vpid', 'vpse', 'vpie'];
-  const chamberIds = new Set(['ad', 'vd', 'ae', 've', 'aoasc', 'tp']);
-  const activeCount = done ? steps.length : state.completed;
-  const palette = {};
-  for (let i = 0; i < activeCount; i++) {
-    const color = steps[i].blood === 'venous' ? '#3b82f6' : '#ef4444';
-    for (const id of steps[i].ids) palette[id] = color;
-  }
-  const prevIds = done ? [] : steps.slice(0, Math.max(0, state.completed - 1)).flatMap(s => s.ids);
-  const currentIsValve = currentStep && currentStep.view === 'sup';
-  const subtleContext = currentIsValve ? prevIds.filter(id => !chamberIds.has(id)) : prevIds;
-  const visibleIds = done
-    ? [...new Set(steps.flatMap(s => s.ids))]
-    : currentStep
-      ? [...new Set([...subtleContext, ...currentStep.ids])]
-      : [];
-  setModel(visibleIds, {
-    title: language === 'pt-BR' ? 'Trajeto do sangue' : 'Blood pathway',
-    context: done ? ['paredev'] : heartContext,
-    subtleContext,
-    subtleContextOpacity: .44,
-    focus: done ? [] : currentStep ? currentStep.ids : [],
-    palette,
-    paletteAll: true,
-    contextOpacity: .11,
-    view: done ? 'ant' : currentStep ? currentStep.view : 'ant',
-    controls: true,
-    padding: 1.24,
-    frameFocus: Boolean(currentStep) && !done,
-    preserveCamera: false,
-  });
+function startBranching() {
+  const title = aulaText('Artery branching', 'Ramificação das artérias');
+  const choices = [['all', aulaText('Entire tree', 'Árvore completa')],
+    ...Object.entries(BRANCH_GROUPS).map(([id, group]) => [id, group.label])];
+  openAulasCatalog(title, [{ entries: choices.map(([group, label]) => ({
+    label, open: () => startAula({
+      id: `drill-branch-${group}`, title: `${title} · ${label}`, unit: 'arteries',
+      cards: arteryTree.filter(card => group === 'all' || card.group === group),
+      questions: branchingQuestions.filter(question => group === 'all' || question.group === group),
+    }),
+  })) }]);
+}
 
-  function pickStep(choiceIndex) {
-    if (done) return;
-    if (choiceIndex === state.completed) {
-      correctSound();
-      state.completed++;
-      state.wrongIndex = null;
-      const step = steps[choiceIndex];
-      const stepTitle = step.label || step.short;
-      const finished = state.completed >= steps.length;
-      state.feedback = {
-        tone: 'good',
-        text: finished
-          ? (language === 'pt-BR' ? `Sequência completa! ${stepTitle}: ${step.note}` : `Pathway complete! ${stepTitle}: ${step.note}`)
-          : `${stepTitle}: ${step.note}`,
-      };
-      if (finished) recordActivity();
-    } else {
-      wrongKeySound();
-      state.misses++;
-      state.wrongIndex = choiceIndex;
-      const picked = steps[choiceIndex];
-      const prev = state.completed > 0 ? steps[state.completed - 1] : null;
-      state.feedback = {
-        tone: 'bad',
-        text: language === 'pt-BR'
-          ? (prev ? `Fora de ordem: você escolheu ${picked.short}. Após ${prev.short}, selecione a etapa ${state.completed + 1} de ${steps.length}.`
-            : `Fora de ordem: você escolheu ${picked.short}. Comece pela etapa 1 (entrada venosa sistêmica no coração).`)
-          : (prev ? `Out of order: you picked ${picked.short}. After ${prev.short}, select step ${state.completed + 1} of ${steps.length}.`
-            : `Out of order: you picked ${picked.short}. Start at step 1 (systemic venous return to the heart).`),
-      };
-    }
-    render();
-  }
+function startSlides() {
+  const title = aulaText("Professor's slides", 'Slides do professor');
+  openAulasCatalog(title, Object.entries(SLIDE_UNITS).map(([unit, info]) => ({
+    label: info.label,
+    entries: AULAS.filter(block => (block.unit || 'heart') === unit).map(block => ({
+      label: block.title, detail: aulaText(`${slidesMastered(aulaItems(block))} mastered`, `${slidesMastered(aulaItems(block))} dominadas`),
+      open: () => startAula({ ...block, id: `drill-slides-${block.id}` }),
+    })),
+  })));
+}
 
-  const slotsHtml = `<ol class="flow-track" aria-label="${language === 'pt-BR' ? 'Sequência do trajeto' : 'Pathway sequence'}">${steps.map((step, i) => {
-    if (i < state.completed) {
-      return `<li class="flow-slot done ${step.blood}" translate="no"><span>${i + 1}</span><b>${escape(step.short)}</b></li>`;
-    }
-    if (i === state.completed) {
-      return `<li class="flow-slot current"><span>${i + 1}</span><b>?</b></li>`;
-    }
-    return `<li class="flow-slot pending"><span>${i + 1}</span></li>`;
-  }).join('')}</ol>`;
+function openAulasCatalog(title, sections) {
+  launch('aulasCatalog', { title, sections });
+}
 
-  const choicesHtml = !done ? `<div class="flow-choices" role="group" aria-label="${language === 'pt-BR' ? 'Etapas disponíveis' : 'Available stages'}">${state.choices.map(stepIndex => {
-    const step = steps[stepIndex];
-    const completed = stepIndex < state.completed;
-    const isWrong = state.wrongIndex === stepIndex;
-    return button(`<span translate="no">${escape(step.short)}</span>`, () => pickStep(stepIndex), {
-      class: `flow-choice ${completed ? `done ${step.blood}` : ''} ${isWrong ? 'wrong' : ''}`,
-      disabled: completed,
-    });
-  }).join('')}</div>` : '';
-
-  const legendHtml = `<div class="flow-legend" role="note">
-    <span><i class="flow-dot venous" aria-hidden="true"></i>${language === 'pt-BR' ? 'Azul = sangue venoso (1–6)' : 'Blue = venous blood (1–6)'}</span>
-    <span><i class="flow-dot arterial" aria-hidden="true"></i>${language === 'pt-BR' ? 'Vermelho = sangue arterial (7–12)' : 'Red = arterial blood (7–12)'}</span>
-  </div>`;
-
-  return `<div class="prompt bloodflow-prompt">
-    <div class="eyebrow">${language === 'pt-BR' ? 'Trajeto do sangue' : 'Blood pathway'} · ${state.completed} ${language === 'pt-BR' ? 'de' : 'of'} ${steps.length}</div>
-    <h1>${done ? (language === 'pt-BR' ? 'Trajeto completo' : 'Pathway complete') : (language === 'pt-BR' ? 'Ordene o trajeto do sangue' : 'Order the blood pathway')}</h1>
-    ${legendHtml}
-    <p class="support">${done
-      ? (language === 'pt-BR' ? `Você concluiu as 12 etapas (${state.misses} ${state.misses === 1 ? 'erro' : 'erros'} de ordem).` : `You completed all 12 stages (${state.misses} out-of-order ${state.misses === 1 ? 'try' : 'tries'}).`)
-      : (language === 'pt-BR' ? `Clique nas estruturas na ordem exata do fluxo sanguíneo (etapa ${state.completed + 1} de ${steps.length}).` : `Click the structures in exact blood-flow sequence (step ${state.completed + 1} of ${steps.length}).`)}</p>
-    ${slotsHtml}
-    ${state.feedback ? `<p id="flow-feedback" class="feedback verdict ${state.feedback.tone}" role="status"><strong class="verdict-tag">${icon(state.feedback.tone === 'good' ? 'check' : 'x', 15)}${state.feedback.tone === 'good' ? (language === 'pt-BR' ? 'Correto' : 'Correct') : (language === 'pt-BR' ? 'Fora de ordem' : 'Out of order')}</strong> <span>${escape(state.feedback.text)}</span></p>` : '<p id="flow-feedback" class="feedback" role="status"></p>'}
-    ${choicesHtml}
-    <div class="actions">
-      ${button(language === 'pt-BR' ? 'Reiniciar' : 'Restart', startBloodFlow, { icon: 'rotate-ccw' })}
-      ${button('Back to map', () => setPage('map'), { class: done ? 'primary' : '', icon: 'arrow-left' })}
-    </div>
+function renderAulasCatalog() {
+  const { title, sections } = activity;
+  const entriesMarkup = entries => `<ul class="aulas-blocks">${entries.map(entry => `<li>${button(
+    `<span>${escape(entry.label)}</span>${entry.detail ? `<small>${escape(entry.detail)}</small>` : ''}`, entry.open,
+    { class: 'aulas-block' })}</li>`).join('')}</ul>`;
+  return `<div class="screen aulas-screen" translate="no">
+    <h1>${escape(title)}</h1>
+    <p>${aulaText('Choose what to study, practise and test.', 'Escolha o que estudar, praticar e testar.')}</p>
+    <div class="aulas-map">${sections.map(({ label, entries }, i) => label
+      ? `<details ${i === 0 ? 'open' : ''}><summary>${escape(label)}</summary>${entriesMarkup(entries)}</details>` : entriesMarkup(entries)).join('')}</div>
+    <div class="actions">${button(aulaText('Back to map', 'Voltar ao mapa'), () => setPage('map'), { icon: 'arrow-left' })}</div>
   </div>`;
 }
 
@@ -1827,9 +2332,9 @@ function renderTopic() {
   const { topic } = activity;
   const questions = (topic.mcq || []).filter(validQuestion).map(question => ({ question }));
   return `<div class="screen prompt"><div class="eyebrow">Theory</div><h1>${escape(topic.title)}</h1>
-    ${(topic.sections || []).map(section => `<div class="theory-section"><h2>${escape(section.h)}</h2>${list(section.bullets || [])}</div>`).join('')}
+    ${(topic.sections || []).map(section => `<div class="theory-section"><h2>${escape(section.h)}</h2>${richList(section.bullets || [], { link3d: false })}</div>`).join('')}
     ${topic.oral?.length ? `<h2>Oral questions</h2>${topic.oral.map(entry =>
-      `<details><summary>${escape(entry.q)}</summary>${list(entry.a || [])}</details>`).join('')}` : ''}
+      `<details><summary>${escape(entry.q)}</summary>${richList(entry.a || [], { link3d: false })}</details>`).join('')}` : ''}
     <div class="actions">${questions.length ? button('Take the quiz', () => launch('quiz', {
       topic, questions, index: 0, correct: 0, title: 'Theory quiz', label: topic.title,
     }), { class: 'primary' }) : ''}${button('Back to theory cards', () => setPage('theory'), { icon: 'arrow-left' })}</div></div>`;
@@ -1908,7 +2413,9 @@ function atlasDetailBody() {
   return `<p class="eyebrow">${focus.length > 1 ? `${focus.length} structures selected` : 'Selected structure'}</p>
     <h2>${escape(item.pt)}</h2>
     <p class="atlas-where">${escape(ATLAS_REGION[item.id] || item.deck.titulo)}</p>
+    ${meaningMarkup(item.id, true)}
     <p>${escape(cue)}</p>
+    ${slotsMarkup(item.id)}
     ${others.length ? `<p class="atlas-also">Also selected: ${others.map(escape).join(' · ')}</p>` : ''}
     <div class="actions"><button type="button" class="button" data-atlas-action="clear">${icon('x', 16)}Clear selection</button></div>`;
 }
@@ -2211,6 +2718,11 @@ document.addEventListener('click', event => {
     if (action.dataset.atlasAction === 'show') atlasSetAll(true);
     else if (action.dataset.atlasAction === 'hide') atlasSetAll(false);
     else if (action.dataset.atlasAction === 'clear') atlasClearFocus();
+    else if (action.dataset.atlasAction === 'meaning') {
+      meaningHints = !meaningHints;
+      try { localStorage.setItem('meaning_hints', meaningHints ? '1' : '0'); } catch (_) { /* session only */ }
+      atlasRenderDetail();
+    }
     return;
   }
   const name = event.target.closest('[data-atlas-id]');
@@ -2303,14 +2815,14 @@ document.addEventListener('keydown', event => {
       return;
     }
   }
-  const quiz = (activity?.type === 'lesson' || activity?.type === 'quiz' || activity?.type === 'territories') && document.querySelector('.quiz');
+  const quiz = ['lesson', 'quiz', 'aulas'].includes(activity?.type) && document.querySelector('.quiz');
   if (quiz && !target.closest?.('input, textarea, select, [contenteditable]')) {
     const letter = key.toLowerCase();
     const choices = 'abcd';
     const numbers = '1234';
     const index = key.length === 1 ? Math.max(choices.indexOf(letter), numbers.indexOf(key)) : -1;
     const option = quiz.querySelectorAll('.option')[index];
-    const action = key === 'Enter' && activity.answer !== undefined && (!control || control.matches('.prompt .primary'))
+    const action = key === 'Enter' && (activity.answer !== undefined || activity.feedback) && (!control || control.matches('.prompt .primary'))
       ? shortcuts.get('Enter') : null;
     if ((option && !option.disabled) || action) {
       event.preventDefault();
