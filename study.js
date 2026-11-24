@@ -18,17 +18,20 @@ export let IDS = [];
 export let REGIONS = [];
 export let LEVELS = [];
 export let REGION_CONTEXT = {};
+export let NEIGHBOR_MAP = {};
 export let storagePrefix = 'sc2_';
 export let subjectId = 'cardio';
 
 export function initStudy(pack, { structureNames = {} } = {}) {
   subjectId = pack.id;
   storagePrefix = pack.storagePrefix || 'sc2_';
+  NEIGHBOR_MAP = pack.neighborMap || {};
   ITEMS = Object.fromEntries(pack.decks.flatMap(deck => deck.itens.map(item => {
     const name = structureNames[item.id] || item.pt;
     return [item.id, { ...item, deck,
       pt: name.replace(/\s*\([^)]*\)/g, '').trim(),
       tag: name.match(/\([^)]*\)\s*$/)?.[0] || '',
+      abbr: pack.clinicalAbbr?.[item.id] || item.abbr || '',
       typing: name.replace(/\s*\([^)]*\)/g, '').trim(),
       alt: structureNames[item.id] ? [...(item.alt || []), item.pt] : item.alt,
     }];
@@ -173,9 +176,36 @@ export class Recall {
       this.queue.splice(Math.min(this.queue.length, this.index + 3), 0, this.id);
       result.retries[this.id] = retries + 1;
     }
-    const near = !reveal && names.some(name => name.length > 2 && distance(name, guess) <= 2);
-    const confusion = !reveal && !near && this.item.deck.itens.find(other =>
-      other.id !== this.id && answers(other.id).includes(guess));
+    const findConfusion = () => {
+      const candidates = [
+        ...(NEIGHBOR_MAP[this.id] || []).map(id => ITEMS[id]).filter(Boolean),
+        ...this.item.deck.itens,
+        ...(this.kind === 'level' ? this.ids.map(id => ITEMS[id]).filter(Boolean) : []),
+      ];
+      const unique = [];
+      const seen = new Set([this.id]);
+      for (const other of candidates) {
+        if (!other || seen.has(other.id) || !ITEMS[other.id]) continue;
+        seen.add(other.id);
+        unique.push(ITEMS[other.id]);
+      }
+      for (const other of unique) {
+        if (answers(other.id).includes(guess)) return other;
+      }
+      if ((this.round === 2 || this.hint) && guess.length > 1) {
+        const firstChar = answerKey((this.item.typing || this.item.pt || '')[0] || '');
+        if (firstChar) {
+          for (const other of unique) {
+            if (answers(other.id).some(name => name.length > 1 && name[0] === firstChar && name.slice(1) === guess)) {
+              return other;
+            }
+          }
+        }
+      }
+      return undefined;
+    };
+    const confusion = !reveal ? findConfusion() : undefined;
+    const near = !reveal && !confusion && names.some(name => name.length > 2 && distance(name, guess) <= 2);
     this.feedback = { correct, near, confusion, requeued, reveal, guess: this.typed.trim() };
   }
 

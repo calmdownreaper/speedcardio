@@ -816,6 +816,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
   function applyStyles() {
     const primary = new Set(current.ids || []);
     const context = new Set(current.context || []);
+    const subtleContext = new Set(current.subtleContext || []);
     const highlight = new Set(current.focus || []);
     const faint = new Set(current.faint || []);
     const anchors = new Set(current.anchors || []);
@@ -872,14 +873,17 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
       } else {
         // Lessons give every structure of the level its own colour (matching its chip).
         const own = current.palette?.[id];
-        const coloured = own && (active || current.paletteAll);
+        const isSubtle = !active && subtleContext.has(id);
+        const coloured = own && (active || current.paletteAll || isSubtle);
         material.color.set(coloured ? own : active ? select : baseColor(id));
-        if (coloured) material.emissive.set(own).multiplyScalar(active ? .32 : .12);
+        if (coloured) material.emissive.set(own).multiplyScalar(active ? .32 : isSubtle ? .20 : .12);
         else material.emissive.copy(active ? selectDeep : off);
         material.emissiveIntensity = active || coloured ? 1 : 0;
-        material.opacity = active ? 1 : primary.has(id)
-          ? (current.pick ? (id === 'paredev' ? .2 : .88) : highlight.size ? .18 : id === 'paredev' ? (current.paletteAll ? .16 : .28) : 1)
-          : faint.has(id) ? .04 : (current.contextOpacity ?? .10);
+        material.opacity = active ? 1 : isSubtle
+          ? (current.subtleContextOpacity ?? .48)
+          : primary.has(id)
+            ? (current.pick ? (id === 'paredev' ? .2 : .88) : highlight.size ? .18 : id === 'paredev' ? (current.paletteAll ? .16 : .28) : 1)
+            : faint.has(id) ? .04 : (current.contextOpacity ?? .10);
         if (!active && highlight.size) material.opacity *= display.ghost;
       }
       if (regionMode) {

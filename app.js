@@ -30,7 +30,7 @@ try { savedLanguage = localStorage.getItem('anatomy_language') || 'en'; } catch 
 const requestedLanguage = new URLSearchParams(location.search).get('lang');
 const language = ['en', 'pt-BR'].includes(requestedLanguage) ? requestedLanguage : savedLanguage === 'pt-BR' ? 'pt-BR' : 'en';
 const sourcePack = (await subject.load()).default;
-const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=91') : null;
+const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=92') : null;
 const pack = localization ? localization.localizePack(sourcePack) : sourcePack;
 document.documentElement.lang = language;
 initStudy(pack);
@@ -39,6 +39,9 @@ document.documentElement.dataset.subject = pack.id;
 
 const material = pack.content;
 const TERRITORIES = pack.territories || [];
+const BLOOD_FLOW = pack.bloodFlow || [];
+const VEIN_ARTERY_PAIRS = pack.veinArteryPairs || {};
+const PAIR_CONTRASTS = pack.pairContrasts || {};
 const LESSONS = pack.lessons || {};
 const REGION_PURPOSES = pack.regionPurposes || {};
 const ATLAS_IDS = pack.atlasIds || IDS;
@@ -77,7 +80,7 @@ const studyTime = seconds => {
 const dateSeries = (count, offset = 0) => Array.from({ length: count }, (_, index) => day(index - count + 1 + offset));
 const progress = readProgress();
 const regions = Object.fromEntries(REGIONS.map(region => [region.id, region]));
-const orientation = { id: 'orientation', title: 'Orientation' };
+const orientation = { id: 'orientation', title: 'Orientation', area: 'Heart' };
 // The curriculum cross-lists a few mediastinal structures under Great vessels.
 // Give each structure one Atlas home (its last region) so rows and counts agree.
 const ATLAS_GROUP_OF = new Map();
@@ -254,6 +257,7 @@ function render({ top = false, activate = false } = {}) {
     ? { orientation: renderOrientation, lesson: renderLesson, recall: renderRecall, round: renderRoundEnd,
       results: renderRecallResults, find: renderFind, quiz: renderQuiz, oral: renderOral, topic: renderTopic,
       territories: renderTerritories, territoriesResults: renderTerritoryResults,
+      bloodflow: renderBloodFlow,
       mock: renderMock, mockResults: renderMockResults, complete: renderComplete }[activity.type]
     : { map: renderMap, atlas: renderAtlas, daily: renderDaily, theory: renderTheory, progress: renderProgress }[page];
   const html = renderer();
@@ -331,6 +335,8 @@ function modelLoaded() {
 
 function updateModel() {
   if (!model) {
+    const orientHint = $('model-orient-hint');
+    if (orientHint) orientHint.hidden = true;
     if (pack.markers && Object.keys(pack.markers).length) viewer?.paint({ ids: [] }, true);
     viewer?.focusAxis(false);
     return;
@@ -352,6 +358,12 @@ function updateModel() {
   // entries can request landmarks. Context and anchors are mesh support.
   const markerIds = (model.atlas ? model.ids : [...model.focus, model.markerTarget])
     .filter(id => pack.markers?.[id]);
+  const orientHint = $('model-orient-hint');
+  if (orientHint) {
+    const showHint = Boolean(model.orientHint) && (!model.orientHintForView || model.view === model.orientHintForView);
+    orientHint.hidden = !showHint;
+    orientHint.textContent = showHint ? model.orientHint : '';
+  }
   viewer?.paint({ ...config, markerIds }, model.preserveCamera && !refocus);
   viewer?.focusAxis(activity?.type === 'orientation' && activity.index === 0);
 }
@@ -422,6 +434,7 @@ function renderOrientation() {
     ${step?.choice === 'valves' ? `<div class="actions" aria-label="Choose exit valve">${button('Pulmonary valve', () => focusGroup(['pulm_ant_d', 'pulm_ant_e', 'pulm_post'], 'Pulmonary valve'))}${button('Aortic valve', () => focusGroup(['ao_ant', 'ao_post_e', 'ao_post_d'], 'Aortic valve'))}</div>` : ''}
     ${index === ORIENTATION.length - 1 ? `<h2>Landmarks you learned</h2>${list(['Base: the superior-posterior part, marked by the left atrium', 'Apex: the pointed tip of the left ventricle', 'Anterior: the broad right ventricle', 'Right border: the right atrium between two large veins', 'Exit vessels and valves: pulmonary trunk and aorta', 'Posterior and surface vessels: pulmonary veins, coronary sinus, LAD and great cardiac vein', 'Lungs: right three lobes, left two with the lingula', 'Airway: trachea divides at the carina; the right bronchus is steeper', 'Posterior mediastinum: esophagus behind the left atrium, descending aorta to its left'])}` : ''}
     <div class="actions">${index ? button('Previous view', () => move(-1), { icon: 'arrow-left' }) : ''}
+      ${index === ORIENTATION.length - 1 && BLOOD_FLOW.length ? button('Blood pathway', startBloodFlow, { icon: 'route' }) : ''}
       ${step && index + 1 < ORIENTATION.length ? button('Next view', () => move(1), { key: 'Enter', class: 'primary', iconEnd: 'arrow-right' })
         : button('Start Level 1', finish, { key: 'Enter', class: 'primary', iconEnd: 'arrow-right' })}
     </div></div>`;
@@ -472,9 +485,23 @@ function contrastFor(level) {
   };
 }
 function lessonView(level) {
+  if (level.id === 'valvas-2') return 'sup';
   if (level.region === 'veias' || level.id === 'mediastino-1') return 'post';
   if (level.id === 'mediastino-2') return 'inf';
   return 'ant';
+}
+function isLungSegmentRegion(regionId) {
+  return regionId === 'segd' || regionId === 'sege';
+}
+function lobeLegendMarkup() {
+  return language === 'pt-BR'
+    ? `<div class="lobe-legend" role="note"><span class="lobe-legend-label">Lobos:</span><span><i class="lobe-dot sup" aria-hidden="true"></i>Verde = superior</span><span><i class="lobe-dot mid" aria-hidden="true"></i>Âmbar = médio / língula</span><span><i class="lobe-dot inf" aria-hidden="true"></i>Azul = inferior</span></div>`
+    : `<div class="lobe-legend" role="note"><span class="lobe-legend-label">Lobes:</span><span><i class="lobe-dot sup" aria-hidden="true"></i>Green = superior</span><span><i class="lobe-dot mid" aria-hidden="true"></i>Amber = middle / lingula</span><span><i class="lobe-dot inf" aria-hidden="true"></i>Blue = inferior</span></div>`;
+}
+function paredevHintMarkup() {
+  return `<aside class="wall-hint" role="note">${language === 'pt-BR'
+    ? 'Parede muscular compartilhada (paredes livres + septo) que envolve os dois ventrículos — não é uma das cavidades.'
+    : 'Shared muscular wall (free walls + septum) enclosing both ventricles — not one of the four cavities.'}</aside>`;
 }
 function findTargets(level) {
   const targets = level.ids.filter(id => id !== 'paredev');
@@ -484,31 +511,49 @@ function findTargets(level) {
 const LESSON_PALETTE = ['#ffd84a', '#4dd0e1', '#ff7ab6', '#8bd450', '#b18cff', '#ff9f43',
   '#5b9dff', '#2ee6a6', '#f25f5c', '#e8e3d0', '#c0ca33', '#ff6bd6'];
 function levelPalette(level) {
+  if (isLungSegmentRegion(level.region) && pack.baseColor) {
+    return Object.fromEntries(level.ids.map(id => [id, pack.baseColor(id)]));
+  }
   return Object.fromEntries(level.ids.map((id, index) => [id, LESSON_PALETTE[index % LESSON_PALETTE.length]]));
 }
-const swatch = (level, id) => `<i class="swatch" style="--swatch:${levelPalette(level)[id] || 'var(--mute)'}" aria-hidden="true"></i>`;
-function levelContext(level) {
+const swatch = (level, id, color) => `<i class="swatch" style="--swatch:${color || levelPalette(level)[id] || 'var(--mute)'}" aria-hidden="true"></i>`;
+function levelContext(level, { subtleArteries = [], arteryColors = {} } = {}) {
   const markerOnly = level.ids.every(id => pack.markers?.[id]);
   const regionMeshes = markerOnly
     ? regions[level.region]?.ids.filter(id => !pack.markers?.[id] && !level.ids.includes(id)) || []
     : [];
-  const context = markerOnly
+  const baseContext = markerOnly
     ? [...new Set([...(ITEMS[level.ids[0]]?.deck.ctx || []), ...regionMeshes])]
     : REGION_CONTEXT[level.region] || ITEMS[level.ids[0]]?.deck.ctx || [];
+  const context = [...new Set([...baseContext, ...subtleArteries])];
+  const extras = {};
+  if (level.id === 'valvas-2') {
+    extras.subtleContext = ['aoasc', 'tp'];
+    extras.subtleContextOpacity = .24;
+    extras.orientHint = language === 'pt-BR' ? 'Anterior: pulmonar · Posterior: aórtica' : 'Anterior: pulmonary · Posterior: aortic';
+    extras.orientHintForView = 'sup';
+  } else if (subtleArteries.length) {
+    extras.subtleContext = subtleArteries;
+    extras.subtleContextOpacity = .46;
+    extras.extraPalette = arteryColors;
+  }
   return {
     context,
     ...(markerOnly ? { contextOpacity: .42, padding: 1.08 } : {}),
+    ...extras,
   };
 }
 function levelModel(level, options = {}) {
-  const base = levelContext(level);
+  const { extraPalette, ...base } = levelContext(level, options.veinContext);
+  const { veinContext: _ignored, ...modelOptions } = options;
+  const palette = { ...levelPalette(level), ...(extraPalette || {}), ...(modelOptions.palette || {}) };
   setModel(level.ids, {
-    palette: levelPalette(level),
-    title: level.title,
     ...base,
+    palette,
+    title: level.title,
     faint: REGION_CONTEXT[level.region] ? SKELETON_IDS : undefined,
     padding: base.padding || (level.region === 'mediastino' ? 1.32 : 1.26),
-    ...options,
+    ...modelOptions,
   });
 }
 function shuffledQuestion(question) {
@@ -605,7 +650,21 @@ function renderLesson() {
   const total = level.ids.length;
   const contrast = contrastFor(level);
   const top = lessonStepper(level, stage, activity.mode);
-  const chip = (key, chosen, run) => button(`${swatch(level, key)}${escape(ITEMS[key].pt)}`, run, { class: `chip-swatch ${chosen ? 'chosen' : ''}` });
+  const lungSeg = isLungSegmentRegion(level.region);
+  const chipColor = key => lungSeg ? pack.baseColor?.(key) : undefined;
+  const chip = (key, chosen, run) => button(`${swatch(level, key, chipColor(key))}${escape(ITEMS[key].pt)}`, run, { class: `chip-swatch ${chosen ? 'chosen' : ''}` });
+  if (level.region === 'veias' && activity.showVeinsArteries === undefined) activity.showVeinsArteries = true;
+  const veinContextFor = targetIds => {
+    if (level.region !== 'veias' || !activity.showVeinsArteries) return undefined;
+    const subtleArteries = [...new Set(targetIds.flatMap(id => VEIN_ARTERY_PAIRS[id]?.arteries || []).filter(id => ITEMS[id]))];
+    if (!subtleArteries.length) return undefined;
+    return { subtleArteries, arteryColors: Object.fromEntries(subtleArteries.map(id => [id, '#e05a52'])) };
+  };
+  const veinToggleMarkup = () => level.region === 'veias'
+    ? `<div class="vein-tools">${button(activity.showVeinsArteries ? (language === 'pt-BR' ? 'Ocultar artérias acompanhantes' : 'Hide accompanying arteries') : (language === 'pt-BR' ? 'Mostrar artérias acompanhantes' : 'Show accompanying arteries'), () => {
+      activity.showVeinsArteries = !activity.showVeinsArteries;
+      render();
+    }, { class: 'vein-toggle', icon: activity.showVeinsArteries ? 'eye-off' : 'eye' })}</div>` : '';
   const startRounds = () => {
     progress.levels[level.id] = { ...savedLevel(level.id), lesson: true };
     saveProgress(progress);
@@ -630,12 +689,17 @@ function renderLesson() {
     activity.index = index;
     const id = level.ids[index];
     const item = ITEMS[id];
-    levelModel(level, { view: teachingView(id), controls: true, explore: true, focus: [id], close: true, markerLabels: true });
+    levelModel(level, { view: teachingView(id), controls: true, explore: true, focus: [id], close: true, markerLabels: true, veinContext: veinContextFor([id]) });
     const last = index + 1 === total;
     const clinical = LESSONS[id]?.clinical || detailFor(id).clinical;
+    const pair = level.region === 'veias' ? VEIN_ARTERY_PAIRS[id] : null;
     return `<div class="prompt lesson-structure">${top}
       <div class="eyebrow">${memorize ? 'Memorize' : 'Learn'} · ${escape(level.title)} · ${index + 1} of ${total}</div>
-      <h1>${swatch(level, id)}${escape(item.pt)} ${item.tag ? `<small>${escape(item.tag)}</small>` : ''}</h1>
+      <h1>${swatch(level, id, chipColor(id))}${escape(item.pt)}${item.tag ? ` <small translate="no">${escape(item.tag)}</small>` : ''}${item.abbr ? ` <small class="clinical-abbr" translate="no">${escape(item.abbr)}</small>` : ''}</h1>
+      ${lungSeg ? lobeLegendMarkup() : ''}
+      ${id === 'paredev' ? paredevHintMarkup() : ''}
+      ${pair ? `<div class="pair-badge">${language === 'pt-BR' ? 'Artéria acompanhante:' : 'Accompanying artery:'} <strong translate="no">${escape(pair.label)}</strong></div>` : ''}
+      ${veinToggleMarkup()}
       ${memorize ? `<p class="lesson-body">${markdown(detailFor(id).text)}</p>` : lessonBlocks(id)}
       ${clinical && !memorize ? `<aside class="clinical-note"><span class="clinical-label">Clinical note</span><p>${escape(clinical)}</p></aside>` : ''}
       ${level.region === 'mediastino' ? '<p class="support">Small vessel? Use Isolate to show only the highlighted structure.</p>' : ''}
@@ -673,12 +737,13 @@ function renderLesson() {
     return `<div class="prompt lesson-find">${top}
       <div class="eyebrow">${memorize ? 'Memorize' : 'Learn'} · Find them · ${found.length} of ${order.length}</div>
       <h1>${allFound ? 'All found' : `Click the <span class="target-name">${escape(ITEMS[target].pt)}</span>`}</h1>
+      ${lungSeg ? lobeLegendMarkup() : ''}
       <p class="support">${!ready ? 'Loading the 3D region…' : allFound ? completion : 'Rotate or zoom if it is hidden. Wrong clicks tell you what you touched.'}</p>
       <div class="find-meter" role="progressbar" aria-valuemin="0" aria-valuemax="${order.length}" aria-valuenow="${found.length}" aria-label="Structures found"><span class="find-bar" style="width:${Math.round(found.length / order.length * 100)}%"></span></div>
       <p id="find-feedback" class="feedback ${feedback?.tone || ''}" role="status">${feedback ? escape(feedback.text) : ''}</p>
       <ul class="find-list" aria-label="Structures to find">${order.map(id => {
         const done = found.includes(id);
-        return `<li class="find-chip${done ? ' found' : ''}${id === target ? ' current' : ''}">${done ? swatch(level, id) : '<i class="swatch empty" aria-hidden="true"></i>'}<span>${escape(ITEMS[id].pt)}</span></li>`;
+        return `<li class="find-chip${done ? ' found' : ''}${id === target ? ' current' : ''}">${done ? swatch(level, id, chipColor(id)) : '<i class="swatch empty" aria-hidden="true"></i>'}<span>${escape(ITEMS[id].pt)}</span></li>`;
       }).join('')}</ul>
       ${order.length < total ? '<p class="support">The ventricular wall wraps the others, so it is not part of this task.</p>' : ''}
       ${viewerStatus !== 'ready' ? `<p class="support" role="status">${viewerStatus === 'loading' ? 'Waiting for the 3D model…' : 'The 3D model is required to find structures.'}</p>` : ''}
@@ -750,14 +815,17 @@ function renderLesson() {
     </div>`;
   }
 
-  levelModel(level, { view: lessonView(level), controls: true, explore: true, paletteAll: true, markerLabels: true });
+  levelModel(level, { view: lessonView(level), controls: true, explore: true, paletteAll: !lungSeg, markerLabels: true, veinContext: veinContextFor(level.ids) });
   return `<div class="prompt lesson-overview">${top}
     <div class="eyebrow">${escape(regions[level.region]?.title || '')} · Learn</div>
     <h1>${escape(level.title)}</h1>
     <p class="lesson-body">${escape(overviewFor(level))}</p>
+    ${lungSeg ? lobeLegendMarkup() : ''}
+    ${level.id === 'camaras-1' ? paredevHintMarkup() : ''}
+    ${level.region === 'veias' ? `<div class="pair-badge">${language === 'pt-BR' ? 'Pares venosos-arteriais:' : 'Vein–artery pairs:'} <span translate="no">${language === 'pt-BR' ? 'Magna ↔ DA/Cx · Média ↔ DP · Parva ↔ ACD' : 'Great ↔ LAD/LCx · Middle ↔ PDA · Small ↔ RCA'}</span></div>${veinToggleMarkup()}` : ''}
     <h2 class="legend-title">${plural(total, 'structure')} in this level</h2>
     <div class="chips legend">${level.ids.map(id => chip(id, false, () => focusStructure(id))).join('')}</div>
-    <p class="support">Each colour stays with its structure for the whole lesson. Click a name to light it alone.</p>
+    <p class="support">${lungSeg ? (language === 'pt-BR' ? 'As cores representam os lobos pulmonares. Clique em um nome para destacar o segmento isolado.' : 'Colours match the lung lobes. Click a name to highlight that segment alone.') : 'Each colour stays with its structure for the whole lesson. Click a name to light it alone.'}</p>
     <div class="actions">${button('Learn the structures', () => jump(0), { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}</div>
   </div>`;
 }
@@ -768,7 +836,10 @@ function renderMap() {
   const level = region?.levels.find(item => item.id === selectedLevel) || region?.levels[0];
   const levels = [...(ORIENTATION.length ? [orientation] : []), ...requiredLevels()];
   const done = levels.filter(passedLevel).length;
-  const map = [...(ORIENTATION.length ? [{ id: 'orientation', title: 'Orientation' }] : []), ...REGIONS];
+  const heartArea = REGIONS.find(r => ['camaras', 'vasos', 'valvas', 'coronarias', 'veias'].includes(r.id))?.area
+    || (language === 'pt-BR' ? 'Coração' : 'Heart');
+  const map = [...(ORIENTATION.length ? [{ id: 'orientation', title: 'Orientation', area: heartArea }] : []), ...REGIONS];
+  const groupedAreas = Boolean(pack.groupMapByArea) || new Set(REGIONS.map(r => r.area).filter(Boolean)).size < REGIONS.length;
   function chooseRegion(id) {
     selectedRegion = id;
     selectedLevel = regions[id]?.levels.find(item => unlocked(item) && !passedLevel(item))?.id;
@@ -795,6 +866,34 @@ function renderMap() {
   const mode = (iconName, title, text, action) => `<article class="mode-card">
       <div class="mode-icon">${icon(iconName, 18)}</div>
       <div class="mode-text"><h2>${title}</h2><p>${text}</p></div>${action}</article>`;
+  const stopMarkup = (entry, index) => {
+    const required = entry.levels?.filter(item => !item.bonus) || [];
+    const count = required.filter(passedLevel).length;
+    const status = entry.levels ? `${count}/${required.length}` : savedLevel(entry.id).passed ? icon('check', 14) : '';
+    return button(`<span class="path-num">${String(index + 1).padStart(2, '0')}</span><span class="path-body"><b>${escape(entry.title)}</b><small>${escape(REGION_PURPOSES[entry.id])}</small></span><span class="path-count">${status}</span>`,
+      () => chooseRegion(entry.id), { class: `path-stop ${entry.id === selectedRegion ? 'chosen' : ''}` });
+  };
+  let regionsMarkup;
+  if (groupedAreas) {
+    const areaGroups = [];
+    const byArea = new Map();
+    map.forEach((entry, index) => {
+      const areaName = entry.area || (language === 'pt-BR' ? 'Outros' : 'Other');
+      if (!byArea.has(areaName)) {
+        const group = { area: areaName, items: [] };
+        byArea.set(areaName, group);
+        areaGroups.push(group);
+      }
+      byArea.get(areaName).items.push({ entry, index });
+    });
+    regionsMarkup = `<div class="map-areas" aria-label="Curriculum regions">${areaGroups.map(group => `
+      <section class="map-area" aria-label="${escape(group.area)}">
+        <h3 class="map-area-title"${language === 'pt-BR' ? ' translate="no"' : ''}>${escape(group.area)}</h3>
+        <div class="path">${group.items.map(({ entry, index }) => stopMarkup(entry, index)).join('')}</div>
+      </section>`).join('')}</div>`;
+  } else {
+    regionsMarkup = `<div class="path" aria-label="Curriculum regions">${map.map(stopMarkup).join('')}</div>`;
+  }
   return `<div class="map-content">
     <div class="page-head map-head"><h1>${escape(pack.mapHeading || `${pack.name} map`)}</h1>
       <div class="progress-line"><span style="--pct:${pct}%"></span></div>
@@ -802,18 +901,13 @@ function renderMap() {
     <div class="modes" aria-label="Study modes">
       ${mode('arrow-right', next ? escape(next.title) : LEVELS.some(level => level.bonus) ? 'Required levels passed' : 'All levels passed', next?.id === 'orientation' ? 'Start here: directions and landmarks.' : 'Your next level on the path.',
         next ? button(nextLabel, () => next.id === 'orientation' ? startOrientation() : openLevel(next), { class: 'primary', iconEnd: 'arrow-right' }) : button('Open Daily', () => setPage('daily'), { class: 'primary' }))}
-      ${TERRITORIES.length ? mode('crosshair', 'Coronary territories', 'Match each wall to its artery.', button('Practice', startTerritories)) : ''}
+      ${BLOOD_FLOW.length ? mode('route', language === 'pt-BR' ? 'Trajeto do sangue' : 'Blood pathway', language === 'pt-BR' ? 'Ordene as 12 etapas do sangue venoso e arterial no modelo 3D.' : 'Order the 12-step path of venous and arterial blood in 3D.', button('Practice', () => startBloodFlow())) : ''}
+      ${TERRITORIES.length ? mode('crosshair', 'Coronary territories', 'Match each wall to its artery.', button('Practice', () => startTerritories())) : ''}
       ${mode('calendar', 'Structure of the day', 'One structure from memory.', button('Recall', () => startDailyStructure()))}
       ${mode('rotate-cw', 'All structures', `${IDS.length} structures · one continuous recall, including unstudied material.`, button('Recall all', () => startFullRecall()))}
     </div>
     <h2 class="section-title">Regions</h2>
-    <div class="path" aria-label="Curriculum regions">${map.map((entry, index) => {
-      const required = entry.levels?.filter(item => !item.bonus) || [];
-      const count = required.filter(passedLevel).length;
-      const status = entry.levels ? `${count}/${required.length}` : savedLevel(entry.id).passed ? icon('check', 14) : '';
-      return button(`<span class="path-num">${String(index + 1).padStart(2, '0')}</span><span class="path-body"><b>${escape(entry.title)}</b><small>${escape(REGION_PURPOSES[entry.id])}</small></span><span class="path-count">${status}</span>`,
-        () => chooseRegion(entry.id), { class: `path-stop ${entry.id === selectedRegion ? 'chosen' : ''}` });
-    }).join('')}</div>
+    ${regionsMarkup}
     <h2 class="section-title level-list-title" id="level-list-title" tabindex="-1">${escape(region?.title || 'Orientation')} · levels</h2>
     ${region ? `<div class="study-row"><div><h2>Recall all of ${escape(region.title)}</h2><p>${regionRecallIds(region).length} structures · one continuous recall, including unstudied material.</p></div>
       ${button('Recall region', () => startFullRecall(region))}</div>` : ''}
@@ -890,6 +984,11 @@ function renderRecall() {
   const label = kind === 'level' ? `Round ${round} · ${ROUND_NAMES[round - 1]}` : 'From memory';
   const clue = run.hint || round === 2 ? (material.ROUND_CLUES[item.id]) : memory ? "Name the highlighted structure from memory." : round === 1 ? 'Type over the letters, including the spaces.' : 'Name the highlighted structure.';
   const primary = round === 1 ? '' : button('Check answer', checkRecall, { class: 'primary check', icon: 'check' });
+  const abbrMarkup = round === 1 && item.tag
+    ? `<span class="segment-tag"><span translate="no">${escape(item.tag)}</span> · ${language === 'pt-BR' ? 'código do segmento' : 'segment code'}</span>`
+    : round === 1 && item.abbr
+      ? `<span class="segment-tag">${language === 'pt-BR' ? 'Sigla clínica' : 'Clinical abbr.'}: <strong translate="no">${escape(item.abbr)}</strong></span>`
+      : '';
   return `<div class="recall">
     <div class="recall-top">
       <div><h1>${escape(title)}</h1><span class="eyebrow">${label}</span></div>
@@ -899,7 +998,8 @@ function renderRecall() {
     <p class="view-banner">${escape(views[view])} view</p><div class="answer-area">
       <label for="typer" id="word" class="word" aria-hidden="true"></label>
       <p id="typing-warning" class="typing-warning" role="status" hidden></p>
-      ${item.tag && round === 1 ? `<span class="segment-tag">${escape(item.tag)} · segment code</span>` : ''}
+      ${abbrMarkup}
+      ${item.id === 'paredev' ? paredevHintMarkup() : ''}
       <p id="clue" class="subline">${escape(clue)}</p>
       <p id="feedback" class="feedback" role="status"></p>
       <div id="answer-actions" class="actions">
@@ -1018,6 +1118,24 @@ function revealRecall() {
   showRecallFeedback();
 }
 
+function contrastBetween(targetId, guessedId) {
+  const direct = Object.values(LEVEL_CONTRAST).find(c =>
+    (c.a === targetId && c.b === guessedId) || (c.a === guessedId && c.b === targetId));
+  if (direct?.text) return direct.text;
+  const pairKey = [targetId, guessedId].sort().join('|');
+  if (PAIR_CONTRASTS[pairKey]) return PAIR_CONTRASTS[pairKey];
+  const target = ITEMS[targetId];
+  const guessed = ITEMS[guessedId];
+  if (!target || !guessed) return '';
+  const cleanCue = id => String(lessonCue(id) || '').replace(/\s+/g, ' ').trim().replace(/\.$/, '');
+  const tCue = cleanCue(targetId);
+  const gCue = cleanCue(guessedId);
+  if (!tCue || !gCue) return '';
+  return language === 'pt-BR'
+    ? `${target.pt}: ${tCue}. Já ${guessed.pt}: ${gCue}.`
+    : `${target.pt}: ${tCue}. By contrast, ${guessed.pt}: ${gCue}.`;
+}
+
 function showRecallFeedback() {
   const { run } = activity;
   const { feedback, item, round } = run;
@@ -1036,6 +1154,29 @@ function showRecallFeedback() {
   }
   line.className = 'feedback bad';
   if (round === 3) $("clue").textContent = "Name the highlighted structure from memory.";
+  let contrastHtml = '';
+  let hasContrast = false;
+  if (feedback.confusion && round >= 2) {
+    const guessedId = feedback.confusion.id;
+    const targetId = item.id;
+    if (model) {
+      model = {
+        ...model,
+        ids: [...new Set([...(model.ids || []), targetId, guessedId])],
+        focus: [targetId, guessedId],
+        palette: { [targetId]: '#3ddc84', [guessedId]: '#ff5a6a' },
+        frameFocus: true,
+        preserveCamera: false,
+      };
+      updateModel();
+    }
+    const contrastSentence = contrastBetween(targetId, guessedId);
+    hasContrast = Boolean(contrastSentence);
+    const legendText = language === 'pt-BR'
+      ? `<span class="contrast-legend"><span class="contrast-pill good"><i></i>Correta: ${escape(item.pt)}</span><span class="contrast-pill bad"><i></i>Seu palpite: ${escape(feedback.confusion.pt)}</span></span>`
+      : `<span class="contrast-legend"><span class="contrast-pill good"><i></i>Correct: ${escape(item.pt)}</span><span class="contrast-pill bad"><i></i>Your guess: ${escape(feedback.confusion.pt)}</span></span>`;
+    contrastHtml = `${legendText}${contrastSentence ? `<span class="contrast-delta">${escape(contrastSentence)}</span>` : ''}`;
+  }
   const intro = language === 'pt-BR'
     ? feedback.near ? `Quase! O nome é ${item.typing}.`
       : feedback.confusion ? `Você respondeu ${feedback.confusion.pt}. Esta estrutura é ${item.pt}.`
@@ -1043,10 +1184,11 @@ function showRecallFeedback() {
     : feedback.near ? `So close. It’s spelled ${item.typing}.`
       : feedback.confusion ? `You named ${feedback.confusion.pt}. This is ${item.pt}.`
       : feedback.reveal ? `This is ${item.pt}.` : `You typed “${feedback.guess}”. This is ${item.pt}.`;
-  const clue = lessonCue(item.id).trimEnd();
-  const punctuation = /[.!?…]$/.test(clue) ? '' : '.';
+  const clue = hasContrast ? '' : lessonCue(item.id).trimEnd();
+  const punctuation = clue && !/[.!?…]$/.test(clue) ? '.' : '';
+  const suffix = feedback.requeued ? (language === 'pt-BR' ? ' Ela aparecerá novamente.' : ' It will come up again.') : '';
   line.className = 'feedback bad verdict';
-  line.innerHTML = `<strong class="verdict-tag">${icon('x', 15)}${feedback.reveal ? 'Revealed' : 'Not quite'}</strong> <span>${escape(`${intro} ${clue}${punctuation}${feedback.requeued ? language === 'pt-BR' ? ' Ela aparecerá novamente.' : ' It will come up again.' : ''}`)}</span>`;
+  line.innerHTML = `<strong class="verdict-tag">${icon('x', 15)}${feedback.reveal ? 'Revealed' : 'Not quite'}</strong> <span>${escape(`${intro}${clue ? ` ${clue}${punctuation}` : ''}${suffix}`)}</span>${contrastHtml}`;
   $('continue-actions').hidden = false;
   if (!coarsePointer.matches) focusTyper();
 }
@@ -1143,7 +1285,7 @@ function renderRecallResults() {
         launch('recall', { from, run: new Recall(mistakes, 'mistakes') }), { icon: 'rotate-ccw' }) : ''}
       ${button(back[0], () => setPage(back[1]), { icon: 'arrow-left' })}
     </div>
-    ${level && passedLevel(level) ? `<div class="actions">${modeButtons(level)}</div>` : ''}
+    ${level && passedLevel(level) ? `<div class="actions">${modeButtons(level)}${level.region === 'valvas' && BLOOD_FLOW.length ? button('Blood pathway', startBloodFlow, { icon: 'route' }) : ''}</div>` : ''}
     <h2>What you recalled</h2>
     <div class="detail-list">${run.ids.map(id => `<div><strong>${escape(ITEMS[id].pt)}</strong>
       <p>${escape(ITEMS[id].dica)}</p><span class="${final.missed.has(id) ? 'bad' : 'good'}">
@@ -1238,18 +1380,31 @@ function startRelations(level) {
   launch('quiz', { level, questions, index: 0, correct: 0, title: 'Relations', label: level.title });
 }
 
-function startTerritories() {
-  launch('territories', { questions: shuffle(TERRITORIES), index: 0, correct: 0, log: [] });
+function startTerritories(mode = 'all') {
+  const pool = mode === 'all' ? TERRITORIES : TERRITORIES.filter(entry => (entry.mode || 'standard') === mode);
+  launch('territories', { mode, questions: shuffle(pool), index: 0, correct: 0, log: [] });
 }
 
 function renderTerritories() {
   const state = activity;
-  const { questions, index } = state;
+  const { questions, index, mode = 'all' } = state;
   const question = questions[index];
   const answered = state.answer !== undefined;
-  setModel(['ad', 'ae', 'vd', 've', 'paredev', 'aoasc', 'arco', 'tp', 'vcs', 'vci'], {
+  const isReverse = question.mode === 'reverse';
+  const baseIds = ['ad', 'ae', 'vd', 've', 'paredev', 'aoasc', 'arco', 'tp', 'vcs', 'vci'];
+  const focusIds = answered ? [...question.focus, ...(question.reveal || [])] : question.focus;
+  const visibleIds = [...new Set([...baseIds, ...focusIds])];
+  const palette = {};
+  if (isReverse) {
+    for (const id of question.focus) palette[id] = '#ff5a6a';
+    if (answered) for (const id of (question.reveal || [])) palette[id] = '#5b9dff';
+  } else {
+    for (const id of question.focus) palette[id] = '#5b9dff';
+    if (answered) for (const id of (question.reveal || [])) palette[id] = '#ff5a6a';
+  }
+  setModel(visibleIds, {
     title: 'Coronary territories', context: ['aoasc', 'arco', 'tp', 'vcs', 'vci'],
-    focus: question.focus, view: question.view, controls: true, padding: 1.22,
+    focus: focusIds, palette, view: question.view, controls: true, padding: 1.22,
     frameFocus: !answered, preserveCamera: answered,
   });
   function next() {
@@ -1258,31 +1413,167 @@ function renderTerritories() {
     state.log.push({ label: question.label, correct, answer: question.options[question.answer], why: question.why });
     if (index + 1 === questions.length) {
       recordActivity();
-      activity = { type: 'territoriesResults', correct: state.correct, total: questions.length, log: state.log };
+      activity = { type: 'territoriesResults', mode, correct: state.correct, total: questions.length, log: state.log };
     } else {
       state.index++;
       delete state.answer;
     }
     render({ top: true, activate: true });
   }
-  return `<div class="screen prompt"><div class="eyebrow">Coronary territories · ${index + 1} of ${questions.length}</div>
+  const modeButton = (value, label) => button(label, () => startTerritories(value), { class: `mode-filter-btn ${mode === value ? 'chosen' : ''}` });
+  const legendMarkup = answered
+    ? `<div class="contrast-legend territory-legend"><span class="contrast-pill good"><i></i>${language === 'pt-BR' ? 'Território / estrutura' : 'Territory / structure'}</span><span class="contrast-pill bad"><i></i>${language === 'pt-BR' ? (isReverse ? 'Artéria ocluída' : 'Artéria culpada') : (isReverse ? 'Occluded artery' : 'Culprit artery')}</span>${question.ecg ? `<span class="ecg-pill" translate="no">ECG: ${escape(question.ecg)}</span>` : ''}</div>`
+    : isReverse
+      ? `<div class="contrast-legend territory-legend"><span class="contrast-pill bad"><i></i>${language === 'pt-BR' ? 'Artéria ocluída destacada' : 'Occluded artery highlighted'}</span></div>`
+      : '';
+  return `<div class="screen prompt"><div class="eyebrow"><span>Coronary territories · ${index + 1} of ${questions.length}</span> <span translate="no">· ${isReverse ? (language === 'pt-BR' ? 'Artéria ocluída → Território' : 'Occluded artery → Territory') : (language === 'pt-BR' ? 'Território → Artéria' : 'Territory → Artery')}</span></div>
+    <div class="territory-modes" role="group" aria-label="${language === 'pt-BR' ? 'Modo de prática' : 'Practice mode'}">
+      ${modeButton('all', language === 'pt-BR' ? 'Todos' : 'All')}
+      ${modeButton('standard', language === 'pt-BR' ? 'Território → Artéria' : 'Territory → Artery')}
+      ${modeButton('reverse', language === 'pt-BR' ? 'Artéria ocluída → Território' : 'Occluded artery → Territory')}
+    </div>
     <h1>${escape(question.label)}</h1>
+    ${legendMarkup}
     ${quizMarkup({ ...question, q: question.prompt }, state)}
     <div class="actions">${answered ? button(index + 1 === questions.length ? 'See results' : 'Next case', next, { class: 'primary', key: 'Enter' }) : ''}</div></div>`;
 }
 
 function renderTerritoryResults() {
-  const { correct, total, log = [] } = activity;
+  const { correct, total, mode = 'all', log = [] } = activity;
   return `<div class="screen result"><div class="eyebrow">Coronary territories</div>
     <h1>${correct} of ${total}</h1>
     <p>${correct === total ? 'Every territory matched its usual arterial supply.'
       : 'Review the explanations, then run the cases again. Dominance changes the inferior and septal answers.'}</p>
-    <div class="actions">${button('Play again', startTerritories, { class: 'primary', key: 'Enter' })}
+    <div class="actions">${button('Play again', () => startTerritories(mode), { class: 'primary', key: 'Enter' })}
       ${button('Back to map', () => setPage('map'), { icon: 'arrow-left' })}</div>
     <h2>Case review</h2>
     <div class="detail-list">${log.map(entry => `<div><strong>${escape(entry.label)}</strong>
       <p>${escape(entry.answer)}. ${escape(entry.why)}</p>
       <span class="${entry.correct ? 'good' : 'bad'}">${entry.correct ? 'Correct' : 'Review'}</span></div>`).join('')}</div></div>`;
+}
+
+function startBloodFlow() {
+  if (!BLOOD_FLOW.length) return;
+  launch('bloodflow', {
+    completed: 0,
+    choices: shuffle(BLOOD_FLOW.map((_, index) => index)),
+    misses: 0,
+    feedback: null,
+    wrongIndex: null,
+  });
+}
+
+function renderBloodFlow() {
+  const state = activity;
+  const steps = BLOOD_FLOW;
+  const done = state.completed >= steps.length;
+  const currentStep = state.completed > 0 ? steps[state.completed - 1] : null;
+  const heartContext = ['ad', 'ae', 'vd', 've', 'paredev', 'aoasc', 'arco', 'aodesc', 'tp', 'vcs', 'vci', 'vpsd', 'vpid', 'vpse', 'vpie'];
+  const chamberIds = new Set(['ad', 'vd', 'ae', 've', 'aoasc', 'tp']);
+  const activeCount = done ? steps.length : state.completed;
+  const palette = {};
+  for (let i = 0; i < activeCount; i++) {
+    const color = steps[i].blood === 'venous' ? '#3b82f6' : '#ef4444';
+    for (const id of steps[i].ids) palette[id] = color;
+  }
+  const prevIds = done ? [] : steps.slice(0, Math.max(0, state.completed - 1)).flatMap(s => s.ids);
+  const currentIsValve = currentStep && currentStep.view === 'sup';
+  const subtleContext = currentIsValve ? prevIds.filter(id => !chamberIds.has(id)) : prevIds;
+  const visibleIds = done
+    ? [...new Set(steps.flatMap(s => s.ids))]
+    : currentStep
+      ? [...new Set([...subtleContext, ...currentStep.ids])]
+      : [];
+  setModel(visibleIds, {
+    title: language === 'pt-BR' ? 'Trajeto do sangue' : 'Blood pathway',
+    context: done ? ['paredev'] : heartContext,
+    subtleContext,
+    subtleContextOpacity: .44,
+    focus: done ? [] : currentStep ? currentStep.ids : [],
+    palette,
+    paletteAll: true,
+    contextOpacity: .11,
+    view: done ? 'ant' : currentStep ? currentStep.view : 'ant',
+    controls: true,
+    padding: 1.24,
+    frameFocus: Boolean(currentStep) && !done,
+    preserveCamera: false,
+  });
+
+  function pickStep(choiceIndex) {
+    if (done) return;
+    if (choiceIndex === state.completed) {
+      correctSound();
+      state.completed++;
+      state.wrongIndex = null;
+      const step = steps[choiceIndex];
+      const stepTitle = step.label || step.short;
+      const finished = state.completed >= steps.length;
+      state.feedback = {
+        tone: 'good',
+        text: finished
+          ? (language === 'pt-BR' ? `Sequência completa! ${stepTitle}: ${step.note}` : `Pathway complete! ${stepTitle}: ${step.note}`)
+          : `${stepTitle}: ${step.note}`,
+      };
+      if (finished) recordActivity();
+    } else {
+      wrongKeySound();
+      state.misses++;
+      state.wrongIndex = choiceIndex;
+      const picked = steps[choiceIndex];
+      const prev = state.completed > 0 ? steps[state.completed - 1] : null;
+      state.feedback = {
+        tone: 'bad',
+        text: language === 'pt-BR'
+          ? (prev ? `Fora de ordem: você escolheu ${picked.short}. Após ${prev.short}, selecione a etapa ${state.completed + 1} de ${steps.length}.`
+            : `Fora de ordem: você escolheu ${picked.short}. Comece pela etapa 1 (entrada venosa sistêmica no coração).`)
+          : (prev ? `Out of order: you picked ${picked.short}. After ${prev.short}, select step ${state.completed + 1} of ${steps.length}.`
+            : `Out of order: you picked ${picked.short}. Start at step 1 (systemic venous return to the heart).`),
+      };
+    }
+    render();
+  }
+
+  const slotsHtml = `<ol class="flow-track" aria-label="${language === 'pt-BR' ? 'Sequência do trajeto' : 'Pathway sequence'}">${steps.map((step, i) => {
+    if (i < state.completed) {
+      return `<li class="flow-slot done ${step.blood}" translate="no"><span>${i + 1}</span><b>${escape(step.short)}</b></li>`;
+    }
+    if (i === state.completed) {
+      return `<li class="flow-slot current"><span>${i + 1}</span><b>?</b></li>`;
+    }
+    return `<li class="flow-slot pending"><span>${i + 1}</span></li>`;
+  }).join('')}</ol>`;
+
+  const choicesHtml = !done ? `<div class="flow-choices" role="group" aria-label="${language === 'pt-BR' ? 'Etapas disponíveis' : 'Available stages'}">${state.choices.map(stepIndex => {
+    const step = steps[stepIndex];
+    const completed = stepIndex < state.completed;
+    const isWrong = state.wrongIndex === stepIndex;
+    return button(`<span translate="no">${escape(step.short)}</span>`, () => pickStep(stepIndex), {
+      class: `flow-choice ${completed ? `done ${step.blood}` : ''} ${isWrong ? 'wrong' : ''}`,
+      disabled: completed,
+    });
+  }).join('')}</div>` : '';
+
+  const legendHtml = `<div class="flow-legend" role="note">
+    <span><i class="flow-dot venous" aria-hidden="true"></i>${language === 'pt-BR' ? 'Azul = sangue venoso (1–6)' : 'Blue = venous blood (1–6)'}</span>
+    <span><i class="flow-dot arterial" aria-hidden="true"></i>${language === 'pt-BR' ? 'Vermelho = sangue arterial (7–12)' : 'Red = arterial blood (7–12)'}</span>
+  </div>`;
+
+  return `<div class="prompt bloodflow-prompt">
+    <div class="eyebrow">${language === 'pt-BR' ? 'Trajeto do sangue' : 'Blood pathway'} · ${state.completed} ${language === 'pt-BR' ? 'de' : 'of'} ${steps.length}</div>
+    <h1>${done ? (language === 'pt-BR' ? 'Trajeto completo' : 'Pathway complete') : (language === 'pt-BR' ? 'Ordene o trajeto do sangue' : 'Order the blood pathway')}</h1>
+    ${legendHtml}
+    <p class="support">${done
+      ? (language === 'pt-BR' ? `Você concluiu as 12 etapas (${state.misses} ${state.misses === 1 ? 'erro' : 'erros'} de ordem).` : `You completed all 12 stages (${state.misses} out-of-order ${state.misses === 1 ? 'try' : 'tries'}).`)
+      : (language === 'pt-BR' ? `Clique nas estruturas na ordem exata do fluxo sanguíneo (etapa ${state.completed + 1} de ${steps.length}).` : `Click the structures in exact blood-flow sequence (step ${state.completed + 1} of ${steps.length}).`)}</p>
+    ${slotsHtml}
+    ${state.feedback ? `<p id="flow-feedback" class="feedback verdict ${state.feedback.tone}" role="status"><strong class="verdict-tag">${icon(state.feedback.tone === 'good' ? 'check' : 'x', 15)}${state.feedback.tone === 'good' ? (language === 'pt-BR' ? 'Correto' : 'Correct') : (language === 'pt-BR' ? 'Fora de ordem' : 'Out of order')}</strong> <span>${escape(state.feedback.text)}</span></p>` : '<p id="flow-feedback" class="feedback" role="status"></p>'}
+    ${choicesHtml}
+    <div class="actions">
+      ${button(language === 'pt-BR' ? 'Reiniciar' : 'Restart', startBloodFlow, { icon: 'rotate-ccw' })}
+      ${button('Back to map', () => setPage('map'), { class: done ? 'primary' : '', icon: 'arrow-left' })}
+    </div>
+  </div>`;
 }
 
 function quizMarkup(question, state) {
@@ -1679,6 +1970,7 @@ function renderAtlas() {
   queueMicrotask(syncAtlasGroups);
   return `<div class="atlas-content">
     <div class="page-head"><h1>Atlas</h1><p>All ${ATLAS_IDS.length} structures on one model. Show or hide parts, then click a name or the model to focus it. ${escape(pack.atlasNote || '')}</p></div>
+    ${pack.id === 'cardio' ? lobeLegendMarkup() : ''}
     <button type="button" class="button atlas-drawer-toggle" id="atlas-drawer-toggle" data-atlas-drawer="open" aria-controls="atlas-panel" aria-expanded="false">${icon('layers', 16)}Structures <b id="atlas-drawer-count">${visible.length}</b></button>
     ${atlasDetailMarkup()}
     <aside class="atlas-panel" id="atlas-panel" aria-labelledby="atlas-panel-title"${atlasNarrow.matches ? ' inert' : ''}>
@@ -2058,6 +2350,12 @@ $('view-direction').addEventListener('change', event => {
   const direction = event.target.value;
   $('model-angle').textContent = views[direction];
   if (model) model.view = direction;
+  const orientHint = $('model-orient-hint');
+  if (orientHint && model) {
+    const showHint = Boolean(model.orientHint) && (!model.orientHintForView || direction === model.orientHintForView);
+    orientHint.hidden = !showHint;
+    orientHint.textContent = showHint ? model.orientHint : '';
+  }
   const banner = document.querySelector('.view-banner');
   if (banner) banner.textContent = `${views[direction]} view`;
   if (activity?.type === 'find') activity.direction = direction;
