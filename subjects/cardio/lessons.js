@@ -114,7 +114,7 @@ export const LESSONS = {
     lead: '**Right brachiocephalic vein** is the short, almost vertical vein on the right.',
     where: 'Formed behind the medial end of the right clavicle (right sternoclavicular joint) by the internal jugular and subclavian veins; about 2.5 cm long.',
     relations: 'Medial: brachiocephalic trunk. Lateral: right phrenic nerve and pleura. Posterior: right vagus nerve. It joins the left brachiocephalic vein behind the 1st right costal cartilage to form the SVC.',
-    function: 'Drains the right side of head, neck and right upper limb. The **right lymphatic duct** enters at the jugulo-subclavian junction where it begins.',
+    function: 'Drains the right side of head, neck and right upper limb. The right jugular, subclavian and bronchomediastinal lymph trunks end at its origin, joined as a **right lymphatic duct** in only about 20% of people; otherwise they open into the veins separately.',
   },
   vbce: {
     lead: '**Left brachiocephalic vein** is long and crosses the midline obliquely.',
@@ -442,7 +442,7 @@ export const LESSONS = {
   // ── Trachea and bronchi ─────────────────────────────────────────────────
   traqueia: {
     lead: '**Trachea** runs from the larynx (C6) to its bifurcation at the sternal angle (T4/T5).',
-    where: 'Midline in the neck and superior mediastinum, about 10–11 cm long, held open by 16–20 C-shaped cartilages; the gap behind is closed by the trachealis muscle.',
+    where: 'Midline in the neck and superior mediastinum, about 10–11 cm long, held open by C-shaped cartilages joined by annular ligaments; the gap behind is closed by the trachealis muscle.',
     relations: 'Anterior: manubrium, thymus, left brachiocephalic vein, aortic arch, brachiocephalic trunk and left common carotid. Posterior: esophagus. Right: azygos arch, right vagus, pleura. Left: aortic arch, left common carotid and subclavian, left recurrent laryngeal nerve.',
     function: 'Conducts air; the **carina** at the bifurcation is a highly sensitive cough-reflex area.',
   },

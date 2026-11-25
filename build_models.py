@@ -416,6 +416,147 @@ def build_msk():
     print('msk ok', len(manifest['regions']), 'regions')
 
 
+
+# ---------------------------------------------------------------------------
+# SpeedGastro: one manifest + one .bin per group, same format as SpeedMSK.
+# Run: python3 build_models.py gastro
+# ---------------------------------------------------------------------------
+def _lr(name):
+    return ['Left ' + name, 'Right ' + name]
+
+_TEETH = [f'{side} {jaw} {kind}' for side in ('Left', 'Right') for jaw in ('upper', 'lower') for kind in (
+    'central secondary incisor tooth', 'lateral secondary incisor tooth', 'secondary canine tooth',
+    'first secondary premolar tooth', 'second secondary premolar tooth',
+    'first secondary molar tooth', 'second secondary molar tooth')]
+
+GASTRO = {
+    'head': {
+        'tongue': ['Tongue'],
+        'teeth': _TEETH,
+        'submandibular_gland': _lr('submandibular gland'),
+        'sublingual_gland': _lr('sublingual gland'),
+        'superior_constrictor': _lr('superior pharyngeal constrictor'),
+        'middle_constrictor': _lr('middle pharyngeal constrictor'),
+        'inferior_constrictor': _lr('inferior pharyngeal constrictor'),
+        'palatopharyngeus': _lr('palatopharyngeus'),
+        'salpingopharyngeus': _lr('salpingopharyngeus'),
+        'stylopharyngeus': _lr('stylopharyngeus'),
+        'pharyngeal_raphe': ['Pharyngeal raphe'],
+    },
+    'organs': {
+        'esophagus': ['Esophagus'],
+        'diaphragm_g': ['Diaphragm'],
+        'stomach': ['Stomach'],
+        'duodenum': ['Duodenum'],
+        'jejunum': ['Proximal part of jejunum', 'Middle part of jejunum', 'Distal part of jejunum'],
+        'ileum': ['Proximal part of ileum', 'Middle part of ileum', 'Distal part of ileum'],
+        'ileocecal_junction': ['Ileocecal junction'],
+        'appendix': ['Appendix'],
+        'mesoappendix': ['Mesoappendix'],
+        'ascending_colon': ['Ascending colon'],
+        'transverse_colon': ['Transverse colon'],
+        'descending_colon': ['Descending colon'],
+        'taeniae_coli': ['Taenia libera', 'Taenia mesocolica', 'Taenia omentalis'],
+        'rectum': ['Rectum'],
+        'external_anal_sphincter': ['External anal sphincter'],
+        'puborectalis': _lr('puborectalis'),
+        'caudate_lobe': ['Caudate lobe of liver'],
+        'gallbladder': ['Gallbladder'],
+        'cystic_duct': ['Cystic duct'],
+        'common_hepatic_duct': ['Common hepatic duct'],
+        'hepatic_ducts': ['Left hepatic duct', 'Right hepatic duct'],
+        'pancreas': ['Parenchyma of pancreas'],
+        'pancreatic_duct': ['Pancreatic duct tree'],
+        'spleen': ['Spleen'],
+    },
+    'vessels': {
+        'abdominal_aorta_g': ['Abdominal aorta'],
+        'ivc_g': ['Inferior vena cava'],
+        'celiac_trunk': ['Celiac trunk'],
+        'left_gastric_a': ['Left gastric artery'],
+        'right_gastric_a': ['Right gastric artery'],
+        'common_hepatic_a': ['Common hepatic artery'],
+        'proper_hepatic_a': ['Hepatic artery proper'],
+        'gastroduodenal_a': ['Trunk of gastroduodenal artery'],
+        'gastroepiploic_a': ['Left gastro-epiploic artery', 'Right gastro-epiploic artery'],
+        'splenic_a': ['Splenic artery'],
+        'pancreaticoduodenal_a': ['Anterior superior pancreaticoduodenal artery', 'Posterior superior pancreaticoduodenal artery',
+                                  'Inferior pancreaticoduodenal artery', 'Anterior inferior pancreaticoduodenal artery',
+                                  'Posterior inferior pancreaticoduodenal artery'],
+        'sma': ['Trunk of superior mesenteric artery'],
+        'ileocolic_a': ['Ileocolic artery'],
+        'appendicular_a': ['Appendicular artery'],
+        'right_colic_a': ['Right colic artery'],
+        'middle_colic_a': ['Middle colic artery'],
+        'ima': ['Inferior mesenteric artery'],
+        'left_colic_a': ['Left colic artery'],
+        'sigmoid_a': ['Sigmoid artery'],
+        'superior_rectal_a': ['Superior rectal artery'],
+        'hepatic_portal_v': ['Hepatic portal vein'],
+        'splenic_v': ['Splenic vein'],
+        'smv': ['Superior mesenteric vein'],
+        'imv': ['Inferior mesenteric vein'],
+        'gastric_v': ['Left gastric vein', 'Right gastric vein'],
+        'hepatic_v': ['Left hepatic vein', 'Middle hepatic vein', 'Right hepatic vein'],
+    },
+}
+
+
+def build_gastro():
+    wanted = {name: (region, key) for region, parts in GASTRO.items() for key, names in parts.items() for name in names}
+    found = {region: {key: {'pos': [], 'idx': []} for key in parts} for region, parts in GASTRO.items()}
+    used = set()
+    # Prefer the is-a files; fall back to part-of/extra only for names the is-a set lacks.
+    for folder in (ISA, SRC, EXTRA):
+        hits = []
+        for name in sorted(os.listdir(folder)):
+            if not name.endswith('.obj'):
+                continue
+            path = os.path.join(folder, name)
+            english = english_name(path)
+            if english in wanted and english not in used:
+                hits.append((english, path))
+        for english, path in hits:
+            region, key = wanted[english]
+            add_obj(path, key, group=found[region][key], flags=used)
+        used.update(english for english, _ in hits)
+    missing = [key for region, parts in found.items() for key, g in parts.items() if not g['idx']]
+    if missing:
+        print('MISSING GASTRO', missing, file=sys.stderr)
+        sys.exit(1)
+    allp = [c for parts in found.values() for g in parts.values() for c in g['pos']]
+    mn = [min(allp[i::3]) for i in range(3)]
+    mx = [max(allp[i::3]) for i in range(3)]
+    ctr = [(a + b) / 2 for a, b in zip(mn, mx)]
+    ext = max(b - a for a, b in zip(mn, mx)) / 2
+    os.makedirs(os.path.join(HERE, 'gastro'), exist_ok=True)
+    manifest = {'center': ctr, 'scale': ext, 'regions': {}}
+    for region, parts in found.items():
+        index_bytes = 2 if all(max(g['idx']) <= 65535 for g in parts.values()) else 4
+        index_format = 'H' if index_bytes == 2 else 'I'
+        out = bytearray()
+        meta = {'file': f'{region}.bin', 'indexBytes': index_bytes, 'parts': {}}
+        for key, g in parts.items():
+            q = [max(-32767, min(32767, round((c - ctr[i % 3]) / ext * 32767))) for i, c in enumerate(g['pos'])]
+            off = len(out)
+            out += struct.pack('<%dh' % len(q), *q)
+            if len(out) % 4:
+                out += b'\0' * (4 - len(out) % 4)
+            ioff = len(out)
+            out += struct.pack(f"<{len(g['idx'])}{index_format}", *g['idx'])
+            meta['parts'][key] = {'p': [off, len(q)], 'i': [ioff, len(g['idx'])]}
+        open(os.path.join(HERE, 'gastro', meta['file']), 'wb').write(out)
+        meta['bytes'] = len(out)
+        manifest['regions'][region] = meta
+        print('gastro', region, len(out) // 1024, 'KB', len(parts), 'parts')
+    json.dump(manifest, open(os.path.join(HERE, 'gastro', 'models.json'), 'w'))
+    print('gastro ok', sum(len(r['parts']) for r in manifest['regions'].values()), 'parts')
+
+
+if 'gastro' in sys.argv[1:]:
+    build_gastro()
+    sys.exit(0)
+
 if 'msk' in sys.argv[1:]:
     build_msk()
     sys.exit(0)

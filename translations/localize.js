@@ -1,7 +1,7 @@
-import content from './pt-br-content.js';
-import aliases from './pt-br-aliases.js';
-import ui from './pt-br-ui.js';
-import { structureNames } from './pt-br.js';
+import content from './pt-br-content.js?v=100';
+import aliases from './pt-br-aliases.js?v=100';
+import ui from './pt-br-ui.js?v=100';
+import { structureNames } from './pt-br.js?v=100';
 
 // Disambiguate anatomy terms and UI messages whose general translation can mislead.
 Object.assign(content, {
@@ -172,6 +172,16 @@ Object.assign(ui, {
   'Blood pathway': 'Trajeto do sangue',
   'Airways and lungs': 'Vias aéreas e pulmões',
   'Coronary territories': 'Territórios coronários',
+  'Artery branching': 'Ramificação das artérias',
+  'Where each artery comes from, what it divides into, where it changes name.': 'De onde vem cada artéria, em que se divide e onde muda de nome.',
+  'Neck & upper limb arteries': 'Artérias do pescoço e do membro superior',
+  'Neck and upper limb': 'Pescoço e membro superior',
+  "Professor's slides": 'Slides do professor',
+  'All decks': 'Todas as aulas', 'Lecture deck': 'Aula',
+  'Heart': 'Coração', 'Aorta and arteries': 'Aorta e artérias', 'Veins': 'Veias', 'Lymphatic system': 'Sistema linfático',
+  'Cardiogenesis': 'Cardiogênese', 'Upper airways and larynx': 'Vias aéreas superiores e laringe',
+  'Trachea, bronchi and lungs': 'Traqueia, brônquios e pulmões',
+  'Next run': 'Próxima rodada', 'Weak topics': 'Tópicos fracos', 'Question review': 'Revisão das questões',
 });
 
 // Identifiers, view directions, blood flags and structural IDs must never be translated.
@@ -179,21 +189,22 @@ const structuralKeys = new Set([
   'id', 'en', 'alt', 'ctx', 'ids', 'focus', 'scope', 'chips', 'view', 'region', 'level',
   'anchors', 'key', 'choice', 'storagePrefix', 'cor',
   'mode', 'reveal', 'ecg', 'blood', 'abbr', 'arteries', 'clinicalAbbr', 'neighborMap',
+  'group', 'visible', 'ghost', 'unit', 'ref', 'questionIds',
 ]);
-function translateValue(value, key = '') {
+function translateValue(value, key = '', dictionary = content) {
   if (structuralKeys.has(key)) return value;
   if (key === 'LEVEL_CONTRAST' && value && typeof value === 'object') {
     return Object.fromEntries(Object.entries(value).map(([id, contrast]) => [id, {
-      ...translateValue(contrast), a: contrast.a, b: contrast.b,
+      ...translateValue(contrast, '', dictionary), a: contrast.a, b: contrast.b,
     }]));
   }
   if (typeof value === 'string') {
-    const translated = Object.hasOwn(content, value) ? content[value] : value;
+    const translated = Object.hasOwn(dictionary, value) ? dictionary[value] : value;
     return /^[A-Z]/.test(value) && /^[a-zà-ÿ]/.test(translated)
       ? translated[0].toLocaleUpperCase('pt-BR') + translated.slice(1) : translated;
   }
-  if (Array.isArray(value)) return value.map(item => translateValue(item, key));
-  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, translateValue(item, name)]));
+  if (Array.isArray(value)) return value.map(item => translateValue(item, key, dictionary));
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, translateValue(item, name, dictionary)]));
   return value;
 }
 
@@ -222,6 +233,16 @@ const PT_BR_ECG = {
   'Diffuse anterior + lateral ST changes': 'Alterações difusas de ST anterior + lateral',
 };
 
+const PT_BR_SLIDE_UNITS = {
+  heart: 'Coração',
+  arteries: 'Aorta e artérias',
+  veins: 'Veias',
+  lymph: 'Sistema linfático',
+  cardiogenesis: 'Cardiogênese',
+  airwaysUpper: 'Vias aéreas superiores e laringe',
+  airwaysLower: 'Traqueia, brônquios e pulmões',
+};
+
 const PT_BR_EXTRA_ALIASES = {
   ad: ['AD'], ae: ['AE'], vd: ['VD'], ve: ['VE'],
   acd: ['ACD'], tce: ['TCE'], dae: ['DA', 'DAE'], cx: ['Cx', 'ACx'], dp: ['DP', 'AIP'],
@@ -233,8 +254,16 @@ const PT_BR_EXTRA_ALIASES = {
 
 export function localizePack(pack) {
   const localized = { ...pack };
+  for (const [key, dictionary] of [['aulas', pack.aulasPt], ['slideQuestions', pack.aulasPt], ['notes', pack.notesPt], ['arteryTree', pack.arteryTreePt],
+    ['branches', pack.branchesPt], ['branchGroups', pack.branchesPt]]) {
+    if (pack[key]) localized[key] = translateValue(pack[key], key, { ...content, ...dictionary });
+  }
   for (const key of ['decks', 'regions', 'content', 'lessons', 'territories', 'bloodFlow', 'pairContrasts', 'regionPurposes', 'tagline', 'description', 'mapHeading', 'atlasNote']) {
     if (pack[key] !== undefined) localized[key] = translateValue(pack[key]);
+  }
+  if (pack.slideUnits) {
+    localized.slideUnits = Object.fromEntries(Object.entries(pack.slideUnits).map(([id, unit]) =>
+      [id, { ...unit, label: PT_BR_SLIDE_UNITS[id] || translateValue(unit.label, 'label', { ...content, ...pack.aulasPt }) }]));
   }
   if (pack.clinicalAbbr) {
     localized.clinicalAbbr = Object.fromEntries(

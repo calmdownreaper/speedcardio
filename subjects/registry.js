@@ -1,6 +1,6 @@
 // Subject registry. Add a subject by exporting its pack module and listing it
 // here; the engine loads only the selected subject's modules.
-const V = '?v=91';
+const V = '?v=102';
 
 export const SUBJECTS = [
   {
@@ -14,6 +14,12 @@ export const SUBJECTS = [
     name: 'SpeedMSK',
     tagline: 'Musculoskeletal anatomy',
     load: () => import(`./msk/index.js${V}`),
+  },
+  {
+    id: 'gastro',
+    name: 'SpeedGastro',
+    tagline: 'Gastrointestinal anatomy',
+    load: () => import(`./gastro/index.js${V}`),
   },
 ];
 

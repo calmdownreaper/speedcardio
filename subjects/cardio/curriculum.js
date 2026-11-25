@@ -59,6 +59,12 @@ const CURRICULUM = [
     ['Thoracic skeleton landmarks', 'manubrio esterno xifoide claviculas cart_costais costela_1 costela_2 costela_4 costela_5 costelas_rest vertebras_toracicas'],
     ['Thoracic outlet and chest wall vessels', 'vsc_d vsc_e ttc_d ttc_e tcc_d tcc_e pica_rest_d pica_rest_e mfa_d mfa_e aes_d aes_e'],
   ]],
+  ['membro', 'Neck & upper limb arteries', [
+    ['Subclavian branches in the neck', 'vert_d cid_d tirinf_d tcerv_d supsc_d dscap_d cervprof_d'],
+    ['Axillary artery and its branches', 'axa_d torlat_d subsc_d circscap_d thdors_d chumant_d chumpost_d'],
+    ['Brachial artery and the elbow anastomosis', 'bra_d bprof_d ucs_d uci_d radrec_d ulnrec_d iorec_d'],
+    ['Forearm and hand', 'rad_d uln_d iocom_d ioant_d arcsup_d digpalm_d arcprof_d metpalm_d princeps_d indicis_d'],
+  ]],
 ];
 
 function mixGroups(groups) {
@@ -79,12 +85,16 @@ export function buildRegions(ITEMS) {
       const end = Math.round((part + 1) * mixed.length / runs);
       levels.push({ id: `${id}-speed-${part + 1}`, region: id, title: `Speed run${suffix}`, ids: mixed.slice(start, end), speed: true });
     }
-    return { id, title, levels, ids: [...new Set(mixed)], area: ['laringe', 'vias', 'segd', 'sege', 'artpulm', 'veipulm'].includes(id) ? 'Airways and lungs' : id === 'mediastino' ? 'Thorax' : 'Heart' };
+    return { id, title, levels, ids: [...new Set(mixed)], area: ['laringe', 'vias', 'segd', 'sege', 'artpulm', 'veipulm'].includes(id) ? 'Airways and lungs' : id === 'mediastino' ? 'Thorax' : id === 'membro' ? 'Neck and upper limb' : 'Heart' };
   });
 }
 
 // Structures shown as surrounding ghost context in the mediastinum region.
 export const REGION_CONTEXT = {
+  membro: [
+    'aoasc', 'arco', 'tbc', 'ccd', 'cce', 'scd', 'sce', 'ttc_d', 'tcc_d', 'ita_d', 'pica_sup_d', 'vsc_d',
+    'claviculas', 'costela_1', 'manubrio', 'humero_d', 'radio_d', 'ulna_d',
+  ],
   mediastino: [
     'ad', 'ae', 'vd', 've', 'paredev', 'aoasc', 'arco', 'aodesc', 'tp', 'vcs', 'vci', 'traqueia', 'bpd', 'bpe',
     'esofago', 'diafragma', 'eso_art', 'azigo', 'hemiazigo', 'azigo_acs', 'timo_d', 'timo_e',

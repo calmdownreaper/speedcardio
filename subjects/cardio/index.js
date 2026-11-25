@@ -1,9 +1,23 @@
-import { COLORS, DECKS, DEFAULT_COLOR } from './data.js?v=91';
-import * as material from './content.js?v=91';
-import { LESSONS } from './lessons.js?v=91';
-import { TERRITORIES } from './territories.js?v=91';
-import { BLOOD_FLOW } from './bloodflow.js?v=91';
-import { buildRegions, REGION_CONTEXT } from './curriculum.js?v=91';
+import { COLORS, DECKS, DEFAULT_COLOR } from './data.js?v=100';
+import * as material from './content.js?v=100';
+import { LESSONS } from './lessons.js?v=100';
+import { TERRITORIES } from './territories.js?v=100';
+import { BLOOD_FLOW } from './bloodflow.js?v=100';
+import { BRANCHES, BRANCH_GROUPS } from './branches.js?v=100';
+import { buildRegions, REGION_CONTEXT } from './curriculum.js?v=100';
+import { SLIDE_QUESTIONS, SLIDE_UNITS } from './slides/index.js?v=100';
+import { HEART_AULAS, HEART_AULAS_PT } from './aulas-heart.js?v=100';
+import { AORTA_AULAS, AORTA_AULAS_PT } from './aulas-aorta.js?v=100';
+import { VEINS_AULAS, VEINS_AULAS_PT } from './aulas-veins.js?v=100';
+import { LYMPH_AULAS, LYMPH_AULAS_PT } from './aulas-lymph.js?v=100';
+import { CARDIOGENESIS_AULAS, CARDIOGENESIS_AULAS_PT } from './aulas-cardiogenesis.js?v=100';
+import { RESP1_AULAS, RESP1_AULAS_PT } from './aulas-resp1.js?v=100';
+import { RESP2_AULAS, RESP2_AULAS_PT } from './aulas-resp2.js?v=100';
+import { ARTERY_TREE, ARTERY_TREE_PT } from './aulas-artery-tree.js?v=100';
+import { BRANCHES_PT } from './aulas-branches-pt.js?v=100';
+import { createBloodFlowDrill } from './aulas-bloodflow.js?v=100';
+import { createAulaSequences } from './aulas-sequences.js?v=100';
+import { NOTES, NOTES_PT } from './notes.js?v=100';
 
 const ITEMS = Object.fromEntries(DECKS.flatMap(deck => deck.itens.map(item => [item.id, { ...item, deck }])));
 
@@ -21,6 +35,7 @@ const REGION_PURPOSES = {
   artpulm: 'Follow the pulmonary artery into each lobe and segment beside its bronchus.',
   veipulm: 'Trace the intersegmental veins back to the four pulmonary veins.',
   mediastino: 'Explore the central compartment, chest wall vessels and thoracic skeleton.',
+  membro: 'Follow the subclavian into the neck, then the axillary, brachial, radial and ulnar arteries down to the palmar arches.',
 };
 
 const SKELETON_IDS = ['manubrio', 'esterno', 'xifoide', 'claviculas', 'cart_costais', 'costela_1', 'costela_2', 'costela_4', 'costela_5', 'costelas_rest', 'vertebras_toracicas'];
@@ -46,7 +61,8 @@ function teachingView(id) {
   if (['diafragma', 'phren_inf_a_d', 'phren_inf_a_e', 'phren_inf_v', 'phren_sup_v'].includes(id)) return 'inf';
   if (['ae', 'vpsd', 'vpid', 'vpse', 'vpie', 'seio', 'dp', 'vcmedia', 'aodesc', 'esofago', 'azigo', 'hemiazigo', 'sept_dp', 'vent_post_acd', 'vpve', 'apd',
     'azigo_acs', 'eso_art', 'vertebras_toracicas', 'pica_d1', 'pica_e1', 'pica_d2', 'pica_e2', 'pica_sup_d', 'pica_sup_e',
-    'a_sd_sup', 'a_se_sup', 'v_sd_sup', 'v_se_sup', 'a_sd_basal', 'a_se_basal', 'lobinfd', 'blob_inf_d', 'blob_inf_e', 'lobo_inf_d', 'lobo_inf_e', 'v_sd_binf', 'v_se_binf', 'pica_rest_d', 'pica_rest_e', 'tcc_d', 'tcc_e'].includes(id)
+    'a_sd_sup', 'a_se_sup', 'v_sd_sup', 'v_se_sup', 'a_sd_basal', 'a_se_basal', 'lobinfd', 'blob_inf_d', 'blob_inf_e', 'lobo_inf_d', 'lobo_inf_e', 'v_sd_binf', 'v_se_binf', 'pica_rest_d', 'pica_rest_e', 'tcc_d', 'tcc_e',
+    'dscap_d', 'circscap_d', 'chumpost_d', 'cervprof_d', 'iorec_d'].includes(id)
       || /_(post|bpost)$/.test(id)) return 'post';
   return 'ant';
 }
@@ -116,6 +132,20 @@ export default {
   tagline: 'Heart and lung anatomy',
   description: 'Study the heart and lungs with 3D anatomy, recall drills, and oral exam practice.',
   storagePrefix: 'sc2_',
+  slideQuestions: SLIDE_QUESTIONS,
+  slideUnits: SLIDE_UNITS,
+  aulas: [...HEART_AULAS, ...AORTA_AULAS, ...VEINS_AULAS, ...LYMPH_AULAS, ...CARDIOGENESIS_AULAS, ...RESP1_AULAS, ...RESP2_AULAS],
+  aulasPt: {
+    ...HEART_AULAS_PT, ...AORTA_AULAS_PT, ...VEINS_AULAS_PT, ...LYMPH_AULAS_PT,
+    ...CARDIOGENESIS_AULAS_PT, ...RESP1_AULAS_PT, ...RESP2_AULAS_PT,
+  },
+  notes: NOTES,
+  notesPt: NOTES_PT,
+  arteryTree: ARTERY_TREE,
+  arteryTreePt: ARTERY_TREE_PT,
+  branchesPt: BRANCHES_PT,
+  createBloodFlowDrill,
+  createAulaSequences,
   groupMapByArea: true,
   decks: DECKS,
   colors: COLORS,
@@ -144,15 +174,18 @@ export default {
   theory: material.THEORY || [],
   orientation: (material.ORIENTATION || []).filter(step => step?.title),
   territories: TERRITORIES,
+  branches: BRANCHES,
+  branchGroups: BRANCH_GROUPS,
   bloodFlow: BLOOD_FLOW,
-  model: { kind: 'packed', manifest: './models.json' },
+  model: { kind: 'packed', manifest: './models.json', minDistanceMm: 12 },
   markers: {},
   atlasIds: [...new Set(regions.flatMap(region => region.ids))],
-  atlasHidden: SKELETON_IDS,
+  // The arm reaches far below the thorax, so its arteries start hidden to keep the heart large in the opening frame.
+  atlasHidden: [...SKELETON_IDS, ...(regions.find(region => region.id === 'membro')?.ids || [])],
   skeletonIds: SKELETON_IDS,
   mapDefaultIds: ['ad', 'ae', 'vd', 've', 'paredev', 'aoasc', 'arco', 'tp', 'vcs', 'traqueia', 'bpd', 'bpe'],
   mapHeading: 'Heart & lungs map',
-  atlasNote: 'The thoracic skeleton starts hidden; tick it in the list to show it.',
+  atlasNote: 'The thoracic skeleton and the neck and upper limb arteries start hidden; tick them in the list to show them.',
   teachingView,
   memoryView,
 };

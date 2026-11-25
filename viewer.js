@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ITEMS } from './study.js?v=91';
+import { ITEMS } from './study.js?v=100';
 
 export const VIEWS = {
   ant: [0, -1, .15],
@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=91';
+const VERSION = '?v=100';
 const GHOST_ORDER = 1;
 const GHOST_DEFAULT = 40;
 
@@ -170,6 +170,8 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
   controls.zoomSpeed = .9;
   controls.rotateSpeed = .8;
   controls.minDistance = .05;
+  // Packs whose model box grew can keep the same close-up limit in millimetres.
+  if (source.minDistanceMm && meta.scale) controls.minDistance = source.minDistanceMm / meta.scale;
   controls.maxDistance = 8;
   controls.zoomToCursor = true;
 

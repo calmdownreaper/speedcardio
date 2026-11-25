@@ -1,19 +1,19 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=99';
-import { createEngine } from './aulas-engine.js?v=99';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=99';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=100';
+import { createEngine } from './aulas-engine.js?v=100';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=102';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=99';
+} from './study.js?v=100';
 
 // Boot the selected subject before any UI state is derived. Start fetching the
 // viewer module and model assets in parallel so the 3D scene doesn't wait on
 // the subject pack waterfall.
-const V = '?v=99';
+const V = '?v=100';
 const subjectId = subjectFromUrl();
 const subject = SUBJECTS.find(entry => entry.id === subjectId) || SUBJECTS[0];
 let viewerModulePromise = import(`./viewer.js${V}`);
-const preloadManifestUrl = subject.id === 'msk' ? './msk/models.json' : './models.json';
+const preloadManifestUrl = { msk: './msk/models.json', gastro: './gastro/models.json' }[subject.id] || './models.json';
 let modelPreload = {
   manifest: fetch(`${preloadManifestUrl}${V}`, { cache: 'force-cache' }).then(r => {
     if (!r.ok) throw new Error('Model index unavailable');
@@ -31,7 +31,7 @@ try { savedLanguage = localStorage.getItem('anatomy_language') || 'en'; } catch 
 const requestedLanguage = new URLSearchParams(location.search).get('lang');
 const language = ['en', 'pt-BR'].includes(requestedLanguage) ? requestedLanguage : savedLanguage === 'pt-BR' ? 'pt-BR' : 'en';
 const sourcePack = (await subject.load()).default;
-const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=99') : null;
+const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=101') : null;
 const pack = localization ? localization.localizePack(sourcePack) : sourcePack;
 document.documentElement.lang = language;
 initStudy(pack);
@@ -1175,7 +1175,7 @@ let termMatcherCache = null;
 function getTermMatcher() {
   if (termMatcherCache) return termMatcherCache;
   const byLower = new Map();
-  for (const [alias, id] of TERM_3D_ALIASES) {
+  for (const [alias, id] of [...(pack.termAliases || []), ...TERM_3D_ALIASES]) {
     if (ITEMS[id] && !byLower.has(alias.toLowerCase())) byLower.set(alias.toLowerCase(), id);
   }
   for (const [id, item] of Object.entries(ITEMS)) {
@@ -1242,6 +1242,10 @@ function richText(text, { link3d = true } = {}) {
 }
 
 const richList = (values, opts) => `<ul>${values.map(value => `<li>${richText(value, opts)}</li>`).join('')}</ul>`;
+// Full-page explanations: card.body is a list of paragraphs ("### " starts a subhead).
+const richBody = (paragraphs, opts) => `<div class="aulas-body">${paragraphs.map(text => text.startsWith('### ')
+  ? `<h3 class="aulas-subhead">${escape(text.slice(4))}</h3>` : `<p>${richText(text, opts)}</p>`).join('')}</div>`;
+const cardText = (card, opts) => card.body ? richBody(card.body, opts) : richList(card.facts || [], opts);
 
 document.addEventListener('click', event => {
   const reset = event.target.closest('[data-focus-reset]');
@@ -1383,7 +1387,8 @@ function renderAulas() {
       <h1>${escape(card.title)}</h1>
       ${trail}${legend}
       <div id="aulas-focus-bar" class="aulas-focus-bar" hidden></div>
-      ${richList(card.facts)}
+      ${card.body && card.ref ? `<p class="aulas-ref muted">${/[–-]/.test(card.ref) ? 'Slides' : 'Slide'} ${escape(card.ref)}</p>` : ''}
+      ${cardText(card)}
       ${block.unit === 'cardiogenesis'
         ? `<p class="muted">${aulaText('The 3D model shows adult structures as reference points for development.', 'O modelo 3D mostra estruturas adultas como referências para entender o desenvolvimento.')}</p>`
         : card.contextOnly || card.focus?.length === 0 ? `<p class="muted">${aulaText('The model shows the surrounding anatomy.', 'O modelo mostra a anatomia ao redor.')}</p>` : ''}
@@ -1463,7 +1468,7 @@ function renderAulas() {
     return new Set(wrongs.filter(i => i !== keepWrong));
   })();
   const studyCard = !testing ? matchCard(block, question) : null;
-  const studyCardBody = c => `<strong>${escape(c.title)}${c.ref ? ` · Slide ${escape(c.ref)}` : ''}</strong>${richList(c.facts, { link3d: Boolean(feedback) })}${c.confusion ? `<p class="muted"><strong>${aulaText('Common confusion', 'Confusão comum')}:</strong> ${richText(c.confusion, { link3d: Boolean(feedback) })}</p>` : ''}`;
+  const studyCardBody = c => `<strong>${escape(c.title)}${c.ref ? ` · Slide ${escape(c.ref)}` : ''}</strong>${cardText(c, { link3d: Boolean(feedback) })}${c.confusion ? `<p class="muted"><strong>${aulaText('Common confusion', 'Confusão comum')}:</strong> ${richText(c.confusion, { link3d: Boolean(feedback) })}</p>` : ''}`;
   const learned = new Set(session.answers.filter(answer => answer.correct && !answer.assisted).map(answer => answer.id)).size;
   const count = testing ? `${session.index + 1}/${session.total}` : aulaText(`${learned}/${session.total} learned`, `${learned}/${session.total} aprendidos`);
   return `<div class="screen aulas-screen prompt" translate="no">${header}

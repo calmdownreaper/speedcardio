@@ -1599,7 +1599,7 @@ const zAnatomyExtras = {
     definition: ["Continuation of the axillary vein from the first rib to the venous angle."],
     course: ["Arches over the first rib in front of the anterior scalene and joins the internal jugular vein behind the sternoclavicular joint."],
     relations: ["The anterior scalene separates it from the subclavian artery behind."],
-    branches: ["Receives the external jugular vein; the thoracic duct ends at the left venous angle."],
+    branches: ["Receives the external jugular vein; the right lymph trunks end at the right venous angle."],
     clinical: ["Central venous catheterisation risks pneumothorax because the pleural dome lies just below."],
     imaging: ["Ultrasound guides cannulation and shows thrombosis."],
   }, [
@@ -3519,7 +3519,7 @@ export const LESSON_DETAIL = {
 
   // Trachea and bronchi
   traqueia: {
-    text: "**Trachea** runs from the cricoid at C6 to the carina at T4–T5, lying in front of the esophagus. Its 16–20 C-shaped cartilage rings are open posteriorly, where the trachealis muscle spans the gap. The carina is a sagittal ridge at the bifurcation. Exam point: the right main bronchus is wider and steeper, so aspirated objects lodge there.",
+    text: "**Trachea** runs about 10–11 cm from the cricoid at C6 to its bifurcation at about T5, lying in front of the esophagus. Its C-shaped cartilage rings are open posteriorly, where the trachealis muscle spans the gap. The carina is a sagittal ridge at the bifurcation. Exam point: the right main bronchus is wider and steeper, so aspirated objects lodge there.",
   },
   bpd: {
     text: "**Right main bronchus** is shorter, wider and steeper than the left. It gives the upper lobar bronchus above the artery, then continues as the bronchus intermedius. That stem splits into middle and lower lobar bronchi.",
