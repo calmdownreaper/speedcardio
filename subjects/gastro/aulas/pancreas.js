@@ -1,0 +1,755 @@
+// SpeedGastro · Aula 12 — Pancreas and spleen (Prof. Fiume deck 12_pancreas_spleen, p001–p067).
+// One card per slide page (or a short run of pages on one topic). Every card
+// body explains the whole page, in order, using only the slide's own facts.
+// t(en, pt) records the pt-BR pair and returns the English text.
+const PT = {};
+const t = (en, pt) => { PT[en] = pt; return en; };
+
+export const unit = {
+  id: 'pancreas',
+  label: t('12 · Pancreas and spleen', '12 · Pâncreas e baço'),
+  visible: ['pancreas', 'transverse_colon', 'hepatic_portal_v', 'pancreatic_duct', 'duodenum', 'sma', 'ivc_g', 'gastroduodenal_a', 'pancreaticoduodenal_a', 'common_hepatic_a', 'common_hepatic_duct', 'celiac_trunk', 'splenic_a', 'splenic_v', 'spleen', 'descending_colon', 'ascending_colon', 'gallbladder', 'smv', 'imv', 'gastric_v', 'stomach', 'caudate_lobe', 'diaphragm_g', 'gastroepiploic_a', 'left_gastric_a', 'abdominal_aorta_g', 'right_gastric_a', 'ileocolic_a', 'ileum'],
+  ghost: ['spleen', 'duodenum', 'stomach', 'sma', 'abdominal_aorta_g', 'splenic_a', 'hepatic_portal_v', 'splenic_v', 'ivc_g', 'gallbladder', 'descending_colon', 'transverse_colon', 'caudate_lobe', 'celiac_trunk', 'left_gastric_a', 'right_gastric_a', 'gastroepiploic_a', 'common_hepatic_a', 'pancreas', 'gastric_v', 'imv', 'ileocolic_a', 'ileum', 'diaphragm_g'],
+  view: 'ant',
+};
+
+export const blocks = [
+  {
+    id: 'pancreas-1', title: t('The pancreas: position, parts, relations and peritoneum', 'O pâncreas: posição, partes, relações e peritônio'),
+    cards: [
+      {
+        id: 'pancreas-p01', ref: '1', title: t('Size, position and the mixed gland', 'Tamanho, posição e a glândula mista'),
+        focus: ['pancreas'], ghost: ['spleen', 'duodenum', 'stomach'], view: 'ant',
+        body: [
+          t('Page 1 gives the basic facts. The pancreas is the second biggest gland of the gastrointestinal tract, and it is a mixed gland, with an exocrine and an endocrine part. It measures 12–15 cm long, 2–3 cm wide and 4–5 cm high, and weighs 70–80 g. It is concave at the back, because it lies on the vertebral bodies and the vessels.',
+            'A página 1 dá os dados básicos. O pâncreas é a segunda maior glândula do trato gastrointestinal, e é uma glândula mista, com uma parte exócrina e uma parte endócrina. Mede 12–15 cm de comprimento, 2–3 cm de largura e 4–5 cm de altura, e pesa 70–80 g. É côncavo na face posterior, porque se apoia nos corpos vertebrais e nos vasos.'),
+          t('It lies at L1–L2, and it is retroperitoneal. It sits in the epigastrium and the left hypochondrium. The figure shows the pancreas and the spleen in situ, with the liver, stomach, small and large intestine removed, so the duodenum, the splenic vessels, the tail, the transverse mesocolon and the kidneys are seen in place.',
+            'Fica em L1–L2 e é retroperitoneal. Situa-se no epigástrio e no hipocôndrio esquerdo. A figura mostra o pâncreas e o baço in situ, com o fígado, o estômago e os intestinos delgado e grosso retirados, de modo que o duodeno, os vasos esplênicos, a cauda, o mesocolo transverso e os rins aparecem no lugar.'),
+        ],
+      },
+      {
+        id: 'pancreas-p02', ref: '2', title: t('Supramesocolic or submesocolic?', 'Supramesocólico ou inframesocólico?'),
+        focus: ['pancreas', 'transverse_colon', 'hepatic_portal_v'], ghost: ['stomach', 'spleen', 'duodenum', 'sma'], view: 'ant',
+        body: [
+          t('The slide asks «Pancreas: is it supramesocolic or submesocolic?». The figures answer it. The attachment of the transverse mesocolon runs across the front of the pancreas, so the upper portion lies above it and the uncinate process and lower head lie below it. Thus the gland lies across both spaces.',
+            'O slide pergunta «Pâncreas: é supramesocólico ou inframesocólico?». As figuras respondem. A inserção do mesocolo transverso cruza a frente do pâncreas, de modo que a porção superior fica acima dela e o processo uncinado e a parte inferior da cabeça ficam abaixo. Assim, a glândula se estende pelos dois espaços.'),
+          t('On the left, the posterior abdominal wall shows the cut root of the transverse mesocolon crossing the pancreas and duodenum above the root of the mesentery. On the right, the dissection shows that attachment dividing the pancreas: the portal triad and coeliac branches lie above, while the superior mesenteric vessels emerge below the neck beside the uncinate process, duodenojejunal flexure and jejunum. In the 3D model, the pancreas is focused with the hepatic portal vein passing behind its neck.',
+            'À esquerda, a parede abdominal posterior mostra a borda seccionada da raiz do mesocolo transverso cruzando o pâncreas e o duodeno acima da raiz do mesentério. À direita, a dissecção mostra essa inserção dividindo o pâncreas: a tríade portal e os ramos do tronco celíaco ficam acima, enquanto os vasos mesentéricos superiores emergem abaixo do colo ao lado do processo uncinado, da flexura duodenojejunal e do jejuno. No modelo 3D, o pâncreas está em destaque com a veia porta hepática passando atrás do seu colo.'),
+        ],
+      },
+      {
+        id: 'pancreas-p03', ref: '3', title: t('The four parts: head, neck, body and tail', 'As quatro partes: cabeça, colo, corpo e cauda'),
+        focus: ['pancreas', 'pancreatic_duct', 'duodenum', 'sma', 'ivc_g'], ghost: ['spleen', 'abdominal_aorta_g'], view: 'ant',
+        body: [
+          t('The external conformation has four parts: the head, with the uncinate process; the neck; the body; and the tail. The same dimensions as page 1 are repeated: 12–15 cm long, 2–3 cm wide and 4–5 cm high.',
+            'A conformação externa tem quatro partes: a cabeça, com o processo uncinado; o colo; o corpo; e a cauda. As mesmas dimensões da página 1 são repetidas: 12–15 cm de comprimento, 2–3 cm de largura e 4–5 cm de altura.'),
+          t('The top diagram (A) marks those four divisions and the uncinate process, with the anterior border of the spleen beside the tail. Below it, «Relations of the pancreas» (Fig. 69.1) places the gland in situ: the inferior vena cava lies behind the head and the left kidney behind the body and tail, the bile duct and the main and accessory pancreatic ducts meet inside the head to open at the hepatopancreatic ampulla into the duodenum, and the uncinate process hooks behind the superior mesenteric vein and artery.',
+            'O diagrama superior (A) delimita essas quatro partes e o processo uncinado, com a borda anterior do baço junto à cauda. Abaixo dele, «Relações do pâncreas» (Fig. 69.1) posiciona a glândula in situ: a veia cava inferior fica atrás da cabeça e o rim esquerdo atrás do corpo e da cauda; o colédoco e os ductos pancreáticos principal e acessório se encontram na cabeça para abrir na ampola hepatopancreática no duodeno; e o processo uncinado se curva atrás da veia e da artéria mesentéricas superiores.'),
+        ],
+      },
+      {
+        id: 'pancreas-p04', ref: '4', title: t('Relations of the head: anterior face', 'Relações da cabeça: face anterior'),
+        focus: ['pancreas', 'gastroduodenal_a', 'pancreaticoduodenal_a', 'common_hepatic_a', 'duodenum'], ghost: ['sma', 'splenic_a', 'hepatic_portal_v'], view: 'ant',
+        body: [
+          t('The anterior face of the head has four relations: the gastroduodenal artery, which terminates by dividing into its branches; the posterior parietal peritoneum; the root of the transverse mesocolon; and the duodenum.',
+            'A face anterior da cabeça tem quatro relações: a artéria gastroduodenal, que termina se dividindo nos seus ramos; o peritônio parietal posterior; a raiz do mesocolo transverso; e o duodeno.'),
+          t('Panel A shows the arterial supply around the head and body: the gastroduodenal artery divides into the right gastroepiploic and the posterior and anterior superior pancreaticoduodenal arteries, which anastomose with the anterior and posterior inferior pancreaticoduodenal arteries from the superior mesenteric artery, while the splenic artery supplies the body and tail via the dorsal pancreatic (right and left branches), greater pancreatic and tail arteries. The right-hand dissection shows the pancreas and duodenum in the retroperitoneum with the root of the transverse mesocolon and the suprapyloric and pancreaticoduodenal lymph nodes.',
+            'O painel A mostra a irrigação arterial da cabeça e do corpo: a artéria gastroduodenal se divide na gastroepiploica direita e nas artérias pancreaticoduodenais superiores posterior e anterior, que se anastomosam com as pancreaticoduodenais inferiores anterior e posterior da artéria mesentérica superior, enquanto a artéria esplênica irriga o corpo e a cauda por meio da pancreática dorsal (ramos direito e esquerdo), pancreática magna e artéria da cauda. A dissecção à direita mostra o pâncreas e o duodeno no retroperitônio com a raiz do mesocolo transverso e os linfonodos suprapilórico e pancreaticoduodenais.'),
+        ],
+      },
+      {
+        id: 'pancreas-p05', ref: '5', title: t('Relations of the head: posterior face', 'Relações da cabeça: face posterior'),
+        focus: ['pancreas', 'common_hepatic_duct', 'pancreaticoduodenal_a', 'duodenum', 'ivc_g'], ghost: ['sma', 'splenic_v', 'abdominal_aorta_g'], view: 'ant',
+        body: [
+          t('The posterior face of the head is related to four structures: the common bile duct, the pancreaticoduodenal arteries and veins, the duodenum and the right kidney.',
+            'A face posterior da cabeça se relaciona com quatro estruturas: o colédoco, as artérias e veias pancreaticoduodenais, o duodeno e o rim direito.'),
+          t('The left figure shows a posterior view of the gland and duodenal C-loop: the common bile duct and the posterior superior and posterior inferior pancreaticoduodenal vessels lie behind the head, while the splenic vein (receiving pancreatic branches and the inferior mesenteric vein) joins the superior mesenteric vein behind the neck to form the hepatic portal vein below the coeliac trunk. The right diagram maps the posterior contact areas: the right kidney, common bile duct, superior mesenteric vessels and duodenum at the head, the retropancreatic fascia (fascia of Treitz) behind the neck, the left kidney behind the body and the spleen at the tail.',
+            'A figura à esquerda mostra uma vista posterior da glândula e da alça duodenal: o colédoco e os vasos pancreaticoduodenais superiores posteriores e inferiores posteriores ficam atrás da cabeça, enquanto a veia esplênica (recebendo ramos pancreáticos e a veia mesentérica inferior) une-se à veia mesentérica superior atrás do colo para formar a veia porta hepática abaixo do tronco celíaco. O diagrama à direita mapeia as áreas de contato posteriores: rim direito, colédoco, vasos mesentéricos superiores e duodeno na cabeça, fáscia retropancreática (de Treitz) atrás do colo, rim esquerdo atrás do corpo e baço na cauda.'),
+        ],
+      },
+      {
+        id: 'pancreas-p06', ref: '6', title: t('The neck: why it is short', 'O colo: por que é curto'),
+        focus: ['pancreas', 'celiac_trunk', 'sma', 'splenic_a'], ghost: ['stomach', 'spleen', 'duodenum', 'hepatic_portal_v'], view: 'ant',
+        body: [
+          t('The slide gives the reason for the short neck: it lies between the coeliac trunk and the superior mesenteric vessels, so there is little room for it. The left dissection shows the coeliac trunk above the neck giving the common hepatic and splenic arteries, and the superior mesenteric vessels emerging below it next to the uncinate process and duodenojejunal junction.',
+            'O slide dá a razão de o colo ser curto: ele fica entre o tronco celíaco e os vasos mesentéricos superiores, então há pouco espaço para ele. A dissecção à esquerda mostra o tronco celíaco acima do colo dando as artérias hepática comum e esplênica, e os vasos mesentéricos superiores emergindo abaixo ao lado do processo uncinado e da junção duodenojejunal.'),
+          t('The top-right figure shows the anterior vessels across the head and neck: the gastroduodenal artery gives the anterior superior pancreaticoduodenal vessels to meet the anterior inferior pancreaticoduodenal branch from the superior mesenteric artery and vein, with the hepatic portal vein and gastric vessels above and the inferior mesenteric vein and jejunal vessels below. The bottom-right view repeats the posterior contact areas (left kidney, fascia of Treitz, SMA, SMV, common bile duct, right kidney, duodenum and spleen).',
+            'A figura superior direita mostra os vasos anteriores na cabeça e no colo: a artéria gastroduodenal dá os vasos pancreaticoduodenais superiores anteriores para encontrar o ramo anterior dos vasos pancreaticoduodenais inferiores vindos da artéria e veia mesentéricas superiores, com a veia porta hepática e os vasos gástricos acima e a veia mesentérica inferior e os vasos jejunais abaixo. A vista inferior direita repete as áreas de contato posteriores (rim esquerdo, fáscia de Treitz, AMS, VMS, colédoco, rim direito, duodeno e baço).'),
+        ],
+      },
+      {
+        id: 'pancreas-p07', ref: '7', title: t('The body: a triangular pyramid', 'O corpo: uma pirâmide triangular'),
+        focus: ['pancreas', 'splenic_a', 'splenic_v', 'hepatic_portal_v'], ghost: ['abdominal_aorta_g', 'ivc_g', 'spleen', 'stomach', 'sma'], view: 'ant',
+        body: [
+          t('The body is a triangular pyramid with an anterior face, a posterior face, a superior margin and an inferior margin.',
+            'O corpo é uma pirâmide triangular, com uma face anterior, uma face posterior, uma margem superior e uma margem inferior.'),
+          t('At bottom left, transverse section D shows the neck and body lying anteriorly across the portal vein, superior mesenteric artery, splenic vein, left renal vein, inferior vena cava, aorta, left crus and left kidney, with the second part of the duodenum to the right. The main dissection on the right shows the body extending between neck and tail, with the coeliac trunk and tortuous splenic artery running along its superior margin between the stomach above, the spleen and left colic flexure on the left, and the jejunum and left kidney below.',
+            'À esquerda abaixo, o corte transversal D mostra o colo e o corpo dispostos anteriormente sobre a veia porta, artéria mesentérica superior, veia esplênica, veia renal esquerda, veia cava inferior, aorta, pilar esquerdo e rim esquerdo, com a segunda parte do duodeno à direita. A dissecção principal à direita mostra o corpo entre o colo e a cauda, com o tronco celíaco e a artéria esplênica percorrendo sua margem superior entre o estômago acima, o baço e a flexura cólica esquerda à esquerda, e o jejuno e o rim esquerdo abaixo.'),
+        ],
+      },
+      {
+        id: 'pancreas-p08', ref: '8', title: t('Relations of the body and tail', 'Relações do corpo e da cauda'),
+        focus: ['pancreas', 'splenic_v', 'splenic_a'], ghost: ['stomach', 'abdominal_aorta_g', 'sma', 'duodenum', 'spleen'], view: 'ant',
+        body: [
+          t('Anteriorly, the body is related to the organ that lies against the posterior surface of the stomach, through the omental bursa and the root of the transverse mesocolon. Posteriorly, it is related to the left kidney.',
+            'Anteriormente, o corpo se relaciona com o órgão que fica contra a face posterior do estômago, por meio da bolsa omental e da raiz do mesocolo transverso. Posteriormente, relaciona-se com o rim esquerdo.'),
+          t('The two diagrams map these contact zones directly on the gland. On the anterior view (left), the upper body faces the stomach and the lower body faces the posterior surface of the transverse mesocolon, with the duodenum at the head, the spleen at the tail and the superior mesenteric vessels below. On the posterior view (right), the left kidney occupies the back of the body, flanked by the spleen at the tail, the retropancreatic fascia (fascia of Treitz) and superior mesenteric vessels at the neck, and the right kidney, common bile duct and duodenum behind the head.',
+            'Os dois diagramas mapeiam essas zonas de contato diretamente na glândula. Na vista anterior (esquerda), a parte superior do corpo volta-se para o estômago e a parte inferior para a face posterior do mesocolo transverso, com o duodeno na cabeça, o baço na cauda e os vasos mesentéricos superiores abaixo. Na vista posterior (direita), o rim esquerdo ocupa o dorso do corpo, ladeado pelo baço na cauda, pela fáscia retropancreática (de Treitz) e pelos vasos mesentéricos superiores no colo, e pelo rim direito, colédoco e duodeno atrás da cabeça.'),
+        ],
+      },
+      {
+        id: 'pancreas-p09', ref: '9', title: t('The tail and the pancreaticosplenic ligament', 'A cauda e o ligamento pancreaticoesplênico'),
+        focus: ['pancreas', 'spleen', 'splenic_a', 'splenic_v'], ghost: ['stomach', 'gallbladder', 'duodenum', 'descending_colon', 'transverse_colon'], view: 'ant',
+        body: [
+          t('The tail runs towards the left and upward. It is intraperitoneal. The slide then gives the pancreaticosplenic ligament: it is not always present, and it is present when the tail of the pancreas does not touch the spleen. It is usually thin and cord-like, and it is avascular. Page 54 repeats the ligament’s description.',
+            'A cauda segue para a esquerda e para cima. É intraperitoneal. O slide então apresenta o ligamento pancreaticoesplênico: nem sempre está presente, e está presente quando a cauda do pâncreas não toca o baço. Costuma ser fino e em forma de cordão, e é avascular. A página 54 repete a descrição desse ligamento.'),
+          t('The left dissection (with the small anterior-contact diagram below it) shows the tail extending upward and to the left toward the spleen alongside the splenic artery and left kidney, while the portal triad, duodenum and transverse mesocolon attachment sit around the head and body. On the right, a close-up of the left upper quadrant shows the tail of the pancreas meeting the spleen next to the colon and diaphragm, with the pancreaticocolic, splenocolic and phrenicocolic ligaments.',
+            'A dissecção à esquerda (com o pequeno diagrama de contatos anteriores abaixo dela) mostra a cauda seguindo para a esquerda e para cima até o baço junto à artéria esplênica e ao rim esquerdo, enquanto a tríade portal, o duodeno e a inserção do mesocolo transverso ficam junto à cabeça e ao corpo. À direita, um detalhe do quadrante superior esquerdo mostra a cauda do pâncreas próxima ao baço junto ao colo e ao diafragma, com os ligamentos pancreaticocólico, esplenocólico e frenicocólico.'),
+        ],
+      },
+      {
+        id: 'pancreas-p10', ref: '10', title: t('Means of attachment and the fascia of Treitz and Toldt', 'Meios de fixação e as fáscias de Treitz e de Toldt'),
+        focus: ['pancreas', 'duodenum', 'ivc_g', 'hepatic_portal_v'], ghost: ['spleen', 'stomach'], view: 'ant',
+        body: [
+          t('The pancreas is attached by the parietal peritoneum, the duodenum and the retropancreatic fascia of Treitz and Toldt. This fascia is a layer of loose connective tissue behind the pancreas. It is called the fascia of Treitz in the region of the head, and the fascia of Toldt in the region of the body and tail. It contains the vessels that supply the pancreas.',
+            'O pâncreas é fixado pelo peritônio parietal, pelo duodeno e pela fáscia retropancreática de Treitz e Toldt. Essa fáscia é uma camada de tecido conjuntivo frouxo atrás do pâncreas. Chama-se fáscia de Treitz na região da cabeça e fáscia de Toldt na região do corpo e da cauda. Ela contém os vasos que irrigam o pâncreas.'),
+          t('The axial section at the T12–L1 intervertebral disc shows the pancreas lying behind the omental bursa, sandwiched between the preduodenopancreatic fascia (fascia of Fredet) in front and the retropancreatic fascia (fascia of Treitz) behind. Behind that plane lie the abdominal aorta, the inferior vena cava and both kidneys (each within its capsule, perirenal space, prerenal anterior and retrorenal posterior renal fasciae, and suprarenal gland, inside the transversalis fascia), while the omental foramen (of Winslow) and hepatic portal vein sit to the right.',
+            'O corte axial no disco intervertebral T12–L1 mostra o pâncreas atrás da bolsa omental, entre a fáscia preduodenopancreática (de Fredet) à frente e a fáscia retropancreática (de Treitz) atrás. Atrás desse plano ficam a aorta abdominal, a veia cava inferior e os dois rins (cada um com sua cápsula, espaço perirrenal, lâminas pré-renal e retrorrenal da fáscia renal e glândula suprarrenal, dentro da fáscia transversal), enquanto o forame omental (de Winslow) e a veia porta hepática ficam à direita.'),
+        ],
+      },
+      {
+        id: 'pancreas-p11', ref: '11–12', title: t('Primarily and secondarily retroperitoneal organs; the peritoneal development', 'Órgãos primária e secundariamente retroperitoneais; o desenvolvimento do peritônio'),
+        focus: ['pancreas', 'duodenum', 'descending_colon', 'ascending_colon'], ghost: ['abdominal_aorta_g', 'ivc_g', 'spleen', 'stomach'], view: 'ant',
+        body: [
+          t('Page 11 separates two groups. The primarily retroperitoneal organs are the aorta, the inferior vena cava, the kidneys, the suprarenal glands, the urinary bladder, the prostate, the vagina and the rectum. The secondarily retroperitoneal organs are the pancreas, the duodenum, and the ascending and descending colon.',
+            'A página 11 separa dois grupos. Os órgãos primariamente retroperitoneais são a aorta, a veia cava inferior, os rins, as glândulas suprarrenais, a bexiga urinária, a próstata, a vagina e o reto. Os órgãos secundariamente retroperitoneais são o pâncreas, o duodeno, e os colos ascendente e descendente.'),
+          t('Stages a–c on page 11 trace this development in axial view: the pancreatic bud shifts posteriorly against the body wall to become secondarily retroperitoneal behind the stomach and lesser omentum (hepatogastric ligament), while the hepatic bud grows into the falciform ligament and the splenic bud remains intraperitoneal between the splenorenal and gastrosplenic ligaments (parts of the greater omentum). Page 12 repeats the definition of the retropancreatic fascia alongside two sagittal diagrams showing how the dorsal mesogastrium, transverse mesocolon and mesentery fuse (red arrows) to form the fascia of Treitz behind the head/duodenum and the fascia of Toldt behind the pancreas and colon.',
+            'Os estágios a–c na página 11 acompanham esse desenvolvimento em corte axial: o broto pancreático desloca-se posteriormente contra a parede para se tornar secundariamente retroperitoneal atrás do estômago e do omento menor (ligamento hepatogástrico), enquanto o broto hepático cresce no ligamento falciforme e o broto esplênico permanece intraperitoneal entre os ligamentos esplenorrenal e gastroesplênico (partes do omento maior). A página 12 repete a definição da fáscia retropancreática junto a dois diagramas sagitais mostrando como o mesogástrio dorsal, o mesocolo transverso e o mesentério se fundem (setas vermelhas) para formar a fáscia de Treitz atrás da cabeça/duodeno e a fáscia de Toldt atrás do pâncreas e do colo.'),
+        ],
+      },
+      {
+        id: 'pancreas-p13', ref: '13', title: t('The hepatoduodenal ligament and Calot’s triangle', 'O ligamento hepatoduodenal e o triângulo de Calot'),
+        focus: ['pancreas', 'gallbladder', 'hepatic_portal_v', 'common_hepatic_a', 'smv'], ghost: ['duodenum', 'caudate_lobe', 'transverse_colon'], view: 'ant',
+        body: [
+          t('Panel (a) shows the peritoneal relationships of the hepatoduodenal ligament, which contains the portal vein, proper hepatic artery and common bile duct above the descending part of the duodenum and pancreas. Below and in front of the gland, it marks the root of the transverse mesocolon, the transverse colon, the greater omentum, the duodenojejunal flexure, the superior mesenteric artery and vein and the root of the mesentery.',
+            'O painel (a) mostra as relações peritoneais do ligamento hepatoduodenal, que contém a veia porta, a artéria hepática própria e o colédoco acima da parte descendente do duodeno e do pâncreas. Abaixo e à frente da glândula, indica a raiz do mesocolo transverso, o colo transverso, o omento maior, a flexura duodenojejunal, a artéria e a veia mesentéricas superiores e a raiz do mesentério.'),
+          t('Panel (b) focuses on the biliary and portal dissection of the hepatoduodenal ligament, labelling the gallbladder, the cystic artery, the common bile duct, the hepatic portal vein, the proper hepatic artery and «Calot’s triangle» (with a cross-reference to p. 248 of the textbook, which the slide does not reproduce). Use the 3D model to locate the gallbladder and common bile duct next to the pancreatic head.',
+            'O painel (b) destaca a dissecção biliar e portal do ligamento hepatoduodenal, rotulando a vesícula biliar, a artéria cística, o colédoco, a veia porta hepática, a artéria hepática própria e o «triângulo de Calot» (com remissão à p. 248 do livro-texto, que o slide não reproduz). Use o modelo 3D para localizar a vesícula biliar e o colédoco junto à cabeça do pâncreas.'),
+        ],
+      },
+    ],
+    questions: [
+      { ref: '1', q: 'Which gland does page 1 call the second largest in the gastrointestinal tract?', correct: 'The pancreas', wrong: ['The liver', 'The spleen', 'The thyroid'], why: 'Slide 1: the pancreas is the second biggest gland of the GI tract and a mixed gland.',
+        pt: { q: 'Qual glândula a página 1 chama de a segunda maior do trato gastrointestinal?', correct: 'O pâncreas', wrong: ['O fígado', 'O baço', 'A tireoide'], why: 'Slide 1: o pâncreas é a segunda maior glândula do trato gastrointestinal e uma glândula mista.' } },
+      { ref: '1', q: 'What is the mean weight and length of the pancreas on slide 1?', correct: '70–80 g and 12–15 cm', wrong: ['150–350 g and 9–14 cm', '5–10 g and 3–5 cm', '400–500 g and 25–30 cm'], why: 'Slide 1: 12–15 cm long, 70–80 g.',
+        pt: { q: 'Qual é o peso e o comprimento do pâncreas no slide 1?', correct: '70–80 g e 12–15 cm', wrong: ['150–350 g e 9–14 cm', '5–10 g e 3–5 cm', '400–500 g e 25–30 cm'], why: 'Slide 1: 12–15 cm de comprimento, 70–80 g.' } },
+      { ref: '2', q: 'Where does the pancreas lie in relation to the mesocolic spaces, according to the figure on slide 2?', correct: 'Across both the supramesocolic and submesocolic spaces', wrong: ['Entirely in the supramesocolic space', 'Entirely in the submesocolic space', 'Entirely inside the lesser sac'], why: 'Slide 2: the transverse mesocolon attachment runs along the front of the pancreas, so it lies across both spaces.',
+        pt: { q: 'Em relação aos espaços mesocólicos, onde fica o pâncreas segundo a figura da página 2?', correct: 'Atravessando os espaços supramesocólico e inframesocólico', wrong: ['Inteiramente no espaço supramesocólico', 'Inteiramente no espaço inframesocólico', 'Inteiramente dentro da bolsa omental'], why: 'Slide 2: a inserção do mesocolo transverso corre pela frente do pâncreas, então ele fica entre os dois espaços.' } },
+      { ref: '4', q: 'Which artery ends by dividing into its branches on the anterior face of the head?', correct: 'The gastroduodenal artery', wrong: ['The splenic artery', 'The superior mesenteric artery', 'The left gastric artery'], why: 'Slide 4: the gastroduodenal artery terminates by dividing into its branches.',
+        pt: { q: 'Qual artéria termina se dividindo nos seus ramos na face anterior da cabeça?', correct: 'A artéria gastroduodenal', wrong: ['A artéria esplênica', 'A artéria mesentérica superior', 'A artéria gástrica esquerda'], why: 'Slide 4: a artéria gastroduodenal termina se dividindo nos seus ramos.' } },
+      { ref: '5', q: 'Which structure lies behind the head of the pancreas, on its posterior face?', correct: 'The common bile duct', wrong: ['The stomach', 'The spleen', 'The transverse mesocolon'], why: 'Slide 5: the posterior face of the head is related to the common bile duct, the pancreaticoduodenal vessels, the duodenum and the right kidney.',
+        pt: { q: 'Qual estrutura fica atrás da cabeça do pâncreas, na face posterior?', correct: 'O colédoco', wrong: ['O estômago', 'O baço', 'O mesocolo transverso'], why: 'Slide 5: a face posterior da cabeça se relaciona com o colédoco, os vasos pancreaticoduodenais, o duodeno e o rim direito.' } },
+      { ref: '6', q: 'Why is the neck of the pancreas short?', correct: 'It lies between the coeliac trunk and the superior mesenteric vessels', wrong: ['It has no blood supply', 'It is fused with the spleen', 'It lies outside the peritoneum'], why: 'Slide 6: the neck is shorter because it lies between the coeliac trunk and the superior mesenteric vessels.',
+        pt: { q: 'Por que o colo do pâncreas é curto?', correct: 'Fica entre o tronco celíaco e os vasos mesentéricos superiores', wrong: ['Não tem irrigação', 'Está fundido com o baço', 'Fica fora do peritônio'], why: 'Slide 6: o colo é mais curto porque fica entre o tronco celíaco e os vasos mesentéricos superiores.' } },
+      { ref: '7', q: 'How many faces and margins does the body of the pancreas have, according to slide 7?', correct: 'Two faces and two margins (triangular pyramid)', wrong: ['One face and one margin', 'Four faces and no margins', 'Three faces and one margin'], why: 'Slide 7: body is a triangular pyramid with anterior and posterior faces and superior and inferior margins.',
+        pt: { q: 'Quantas faces e margens tem o corpo do pâncreas, segundo o slide 7?', correct: 'Duas faces e duas margens (pirâmide triangular)', wrong: ['Uma face e uma margem', 'Quatro faces e nenhuma margem', 'Três faces e uma margem'], why: 'Slide 7: o corpo é uma pirâmide triangular, com faces anterior e posterior e margens superior e inferior.' } },
+      { ref: '8', q: 'Which kidney is related to the posterior surface of the body of the pancreas?', correct: 'The left kidney', wrong: ['The right kidney', 'Both kidneys equally', 'Neither kidney'], why: 'Slide 8: posteriorly, the body is related to the left kidney.',
+        pt: { q: 'Qual rim se relaciona com a face posterior do corpo do pâncreas?', correct: 'O rim esquerdo', wrong: ['O rim direito', 'Os dois rins igualmente', 'Nenhum dos rins'], why: 'Slide 8: posteriormente, o corpo se relaciona com o rim esquerdo.' } },
+      { ref: '9', q: 'When is the pancreaticosplenic ligament present?', correct: 'When the tail of the pancreas does not touch the spleen', wrong: ['Always, in every person', 'When the tail touches the spleen', 'Only in women'], why: 'Slide 9: not always present; present when the tail of the pancreas does not touch the spleen.',
+        pt: { q: 'Quando o ligamento pancreaticoesplênico está presente?', correct: 'Quando a cauda do pâncreas não toca o baço', wrong: ['Sempre, em todas as pessoas', 'Quando a cauda toca o baço', 'Somente nas mulheres'], why: 'Slide 9: nem sempre está presente; está presente quando a cauda do pâncreas não toca o baço.' } },
+      { ref: '10', q: 'What is the retropancreatic fascia called in the region of the head?', correct: 'The fascia of Treitz', wrong: ['The fascia of Toldt', 'The fascia of Fredet', 'The fascia of Winslow'], why: 'Slide 10: fascia of Treitz at the head; fascia of Toldt at the body and tail.',
+        pt: { q: 'Como se chama a fáscia retropancreática na região da cabeça?', correct: 'Fáscia de Treitz', wrong: ['Fáscia de Toldt', 'Fáscia de Fredet', 'Fáscia de Winslow'], why: 'Slide 10: fáscia de Treitz na cabeça; fáscia de Toldt no corpo e na cauda.' } },
+      { ref: '11–12', q: 'Which of these is a primarily retroperitoneal organ?', correct: 'The kidney', wrong: ['The pancreas', 'The duodenum', 'The ascending colon'], why: 'Slide 11: primarily retroperitoneal: aorta, IVC, kidneys, suprarenal glands, bladder, prostate, vagina, rectum; pancreas, duodenum and colon are secondarily retroperitoneal.',
+        pt: { q: 'Qual destes é um órgão primariamente retroperitoneal?', correct: 'O rim', wrong: ['O pâncreas', 'O duodeno', 'O colo ascendente'], why: 'Slide 11: primariamente retroperitoneais: aorta, VCI, rins, suprarrenais, bexiga, próstata, vagina, reto; pâncreas, duodeno e colo são secundariamente retroperitoneais.' } },
+    ],
+  },
+  {
+    id: 'pancreas-2', title: t('Development, ducts and the sphincters', 'Desenvolvimento, ductos e esfíncteres'),
+    cards: [
+      {
+        id: 'pancreas-p14', ref: '14', title: t('Development: the dorsal and ventral buds', 'Desenvolvimento: os brotos dorsal e ventral'),
+        focus: ['pancreas', 'pancreatic_duct', 'duodenum', 'gallbladder'], ghost: ['stomach', 'caudate_lobe'], view: 'ant', contextOnly: true,
+        body: [
+          t('Growing off the abdominal foregut are a dorsal pancreatic bud and a ventral liver diverticulum. The ventral diverticulum gives rise to the gallbladder and to the ventral pancreatic bud. The hepatic diverticulum gives rise to the hepatocytes, the gallbladder and the entire biliary apparatus.',
+            'Crescendo a partir do intestino anterior abdominal estão um broto pancreático dorsal e um divertículo hepático ventral. Do divertículo ventral brotam a vesícula biliar e o broto pancreático ventral. O divertículo hepático dá origem aos hepatócitos, à vesícula biliar e todo o aparelho biliar.'),
+          t('The ventral pancreatic bud and the common bile duct migrate clockwise around the duodenum into the dorsal mesentery, where the ventral and dorsal buds fuse. The ventral bud forms only part of the head of the pancreas, but its duct joins that of the dorsal bud to become the major pancreatic duct (of Wirsung). The figure labels the stomach, the dorsal bud, the fusion of the two buds, the accessory pancreatic duct (duct of Santorini), the minor and major duodenal papillae and the main pancreatic duct.',
+            'O broto pancreático ventral e o colédoco migram no sentido horário ao redor do duodeno para dentro do mesentério dorsal, onde os brotos ventral e dorsal se fundem. O broto ventral forma apenas parte da cabeça do pâncreas, mas seu ducto se une ao do broto dorsal para formar o ducto pancreático principal (de Wirsung). A figura rotula o estômago, o broto dorsal, a fusão dos dois brotos, o ducto pancreático acessório (ducto de Santorini), as papilas duodenais menor e maior e o ducto pancreático principal.'),
+        ],
+      },
+      {
+        id: 'pancreas-p15', ref: '15–16', title: t('The developing gut in sections, and the papillae', 'O intestino em desenvolvimento em cortes, e as papilas'),
+        focus: ['pancreas', 'pancreatic_duct', 'duodenum', 'gallbladder'], view: 'ant', contextOnly: true,
+        body: [
+          t('Page 15 traces gut rotation and pancreatic bud fusion in anterior/oblique views A–D and axial sections E–G. It labels the ventral mesogastrium, primordial liver, gallbladder, ventral and dorsal pancreatic buds, dorsal mesentery, free edge of the lesser omentum, spleen, duodenum and bile duct, showing the ventral bud and bile duct swinging around the duodenum in sections E and F to fuse with the dorsal bud into the head, body and tail in G (with the pancreatic and accessory ducts opening into the duodenum).',
+            'A página 15 acompanha a rotação intestinal e a fusão dos brotos pancreáticos nas vistas anterior/oblíquas A–D e nos cortes axiais E–G. Rotula o mesogástrio ventral, fígado primitivo, vesícula biliar, brotos pancreáticos ventral e dorsal, mesentério dorsal, borda livre do omento menor, baço, duodeno e colédoco, mostrando o broto ventral e o colédoco contornando o duodeno nos cortes E e F para se fundir ao broto dorsal formando cabeça, corpo e cauda em G (com os ductos pancreático e acessório se abrindo no duodeno).'),
+          t('Page 16 labels the gallbladder, the minor and major duodenal papillae, the duodenum and the main pancreatic duct, illustrating the two openings of the pancreatic duct system onto the duodenal wall.',
+            'A página 16 rotula a vesícula biliar, as papilas duodenais menor e maior, o duodeno e o ducto pancreático principal, ilustrando as duas aberturas do sistema de ductos pancreáticos na parede duodenal.'),
+        ],
+      },
+      {
+        id: 'pancreas-p17', ref: '17', title: t('The normal ducts and their variations', 'Os ductos normais e suas variações'),
+        focus: ['pancreas', 'pancreatic_duct', 'common_hepatic_duct'], view: 'ant',
+        body: [
+          t('On the left, the normal pattern labels the (common) bile duct, the (principal) pancreatic duct (Wirsung), the accessory pancreatic duct (Santorini) and the pancreatic notch.',
+            'À esquerda, o padrão normal rotula o colédoco, o ducto pancreático principal (de Wirsung), o ducto pancreático acessório (de Santorini) e a incisura pancreática.'),
+          t('On the right, the Netter panel «Variations in Pancreatic Ducts [Continued]» shows eight variants: double accessory pancreatic duct (Santorini); anastomosis between ducts; crossing ducts; double crossing of ducts; no communication between ducts; double (principal) pancreatic duct (Wirsung); tortuosity of ducts; and absence of accessory pancreatic duct (Santorini). The slide gives no comment on which variation is commonest, so study them as a visual catalogue of possible duct shapes.',
+            'À direita, o painel de Netter «Variations in Pancreatic Ducts [Continued]» mostra oito variantes: ducto pancreático acessório duplo (Santorini); anastomose entre ductos; cruzamento de ductos; duplo cruzamento de ductos; ausência de comunicação entre ductos; ducto pancreático principal duplo (Wirsung); tortuosidade dos ductos; e ausência do ducto pancreático acessório (Santorini). O slide não comenta qual variação é a mais comum, então estude-as como um catálogo visual das formas possíveis.'),
+        ],
+      },
+      {
+        id: 'pancreas-p18', ref: '18', title: t('The hepatopancreatic ampulla and the sphincter of Oddi', 'A ampola hepatopancreática e o esfíncter de Oddi'),
+        focus: ['pancreas', 'common_hepatic_duct', 'pancreatic_duct', 'duodenum'], view: 'ant',
+        body: [
+          t('The slide is headed «Sphincter of Oddi: hepatopancreatic ampulla». Panel (a) shows the wall of the duodenum and the hepatopancreatic ampulla with three distinct muscular sphincters: the sphincter of the common bile duct, the sphincter of the pancreatic duct and the sphincter of the hepatopancreatic ampulla.',
+            'O slide tem o título «Esfíncter de Oddi: ampola hepatopancreática». O painel (a) mostra a parede do duodeno e a ampola hepatopancreática com três esfíncteres musculares distintos: o esfíncter do colédoco, o esfíncter do ducto pancreático e o esfíncter da ampola hepatopancreática.'),
+          t('Panel (b) shows the duodenum’s muscularis externa (outer longitudinal and inner circular layers), with longitudinal slips of duodenal muscle extending onto the common bile duct beside the pancreatic duct where both converge at the sphincter of the hepatopancreatic ampulla. Use the 3D model to locate the common bile duct and pancreatic duct meeting at the duodenum.',
+            'O painel (b) mostra a muscular externa do duodeno (camada longitudinal e camada circular), com feixes longitudinais do músculo duodenal se estendendo até o colédoco ao lado do ducto pancreático, onde ambos convergem no esfíncter da ampola hepatopancreática. Use o modelo 3D para localizar o colédoco e o ducto pancreático se encontrando no duodeno.'),
+        ],
+      },
+      {
+        id: 'pancreas-p19', ref: '19', title: t('The three sphincters at the papilla', 'Os três esfíncteres na papila'),
+        focus: ['pancreas', 'common_hepatic_duct', 'pancreatic_duct', 'duodenum'], view: 'ant',
+        body: [
+          t('Both ducts have their own sphincter: the muscular sphincter of the bile duct and the muscular sphincter of the pancreatic duct. Where both ducts open into the duodenum at the papilla, the muscle fibres of the ampulla form a ring around the two sphincters. This forms a third, supplementary sphincter, the sphincter of the hepatopancreatic ampulla.',
+            'Os dois ductos têm cada um seu próprio esfíncter: o esfíncter muscular do colédoco e o esfíncter muscular do ducto pancreático. Na papila, onde os dois ductos se abrem no duodeno, as fibras musculares da ampola formam um anel em torno dos dois esfíncteres. Isso forma um terceiro esfíncter, suplementar: o esfíncter da ampola hepatopancreática.'),
+          t('The slide says this sphincter contracts independently of the muscular layer of the duodenum. In fasting, the ampullary sphincter can be contracted (closed) while the duodenal muscle is relaxed. During digestion, the duodenal muscle contracts while the ampullary sphincter relaxes. Gallstones can block this sphincter, obstructing the flow of pancreatic juice and leading to pancreatitis. The figure shows the reinforcing fibres, the longitudinal bundle and the sphincter of the pancreatic duct, which the slide marks as inconstant.',
+            'O slide diz que esse esfíncter se contrai independentemente da camada muscular do duodeno. Em jejum, o esfíncter ampular pode estar contraído (fechado) enquanto a musculatura duodenal está relaxada. Durante a digestão, a musculatura duodenal se contrai enquanto o esfíncter ampular relaxa. Cálculos biliares podem bloquear esse esfíncter, obstruindo a saída do suco pancreático e levando à pancreatite. A figura mostra as fibras de reforço, o feixe longitudinal e o esfíncter do ducto pancreático, que o slide marca como inconstante.'),
+        ],
+      },
+      {
+        id: 'pancreas-p20', ref: '20', title: t('CCK, gallbladder storage and bile concentration', 'CCK, armazenamento na vesícula e concentração da bile'),
+        focus: ['gallbladder', 'common_hepatic_duct', 'pancreas'], ghost: ['duodenum', 'caudate_lobe'], view: 'ant',
+        body: [
+          t('During digestion, the duodenum secretes cholecystokinin (CCK), which causes two things: the gallbladder muscle contracts vigorously, and the sphincter of Oddi relaxes, so bile is released into the duodenum. The bottom diagrams show lipids inside the duodenum triggering CCK (pancreozymin), gallbladder contraction and relaxation of the Oddi sphincter to release bile.',
+            'Durante a digestão, o duodeno secreta colecistocinina (CCK), que provoca duas coisas: a musculatura da vesícula se contrai vigorosamente, e o esfíncter de Oddi relaxa, de modo que a bile é liberada no duodeno. Os diagramas inferiores mostram lipídios no interior do duodeno desencadeando a CCK (pancreozimina), a contração da vesícula e o relaxamento do esfíncter de Oddi para liberar a bile.'),
+          t('During fasting, the gallbladder stores the bile, and while doing so it adsorbs (the slide writes «adsorb») 90% of the water and NaCl, which concentrates the other components by 10 times. The top diagrams show water and salts leaving the stored bile inside the gallbladder while the sphincter of Oddi remains closed.',
+            'Em jejum, a vesícula armazena a bile e, ao fazê-lo, retém (o slide escreve «adsorb») 90% da água e do NaCl, o que concentra os outros componentes em 10 vezes. Os diagramas superiores mostram água e sais saindo da bile armazenada na vesícula enquanto o esfíncter de Oddi permanece fechado.'),
+        ],
+      },
+    ],
+    questions: [
+      { ref: '14', q: 'Which duct of the pancreas is formed when the two buds join?', correct: 'The main pancreatic duct (of Wirsung)', wrong: ['The accessory pancreatic duct (of Santorini)', 'The cystic duct', 'The hepatic duct'], why: 'Slide 14: the duct of the ventral bud joins the dorsal bud’s duct to become the major pancreatic duct (Wirsung).',
+        pt: { q: 'Qual ducto do pâncreas se forma quando os dois brotos se unem?', correct: 'O ducto pancreático principal (de Wirsung)', wrong: ['O ducto pancreático acessório (de Santorini)', 'O ducto cístico', 'O ducto hepático'], why: 'Slide 14: o ducto do broto ventral se une ao do broto dorsal para formar o ducto pancreático principal (Wirsung).' } },
+      { ref: '14', q: 'How much of the head does the ventral pancreatic bud form, according to slide 14?', correct: 'Only part of the head', wrong: ['The whole head', 'The tail', 'The neck'], why: 'Slide 14: the ventral bud forms only part of the head of the pancreas.',
+        pt: { q: 'Quanto da cabeça o broto pancreático ventral forma, segundo o slide 14?', correct: 'Apenas parte da cabeça', wrong: ['A cabeça inteira', 'A cauda', 'O colo'], why: 'Slide 14: o broto ventral forma apenas parte da cabeça do pâncreas.' } },
+      { ref: '17', q: 'Which variation is listed among the pancreatic ducts?', correct: 'Absence of the accessory pancreatic duct', wrong: ['Absence of the common bile duct as a rule', 'Duplication of the spleen', 'Absence of the duodenum'], why: 'Slide 17 lists absence of the accessory duct among the variations.',
+        pt: { q: 'Qual variação aparece entre os ductos pancreáticos?', correct: 'Ausência do ducto pancreático acessório', wrong: ['Ausência do colédoco como regra', 'Duplicação do baço', 'Ausência do duodeno'], why: 'Slide 17 lista a ausência do ducto acessório entre as variações.' } },
+      { ref: '19', q: 'What does the sphincter of the hepatopancreatic ampulla contract independently of?', correct: 'The muscular layer of the duodenum', wrong: ['The gallbladder', 'The pancreatic islets', 'The splenic artery'], why: 'Slide 19: the ampullary sphincter contracts independently from the muscular layer of the duodenum.',
+        pt: { q: 'De que o esfíncter da ampola hepatopancreática se contrai independentemente?', correct: 'Da camada muscular do duodeno', wrong: ['Da vesícula biliar', 'Das ilhotas pancreáticas', 'Da artéria esplênica'], why: 'Slide 19: o esfíncter ampular se contrai independentemente da camada muscular do duodeno.' } },
+      { ref: '19', q: 'What can block the sphincter of the ampulla, leading to pancreatitis?', correct: 'Gallstones', wrong: ['Pancreatic islets', 'Enterokinase', 'Secretin'], why: 'Slide 19: gallstones can block this sphincter and obstruct pancreatic juice, leading to pancreatitis.',
+        pt: { q: 'O que pode bloquear o esfíncter da ampola, levando à pancreatite?', correct: 'Cálculos biliares', wrong: ['Ilhotas pancreáticas', 'Enteroquinase', 'Secretina'], why: 'Slide 19: cálculos biliares podem bloquear esse esfíncter e obstruir o suco pancreático, levando à pancreatite.' } },
+      { ref: '20', q: 'What does cholecystokinin do during digestion?', correct: 'Contracts the gallbladder and relaxes the sphincter of Oddi', wrong: ['Relaxes the gallbladder and contracts the sphincter of Oddi', 'Stops bile release', 'Raises the pH of the stomach'], why: 'Slide 20: CCK makes the gallbladder muscle contract and the sphincter of Oddi relax, so bile is released.',
+        pt: { q: 'O que a colecistocinina faz durante a digestão?', correct: 'Contrai a vesícula e relaxa o esfíncter de Oddi', wrong: ['Relaxa a vesícula e contrai o esfíncter de Oddi', 'Impede a liberação da bile', 'Eleva o pH do estômago'], why: 'Slide 20: a CCK faz a musculatura da vesícula contrair e o esfíncter de Oddi relaxar, liberando a bile.' } },
+      { ref: '20', q: 'How much of the water and NaCl does the gallbladder adsorb during fasting, according to slide 20?', correct: '90%', wrong: ['10%', '50%', '99%'], why: 'Slide 20: during fasting the gallbladder adsorbs 90% of water and NaCl, concentrating the other components 10 times.',
+        pt: { q: 'Qual a porcentagem de água e NaCl que a vesícula retém em jejum, segundo o slide 20?', correct: '90%', wrong: ['10%', '50%', '99%'], why: 'Slide 20: em jejum a vesícula retém 90% da água e do NaCl, concentrando os outros componentes 10 vezes.' } },
+    ],
+  },
+  {
+    id: 'pancreas-3', title: t('Blood supply, venous drainage, innervation and anomalies', 'Irrigação, drenagem venosa, inervação e anomalias'),
+    cards: [
+      {
+        id: 'pancreas-p21', ref: '21', title: t('The arterial supply of the head', 'A irrigação arterial da cabeça'),
+        focus: ['gastroduodenal_a', 'pancreaticoduodenal_a', 'sma', 'pancreas', 'duodenum'], ghost: ['celiac_trunk', 'splenic_a', 'left_gastric_a', 'right_gastric_a', 'gastroepiploic_a'], view: 'ant',
+        body: [
+          t('The head has a double arcade of pancreaticoduodenal arteries. The superior arcade, anterior and posterior, comes from the gastroduodenal artery. The inferior arcade, anterior and posterior, comes from the superior mesenteric artery.',
+            'A cabeça tem uma dupla arcada de artérias pancreaticoduodenais. A arcada superior, anterior e posterior, vem da artéria gastroduodenal. A arcada inferior, anterior e posterior, vem da artéria mesentérica superior.'),
+          t('The figure traces this arterial layout from the coeliac trunk: the common hepatic artery gives the gastroduodenal artery (which branches into the right gastro-omental and the superior pancreaticoduodenal arteries, dividing into posterior superior and anterior superior), while the superior mesenteric artery below gives the inferior pancreaticoduodenal artery (dividing into posterior inferior and anterior inferior) to close the double arcade along the duodenum; along the upper border of the gland, the splenic artery runs to the spleen and gives short gastric and left gastro-omental arteries. In the 3D model, follow the superior arcade from the gastroduodenal artery and the inferior arcade from the superior mesenteric artery.',
+            'A figura traça essa rede arterial a partir do tronco celíaco: a artéria hepática comum origina a artéria gastroduodenal (que se ramifica na gastro-omental direita e nas artérias pancreaticoduodenais superiores, dividindo-se em superior posterior e superior anterior), enquanto a artéria mesentérica superior abaixo origina a artéria pancreaticoduodenal inferior (dividindo-se em inferior posterior e inferior anterior) para fechar a dupla arcada ao longo do duodeno; pela borda superior da glândula, a artéria esplênica segue até o baço dando artérias gástricas curtas e a gastro-omental esquerda. No modelo 3D, siga a arcada superior a partir da gastroduodenal e a inferior a partir da mesentérica superior.'),
+        ],
+      },
+      {
+        id: 'pancreas-p22', ref: '22', title: t('The splenic artery and the body and tail', 'A artéria esplênica e o corpo e a cauda'),
+        focus: ['splenic_a', 'pancreas', 'gastroduodenal_a', 'pancreaticoduodenal_a'], ghost: ['celiac_trunk', 'common_hepatic_a', 'sma', 'spleen'], view: 'ant',
+        body: [
+          t('The body and tail are supplied by the splenic artery, which is very tortuous. It gives three pancreatic branches. (1) The dorsal pancreatic artery runs downward and divides into two. The right branch goes towards the uncinate process and anastomoses with the anterior superior pancreaticoduodenal arcade. The left branch is the bigger one: it is the inferior pancreatic artery, which runs towards the tail. (2) The greater pancreatic artery, the arteria pancreatica magna, anastomoses with the inferior pancreatic artery. (3) The artery to the tail, the arteria caudae pancreatis, also anastomoses with the inferior pancreatic artery.',
+            'O corpo e a cauda são irrigados pela artéria esplênica, que é muito tortuosa. Ela dá três ramos pancreáticos. (1) A artéria pancreática dorsal desce e se divide em duas. O ramo direito vai para o processo uncinado e se anastomosa com a arcada pancreaticoduodenal superior anterior. O ramo esquerdo é o maior: é a artéria pancreática inferior, que segue para a cauda. (2) A artéria pancreática magna, a arteria pancreatica magna, anastomosa-se com a artéria pancreática inferior. (3) A artéria da cauda, a arteria caudae pancreatis, também se anastomosa com a artéria pancreática inferior.'),
+          t('The left schematic maps these branches of the splenic artery alongside the coeliac trunk, common hepatic and gastroduodenal arteries and the superior mesenteric artery. On the right, Netter’s posterior view shows the same anastomotic network from behind—including the greater, inferior and dorsal pancreatic arteries, the posterior pancreaticoduodenal arcades, an anastomotic branch, the common bile duct and the supraduodenal artery. The 3D model focuses the splenic artery along the upper border of the body and tail.',
+            'O esquema à esquerda mapeia esses ramos da artéria esplênica ao lado do tronco celíaco, das artérias hepática comum e gastroduodenal e da artéria mesentérica superior. À direita, a vista posterior de Netter mostra a mesma rede anastomótica por trás—incluindo as artérias pancreática magna, inferior e dorsal, as arcadas pancreaticoduodenais posteriores, um ramo anastomótico, o colédoco e a artéria supraduodenal. O modelo 3D destaca a artéria esplênica ao longo da margem superior do corpo e da cauda.'),
+        ],
+      },
+      {
+        id: 'pancreas-p23', ref: '23', title: t('Venous drainage of the body and tail', 'Drenagem venosa do corpo e da cauda'),
+        focus: ['splenic_v', 'smv', 'hepatic_portal_v', 'imv', 'gastric_v'], ghost: ['pancreas', 'spleen'], view: 'ant',
+        body: [
+          t('The body and tail drain mainly into the splenic vein. Netter’s dissection shows the splenic vein running from the spleen behind the body and tail, receiving pancreatic tributaries including the (great) pancreatic vein, as well as the short gastric veins, the left gastro-omental vein and the inferior mesenteric vein.',
+            'O corpo e a cauda drenam principalmente para a veia esplênica. A dissecção de Netter mostra a veia esplênica correndo do baço por trás do corpo e da cauda, recebendo tributárias pancreáticas como a grande veia pancreática, além das veias gástricas curtas, da veia gastro-omental esquerda e da veia mesentérica inferior.'),
+          t('Behind the neck of the pancreas, the splenic vein joins the superior mesenteric vein (which receives the right gastro-omental and the anterior superior, anterior inferior and posterior inferior pancreaticoduodenal veins) to form the hepatic portal vein, which also receives the right gastric and posterior superior pancreaticoduodenal veins. The 3D model shows the splenic vein running behind the body and tail.',
+            'Atrás do colo do pâncreas, a veia esplênica une-se à veia mesentérica superior (que recebe a veia gastro-omental direita e as veias pancreaticoduodenais superior anterior, inferior anterior e inferior posterior) para formar a veia porta hepática, que também recebe as veias gástrica direita e pancreaticoduodenal superior posterior. O modelo 3D mostra a veia esplênica passando atrás do corpo e da cauda.'),
+        ],
+      },
+      {
+        id: 'pancreas-p24', ref: '24', title: t('Venous drainage of the head', 'Drenagem venosa da cabeça'),
+        focus: ['smv', 'hepatic_portal_v', 'pancreas', 'duodenum'], ghost: ['gastric_v', 'splenic_v', 'imv', 'ileocolic_a'], view: 'ant',
+        body: [
+          t('The head is drained by the pancreaticoduodenal veins in two groups. The two inferior pancreaticoduodenal veins and the anterior superior pancreaticoduodenal vein drain into the superior mesenteric vein. The posterior superior pancreaticoduodenal vein drains into the portal vein.',
+            'A cabeça é drenada pelas veias pancreaticoduodenais em dois grupos. As duas veias pancreaticoduodenais inferiores e a veia pancreaticoduodenal superior anterior drenam para a veia mesentérica superior. A veia pancreaticoduodenal superior posterior drena para a veia porta.'),
+          t('The left schematic places the pancreaticoduodenal and pancreatic veins within the entire portal system—draining from the spleen, stomach (left gastric with oesophageal veins, right gastric, short gastric and gastro-omental veins), gallbladder (cystic vein), small intestine (jejunal and ileal veins) and colon/rectum (middle colic, right colic, ileocolic, appendicular, left colic, sigmoid and superior rectal veins via the superior and inferior mesenteric veins, plus the azygos/hemiazygos connection at bottom left)—while the Netter view on the right shows those veins around the pancreatic head and superior mesenteric vein.',
+            'O esquema à esquerda situa as veias pancreaticoduodenais e pancreáticas dentro de todo o sistema porta—drenando do baço, do estômago (veia gástrica esquerda com veias esofágicas, gástrica direita, gástricas curtas e gastro-omentais), da vesícula (veia cística), do intestino delgado (veias jejunais e ileais) e do colo/reto (veias cólica média, cólica direita, ileocólica, apendicular, cólica esquerda, sigmoides e retal superior pelas veias mesentéricas superior e inferior, além da conexão ázigos/hemiázigos embaixo à esquerda)—enquanto a vista de Netter à direita mostra essas veias ao redor da cabeça pancreática e da veia mesentérica superior.'),
+        ],
+      },
+      {
+        id: 'pancreas-p25', ref: '25', title: t('Innervation of the pancreas', 'Inervação do pâncreas'),
+        focus: ['pancreas', 'celiac_trunk'], ghost: ['stomach', 'duodenum', 'spleen'], view: 'ant',
+        body: [
+          t('The sympathetic supply comes from T5–T8, through the coeliac ganglion. The parasympathetic supply is the vagus nerve.',
+            'A inervação simpática vem de T5–T8, pelo gânglio celíaco. A inervação parassimpática é o nervo vago.'),
+          t('The figure is the same autonomic diagram used in the other decks of this course. It labels the sympathetic nerves, the superior, middle and inferior cervical ganglia, the splanchnic nerves, and the organs supplied, which include the pancreas, the stomach, the liver, the gallbladder, the small and large intestine, the kidney and the urinary bladder. The cranial nerves III, VII, IX and X and the sacral nerves are labelled in the parasympathetic panel. Use the two lines above as the answer for the pancreas.',
+            'A figura é o mesmo diagrama autonômico usado nos outros decks deste curso. Rotula os nervos simpáticos, os gânglios cervicais superior, médio e inferior, os nervos esplâncnicos e os órgãos inervados, entre eles o pâncreas, o estômago, o fígado, a vesícula, os intestinos delgado e grosso, o rim e a bexiga urinária. Os nervos cranianos III, VII, IX e X e os nervos sacrais aparecem rotulados no painel parassimpático. Use as duas linhas acima como resposta para o pâncreas.'),
+        ],
+      },
+      {
+        id: 'pancreas-p26', ref: '26', title: t('Congenital anomalies: annular pancreas and aberrant tissue', 'Anomalias congênitas: pâncreas anular e tecido aberrante'),
+        focus: ['pancreas', 'duodenum', 'stomach', 'spleen'], ghost: ['gallbladder', 'ileum'], view: 'ant',
+        body: [
+          t('An annular pancreas occurs when the pancreas encircles and constricts the duodenum. The slide says this happens when the ventral pancreatic bud is bifid and passes around both sides of the duodenum. Pancreatic tissue can also develop abnormally in many locations in the gastrointestinal tract, in the spleen and even in the lungs.',
+            'O pâncreas anular ocorre quando o pâncreas circunda e constringe o duodeno. O slide diz que isso acontece quando o broto pancreático ventral é bífido e passa em volta dos dois lados do duodeno. Tecido pancreático também pode se desenvolver de forma anormal em muitos locais do trato gastrointestinal, no baço e até nos pulmões.'),
+          t('The slide ranks the sites of aberrant pancreatic tissue in approximate order of frequency: 1. duodenum; 2. stomach; 3. jejunum; 4. ileum; 5. Meckel’s diverticulum; 6. gallbladder; 7. splenic capsule; 8. oesophagus. The figure shows a nodule of pancreatic tissue on the mucosal side of the stomach, and a section through the nodule in the gastric submucosa.',
+            'O slide classifica os locais do tecido pancreático aberrante em ordem aproximada de frequência: 1. duodeno; 2. estômago; 3. jejuno; 4. íleo; 5. divertículo de Meckel; 6. vesícula biliar; 7. cápsula esplênica; 8. esôfago. A figura mostra um nódulo de tecido pancreático do lado mucoso do estômago, e um corte pelo nódulo na submucosa gástrica.'),
+        ],
+      },
+    ],
+    questions: [
+      { ref: '21', q: 'Where does the superior arcade of pancreaticoduodenal arteries come from?', correct: 'The gastroduodenal artery', wrong: ['The superior mesenteric artery', 'The splenic artery', 'The coeliac trunk directly'], why: 'Slide 21: superior arcade (anterior and posterior) from the gastroduodenal artery; the inferior arcade comes from the SMA.',
+        pt: { q: 'De onde vem a arcada superior das artérias pancreaticoduodenais?', correct: 'Da artéria gastroduodenal', wrong: ['Da artéria mesentérica superior', 'Da artéria esplênica', 'Diretamente do tronco celíaco'], why: 'Slide 21: a arcada superior (anterior e posterior) vem da gastroduodenal; a inferior vem da mesentérica superior.' } },
+      { ref: '22', q: 'Which branch of the dorsal pancreatic artery is the bigger one, and what is it called?', correct: 'The left branch, the inferior pancreatic artery', wrong: ['The right branch, the uncinate artery', 'The greater pancreatic artery', 'The artery to the tail'], why: 'Slide 22: the left branch is the bigger one and is the inferior pancreatic artery, running to the tail.',
+        pt: { q: 'Qual ramo da artéria pancreática dorsal é o maior, e como se chama?', correct: 'O ramo esquerdo, a artéria pancreática inferior', wrong: ['O ramo direito, a artéria uncinada', 'A artéria pancreática magna', 'A artéria da cauda'], why: 'Slide 22: o ramo esquerdo é o maior e é a artéria pancreática inferior, que segue para a cauda.' } },
+      { ref: '23', q: 'Where do the body and tail of the pancreas drain mainly?', correct: 'The splenic vein', wrong: ['The inferior vena cava', 'The superior mesenteric vein', 'The azygos vein'], why: 'Slide 23: body and tail mainly drain into the splenic vein.',
+        pt: { q: 'Para onde drenam principalmente o corpo e a cauda do pâncreas?', correct: 'A veia esplênica', wrong: ['A veia cava inferior', 'A veia mesentérica superior', 'A veia ázigos'], why: 'Slide 23: o corpo e a cauda drenam principalmente para a veia esplênica.' } },
+      { ref: '24', q: 'Which vein receives the posterior superior pancreaticoduodenal vein?', correct: 'The portal vein', wrong: ['The superior mesenteric vein', 'The splenic vein', 'The inferior mesenteric vein'], why: 'Slide 24: the posterior superior pancreaticoduodenal vein drains into the portal vein.',
+        pt: { q: 'Qual veia recebe a veia pancreaticoduodenal superior posterior?', correct: 'A veia porta', wrong: ['A veia mesentérica superior', 'A veia esplênica', 'A veia mesentérica inferior'], why: 'Slide 24: a veia pancreaticoduodenal superior posterior drena para a veia porta.' } },
+      { ref: '25', q: 'Which ganglion gives the sympathetic supply of the pancreas?', correct: 'The coeliac ganglion (T5–T8)', wrong: ['The inferior mesenteric ganglion', 'The pterygopalatine ganglion', 'The sacral ganglia'], why: 'Slide 25: sympathetic T5–T8 via the coeliac ganglion; parasympathetic is the vagus nerve.',
+        pt: { q: 'Qual gânglio dá a inervação simpática do pâncreas?', correct: 'O gânglio celíaco (T5–T8)', wrong: ['O gânglio mesentérico inferior', 'O gânglio pterigopalatino', 'Os gânglios sacrais'], why: 'Slide 25: simpático T5–T8 pelo gânglio celíaco; parassimpático é o nervo vago.' } },
+      { ref: '26', q: 'Which site ranks first in the frequency of aberrant pancreatic tissue?', correct: 'The duodenum', wrong: ['The stomach', 'The spleen', 'The oesophagus'], why: 'Slide 26: the sites are ranked by frequency, with the duodenum first and the stomach second.',
+        pt: { q: 'Qual local ocupa o primeiro lugar na frequência de tecido pancreático aberrante?', correct: 'O duodeno', wrong: ['O estômago', 'O baço', 'O esôfago'], why: 'Slide 26: os locais são ordenados por frequência, com o duodeno em primeiro e o estômago em segundo.' } },
+    ],
+  },
+  {
+    id: 'pancreas-4', title: t('Exocrine pancreas: microanatomy and secretion', 'Pâncreas exócrino: microanatomia e secreção'),
+    cards: [
+      {
+        id: 'pancreas-p27', ref: '27', title: t('The exocrine gland and its ducts', 'A glândula exócrina e seus ductos'),
+        focus: ['pancreas', 'pancreatic_duct'], view: 'ant',
+        body: [
+          t('The pancreas is a compound tubulo-acinar gland. Connective tissue septa divide the pancreatic tissue into distinct lobules, and the blood vessels and the tributaries of the pancreatic ducts run within these septa. The secretory units are the pancreatic acini, each made of simple cuboidal epithelium.',
+            'O pâncreas é uma glândula túbulo-acinosa composta. Septos de tecido conjuntivo dividem o tecido pancreático em lóbulos distintos, e os vasos sanguíneos e os afluentes dos ductos pancreáticos correm dentro desses septos. As unidades secretoras são os ácinos pancreáticos, cada um formado por epitélio cúbico simples.'),
+          t('The acini are the beginning of the duct system. The ducts drain into progressively larger ducts, which drain into the main pancreatic duct, which runs the length of the pancreas. The slide gives the output as about 2 litres of pancreatic juice per day, produced by the acinar cells.',
+            'Os ácinos são o começo do sistema de ductos. Os ductos drenam para ductos cada vez maiores, que desembocam no ducto pancreático principal, que percorre todo o comprimento do pâncreas. O slide dá a produção como cerca de 2 litros de suco pancreático por dia, produzidos pelas células acinares.'),
+        ],
+      },
+      {
+        id: 'pancreas-p28', ref: '28', title: t('Activation of the pancreatic enzymes', 'Ativação das enzimas pancreáticas'),
+        focus: ['pancreas', 'duodenum'], ghost: ['ileum'], view: 'ant',
+        body: [
+          t('The pancreas secretes most of its digestive enzymes as inactive precursors, the proenzymes or zymogens. In the duodenum, the enzyme enterokinase breaks down trypsinogen into trypsin, the active protease, and into an inactive residue. Trypsin then activates the other proenzymes, and it is itself able to convert more trypsinogen into trypsin.',
+            'O pâncreas secreta a maior parte das suas enzimas digestivas como precursores inativos, os pró-enzimas ou zimogênios. No duodeno, a enzima enteroquinase quebra o tripsinogênio em tripsina, a protease ativa, e em um resíduo inativo. Em seguida a tripsina ativa as outras pró-enzimas, e ela mesma é capaz de converter mais tripsinogênio em tripsina.'),
+          t('The figure shows trypsinogen and the zymogens leaving the pancreatic duct into the duodenal lumen, where enterokinase along the enterocytes converts trypsinogen into trypsin, and trypsin then activates the remaining zymogens into active enzymes.',
+            'A figura mostra o tripsinogênio e os zimogênios saindo do ducto pancreático para o lúmen duodenal, onde a enteroquinase junto aos enterócitos converte o tripsinogênio em tripsina, e a tripsina então ativa os demais zimogênios em enzimas ativas.'),
+        ],
+      },
+      {
+        id: 'pancreas-p29', ref: '29', title: t('The exocrine lobule and the acinar cell', 'O lóbulo exócrino e a célula acinar'),
+        focus: ['pancreas', 'pancreatic_duct', 'common_hepatic_duct'], view: 'ant', contextOnly: true,
+        body: [
+          t('Many acini form the lobules, which are separated by fibrous septa. At top left, the macro view labels the common bile duct and the main pancreatic duct; the zoomed lobule shows a pancreatic islet (traversed by a capillary) beside the pancreatic acini, with centroacinar cells sitting inside each acinus and leading via intracellular canaliculi into the intercalated duct and intralobular duct.',
+            'Muitos ácinos formam os lóbulos, separados por septos fibrosos. Acima à esquerda, a vista macroscópica rotula o colédoco e o ducto pancreático principal; o lóbulo ampliado mostra uma ilhota pancreática (atravessada por um capilar) ao lado dos ácinos pancreáticos, com células centroacinares situadas dentro de cada ácino e drenando por canalículos intracelulares para o ducto intercalado e o ducto intralobular.'),
+          t('The two insets on the right zoom in on a centroacinar cell and an exocrine cell of the pancreas, showing the zymogen granules at the apex, the Golgi complex and the rough endoplasmic reticulum. Use the 3D model only to find the pancreas and its ducts; the cell itself is not in the set.',
+            'Os dois quadros ampliados à direita mostram uma célula centroacinar e uma célula exócrina do pâncreas, evidenciando os grânulos de zimogênio no ápice, o complexo de Golgi e o retículo endoplasmático rugoso. Use o modelo 3D apenas para localizar o pâncreas e seus ductos; a célula em si não está no conjunto.'),
+        ],
+      },
+      {
+        id: 'pancreas-p30', ref: '30', title: t('Nervous and hormonal control of the exocrine pancreas', 'Controle nervoso e hormonal do pâncreas exócrino'),
+        focus: ['pancreas', 'duodenum', 'gallbladder'], ghost: ['spleen', 'stomach'], view: 'ant',
+        body: [
+          t('The slide sets out two sets of control. Enzyme secretion from the acinar cells is mainly under vagal cholinergic nerves, and hormonally it is mainly under duodenal cholecystokinin (CCK). The enzymes are granule contents, including proteases, esterase, amylase and lipase.',
+            'O slide apresenta dois conjuntos de controle. A secreção de enzimas pelas células acinares está principalmente sob as fibras vagais colinérgicas, e hormonalmente principalmente sob a colecistocinina (CCK) duodenal. As enzimas são conteúdo de grânulos, entre elas proteases, esterase, amilase e lipase.'),
+          t('Bicarbonate and water, moved by the ductal and centroacinar cells, are under neural control that is mainly vagal cholinergic, and hormonal control that is mainly secretin, from the duodenum and jejunum. The figure also labels the insulo-acinar portal system, through which islet hormones modulate acinar secretion by way of local capillaries, and the sympathetic fibres and sphincteric tone.',
+            'Bicarbonato e água, transportados pelas células ductais e centroacinares, estão sob controle nervoso principalmente vagal colinérgico, e controle hormonal principalmente pela secretina, vinda do duodeno e do jejuno. A figura também rotula o sistema porta insulo-acinar, pelo qual os hormônios das ilhotas modulam a secreção acinar por meio de capilares locais, além das fibras simpáticas e do tônus do esfíncter.'),
+        ],
+      },
+      {
+        id: 'pancreas-p31', ref: '31–32', title: t('The centroacinar cells', 'As células centroacinares'),
+        focus: ['pancreas'], view: 'ant', contextOnly: true,
+        body: [
+          t('The initial portion of the part that transports secretions is invaginated into the centre of the acinus. This part stains more intensely, so it is conspicuous in histological sections. These cells lie at the centre of the acinus but belong to the secretion-transporting part; they are called centroacinar cells.',
+            'A parte inicial da porção que transporta as secreções fica invaginada no centro do ácino. Essa parte cora de forma mais intensa, por isso se destaca nos cortes histológicos. Essas células ficam no centro do ácino, mas pertencem à porção que transporta a secreção; são chamadas células centroacinares.'),
+          t('The figure shows the acinus in cross-section and in longitudinal section, with the glandular cells, the lumen of the proximal ductule and the epithelial cells of the proximal ductule. Page 32 is an exocrine-pancreas figure with two labels only, so it is studied here with page 31.',
+            'A figura mostra o ácino em corte transversal e em corte longitudinal, com as células glandulares, o lúmen do ductulo proximal e as células epiteliais do ductulo proximal. A página 32 é uma figura do pâncreas exócrino com apenas dois rótulos, então é estudada junto com a página 31.'),
+        ],
+      },
+    ],
+    questions: [
+      { ref: '27', q: 'What is the secretory unit of the exocrine pancreas?', correct: 'The pancreatic acinus', wrong: ['The islet of Langerhans', 'The centroacinar cell', 'The intercalated duct'], why: 'Slide 27: the secretory units of the exocrine pancreas are the pancreatic acini, of simple cuboidal epithelium.',
+        pt: { q: 'Qual é a unidade secretora do pâncreas exócrino?', correct: 'O ácino pancreático', wrong: ['A ilhota de Langerhans', 'A célula centroacinar', 'O ducto intercalado'], why: 'Slide 27: as unidades secretoras do pâncreas exócrino são os ácinos pancreáticos, de epitélio cúbico simples.' } },
+      { ref: '27', q: 'About how much pancreatic juice do the acinar cells produce per day?', correct: 'About 2 litres', wrong: ['About 200 ml', 'About 10 litres', 'About 50 ml'], why: 'Slide 27: acinar cells produce approximately 2 litres of pancreatic juice per day.',
+        pt: { q: 'Quanto suco pancreático as células acinares produzem por dia?', correct: 'Cerca de 2 litros', wrong: ['Cerca de 200 ml', 'Cerca de 10 litros', 'Cerca de 50 ml'], why: 'Slide 27: as células acinares produzem aproximadamente 2 litros de suco pancreático por dia.' } },
+      { ref: '28', q: 'Which enzyme converts trypsinogen into trypsin in the duodenum?', correct: 'Enterokinase', wrong: ['Secretin', 'Gastrin', 'Pepsin'], why: 'Slide 28: in the duodenum, enterokinase breaks down trypsinogen into trypsin.',
+        pt: { q: 'Qual enzima converte o tripsinogênio em tripsina no duodeno?', correct: 'Enteroquinase', wrong: ['Secretina', 'Gastrina', 'Pepsina'], why: 'Slide 28: no duodeno, a enteroquinase quebra o tripsinogênio em tripsina.' } },
+      { ref: '30', q: 'Which hormone mainly controls enzyme secretion from the acinar cells?', correct: 'Duodenal cholecystokinin (CCK)', wrong: ['Secretin', 'Glucagon', 'Insulin'], why: 'Slide 30: enzyme secretion (acinar cells) is hormonally mainly controlled by duodenal CCK.',
+        pt: { q: 'Qual hormônio controla principalmente a secreção de enzimas das células acinares?', correct: 'A colecistocinina (CCK) duodenal', wrong: ['A secretina', 'O glucagon', 'A insulina'], why: 'Slide 30: a secreção de enzimas (células acinares) é controlada hormonalmente principalmente pela CCK duodenal.' } },
+      { ref: '30', q: 'Which hormone mainly controls bicarbonate and water secretion from the ductal cells?', correct: 'Secretin', wrong: ['Cholecystokinin', 'Ghrelin', 'Somatostatin'], why: 'Slide 30: bicarbonate and water are hormonally controlled mainly by secretin, from the duodenum and jejunum.',
+        pt: { q: 'Qual hormônio controla principalmente a secreção de bicarbonato e água pelas células ductais?', correct: 'A secretina', wrong: ['A colecistocinina', 'A grelina', 'A somatostatina'], why: 'Slide 30: bicarbonato e água são controlados hormonalmente principalmente pela secretina, do duodeno e do jejuno.' } },
+    ],
+  },
+  {
+    id: 'pancreas-5', title: t('Endocrine pancreas: islets and hormones', 'Pâncreas endócrino: ilhotas e hormônios'),
+    cards: [
+      {
+        id: 'pancreas-p33', ref: '33', title: t('The pancreatic islets', 'As ilhotas pancreáticas'),
+        focus: ['pancreas'], ghost: ['spleen'], view: 'ant',
+        body: [
+          t('The endocrine pancreas is made of groups of cells that form the pancreatic islets, also called the islets of Langerhans. The islets are scattered between the acini. They account for about 1% of the cell population of the pancreas, and they are more concentrated in the tail.',
+            'O pâncreas endócrino é formado por grupos de células que constituem as ilhotas pancreáticas, também chamadas ilhotas de Langerhans. As ilhotas estão espalhadas entre os ácinos. Representam cerca de 1% da população celular do pâncreas, e estão mais concentradas na cauda.'),
+          t('The islets are surrounded by connective tissue that forms a net, which helps the arrival of fenestrated capillaries and autonomic nerve fibres. In the 3D model, the pancreas is focused; the islets are too small to be shown separately, so the slide’s figures on page 34 are the place to see them.',
+            'As ilhotas são cercadas por tecido conjuntivo que forma uma rede, que ajuda a chegada de capilares fenestrados e de fibras nervosas autônomas. No modelo 3D, o pâncreas está em destaque; as ilhotas são pequenas demais para aparecer separadas, então as figuras da página 34 são o lugar para vê-las.'),
+        ],
+      },
+      {
+        id: 'pancreas-p34', ref: '34', title: t('The islet cell types and their proportions', 'Os tipos de células das ilhotas e suas proporções'),
+        focus: ['pancreas', 'spleen'], ghost: ['duodenum', 'stomach'], view: 'ant',
+        body: [
+          t('The slide gives the proportions: β cells 70–80%, α cells 10–15%, and δ cells 5%. The β cells make insulin, the α cells make glucagon, and the δ cells make somatostatin. The PP cells make pancreatic polypeptide, and the ε cells make ghrelin. The slide gives no proportion for PP or ε cells.',
+            'O slide dá as proporções: células β 70–80%, células α 10–15%, e células δ 5%. As células β fazem insulina, as células α fazem glucagon, e as células δ fazem somatostatina. As células PP fazem o polipeptídeo pancreático, e as células ε fazem grelina. O slide não dá proporção para as células PP ou ε.'),
+          t('The figure labels the anastomosis of venous and arterial vessels, the preganglionic vagal fibre, the ganglion cell, the postganglionic sympathetic endings with a vasomotor function, the sympathetic and parasympathetic endings with an excitosecretory function, the capsule, the venule and the arteriole, along with the cell types.',
+            'A figura rotula a anastomose de vasos venosos e arteriais, a fibra vagal pré-ganglionar, a célula ganglionar, as terminações simpáticas pós-ganglionares com função vasomotora, as terminações simpáticas e parassimpáticas com função excitossecretora, a cápsula, a vênula e a arteríola, além dos tipos celulares.'),
+        ],
+      },
+      {
+        id: 'pancreas-p35', ref: '35', title: t('Insulin and glucagon: effects on the target cells', 'Insulina e glucagon: efeitos nas células-alvo'),
+        focus: ['pancreas', 'hepatic_portal_v', 'caudate_lobe'], ghost: ['stomach', 'spleen'], view: 'ant',
+        body: [
+          t('The figure is a schema of the pancreatic islet and its hormonal effects. It shows the α cell (secreting glucagon), the β cell (secreting insulin) and the δ cell (inhibiting both α and β cells), with glucagon and insulin entering the blood alongside glucose to reach their target cells.',
+            'A figura é um esquema da ilhota pancreática e dos seus efeitos hormonais. Mostra a célula α (secretando glucagon), a célula β (secretando insulina) e a célula δ (inibindo tanto a célula α quanto a β), com o glucagon e a insulina entrando no sangue ao lado da glicose para alcançar suas células-alvo.'),
+          t('Through hormone receptors and glucose transport, the figure maps those targets: the fat cell (adipocyte, storing fatty acids), the hepatocyte (handling glucose, glycogen and fatty acids) and the muscle cell (handling glucose, glycogen, amino acids and proteins)—matching the page-36 text that glucagon and insulin enter islet capillaries to act on the liver, white adipose tissue and skeletal muscle.',
+            'Por meio de receptores hormonais e do transporte de glicose, a figura mapeia esses alvos: o adipócito (armazenando ácidos graxos), o hepatócito (lidando com glicose, glicogênio e ácidos graxos) e a célula muscular (lidando com glicose, glicogênio, aminoácidos e proteínas)—correspondendo ao texto da página 36 de que glucagon e insulina entram nos capilares das ilhotas para atuar no fígado, no tecido adiposo branco e no músculo esquelético.'),
+        ],
+      },
+      {
+        id: 'pancreas-p36', ref: '36', title: t('Somatostatin, gastrin and pancreatic polypeptide', 'Somatostatina, gastrina e polipeptídeo pancreático'),
+        focus: ['pancreas'], ghost: ['stomach', 'duodenum'], view: 'ant',
+        body: [
+          t('Somatostatin also acts locally on the α and β cells, regulating their activity. Gastrin regulates gastric secretion: it increases the secretion of hydrochloric acid and pepsinogen. Pancreatic polypeptide reduces gastric emptying and intestinal transit.',
+            'A somatostatina também age localmente sobre as células α e β, regulando sua atividade. A gastrina regula a secreção gástrica: aumenta a secreção de ácido clorídrico e de pepsinogênio. O polipeptídeo pancreático reduz o esvaziamento gástrico e o trânsito intestinal.'),
+          t('The figure shows a δ cell linked by a gap (communicating) junction to an α cell between capillaries, releasing somatostatin and glucagon. The stomach and the duodenum are shown as ghost context because gastrin and pancreatic polypeptide act on them.',
+            'A figura mostra uma célula δ ligada por uma junção comunicante (gap) a uma célula α entre capilares, liberando somatostatina e glucagon. O estômago e o duodeno aparecem como contexto fantasma porque a gastrina e o polipeptídeo pancreático atuam neles.'),
+        ],
+      },
+      {
+        id: 'pancreas-p37', ref: '37', title: t('Cell types, stimulation of insulin and neural modulation', 'Tipos celulares, estimulação da insulina e modulação neural'),
+        focus: ['pancreas'], ghost: ['spleen'], view: 'ant',
+        body: [
+          t('Insulin synthesis and secretion are stimulated in two ways. The β cells receive a direct stimulus from glucose at their receptors, and an indirect stimulus after ingestion, through the vagus and gastrointestinal hormones. The cells are linked by gap junctions and discontinuous tight junctions.',
+            'A síntese e a secreção de insulina são estimuladas de duas formas. As células β recebem um estímulo direto da glicose em seus receptores, e um estímulo indireto após a ingestão, pelo vago e pelos hormônios gastrointestinais. As células são ligadas por junções comunicantes e por junções oclusivas descontínuas.'),
+          t('Somatostatin released by the D (δ) cells inhibits the release of glucagon, and of insulin by the β cells, locally, and it also passes into the vessels to exert distant effects. The figure labels the four cell types (A/Alpha, B/Beta, D/Delta, F), the neuroinsular complex with fenestrated capillaries and sympathetic/parasympathetic secretomotor and vasomotor terminals, and the neuroendocrine cells (shown in yellow) incorporated into the pancreatic acinus and duct. The slide cites Gray’s Anatomy, 39th edition.',
+            'A somatostatina liberada pelas células D (δ) inibe localmente a liberação de glucagon e, pelas células β, a de insulina, e também passa para os vasos para exercer efeitos à distância. A figura rotula os quatro tipos celulares (A/Alfa, B/Beta, D/Delta, F), o complexo neuroinsular com capilares fenestrados e terminações secretomotoras e vasomotoras simpáticas e parassimpáticas, e as células neuroendócrinas (em amarelo) incorporadas ao ácino e ao ducto pancreáticos. O slide cita a Gray’s Anatomy, 39ª edição.'),
+        ],
+      },
+      {
+        id: 'pancreas-p38', ref: '38–39', title: t('Islets differ between species', 'As ilhotas diferem entre as espécies'),
+        focus: ['pancreas'], view: 'ant', contextOnly: true,
+        body: [
+          t('The slide, from Cabrera and colleagues (PNAS 2006), is titled «Langerhans islets are different in different species». The figure shows four animals: mouse, human, monkey and pig. In the mouse, the β cells form the core and the α cells are at the periphery, with δ cells also at the edge. In humans, α, β and δ cells are intermingled. The monkey and pig islets are also shown, with glucagon, insulin and somatostatin marked in colour.',
+            'O slide, de Cabrera e colaboradores (PNAS 2006), tem o título «As ilhotas de Langerhans são diferentes em espécies diferentes». A figura mostra quatro animais: camundongo, humano, macaco e porco. No camundongo, as células β formam o centro e as células α ficam na periferia, com as células δ também na borda. Nos humanos, as células α, β e δ estão misturadas. Também aparecem as ilhotas do macaco e do porco, com glucagon, insulina e somatostatina marcados em cores.'),
+          t('Page 39 is a diagram of a β cell showing glucose and its receptor, insulin release into a capillary, the cell junction, and autonomic control with the sympathetic fibre marked inhibitory (−) and the vagal fibre marked stimulatory (+).',
+            'A página 39 é um diagrama de uma célula β mostrando a glicose e seu receptor, a liberação de insulina para um capilar, a junção celular e o controle autonômico, com a fibra simpática marcada como inibitória (−) e a fibra vagal como estimulatória (+).'),
+        ],
+      },
+    ],
+    questions: [
+      { ref: '33', q: 'Where are the pancreatic islets more concentrated?', correct: 'In the tail', wrong: ['In the head', 'In the neck', 'In the uncinate process'], why: 'Slide 33: the islets are scattered between the acini and more concentrated at the tail of the pancreas.',
+        pt: { q: 'Onde as ilhotas pancreáticas estão mais concentradas?', correct: 'Na cauda', wrong: ['Na cabeça', 'No colo', 'No processo uncinado'], why: 'Slide 33: as ilhotas estão espalhadas entre os ácinos e mais concentradas na cauda do pâncreas.' } },
+      { ref: '34', q: 'Which cells make insulin, according to slide 34?', correct: 'β (B) cells', wrong: ['α (A) cells', 'δ (D) cells', 'PP (F) cells'], why: 'Slide 34: β cells, 70–80%, make insulin.',
+        pt: { q: 'Quais células fazem a insulina, segundo o slide 34?', correct: 'Células β (B)', wrong: ['Células α (A)', 'Células δ (D)', 'Células PP (F)'], why: 'Slide 34: células β, 70–80%, fazem insulina.' } },
+      { ref: '34', q: 'What percentage of islet cells are δ cells, according to the slide?', correct: '5%', wrong: ['10–15%', '70–80%', '1%'], why: 'Slide 34: δ cells 5%, α 10–15%, β 70–80%.',
+        pt: { q: 'Qual a porcentagem de células δ nas ilhotas, segundo o slide?', correct: '5%', wrong: ['10–15%', '70–80%', '1%'], why: 'Slide 34: células δ 5%, α 10–15%, β 70–80%.' } },
+      { ref: '36', q: 'What does pancreatic polypeptide do?', correct: 'Reduces gastric emptying and intestinal transit', wrong: ['Increases hydrochloric acid secretion', 'Makes the gallbladder contract', 'Causes insulin release'], why: 'Slide 36: pancreatic polypeptide reduces gastric emptying and intestinal transit.',
+        pt: { q: 'O que faz o polipeptídeo pancreático?', correct: 'Reduz o esvaziamento gástrico e o trânsito intestinal', wrong: ['Aumenta a secreção de ácido clorídrico', 'Faz a vesícula contrair', 'Causa a liberação de insulina'], why: 'Slide 36: o polipeptídeo pancreático reduz o esvaziamento gástrico e o trânsito intestinal.' } },
+      { ref: '37', q: 'How does somatostatin act on the β cells, according to slide 37?', correct: 'Locally, inhibiting insulin release, and also reaching the vessels for distant effects', wrong: ['Only through the vagus nerve', 'It stimulates insulin release strongly', 'It has no effect on the islets'], why: 'Slide 37: somatostatin from D cells inhibits glucagon and β-cell insulin release locally and also acts at a distance.',
+        pt: { q: 'Como a somatostatina age sobre as células β, segundo o slide 37?', correct: 'Localmente, inibindo a liberação de insulina, e também atingindo os vasos para efeitos à distância', wrong: ['Somente pelo nervo vago', 'Estimula fortemente a liberação de insulina', 'Não tem efeito sobre as ilhotas'], why: 'Slide 37: a somatostatina das células D inibe localmente a liberação de glucagon e de insulina pelas células β, e também age à distância.' } },
+      { ref: '38–39', q: 'In which animal are the α, β and δ cells intermingled, according to the figure?', correct: 'Human', wrong: ['Mouse, where β cells form the core', 'Pig, where the islets are only β cells', 'Monkey, where islets are absent'], why: 'Slide 38: in humans α, β and δ cells are intermingled; in the mouse, β cells form the core with α at the periphery.',
+        pt: { q: 'Em qual animal as células α, β e δ estão misturadas, segundo a figura?', correct: 'Humano', wrong: ['Camundongo, onde as células β formam o centro', 'Porco, onde as ilhotas são só de células β', 'Macaco, onde não há ilhotas'], why: 'Slide 38: nos humanos as células α, β e δ estão misturadas; no camundongo, as células β formam o centro e as α ficam na periferia.' } },
+    ],
+  },
+  {
+    id: 'spleen-6', title: t('Spleen: location, surfaces and relations', 'Baço: localização, faces e relações'),
+    cards: [
+      {
+        id: 'pancreas-p41', ref: '41', title: t('The spleen: a secondary lymphatic organ', 'O baço: um órgão linfático secundário'),
+        focus: ['spleen'], ghost: ['pancreas', 'stomach', 'diaphragm_g'], view: 'ant',
+        body: [
+          t('The spleen is a secondary lymphatic organ. Its size varies with sex and age, and it is biggest at puberty. In an adult it is usually 9–14 cm long, 6–8 cm wide and 3–5 cm thick. Its weight depends on the volume of blood it contains, and it weighs 150–350 g.',
+            'O baço é um órgão linfático secundário. Seu tamanho varia com o sexo e a idade, e é maior na puberdade. No adulto costuma medir 9–14 cm de comprimento, 6–8 cm de largura e 3–5 cm de espessura. Seu peso depende do volume de sangue que contém, e varia de 150 a 350 g.'),
+          t('It lies in the left hypochondrium, below the diaphragm, between the stomach and the left kidney. The figure shows the spleen against the ribs, with the midaxillary and scapular lines marked, and against the ninth, tenth and eleventh ribs. The tail of the pancreas, the splenic artery and vein and the left kidney are shown beside it.',
+            'Fica no hipocôndrio esquerdo, abaixo do diafragma, entre o estômago e o rim esquerdo. A figura mostra o baço contra as costelas, com as linhas axilar média e escapular marcadas, e contra a nona, a décima e a décima primeira costelas. A cauda do pâncreas, a artéria e a veia esplênicas e o rim esquerdo aparecem ao lado.'),
+        ],
+      },
+      {
+        id: 'pancreas-p42', ref: '42', title: t('Palpation and Traube’s semilunar space', 'Palpação e o espaço semilunar de Traube'),
+        focus: ['spleen'], view: 'ant',
+        body: [
+          t('The spleen is difficult to palpate. Page 42 names Traube’s semilunar space as a clinical landmark. The slide does not describe its borders on this page, so do not add them from memory. The figure shows a vertebra, T12, beside the spleen.',
+            'O baço é difícil de palpar. A página 42 nomeia o espaço semilunar de Traube como um ponto de referência clínico. O slide não descreve seus limites nesta página, então não os acrescente de memória. A figura mostra uma vértebra, T12, ao lado do baço.'),
+        ],
+      },
+      {
+        id: 'pancreas-p43', ref: '43', title: t('Shape, surfaces, borders and poles', 'Forma, faces, bordas e polos'),
+        focus: ['spleen', 'diaphragm_g'], ghost: ['stomach', 'pancreas'], view: 'ant',
+        body: [
+          t('The spleen is bean-shaped and made of soft tissue, which the slide says is difficult for a surgeon to suture. It has two surfaces. The diaphragmatic surface is superior and lateral. The visceral surface is inferior and medial, and it contains the splenic hilum, where the vessels, nerves and lymphatics enter. The two surfaces are separated by an anterosuperior and a posteroinferior border. It has a superior and an inferior extremity, the poles.',
+            'O baço tem forma de feijão e é feito de tecido mole, que o slide diz ser difícil de suturar para um cirurgião. Tem duas faces. A face diafragmática é superior e lateral. A face visceral é inferior e medial, e contém o hilo esplênico, por onde entram os vasos, os nervos e os linfáticos. As duas faces são separadas por uma borda anterossuperior e uma borda posteroinferior. Tem um polo superior e um polo inferior, as extremidades.'),
+          t('The diaphragmatic surface is convex, matching the underside of the dome of the diaphragm. Through the diaphragm it is related to the left pleural costodiaphragmatic recess, the lower lobe of the left lung and the rib cage. Panel B labels the visceral surface with its posterior and anterior extremities, superior and inferior borders, gastric, renal and colic surfaces, the hilum and the splenic artery and vein, while the companion view on the right shows the convex diaphragmatic surface.',
+            'A face diafragmática é convexa, acompanhando a face inferior da cúpula do diafragma. Através do diafragma relaciona-se com o recesso costodiafragmático pleural esquerdo, o lobo inferior do pulmão esquerdo e a caixa torácica. O painel B rotula a face visceral com suas extremidades posterior e anterior, bordas superior e inferior, faces gástrica, renal e cólica, o hilo e a artéria e veia esplênicas, enquanto a vista ao lado à direita mostra a face diafragmática convexa.'),
+        ],
+      },
+      {
+        id: 'pancreas-p44', ref: '44', title: t('The visceral surface: gastric, renal and colic impressions', 'A face visceral: impressões gástrica, renal e cólica'),
+        focus: ['spleen', 'stomach', 'pancreas', 'descending_colon'], ghost: ['transverse_colon', 'gallbladder'], view: 'ant',
+        body: [
+          t('The visceral surface is concave and has three impressions. The gastric impression faces anteromedially, against the posterior part of the fundus, the upper body and the greater curvature of the stomach. The renal impression lies on the posteroinferior part, against the upper lateral area of the front of the left kidney, and sometimes the suprarenal gland. The colic impression lies at the inferior pole, against the splenic flexure of the colon and the phrenicocolic ligament.',
+            'A face visceral é côncava e tem três impressões. A impressão gástrica se volta para a frente e para dentro, contra a parte posterior do fundo, o corpo superior e a curvatura maior do estômago. A impressão renal fica na parte posteroinferior, contra a área lateral superior da face anterior do rim esquerdo, e às vezes a glândula suprarrenal. A impressão cólica fica no polo inferior, contra a flexura esplênica do colo e o ligamento frenicocólico.'),
+          t('The gastric and renal parts are separated by the hilum. The figure labels the hilum relations: the omental bursa and the tail of the pancreas. It also labels the anterior extremity, the left colic flexure and the stomach. In the 3D model, the spleen is focused with the pancreas and the descending colon as context, so the colic impression can be found near the splenic flexure.',
+            'As partes gástrica e renal da face visceral são separadas pelo hilo. A figura rotula as relações do hilo: a bolsa omental e a cauda do pâncreas. Também rotula a extremidade anterior, a flexura cólica esquerda e o estômago. No modelo 3D, o baço está em destaque com o pâncreas e o colo descendente como contexto, para que a impressão cólica seja encontrada perto da flexura esplênica.'),
+        ],
+      },
+    ],
+    questions: [
+      { ref: '41', q: 'What is the adult weight range of the spleen?', correct: '150–350 g', wrong: ['70–80 g', '400–500 g', '20–40 g'], why: 'Slide 41: the spleen weighs 150–350 g, depending on the volume of blood it contains.',
+        pt: { q: 'Qual é a faixa de peso do baço no adulto?', correct: '150–350 g', wrong: ['70–80 g', '400–500 g', '20–40 g'], why: 'Slide 41: o baço pesa 150–350 g, dependendo do volume de sangue que contém.' } },
+      { ref: '41', q: 'Between which two structures does the spleen lie?', correct: 'The stomach and the left kidney', wrong: ['The liver and the right kidney', 'The pancreas and the duodenum', 'The diaphragm and the colon'], why: 'Slide 41: in the left hypochondrium, below the diaphragm, between the stomach and the left kidney.',
+        pt: { q: 'Entre quais duas estruturas fica o baço?', correct: 'O estômago e o rim esquerdo', wrong: ['O fígado e o rim direito', 'O pâncreas e o duodeno', 'O diafragma e o colo'], why: 'Slide 41: no hipocôndrio esquerdo, abaixo do diafragma, entre o estômago e o rim esquerdo.' } },
+      { ref: '42', q: 'Which clinical landmark does page 42 name?', correct: 'Traube’s semilunar space', wrong: ['Calot’s triangle', 'Winslow’s foramen', 'Morison’s pouch'], why: 'Slide 42: the spleen is difficult to palpate; the page names Traube’s semilunar space.',
+        pt: { q: 'Qual ponto de referência clínico a página 42 nomeia?', correct: 'O espaço semilunar de Traube', wrong: ['O triângulo de Calot', 'O forame de Winslow', 'O fundo de saco de Morison'], why: 'Slide 42: o baço é difícil de palpar; a página nomeia o espaço semilunar de Traube.' } },
+      { ref: '43', q: 'Which surface of the spleen is convex and matches the dome of the diaphragm?', correct: 'The diaphragmatic surface', wrong: ['The visceral surface', 'The gastric impression', 'The renal impression'], why: 'Slide 43: the diaphragmatic surface is convex, matching the underside of the dome of the diaphragm.',
+        pt: { q: 'Qual face do baço é convexa e acompanha a cúpula do diafragma?', correct: 'A face diafragmática', wrong: ['A face visceral', 'A impressão gástrica', 'A impressão renal'], why: 'Slide 43: a face diafragmática é convexa, acompanhando a face inferior da cúpula do diafragma.' } },
+      { ref: '44', q: 'Which impression of the visceral surface lies at the inferior pole?', correct: 'The colic impression', wrong: ['The gastric impression', 'The renal impression', 'The hepatic impression'], why: 'Slide 44: the colic impression lies at the inferior pole, against the splenic flexure and the phrenicocolic ligament.',
+        pt: { q: 'Qual impressão da face visceral fica no polo inferior?', correct: 'A impressão cólica', wrong: ['A impressão gástrica', 'A impressão renal', 'A impressão hepática'], why: 'Slide 44: a impressão cólica fica no polo inferior, contra a flexura esplênica e o ligamento frenicocólico.' } },
+      { ref: '44', q: 'What separates the gastric and renal parts of the visceral surface?', correct: 'The hilum', wrong: ['The splenic artery alone', 'The gastrosplenic ligament', 'The diaphragm'], why: 'Slide 44: the gastric and renal parts are separated by the hilum.',
+        pt: { q: 'O que separa as partes gástrica e renal da face visceral?', correct: 'O hilo', wrong: ['Somente a artéria esplênica', 'O ligamento gastroesplênico', 'O diafragma'], why: 'Slide 44: as partes gástrica e renal são separadas pelo hilo.' } },
+    ],
+  },
+  {
+    id: 'spleen-7', title: t('Peritoneal ligaments of the spleen', 'Ligamentos peritoneais do baço'),
+    cards: [
+      {
+        id: 'pancreas-p45', ref: '45', title: t('The spleen’s peritoneum and its ligaments', 'O peritônio do baço e seus ligamentos'),
+        focus: ['spleen'], ghost: ['stomach', 'pancreas', 'transverse_colon'], view: 'ant',
+        body: [
+          t('The spleen is covered by visceral peritoneum. The slide lists three major peritoneal ligaments: the gastrosplenic, the splenorenal and the splenocolic. It also lists two minor ligaments: the splenophrenic and the pancreaticosplenic.',
+            'O baço é coberto por peritônio visceral. O slide lista três ligamentos peritoneais principais: o gastroesplênico, o esplenorrenal e o esplenocólico. Também lista dois ligamentos menores: o esplenofrênico e o pancreaticoesplênico.'),
+          t('Each of these ligaments is a fold of the peritoneum that carries the spleen to a neighbouring structure. The next pages describe each one in order, starting with the gastrosplenic ligament.',
+            'Cada um desses ligamentos é uma prega do peritônio que liga o baço a uma estrutura vizinha. As próximas páginas descrevem cada um em ordem, começando pelo ligamento gastroesplênico.'),
+        ],
+      },
+      {
+        id: 'pancreas-p46', ref: '46', title: t('The gastrosplenic ligament', 'O ligamento gastroesplênico'),
+        focus: ['spleen', 'stomach', 'gastroepiploic_a', 'left_gastric_a'], ghost: ['pancreas', 'diaphragm_g'], view: 'ant',
+        body: [
+          t('The gastrosplenic ligament is peritoneal. It runs from the hilum of the spleen to the greater curvature of the stomach. It is the upper continuation of the greater omentum. Behind it, if you cut the ligament, lies the lesser sac.',
+            'O ligamento gastroesplênico é peritoneal. Vai do hilo do baço até a curvatura maior do estômago. É a continuação superior do omento maior. Atrás dele, se o ligamento for cortado, fica a bolsa omental (saco menor).'),
+          t('The dissection photograph on the left points to the gastrosplenic ligament, while the axial L1 cross-section on the right marks the gastrosplenic ligament with scissors cutting between the spleen and stomach directly into the omental bursa (lesser sac) in front of the tail of the pancreas and left kidney. The short gastric vessels run in this ligament to the fundus of the stomach, as page 50 explains.',
+            'A fotografia de dissecção à esquerda aponta o ligamento gastroesplênico, enquanto o corte axial em L1 à direita marca o ligamento gastroesplênico com uma tesoura seccionando-o entre o baço e o estômago diretamente para dentro da bolsa omental (saco menor), à frente da cauda do pâncreas e do rim esquerdo. Os vasos gástricos curtos correm nesse ligamento até o fundo do estômago, como explica a página 50.'),
+        ],
+      },
+      {
+        id: 'pancreas-p47', ref: '47', title: t('How the ligaments develop from the dorsal mesogastrium', 'Como os ligamentos se desenvolvem a partir do mesogástrio dorsal'),
+        focus: ['spleen'], ghost: ['stomach', 'pancreas'], view: 'ant', contextOnly: true,
+        body: [
+          t('The spleen develops between the two layers of the dorsal mesogastrium. These layers form the visceral peritoneum of the spleen, the gastrosplenic ligament (in front) and the lienorenal, or splenorenal, ligament (behind). The lesser sac lies between them.',
+            'O baço se desenvolve entre as duas camadas do mesogástrio dorsal. Essas camadas formam o peritônio visceral do baço, o ligamento gastroesplênico (na frente) e o ligamento lienorrenal, ou esplenorrenal (atrás). A bolsa omental fica entre eles.'),
+          t('Each of these ligaments is made of two layers of peritoneum, which can contain vessels and nerves, and also fat and lymphatics. This explains why the ligaments carry the splenic vessels and the lymphatics.',
+            'Cada um desses ligamentos é feito de duas camadas de peritônio, que podem conter vasos e nervos, e também gordura e linfáticos. Isso explica por que os ligamentos levam os vasos esplênicos e os linfáticos.'),
+        ],
+      },
+      {
+        id: 'pancreas-p48', ref: '48–49', title: t('The embryonic and adult relations of the spleen', 'As relações embrionárias e adultas do baço'),
+        focus: ['spleen', 'stomach', 'pancreas'], ghost: ['abdominal_aorta_g', 'diaphragm_g', 'caudate_lobe', 'ivc_g'], view: 'ant', contextOnly: true,
+        body: [
+          t('Page 48 compares the primitive embryonic stage (A) with the adult (B). In the embryo the primitive dorsal and ventral mesenteries, the aorta, the kidney, the liver and the stomach are drawn. In the adult, the fused membranes that form the fascia of Treitz lie behind the pancreas, and the figure labels the splenorenal ligament, the spleen, the gastrosplenic ligament, the stomach and the falciform ligament (the ventral mesentery).',
+            'A página 48 compara o estágio embrionário primitivo (A) com o adulto (B). No embrião são desenhados os mesentérios dorsal e ventral primitivos, a aorta, o rim, o fígado e o estômago. No adulto, as membranas fundidas que formam a fáscia de Treitz ficam atrás do pâncreas, e a figura rotula o ligamento esplenorrenal, o baço, o ligamento gastroesplênico, o estômago e o ligamento falciforme (mesentério ventral).'),
+          t('Page 49 shows the dorsal mesogastrium and its expansion, and the future greater omentum, with the omental bursa, the spleen, the stomach, the left kidney, the aorta and the hepatic triad. Its labels include the splenorenal and gastrosplenic ligaments.',
+            'A página 49 mostra o mesogástrio dorsal e sua expansão, e o futuro omento maior, com a bolsa omental, o baço, o estômago, o rim esquerdo, a aorta e a tríade hepática. Seus rótulos incluem os ligamentos esplenorrenal e gastroesplênico.'),
+        ],
+      },
+      {
+        id: 'pancreas-p50', ref: '50', title: t('The short gastric vessels in the gastrosplenic ligament', 'Os vasos gástricos curtos no ligamento gastroesplênico'),
+        focus: ['spleen', 'stomach', 'splenic_a', 'splenic_v'], ghost: ['pancreas', 'transverse_colon', 'diaphragm_g'], view: 'ant',
+        body: [
+          t('The slide states that in the gastrosplenic ligament there are short gastric vessels for the fundus of the stomach. The figure shows the spleen in situ, with the stomach cut, the diaphragm, the 9th rib, the suprarenal gland, the left kidney, the splenic artery and vein, the splenorenal ligament, the attachment of the transverse mesocolon (cut), the transverse colon and the tail of the pancreas.',
+            'O slide afirma que no ligamento gastroesplênico há vasos gástricos curtos para o fundo do estômago. A figura mostra o baço in situ, com o estômago seccionado, o diafragma, a 9ª costela, a glândula suprarrenal, o rim esquerdo, a artéria e a veia esplênicas, o ligamento esplenorrenal, a inserção do mesocolo transverso (seccionada), o colo transverso e a cauda do pâncreas.'),
+          t('The short gastric vessels reach the fundus through this ligament, which is why page 57 says the superior pole of the spleen also gets an additional supply from the short gastric arteries in the gastrosplenic ligament.',
+            'Os vasos gástricos curtos alcançam o fundo por esse ligamento, e por isso a página 57 diz que o polo superior do baço também recebe um suprimento extra das artérias gástricas curtas do ligamento gastroesplênico.'),
+        ],
+      },
+      {
+        id: 'pancreas-p51', ref: '51', title: t('The splenorenal (lienorenal) ligament', 'O ligamento esplenorrenal (lienorrenal)'),
+        focus: ['spleen', 'splenic_a', 'splenic_v', 'pancreas'], ghost: ['stomach', 'transverse_colon', 'diaphragm_g'], view: 'ant',
+        body: [
+          t('The splenorenal, or lienorenal, ligament is the posterior part of the primitive dorsal mesogastrium. It runs from the hilum of the spleen to the anterior surface of the left kidney. It contains the terminal portion of the splenic vessels and the tail of the pancreas. From the spleen it continues with the parietal peritoneum of the posterior wall, in front of the left kidney.',
+            'O ligamento esplenorrenal, ou lienorrenal, é a parte posterior do mesogástrio dorsal primitivo. Vai do hilo do baço até a face anterior do rim esquerdo. Contém a porção terminal dos vasos esplênicos e a cauda do pâncreas. A partir do baço continua com o peritônio parietal da parede posterior, à frente do rim esquerdo.'),
+          t('The axial section on the left shows the splenorenal ligament passing between the left kidney and the splenic hilum (with the gastrosplenic ligament running to the stomach, continuous with the visceral peritoneum of the spleen, and the lesser omentum medially). The adult schematic (B) on the right shows the splenorenal and gastrosplenic ligaments alongside the pancreas, the fused membranes (fascia of Treitz), kidney, aorta, inferior vena cava, liver, lesser omentum and falciform ligament (ventral mesentery).',
+            'O corte axial à esquerda mostra o ligamento esplenorrenal passando entre o rim esquerdo e o hilo esplênico (com o ligamento gastroesplênico indo ao estômago, contínuo com o peritônio visceral do baço, e o omento menor medialmente). O esquema adulto (B) à direita mostra os ligamentos esplenorrenal e gastroesplênico ao lado do pâncreas, das membranas fundidas (fáscia de Treitz), do rim, da aorta, da veia cava inferior, do fígado, do omento menor e do ligamento falciforme (mesentério ventral).'),
+        ],
+      },
+      {
+        id: 'pancreas-p52', ref: '52', title: t('The splenocolic ligament', 'O ligamento esplenocólico'),
+        focus: ['spleen', 'transverse_colon', 'descending_colon'], ghost: ['pancreas', 'diaphragm_g'], view: 'ant',
+        body: [
+          t('The splenocolic ligament is a remnant of the extreme left end of the transverse mesocolon. The slide says it is avascular, which means it carries no vessels of its own.',
+            'O ligamento esplenocólico é um remanescente da extremidade esquerda extrema do mesocolo transverso. O slide diz que ele é avascular, ou seja, não tem vasos próprios.'),
+          t('The figure labels the diaphragm, the spleen, the pancreas, the pancreaticocolic ligament and the phrenicocolic ligament nearby, so the splenocolic ligament can be placed between the spleen and the colon.',
+            'A figura rotula o diafragma, o baço, o pâncreas, o ligamento pancreaticocólico e, perto dele, o ligamento frenicocólico, de modo que o ligamento esplenocólico pode ser localizado entre o baço e o colo.'),
+        ],
+      },
+      {
+        id: 'pancreas-p53', ref: '53', title: t('The splenophrenic ligament', 'O ligamento esplenofrênico'),
+        focus: ['spleen', 'diaphragm_g'], ghost: ['stomach', 'pancreas'], view: 'ant',
+        body: [
+          t('The splenophrenic ligament is a reflection of the leaves of the mesentery onto the posterior body wall and onto the underside of the diaphragm, at the area of the upper pole of the spleen, close to the stomach. It usually has no vessels.',
+            'O ligamento esplenofrênico é uma reflexão das lâminas do mesentério sobre a parede posterior do corpo e sobre a face inferior do diafragma, na área do polo superior do baço, perto do estômago. Em geral não tem vasos.'),
+          t('The figure labels it as the splenophrenic ligament and shows the pancreas beside it, so the ligament can be placed at the upper pole of the spleen.',
+            'A figura o rotula como ligamento esplenofrênico e mostra o pâncreas ao lado, de modo que o ligamento pode ser localizado no polo superior do baço.'),
+        ],
+      },
+      {
+        id: 'pancreas-p54', ref: '54', title: t('The pancreaticosplenic ligament', 'O ligamento pancreaticoesplênico'),
+        focus: ['spleen', 'pancreas', 'splenic_v'], view: 'ant',
+        body: [
+          t('The pancreaticosplenic ligament is not always present. It is present when the tail of the pancreas does not touch the spleen. It is usually thin and cord-like, and it is avascular. This page repeats the description given on page 9.',
+            'O ligamento pancreaticoesplênico nem sempre está presente. Está presente quando a cauda do pâncreas não toca o baço. Costuma ser fino e em forma de cordão, e é avascular. Esta página repete a descrição dada na página 9.'),
+        ],
+      },
+      {
+        id: 'pancreas-p55', ref: '55', title: t('The phrenicocolic ligament', 'O ligamento frenicocólico'),
+        focus: ['spleen', 'descending_colon', 'transverse_colon', 'diaphragm_g'], ghost: ['pancreas', 'stomach'], view: 'ant',
+        body: [
+          t('The phrenicocolic ligament connects the splenic flexure of the colon to the diaphragm. It runs inferior and lateral to the lower pole of the spleen. It is not connected directly to the spleen, but it helps to stabilise the spleen.',
+            'O ligamento frenicocólico liga a flexura esplênica do colo ao diafragma. Corre inferior e lateralmente ao polo inferior do baço. Não se liga diretamente ao baço, mas ajuda a estabilizá-lo.'),
+          t('The left drawing shows the spleen, pancreas, colon and diaphragm with the pancreaticocolic, splenocolic and phrenicocolic ligaments; the schematic on the right adds the stomach outline and labels the splenorenal (SRL), gastrosplenic (GSL), pancreaticosplenic (PSL), splenocolic (SCL) and phrenicocolic ligaments, placing the phrenicocolic ligament between the colic flexure and the diaphragm.',
+            'O desenho à esquerda mostra o baço, o pâncreas, o colo e o diafragma com os ligamentos pancreaticocólico, esplenocólico e frenicocólico; o esquema à direita acrescenta o contorno do estômago e rotula os ligamentos esplenorrenal (SRL), gastroesplênico (GSL), pancreaticoesplênico (PSL), esplenocólico (SCL) e frenicocólico, situando o ligamento frenicocólico entre a flexura cólica e o diafragma.'),
+        ],
+      },
+      {
+        id: 'pancreas-p56', ref: '56', title: t('The pancreaticocolic ligament and the three colic ligaments', 'O ligamento pancreaticocólico e os três ligamentos cólicos'),
+        focus: ['pancreas', 'transverse_colon', 'spleen'], ghost: ['descending_colon', 'stomach'], view: 'ant',
+        body: [
+          t('The pancreaticocolic ligament is the upper extension of the transverse mesocolon. The slide adds a note: the three «colic» ligaments, the pancreaticocolic, the splenocolic and the phrenicocolic, are all prolongations of the transverse mesocolon.',
+            'O ligamento pancreaticocólico é a extensão superior do mesocolo transverso. O slide acrescenta uma nota: os três ligamentos «cólicos», o pancreaticocólico, o esplenocólico e o frenicocólico, são todos prolongamentos do mesocolo transverso.'),
+          t('The figure labels the pancreas, spleen, colon and diaphragm together with the pancreaticocolic, splenocolic and phrenicocolic ligaments, showing the three ligaments as one family extending from the transverse mesocolon region toward the spleen and diaphragm.',
+            'A figura rotula o pâncreas, o baço, o colo e o diafragma junto aos ligamentos pancreaticocólico, esplenocólico e frenicocólico, mostrando os três ligamentos como uma família que se estende da região do mesocolo transverso em direção ao baço e ao diafragma.'),
+        ],
+      },
+    ],
+    questions: [
+      { ref: '45', q: 'Which of these is one of the three major peritoneal ligaments of the spleen?', correct: 'The splenocolic ligament', wrong: ['The hepatoduodenal ligament', 'The falciform ligament', 'The round ligament'], why: 'Slide 45: three major ligaments are gastrosplenic, splenorenal and splenocolic.',
+        pt: { q: 'Qual destes é um dos três ligamentos peritoneais principais do baço?', correct: 'O ligamento esplenocólico', wrong: ['O ligamento hepatoduodenal', 'O ligamento falciforme', 'O ligamento redondo'], why: 'Slide 45: os três principais são gastroesplênico, esplenorrenal e esplenocólico.' } },
+      { ref: '46', q: 'What does the gastrosplenic ligament carry to the fundus of the stomach?', correct: 'Short gastric vessels', wrong: ['The splenic artery itself', 'The common bile duct', 'The left renal vein'], why: 'Slide 50: the gastrosplenic ligament carries the short gastric vessels for the fundus.',
+        pt: { q: 'O que o ligamento gastroesplênico leva até o fundo do estômago?', correct: 'Vasos gástricos curtos', wrong: ['A própria artéria esplênica', 'O colédoco', 'A veia renal esquerda'], why: 'Slide 50: o ligamento gastroesplênico leva os vasos gástricos curtos para o fundo.' } },
+      { ref: '47', q: 'Between which two layers of the dorsal mesogastrium does the spleen develop?', correct: 'The two layers of the dorsal mesogastrium', wrong: ['The two layers of the ventral mesentery', 'The two layers of the falciform ligament', 'The layers of the greater sac only'], why: 'Slide 47: the spleen develops between the two layers of the dorsal mesogastrium.',
+        pt: { q: 'Entre quais camadas do mesogástrio dorsal o baço se desenvolve?', correct: 'As duas camadas do mesogástrio dorsal', wrong: ['As duas camadas do mesentério ventral', 'As duas camadas do ligamento falciforme', 'Somente as camadas do saco maior'], why: 'Slide 47: o baço se desenvolve entre as duas camadas do mesogástrio dorsal.' } },
+      { ref: '52', q: 'What is the splenocolic ligament, according to slide 52?', correct: 'A remnant of the extreme left end of the transverse mesocolon, avascular', wrong: ['A vessel that carries blood from the colon to the spleen', 'A muscle that moves the spleen', 'A remnant of the falciform ligament'], why: 'Slide 52: remnant of the extreme left end of the transverse mesocolon; avascular.',
+        pt: { q: 'O que é o ligamento esplenocólico, segundo o slide 52?', correct: 'Um remanescente da extremidade esquerda extrema do mesocolo transverso, avascular', wrong: ['Um vaso que leva sangue do colo ao baço', 'Um músculo que move o baço', 'Um remanescente do ligamento falciforme'], why: 'Slide 52: remanescente da extremidade esquerda extrema do mesocolo transverso; avascular.' } },
+      { ref: '54', q: 'When is the pancreaticosplenic ligament present?', correct: 'When the tail of the pancreas does not touch the spleen', wrong: ['Always, in every person', 'When the tail touches the spleen', 'Only when the spleen is enlarged'], why: 'Slide 54: present when the tail of the pancreas does not touch the spleen; not always present.',
+        pt: { q: 'Quando o ligamento pancreaticoesplênico está presente?', correct: 'Quando a cauda do pâncreas não toca o baço', wrong: ['Sempre, em todas as pessoas', 'Quando a cauda toca o baço', 'Somente quando o baço está aumentado'], why: 'Slide 54: está presente quando a cauda do pâncreas não toca o baço; nem sempre está presente.' } },
+      { ref: '55', q: 'To which structure does the phrenicocolic ligament connect the splenic flexure?', correct: 'The diaphragm', wrong: ['The liver', 'The left kidney', 'The stomach'], why: 'Slide 55: the phrenicocolic ligament connects the splenic flexure of the colon to the diaphragm.',
+        pt: { q: 'A que estrutura o ligamento frenicocólico liga a flexura esplênica?', correct: 'Ao diafragma', wrong: ['Ao fígado', 'Ao rim esquerdo', 'Ao estômago'], why: 'Slide 55: o ligamento frenicocólico liga a flexura esplênica do colo ao diafragma.' } },
+    ],
+  },
+  {
+    id: 'spleen-8', title: t('Vessels, functions and histology of the spleen', 'Vasos, funções e histologia do baço'),
+    cards: [
+      {
+        id: 'pancreas-p57', ref: '57', title: t('The splenic artery and its segmental branches', 'A artéria esplênica e seus ramos segmentares'),
+        focus: ['splenic_a', 'spleen', 'celiac_trunk'], ghost: ['common_hepatic_a', 'gastroepiploic_a', 'pancreas', 'gallbladder'], view: 'ant',
+        body: [
+          t('The splenic artery divides into two or three branches before it enters the hilum of the spleen. These divide into four or five segmental arteries, with no collateral circulation between the segments. The segmental arteries divide into trabecular arteries, which then give rise to follicular arteries. The superior pole of the spleen gains an extra arterial supply from the short gastric arteries in the gastrosplenic ligament.',
+            'A artéria esplênica se divide em dois ou três ramos antes de entrar no hilo do baço. Estes se dividem em quatro ou cinco artérias segmentares, sem circulação colateral entre os segmentos. As artérias segmentares se dividem em artérias trabeculares, que então dão origem às artérias foliculares. O polo superior do baço recebe um suprimento arterial extra das artérias gástricas curtas do ligamento gastroesplênico.'),
+          t('The dissection shows the coeliac trunk dividing into the left gastric, common hepatic and tortuous splenic arteries: the splenic artery runs behind the stomach to give the dorsal, greater and tail pancreatic arteries, the left gastro-omental artery and the short gastric arteries before branching at the splenic hilum, while the common hepatic artery gives the gastroduodenal, right gastric, supraduodenal and proper hepatic arteries supplying the liver and the gallbladder inside the cystohepatic triangle (of Calot). In the 3D model, the splenic artery is the vessel the coeliac trunk gives to the spleen.',
+            'A dissecção mostra o tronco celíaco dividindo-se nas artérias gástrica esquerda, hepática comum e esplênica tortuosa: a artéria esplênica corre atrás do estômago dando as artérias pancreáticas dorsal, magna e da cauda, a artéria gastro-omental esquerda e as artérias gástricas curtas antes de se ramificar no hilo esplênico, enquanto a hepática comum dá as artérias gastroduodenal, gástrica direita, supraduodenal e hepática própria que irrigam o fígado e a vesícula biliar no triângulo cisto-hepático (de Calot). No modelo 3D, a artéria esplênica é o vaso que o tronco celíaco dá ao baço.'),
+        ],
+      },
+      {
+        id: 'pancreas-p58', ref: '58', title: t('The splenic vein and its tributaries', 'A veia esplênica e seus afluentes'),
+        focus: ['splenic_v', 'hepatic_portal_v', 'smv', 'spleen'], ghost: ['pancreas', 'gastric_v', 'ivc_g'], view: 'ant',
+        body: [
+          t('The segmental veins join to form two (superior and inferior) or three (superior, middle and inferior) lobar veins, which leave the hilum and join to form the splenic vein. The splenic vein runs medially below the splenic artery and behind the tail and body of the pancreas. It joins the superior mesenteric vein to form the portal vein.',
+            'As veias segmentares se unem para formar duas (superior e inferior) ou três (superior, média e inferior) veias lobares, que saem do hilo e se unem para formar a veia esplênica. A veia esplênica corre medialmente abaixo da artéria esplênica e atrás da cauda e do corpo do pâncreas. Ela se une à veia mesentérica superior para formar a veia porta.'),
+          t('The figure traces the splenic vein from the hilum—below the splenic artery and receiving short gastric and left gastro-omental tributaries as well as the inferior mesenteric vein—until it meets the superior mesenteric vein (joined by pancreaticoduodenal, right gastro-omental and middle colic veins) to form the portal vein, while behind it lie the left renal, left suprarenal, left ovarian/testicular and left ascending lumbar veins and the left ureter beside the inferior vena cava and hepatic veins. Use the 3D model to follow the splenic vein from the hilum to the portal vein.',
+            'A figura acompanha a veia esplênica desde o hilo—abaixo da artéria esplênica e recebendo tributárias gástricas curtas e gastro-omental esquerda, além da veia mesentérica inferior—até encontrar a veia mesentérica superior (que recebe as veias pancreaticoduodenais, gastro-omental direita e cólica média) para formar a veia porta, enquanto atrás dela ficam as veias renal esquerda, suprarrenal esquerda, ovárica/testicular esquerda e lombar ascendente esquerda e o ureter esquerdo ao lado da veia cava inferior e das veias hepáticas. Use o modelo 3D para seguir a veia esplênica do hilo até a veia porta.'),
+        ],
+      },
+      {
+        id: 'pancreas-p59', ref: '59', title: t('The functions of the spleen', 'As funções do baço'),
+        focus: ['spleen'], ghost: ['splenic_a', 'splenic_v'], view: 'ant',
+        body: [
+          t('The spleen receives about 7% of the cardiac output, and this high perfusion matches its functions. The first is that resident macrophages remove old or damaged red blood cells, a process the slide calls haemocatheresis. A related point, labelled 1a, is that iron accumulates from the recycling of red blood cells. The second function is an immune response against antigens carried in the blood.',
+            'O baço recebe cerca de 7% do débito cardíaco, e essa alta perfusão corresponde às suas funções. A primeira é que os macrófagos residentes removem as hemácias velhas ou danificadas, processo que o slide chama de hemocaterese. Um ponto relacionado, rotulado como 1a, é que o ferro se acumula com a reciclagem das hemácias. A segunda função é uma resposta imune contra antígenos transportados pelo sangue.'),
+          t('The figure labels the immune response against antigens carried by the blood, the red pulp and the white pulp with its splenic nodules. These two labels lead into the histology pages that follow.',
+            'A figura rotula a resposta imune contra antígenos transportados pelo sangue, a polpa vermelha e a polpa branca com seus nódulos esplênicos. Esses dois rótulos levam às páginas de histologia que seguem.'),
+        ],
+      },
+      {
+        id: 'pancreas-p60', ref: '60', title: t('The capsule and the parenchyma: white and red pulp', 'A cápsula e o parênquima: polpa branca e polpa vermelha'),
+        focus: ['spleen'], view: 'ant', contextOnly: true,
+        body: [
+          t('The capsule is made of collagen and elastic fibres. Many trabeculae branch off from it, forming a connective-tissue scaffold that supports the branching vessels and nerves. The parenchyma has two parts: the white pulp, the whiter area where the immune response occurs, and the red pulp, the red area where haemocatheresis and iron recycling occur. The histological micrograph labels the capsule (C), trabeculae (T), white pulp (PB) and red pulp (PR).',
+            'A cápsula é feita de fibras de colágeno e elásticas. Dela se projetam muitas trabéculas, que formam um arcabouço de tecido conjuntivo que sustenta os vasos e nervos ramificados. O parênquima tem duas partes: a polpa branca, a área mais clara onde ocorre a resposta imune, e a polpa vermelha, a área vermelha onde ocorrem a hemocaterese e a reciclagem do ferro. A micrografia histológica rotula a cápsula (C), as trabéculas (T), a polpa branca (PB) e a polpa vermelha (PR).'),
+        ],
+      },
+      {
+        id: 'pancreas-p61', ref: '61–62', title: t('The white pulp: PALS, follicles and the marginal zone', 'A polpa branca: bainha linfática periarteriolar, folículos e zona marginal'),
+        focus: ['spleen'], view: 'ant', contextOnly: true,
+        body: [
+          t('The branches of the splenic artery run into the trabeculae as trabecular arteries. They leave the trabeculae as central arteries, which are surrounded by white pulp. From inside to outside, the white pulp has three parts. (1) The PALS, the periarteriolar lymphatic sheath, which contains T lymphocytes around the central artery. (2) The lymphatic follicles, made of B lymphocytes, which are vascularised by radial arteries. (3) The marginal, or perifollicular, zone, which is the transition between the red and the white pulp.',
+            'Os ramos da artéria esplênica entram nas trabéculas como artérias trabeculares. Saem das trabéculas como artérias centrais, que ficam cercadas pela polpa branca. De dentro para fora, a polpa branca tem três partes. (1) A bainha linfática periarteriolar, PALS, que contém linfócitos T ao redor da artéria central. (2) Os folículos linfáticos, feitos de linfócitos B, irrigados por artérias radiais. (3) A zona marginal, ou perifolicular, que é a transição entre a polpa vermelha e a branca.'),
+          t('Page 62 explains the marginal zone further: it is an important area of transit for lymphocytes leaving the systemic circulation to enter the white pulp. The left diagram shows the splenic lymphoid nodule with its germinal centre, PALS, central and radial arterioles, penicillar arterioles, sheathed capillaries and sinusoids; the right diagram zooms in on the marginal zone and marginal sinus, labelling lymphocytes, marginal-zone macrophages, marginal-zone metallophilic macrophages, marginal-zone B cells, sinus-lining cells, reticular fibroblasts and dendritic cells.',
+            'A página 62 detalha a zona marginal: é uma área importante de trânsito para os linfócitos que deixam a circulação sistêmica para entrar na polpa branca. O diagrama à esquerda mostra o nódulo linfoide esplênico com seu centro germinativo, PALS, arteríolas central e radial, arteríolas penicilares, capilares embainhados e sinusoides; o diagrama à direita amplia a zona marginal e o seio marginal, rotulando linfócitos, macrófagos da zona marginal, macrófagos metalofílicos da zona marginal, células B da zona marginal, células de revestimento dos seios, fibroblastos reticulares e células dendríticas.'),
+        ],
+      },
+      {
+        id: 'pancreas-p63', ref: '63–64', title: t('The central artery and the open circulation', 'A artéria central e a circulação aberta'),
+        focus: ['spleen'], view: 'ant', contextOnly: true,
+        body: [
+          t('The central artery leaves the white pulp and enters the red pulp, where it becomes the penicillar arterioles. Some of these are sheathed with a layer of macrophages, forming sheathed capillaries. Ninety per cent of the sheathed capillaries end open into the splenic cords. This is the open circulation.',
+            'A artéria central deixa a polpa branca e entra na polpa vermelha, onde se transforma nas arteríolas penicilares. Algumas delas são revestidas por uma camada de macrófagos, formando os capilares embainhados. Noventa por cento dos capilares embainhados terminam abertos nos cordões esplênicos. Essa é a circulação aberta.'),
+          t('On page 64 the slide says that in the open circulation the blood diffuses into the interstitial area, which is supported by reticular fibres without capillaries. The figure labels the capsule, the sinusoids of the red pulp, the closed circulation, the open circulation, the reticular fibres, the venous drainage, the trabeculae, the white pulp and a stave cell, which is the endothelial cell of the sinusoid.',
+            'Na página 64, o slide diz que na circulação aberta o sangue se difunde na área intersticial, sustentada por fibras reticulares sem capilares. A figura rotula a cápsula, os sinusoides da polpa vermelha, a circulação fechada, a circulação aberta, as fibras reticulares, a drenagem venosa, as trabéculas, a polpa branca e uma célula em duela (stave cell), que é a célula endotelial do sinusoide.'),
+        ],
+      },
+      {
+        id: 'pancreas-p65', ref: '65', title: t('The red pulp sinusoids and the barrel-stave cells', 'Os sinusoides da polpa vermelha e as células em duela'),
+        focus: ['spleen'], view: 'ant', contextOnly: true,
+        body: [
+          t('For a blood cell to return to the circulation, it must enter a vessel: the sinusoids of the red pulp. These sinusoids are special. Their cells look like the planks of a barrel, so the endothelial cells are also called stave cells. The endothelial cells are long and are surrounded by a discontinuous basal lamina.',
+            'Para uma célula sanguínea voltar à circulação, ela precisa entrar em um vaso: os sinusoides da polpa vermelha. Esses sinusoides são especiais. Suas células se parecem com as tábuas de um barril, por isso as células endoteliais também são chamadas de células em duela. As células endoteliais são longas e são cercadas por uma lâmina basal descontínua.'),
+          t('Old red blood cells are not elastic and cannot warp, so they cannot get into the sinusoid. They stay in the red pulp and are destroyed by the resident macrophages. The sinusoids of the red pulp unite into venules, which unite into trabecular veins that form the splenic vein. The left diagram shows the endothelial stave cells (with internal stress fibres) encircled by annular fibres as erythrocytes squeeze between them, and the right diagram shows the discontinuous basement membrane and reticular fibres wrapping the endothelial cells.',
+            'As hemácias velhas não são elásticas e não conseguem se deformar, por isso não conseguem entrar no sinusoide. Elas permanecem na polpa vermelha e são destruídas pelos macrófagos residentes. Os sinusoides da polpa vermelha se unem em vênulas, que se unem em veias trabeculares que formam a veia esplênica. O diagrama à esquerda mostra as células endoteliais em duela (com fibras de estresse internas) envolvidas por fibras anulares enquanto os eritrócitos passam entre elas, e o diagrama à direita mostra a membrana basal descontínua e as fibras reticulares envolvendo as células endoteliais.'),
+        ],
+      },
+      {
+        id: 'pancreas-p66', ref: '66–67', title: t('The closed circulation and the final diagram of the spleen', 'A circulação fechada e o diagrama final do baço'),
+        focus: ['spleen'], view: 'ant', contextOnly: true,
+        body: [
+          t('Page 66 says that ten per cent of the sheathed capillaries continue directly into the sinusoids of the red pulp. This is the closed circulation, and it is the counterpart of the 90% open circulation of page 64.',
+            'A página 66 diz que dez por cento dos capilares embainhados continuam diretamente nos sinusoides da polpa vermelha. Essa é a circulação fechada, e é o contrapeso dos 90% da circulação aberta da página 64.'),
+          t('Page 67 is a multi-level summary diagram of the human spleen: from the whole organ, fibrous capsule and splenic trabecula, through the white pulp (splenic lymphoid nodule with germinal centre and PALS around the central and radial arterioles) and red pulp (penicillar arterioles, sheathed capillaries and sinusoids), down to a single barrel-shaped venous sinus. Its legend states that the endothelial cells are the staves of the barrel, held together by reticular cells as the hoops of the barrel, resting on a discontinuous basement membrane with reticular fibres so erythrocytes can squeeze between the endothelial cells.',
+            'A página 67 é um diagrama-resumo em vários níveis do baço humano: do órgão inteiro, cápsula fibrosa e trabécula esplênica, passando pela polpa branca (nódulo linfoide esplênico com centro germinativo e PALS ao redor das arteríolas central e radial) e pela polpa vermelha (arteríolas penicilares, capilares embainhados e sinusoides), até um seio venoso em forma de barril. Sua legenda afirma que as células endoteliais são as aduelas do barril, unidas pelas células reticulares como os aros do barril, apoiadas em uma membrana basal descontínua com fibras reticulares para que os eritrócitos possam se espremer entre as células endoteliais.'),
+        ],
+      },
+    ],
+    questions: [
+      { ref: '57', q: 'How many segmental arteries does the splenic artery divide into before the hilum?', correct: 'Four or five', wrong: ['One or two', 'Eight or nine', 'Twelve'], why: 'Slide 57: the splenic artery divides into 2 or 3 branches that divide into 4 or 5 segmental arteries, with no collateral circulation between them.',
+        pt: { q: 'Em quantas artérias segmentares a artéria esplênica se divide antes do hilo?', correct: 'Quatro ou cinco', wrong: ['Uma ou duas', 'Oito ou nove', 'Doze'], why: 'Slide 57: a artéria esplênica se divide em 2 ou 3 ramos, que se dividem em 4 ou 5 artérias segmentares, sem circulação colateral entre elas.' } },
+      { ref: '58', q: 'Into which vein do the segmental veins finally form the splenic vein?', correct: 'The lobar veins, which then join into the splenic vein', wrong: ['The inferior vena cava directly', 'The azygos vein', 'The renal vein'], why: 'Slide 58: segmental veins form lobar veins, which leave the hilum and join to form the splenic vein.',
+        pt: { q: 'Como as veias segmentares formam a veia esplênica?', correct: 'Formam veias lobares, que saem do hilo e se unem na veia esplênica', wrong: ['Diretamente na veia cava inferior', 'Na veia ázigos', 'Na veia renal'], why: 'Slide 58: as veias segmentares formam veias lobares, que saem do hilo e se unem para formar a veia esplênica.' } },
+      { ref: '59', q: 'What percentage of the cardiac output does the spleen receive?', correct: 'About 7%', wrong: ['About 25%', 'About 1%', 'About 50%'], why: 'Slide 59: the spleen receives about 7% of cardiac output.',
+        pt: { q: 'Que porcentagem do débito cardíaco o baço recebe?', correct: 'Cerca de 7%', wrong: ['Cerca de 25%', 'Cerca de 1%', 'Cerca de 50%'], why: 'Slide 59: o baço recebe cerca de 7% do débito cardíaco.' } },
+      { ref: '61–62', q: 'Which lymphocytes are found in the PALS around the central artery?', correct: 'T lymphocytes', wrong: ['B lymphocytes', 'Plasma cells only', 'Eosinophils'], why: 'Slide 61: PALS contains T lymphocytes around the central artery; the follicles contain B lymphocytes.',
+        pt: { q: 'Quais linfócitos estão na bainha periarteriolar (PALS) ao redor da artéria central?', correct: 'Linfócitos T', wrong: ['Linfócitos B', 'Somente plasmócitos', 'Eosinófilos'], why: 'Slide 61: a PALS contém linfócitos T ao redor da artéria central; os folículos contêm linfócitos B.' } },
+      { ref: '63–64', q: 'What percentage of sheathed capillaries end open into the splenic cords?', correct: 'Ninety per cent', wrong: ['Ten per cent', 'Fifty per cent', 'Thirty per cent'], why: 'Slide 63: 90% of sheathed capillaries end open into the splenic cords (open circulation).',
+        pt: { q: 'Qual porcentagem dos capilares embainhados termina aberta nos cordões esplênicos?', correct: 'Noventa por cento', wrong: ['Dez por cento', 'Cinquenta por cento', 'Trinta por cento'], why: 'Slide 63: 90% dos capilares embainhados terminam abertos nos cordões esplênicos (circulação aberta).' } },
+      { ref: '65', q: 'Why can old red blood cells not re-enter the sinusoids?', correct: 'They are not elastic and cannot deform', wrong: ['They are too small', 'They have no membrane', 'They are attached to the capsule'], why: 'Slide 65: old erythrocytes are not elastic and cannot warp, so they cannot get into the sinusoid and are destroyed by resident macrophages.',
+        pt: { q: 'Por que as hemácias velhas não conseguem voltar aos sinusoides?', correct: 'Não são elásticas e não conseguem se deformar', wrong: ['São pequenas demais', 'Não têm membrana', 'Estão presas à cápsula'], why: 'Slide 65: as hemácias velhas não são elásticas e não se deformam, então não entram no sinusoide e são destruídas pelos macrófagos residentes.' } },
+    ],
+  },
+];
+
+export const pt = Object.fromEntries(Object.entries(PT).filter(([, value]) => value));
