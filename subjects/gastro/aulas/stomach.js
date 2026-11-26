@@ -2,7 +2,7 @@
 // One card per slide page (or a short run of pages on one topic). Every card
 // body explains the whole page, in order, using only the slide's own facts.
 // t(en, pt) records the pt-BR pair and returns the English text.
-import * as supply from './supply/stomach.js?v=114';
+import * as supply from './supply/stomach.js?v=115';
 
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };

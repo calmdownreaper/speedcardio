@@ -1,5 +1,5 @@
 // Study cards based on the professor's cardiogenesis digest, C2–C55.
-import questions from './slides/cardiogenesis.js?v=114';
+import questions from './slides/cardiogenesis.js?v=115';
 const pt = {};
 const pair = ([en, translation]) => (pt[en] = translation, en);
 const c = (id, title, ref, facts, confusion, focus = []) => ({ id, title: pair(title), ref, facts: facts.map(pair), confusion: pair(confusion), focus });

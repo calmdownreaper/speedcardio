@@ -4,6 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
+import * as supply from './supply/pharynx.js?v=115';
 
 export const unit = {
   id: 'pharynx',
@@ -463,7 +464,8 @@ export const blocks = [
     ],
   },
 ];
+blocks.push(...supply.blocks);
 
 // Table entries for the question rows are inline (pt on each row), so the
 // PT map only carries the t() pairs above.
-export const pt = Object.fromEntries(Object.entries(PT).filter(([, value]) => value));
+export const pt = { ...Object.fromEntries(Object.entries(PT).filter(([, value]) => value)), ...supply.pt };

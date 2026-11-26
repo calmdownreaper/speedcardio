@@ -1,5 +1,5 @@
 // Study cards based on the professor's lymphatics digest, L2–L30.
-import questions from './slides/lymph.js?v=114';
+import questions from './slides/lymph.js?v=115';
 const pt = {};
 const pair = ([en, translation]) => (pt[en] = translation, en);
 const c = (id, title, ref, facts, confusion, focus = []) => ({ id, title: pair(title), ref, facts: facts.map(pair), confusion: pair(confusion), focus });

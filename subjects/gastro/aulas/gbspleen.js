@@ -4,6 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
+import * as supply from './supply/gbspleen.js?v=115';
 
 export const unit = {
   id: 'gbspleen',
@@ -612,4 +613,6 @@ export const blocks = [
   },
 ];
 
-export const pt = Object.fromEntries(Object.entries(PT).filter(([, value]) => value));
+blocks.push(...supply.blocks);
+
+export const pt = { ...Object.fromEntries(Object.entries(PT).filter(([, value]) => value)), ...supply.pt };

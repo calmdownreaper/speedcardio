@@ -1,0 +1,265 @@
+// SpeedGastro · Gallbladder, spleen and SMA supply blocks: vessels, lymph and nerves.
+// Facts only from deck 13_gallbladder_spleen_SMA: p1 (lymphoid organs), p16–17 (spleen
+// vessels and ligament contents, repeated from deck 12), p35–36 (cystic artery and variants),
+// p37 (cystic veins), p38 (Calot’s triangle), p40–43 (SMA course and territories),
+// p43–51 (SMA branches), p48 and p52 (middle colic arch, intestinal veins).
+const PT = {};
+const t = (en, pt) => { PT[en] = pt; return en; };
+const q = (ref, en, pt) => ({ ref, ...en, pt });
+
+const L = {
+  sma: t('Superior mesenteric artery', 'Artéria mesentérica superior'),
+  jeil: t('Jejunal and ileal arteries', 'Artérias jejunais e ileais'),
+  arc: t('Arcades, one to six tiers', 'Arcadas, de uma a seis camadas'),
+  vr: t('Straight arteries (vasa recta)', 'Artérias retas (vasa recta)'),
+  ipda: t('Inferior pancreaticoduodenal arteries', 'Artérias pancreaticoduodenais inferiores'),
+  ileo: t('Ileocolic artery', 'Artéria ileocólica'),
+  scb: t('Superior colic branch', 'Ramo cólico superior'),
+  iib: t('Inferior ileal branch', 'Ramo ileal inferior'),
+  caecal: t('Caecal branches', 'Ramos cecais'),
+  appx: t('Appendicular artery', 'Artéria apendicular'),
+  ilb: t('Ileal branch to the last ileum', 'Ramo ileal até o último íleo'),
+  rcol: t('Right colic artery', 'Artéria cólica direita'),
+  desc: t('Descending branch', 'Ramo descendente'),
+  asc: t('Ascending branch', 'Ramo ascendente'),
+  mcol: t('Middle colic artery', 'Artéria cólica média'),
+  mleft: t('Left branch', 'Ramo esquerdo'),
+  mright: t('Right branch', 'Ramo direito'),
+  anas: t('anastomosis', 'anastomose'),
+  endsma: t('joins the end of the SMA', 'une-se ao fim da AMS'),
+  cystic: t('Cystic artery', 'Artéria cística'),
+  pv: t('Hepatic portal vein', 'Veia porta hepática'),
+  splv: t('Splenic vein', 'Veia esplênica'),
+  imv: t('Inferior mesenteric vein', 'Veia mesentérica inferior'),
+  smv: t('Superior mesenteric vein', 'Veia mesentérica superior'),
+  venarc: t('Jejunal and ileal veins, forming venous arches', 'Veias jejunais e ileais, formando arcos venosos'),
+  rbp: t('Right branch of the portal vein', 'Ramo direito da veia porta'),
+  cystv: t('Cystic veins', 'Veias císticas'),
+  cga: t('Cystic group of accessory hepatic portal veins', 'Grupo cístico de veias porta hepáticas acessórias'),
+  join: t('joins to form the hepatic portal vein', 'une-se para formar a veia porta hepática'),
+};
+
+const ARTERY_TREE = {
+  root: { label: L.sma, note: t('1 cm below the celiac trunk, at L1', '1 cm abaixo do tronco celíaco, em L1'), children: [
+    { label: L.jeil, note: t('left side', 'lado esquerdo'), children: [{ label: L.arc }, { label: L.vr, note: t('from the distal arcades', 'a partir das arcadas distais') }] },
+    { label: L.ipda, note: t('anterior and posterior', 'anterior e posterior') },
+    { label: L.ileo, note: t('right side', 'lado direito'), children: [
+      { label: L.scb },
+      { label: L.iib, children: [{ label: L.caecal }, { label: L.appx }, { label: L.ilb }] },
+    ] },
+    { label: L.rcol, note: t('right side, many variants', 'lado direito, muitas variantes'), children: [{ label: L.desc }, { label: L.asc }] },
+    { label: L.mcol, note: t('below the pancreas', 'abaixo do pâncreas'), children: [{ label: L.mleft }, { label: L.mright }] },
+  ] },
+  links: [
+    { from: L.scb, to: L.desc, label: L.anas },
+    { from: L.asc, to: L.mright, label: L.anas },
+    { from: L.ilb, to: L.sma, label: L.endsma },
+    { from: L.iib, to: L.sma, label: L.endsma },
+  ],
+};
+
+const VENOUS_TREE = {
+  root: { label: L.pv, children: [
+    { label: L.splv, children: [{ label: L.imv }] },
+    { label: L.smv, children: [{ label: L.venarc }] },
+    { label: L.rbp, children: [{ label: L.cystv, children: [{ label: L.cga }] }] },
+  ] },
+  links: [
+    { from: L.splv, to: L.smv, label: L.join },
+  ],
+};
+
+export const blocks = [
+  {
+    id: 'gbspleen-sup1', supply: true, title: t('Supply sheet: arteries, veins, lymph and nerves', 'Ficha de suprimento: artérias, veias, linfa e nervos'),
+    cards: [
+      {
+        id: 'gbspleen-sup-cystic', ref: '35–36', title: t('The cystic artery and its variants at a glance', 'A artéria cística e suas variantes num relance'),
+        focus: ['proper_hepatic_a', 'celiac_trunk'], view: 'ant',
+        body: [
+          t('### Origin and course', '### Origem e trajeto'),
+          t('The cystic artery usually arises from the right branch of the Hepatic artery, and sometimes comes straight from the Proper hepatic artery. It runs behind the common hepatic duct.',
+            'A artéria cística geralmente nasce do ramo direito da artéria hepática, e às vezes vem diretamente da artéria hepática própria. Ela corre atrás do ducto hepático comum.'),
+          t('### Two branches over the gallbladder', '### Dois ramos sobre a vesícula'),
+          t('At the upper side of the neck, the cystic artery divides into a superficial branch, along the inferior free surface of the gallbladder, and a deep branch, between the gallbladder and its fossa. The two anastomose over the body and fundus.',
+            'Na parte superior do colo, a artéria cística se divide em um ramo superficial, ao longo da face inferior livre da vesícula, e um ramo profundo, entre a vesícula e a sua fossa. Os dois se anastomosam sobre o corpo e o fundo.'),
+          t('### Variants', '### Variantes'),
+          t('The cystic artery varies in origin. It arises from the right hepatic artery behind the common hepatic duct in 46%; two cystic arteries occur in 13%; a branch from the right side of the Superior mesenteric artery is listed in 12%; and a left branch of the proper hepatic artery is listed in 5%.',
+            'A artéria cística varia na origem. Ela nasce da artéria hepática direita, atrás do ducto hepático comum, em 46%; duas artérias císticas ocorrem em 13%; um ramo do lado direito da artéria mesentérica superior é citado em 12%; e um ramo esquerdo da artéria hepática própria é citado em 5%.'),
+        ],
+      },
+      {
+        id: 'gbspleen-sup-sma', ref: '40–43', title: t('The superior mesenteric artery at a glance', 'A artéria mesentérica superior num relance'),
+        focus: ['sma', 'ileocolic_a', 'right_colic_a', 'middle_colic_a', 'smv'], view: 'ant',
+        body: [
+          t('### Origin and course', '### Origem e trajeto'),
+          t('The Superior mesenteric artery arises from the aorta at L1, one centimetre below the Celiac trunk. It starts behind the neck of the pancreas, with the SMV, and passes in front of the uncinate process, the third part of the duodenum and the left renal vein. It curves down to the right iliac fossa, where it ends by anastomosing with the Ileocolic artery.',
+            'A artéria mesentérica superior nasce da aorta em L1, um centímetro abaixo do tronco celíaco. Ela começa atrás do colo do pâncreas, junto da veia mesentérica superior, e passa na frente do processo uncinado, da terceira parte do duodeno e da veia renal esquerda. Desce em curva até a fossa ilíaca direita, onde termina anastomosando-se com a artéria ileocólica.'),
+          t('### Two sides of the trunk', '### Dois lados do tronco'),
+          t('Its branches go to the small intestine from the left side and to the colon from the right side. The Jejunal and ileal arteries come off the left; the Ileocolic and Right colic arteries come off the right, and the Middle colic arises below the pancreas.',
+            'Seus ramos vão ao intestino delgado pelo lado esquerdo e ao colo pelo lado direito. As artérias jejunais e ileais saem do lado esquerdo; as artérias ileocólica e cólica direita saem do lado direito, e a cólica média nasce abaixo do pâncreas.'),
+          t('### Where it supplies', '### Onde irriga'),
+          t('The Superior mesenteric artery supplies the distal half of the duodenum, the jejunum and ileum, the caecum and appendix, the ascending colon and right colic flexure, and the proximal half of the transverse colon.',
+            'A artéria mesentérica superior irriga a metade distal do duodeno, o jejuno e o íleo, o ceco e o apêndice, o colo ascendente e a flexura cólica direita, e a metade proximal do colo transverso.'),
+        ],
+      },
+      {
+        id: 'gbspleen-sup-spleen', ref: '16–17', title: t('Spleen vessels and ligament contents at a glance', 'Vasos do baço e conteúdo dos ligamentos num relance'),
+        focus: ['spleen', 'splenic_a', 'splenic_v', 'smv', 'hepatic_portal_v'], view: 'ant',
+        body: [
+          t('### Splenic artery', '### Artéria esplênica'),
+          t('The Splenic artery divides into two or three branches before entering the hilum. These split into four or five segmental arteries, with no collateral circulation between the segments.',
+            'A artéria esplênica se divide em dois ou três ramos antes de entrar no hilo. Estes se dividem em quatro ou cinco artérias segmentares, sem circulação colateral entre os segmentos.'),
+          t('### Splenic vein', '### Veia esplênica'),
+          t('Segmental veins join into two or three lobar veins that leave the hilum and form the Splenic vein. The Splenic vein runs medially below the splenic artery and behind the tail and body of the pancreas, then joins the Superior mesenteric vein to form the Hepatic portal vein.',
+            'As veias segmentares se unem em duas ou três veias lobares que saem do hilo e formam a veia esplênica. A veia esplênica segue medialmente abaixo da artéria esplênica e atrás da cauda e do corpo do pâncreas, e depois se une à veia mesentérica superior para formar a veia porta hepática.'),
+          t('### What the ligaments carry', '### O que os ligamentos carregam'),
+          t('The Gastrosplenic ligament carries the short gastric vessels to the fundus of the stomach. The Splenorenal ligament contains the terminal portion of the splenic vessels and the tail of the pancreas. The Pancreaticosplenic ligament is avascular, and is present only when the tail of the pancreas does not touch the spleen.',
+            'O ligamento gastroesplênico leva os vasos gástricos curtos ao fundo do estômago. O ligamento esplenorrenal contém a porção terminal dos vasos esplênicos e a cauda do pâncreas. O ligamento pancreaticoesplênico é avascular, e está presente apenas quando a cauda do pâncreas não toca o baço.'),
+        ],
+      },
+      {
+        id: 'gbspleen-sup-veins-lymph-nerves', ref: '1, 37, 52', title: t('Veins, lymph and nerves at a glance', 'Veias, linfa e nervos num relance'),
+        focus: ['hepatic_portal_v', 'smv', 'imv', 'gallbladder'], view: 'ant',
+        body: [
+          t('### Veins', '### Veias'),
+          t('The jejunal and ileal veins anastomose to form venous arches, and they drain into the Superior mesenteric vein. The Superior mesenteric vein joins the Splenic vein, and the Inferior mesenteric vein joins the Splenic vein too, so that all of them form the Hepatic portal vein. The gallbladder drains through the cystic veins.',
+            'As veias jejunais e ileais se anastomosam para formar arcos venosos, e drenam para a veia mesentérica superior. A veia mesentérica superior se une à veia esplênica, e a veia mesentérica inferior também se une à veia esplênica, de modo que todas formam a veia porta hepática. A vesícula drena pelas veias císticas.'),
+          t('### Lymph', '### Linfa'),
+          t('The spleen is a secondary lymphatic organ. The opening figure of this deck also lists the adenoids, tonsils, lymphatic vessels, thymus, lymph nodes, Peyer’s patches, the appendix and the bone marrow among the lymphoid organs. No lymphatic drainage route is given for the gallbladder or for the midgut.',
+            'O baço é um órgão linfático secundário. A figura de abertura desta aula também lista as adenoides, as amígdalas, os vasos linfáticos, o timo, os linfonodos, as placas de Peyer, o apêndice e a medula óssea entre os órgãos linfoides. Não é dada nenhuma via de drenagem linfática para a vesícula nem para o intestino médio.'),
+          t('### Nerves', '### Nervos'),
+          t('The only nerve named for the gallbladder is a visceral sensory nerve, shown beside the cystic veins. No autonomic supply is named for the gallbladder, the Superior mesenteric artery or the spleen.',
+            'O único nervo citado para a vesícula é um nervo sensitivo visceral, indicado ao lado das veias císticas. Nenhuma inervação autonômica é citada para a vesícula, a artéria mesentérica superior ou o baço.'),
+        ],
+      },
+    ],
+    questions: [
+      q('35', { q: 'From which artery does the cystic artery usually arise?', correct: 'Right branch of the hepatic artery', wrong: ['Left gastric artery', 'Splenic artery', 'Superior mesenteric artery'], why: 'Slide 35: the cystic artery usually arises from the right branch of the hepatic artery, behind the common hepatic duct.' },
+        { q: 'De qual artéria a artéria cística geralmente nasce?', correct: 'Ramo direito da artéria hepática', wrong: ['Artéria gástrica esquerda', 'Artéria esplênica', 'Artéria mesentérica superior'], why: 'Slide 35: a artéria cística geralmente nasce do ramo direito da artéria hepática, atrás do ducto hepático comum.' }),
+      q('36', { q: 'In what percentage of cases does the cystic artery arise from the right hepatic artery behind the common hepatic duct?', correct: '46%', wrong: ['13%', '12%', '5%'], why: 'Slide 36: variant a, from the right hepatic artery behind the CHD, is 46%.' },
+        { q: 'Em qual porcentagem dos casos a artéria cística nasce da artéria hepática direita, atrás do ducto hepático comum?', correct: '46%', wrong: ['13%', '12%', '5%'], why: 'Slide 36: a variante a, da artéria hepática direita atrás do CHD, é de 46%.' }),
+      q('36', { q: 'Where does the superficial branch of the cystic artery run?', correct: 'Along the inferior free surface of the gallbladder', wrong: ['Between the gallbladder and the liver fossa, deep to the duct', 'Along the lesser omentum', 'Across the porta hepatis'], why: 'Slide 35: at the upper neck the cystic artery splits into a superficial branch along the inferior free surface and a deep branch between the gallbladder and its fossa.' },
+        { q: 'Onde corre o ramo superficial da artéria cística?', correct: 'Ao longo da face inferior livre da vesícula', wrong: ['Entre a vesícula e a fossa hepática, em profundidade', 'Ao longo do omento menor', 'Atravessando o hilo hepático'], why: 'Slide 35: na parte superior do colo, a artéria cística se divide em um ramo superficial, ao longo da face inferior livre, e um profundo.' }),
+      q('40', { q: 'Where does the superior mesenteric artery arise from the aorta, and how far below the celiac trunk?', correct: 'At L1, about 1 cm below the celiac trunk', wrong: ['At T12, at the celiac trunk itself', 'At L3, at the inferior mesenteric artery', 'At L4, at the aortic bifurcation'], why: 'Slide 40: the SMA arises 1 cm below the coeliac trunk, at L1.' },
+        { q: 'Em qual nível a artéria mesentérica superior nasce da aorta, e a que distância abaixo do tronco celíaco?', correct: 'Em L1, cerca de 1 cm abaixo do tronco celíaco', wrong: ['Em T12, na própria origem do tronco celíaco', 'Em L3, na altura da artéria mesentérica inferior', 'Em L4, na bifurcação aórtica'], why: 'Slide 40: a AMS nasce 1 cm abaixo do tronco celíaco, em L1.' }),
+      q('41', { q: 'What is the vertebral level of the inferior mesenteric artery origin on the aortic levels figure?', correct: 'L3', wrong: ['L1', 'T12', 'L4'], why: 'Slide 41: the figure places the coeliac trunk at T12, the SMA at L1, the renal arteries at L1–L2, the IMA at L3 and the aortic bifurcation at L4.' },
+        { q: 'Em qual nível vertebral se origina a artéria mesentérica inferior, na figura dos níveis aórticos?', correct: 'L3', wrong: ['L1', 'T12', 'L4'], why: 'Slide 41: a figura situa o tronco celíaco em T12, a AMS em L1, as artérias renais em L1–L2, a AMI em L3 e a bifurcação aórtica em L4.' }),
+      q('37', { q: 'Where do a few of the cystic veins terminate?', correct: 'In the right branch of the portal vein', wrong: ['In the inferior vena cava', 'In the left renal vein', 'In the splenic artery'], why: 'Slide 37: a few cystic veins end in the right branch of the portal vein.' },
+        { q: 'Onde terminam algumas das veias císticas?', correct: 'No ramo direito da veia porta', wrong: ['Na veia cava inferior', 'Na veia renal esquerda', 'Na artéria esplênica'], why: 'Slide 37: algumas veias císticas terminam no ramo direito da veia porta.' }),
+      q('38', { q: 'Which three structures form the borders of the cystic hilum in Calot’s triangle?', correct: 'Cystic artery, cystic duct and common hepatic duct', wrong: ['Cystic artery, portal vein and hepatic vein', 'Cystic duct, splenic artery and pancreas', 'Common hepatic duct, right renal artery and duodenum'], why: 'Slide 38: the cystic hilum is recognised by the cystic artery, the cystic duct and the common hepatic duct.' },
+        { q: 'Quais três estruturas formam as bordas do hilo cístico no triângulo de Calot?', correct: 'Artéria cística, ducto cístico e ducto hepático comum', wrong: ['Artéria cística, veia porta e veia hepática', 'Ducto cístico, artéria esplênica e pâncreas', 'Ducto hepático comum, artéria renal direita e duodeno'], why: 'Slide 38: o hilo cístico é reconhecido pela artéria cística, pelo ducto cístico e pelo ducto hepático comum.' }),
+    ],
+  },
+  {
+    id: 'gbspleen-sup2', supply: true, title: t('Branching: the SMA and the cystic artery', 'Ramificação: a AMS e a artéria cística'),
+    cards: [
+      {
+        id: 'gbspleen-sup-tree', ref: '43–51', title: t('Walk the superior mesenteric branches', 'Percorra os ramos da artéria mesentérica superior'),
+        focus: ['sma', 'ileocolic_a', 'right_colic_a', 'middle_colic_a', 'ileum', 'jejunum', 'appendix', 'transverse_colon'], view: 'ant',
+        diagram: ARTERY_TREE,
+        body: [
+          t('Read the tree from the top. Start at the Superior mesenteric artery and its origin at L1. Then go down the left side to the jejunal and ileal arteries, down the right side to the Ileocolic and Right colic arteries, and finally to the Middle colic arteries below the pancreas. Tap each node, name it, and then reveal the four anastomoses.',
+            'Leia a árvore de cima para baixo. Comece na artéria mesentérica superior e sua origem em L1. Depois desça pelo lado esquerdo até as artérias jejunais e ileais, pelo lado direito até as artérias ileocólica e cólica direita, e por fim até as artérias cólicas médias, abaixo do pâncreas. Toque em cada nó, nomeie-o, e então revele as quatro anastomoses.'),
+          t('### Jejunal and ileal arteries', '### Artérias jejunais e ileais'),
+          t('These start parallel in the mesentery. Each divides into two, and the branches join neighbouring ones to form arcades. From the distal arcades come the straight arteries, which reach the concave margin, bifurcate, run on opposite sides of the loop and anastomose on the convex margin. The jejunum has one to three arcade tiers, and the ileum has two to six. The distal end of the ileum is not in this territory; it belongs to the Ileocolic artery.',
+            'Elas começam paralelas no mesentério. Cada uma se divide em duas, e os ramos se unem aos vizinhos para formar arcadas. Das arcadas distais saem as artérias retas, que chegam à margem côncava, bifurcam-se, correm em lados opostos da alça e se anastomosam na margem convexa. O jejuno tem uma a três camadas de arcadas, e o íleo tem duas a seis. A extremidade distal do íleo não está nesse território; pertence à artéria ileocólica.'),
+          t('### Ileocolic artery', '### Artéria ileocólica'),
+          t('The Ileocolic artery comes from the right side, behind the parietal peritoneum, and descends to the right iliac fossa, where it divides. The superior colic branch anastomoses with the Right colic artery. The inferior ileal branch anastomoses with the end of the Superior mesenteric artery and gives the caecal branches, the appendicular artery and an ileal branch running left to the last part of the ileum. A separate recurrent branch, near the appendix, is not the ileal branch.',
+            'A artéria ileocólica vem do lado direito, atrás do peritônio parietal, e desce até a fossa ilíaca direita, onde se divide. O ramo cólico superior se anastomosa com a artéria cólica direita. O ramo ileal inferior se anastomosa com o fim da artéria mesentérica superior e dá os ramos cecais, a artéria apendicular e um ramo ileal que segue à esquerda até a última parte do íleo. Um ramo recorrente separado, perto do apêndice, não é o ramo ileal.'),
+          t('### Right and middle colic arteries', '### Artérias cólica direita e cólica média'),
+          t('The Right colic artery comes from the right side and has many variants. Near the ascending colon it divides: the descending branch anastomoses with the superior colic branch of the Ileocolic artery, and the ascending branch anastomoses with the right branch of the Middle colic artery. These form the marginal artery of the ascending colon and hepatic flexure. The Middle colic artery arises below the pancreas and runs between the two layers of the transverse mesocolon, dividing into left and right branches that form arcades to the transverse colon.',
+            'A artéria cólica direita vem do lado direito e tem muitas variantes. Perto do colo ascendente ela se divide: o ramo descendente se anastomosa com o ramo cólico superior da ileocólica, e o ramo ascendente se anastomosa com o ramo direito da cólica média. Eles formam a artéria marginal do colo ascendente e da flexura hepática. A artéria cólica média nasce abaixo do pâncreas e corre entre as duas camadas do mesocolo transverso, dividindo-se em ramos esquerdo e direito que formam arcadas até o colo transverso.'),
+        ],
+      },
+      {
+        id: 'gbspleen-sup-cystic-branching', ref: '35–36', title: t('Cystic artery: the two branches and their contact', 'Artéria cística: os dois ramos e seu contato'),
+        focus: ['proper_hepatic_a', 'gallbladder', 'common_hepatic_duct'], view: 'ant',
+        body: [
+          t('### Where the cystic artery starts', '### Onde a artéria cística começa'),
+          t('Follow the cystic artery from its origin, behind the common hepatic duct. Most often it runs down from the right hepatic branch, and the proper hepatic artery is its alternative source.',
+            'Siga a artéria cística desde a origem, atrás do ducto hepático comum. Com mais frequência ela desce a partir do ramo hepático direito, e a artéria hepática própria é a fonte alternativa.'),
+          t('### The two branches', '### Os dois ramos'),
+          t('At the upper neck, the artery splits. The superficial branch runs along the free underside of the gallbladder and the deep branch lies between the gallbladder and its fossa. The two anastomose over the body and fundus, so the gallbladder is covered by one connected network.',
+            'Na parte superior do colo, a artéria se divide. O ramo superficial corre ao longo da face inferior livre da vesícula e o ramo profundo fica entre a vesícula e a sua fossa. Os dois se anastomosam sobre o corpo e o fundo, de modo que a vesícula fica coberta por uma rede única e conectada.'),
+        ],
+      },
+    ],
+    questions: [
+      q('43', { q: 'Which branch of the superior mesenteric artery arises from the right side and descends to the right iliac fossa?', correct: 'Ileocolic artery', wrong: ['Middle colic artery', 'Jejunal artery', 'Left colic artery'], why: 'Slide 43: the ileocolic artery comes from the right side and descends to the right iliac fossa.' },
+        { q: 'Qual ramo da artéria mesentérica superior nasce do lado direito e desce até a fossa ilíaca direita?', correct: 'Artéria ileocólica', wrong: ['Artéria cólica média', 'Artéria jejunal', 'Artéria cólica esquerda'], why: 'Slide 43: a artéria ileocólica vem do lado direito e desce até a fossa ilíaca direita.' }),
+      q('44', { q: 'What are the arcade tiers in the jejunum?', correct: 'One to three tiers, with longer straight arteries', wrong: ['Two to six tiers, with shorter straight arteries', 'Four to eight tiers', 'None, the jejunum has single arteries'], why: 'Slide 44: the jejunum has one to three tiers of arcades with longer vasa recta; the ileum has two to six tiers with shorter ones.' },
+        { q: 'Quantas camadas de arcadas o jejuno apresenta?', correct: 'De uma a três camadas, com artérias retas mais longas', wrong: ['De duas a seis camadas, com artérias retas mais curtas', 'De quatro a oito camadas', 'Nenhuma, o jejuno tem artérias isoladas'], why: 'Slide 44: o jejuno tem de uma a três camadas, com vasa recta mais longos; o íleo tem de duas a seis, com vasos mais curtos.' }),
+      q('49', { q: 'Where does the ileal branch of the inferior ileal branch run?', correct: 'To the last part of the ileum, joining the end of the SMA', wrong: ['Up to the splenic flexure', 'Down to the rectum, as the superior rectal artery', 'Along the transverse mesocolon to the stomach'], why: 'Slide 49: the ileal branch runs left to the last part of the ileum and joins the end of the SMA; the recurrent branch near the appendix is separate.' },
+        { q: 'Até onde segue o ramo ileal do ramo ileal inferior?', correct: 'Até a última parte do íleo, unindo-se ao fim da AMS', wrong: ['Até a flexura esplênica', 'Até o reto, como artéria retal superior', 'Ao longo do mesocolo transverso até o estômago'], why: 'Slide 49: o ramo ileal segue à esquerda até a última parte do íleo e se une ao fim da AMS; o ramo recorrente perto do apêndice é separado.' }),
+      q('46', { q: 'Where does the middle colic artery arise, and between which two layers does it run?', correct: 'Below the pancreas, between the two layers of the transverse mesocolon', wrong: ['Above the pancreas, between the layers of the greater omentum', 'At the coeliac trunk, between the two layers of the lesser omentum', 'Below the caecum, between the two layers of the sigmoid mesocolon'], why: 'Slide 47: the middle colic artery arises below the pancreas and runs forward and to the right between the two layers of the transverse mesocolon.' },
+        { q: 'Onde nasce a artéria cólica média, e entre quais duas camadas ela corre?', correct: 'Abaixo do pâncreas, entre as duas camadas do mesocolo transverso', wrong: ['Acima do pâncreas, entre as camadas do omento maior', 'No tronco celíaco, entre as duas camadas do omento menor', 'Abaixo do ceco, entre as duas camadas do mesocolo sigmoide'], why: 'Slide 47: a artéria cólica média nasce abaixo do pâncreas e corre entre as duas camadas do mesocolo transverso.' }),
+      q('48', { q: 'Which arch is named between the middle colic artery and the ascending branch of the left colic artery?', correct: 'Arch of Riolan', wrong: ['Arch of Treitz', 'Arch of Sudeck', 'Arch of Meckel'], why: 'Slide 48: the arch of Riolan lies between the middle colic and the ascending branch of the left colic.' },
+        { q: 'Qual arco fica entre a artéria cólica média e o ramo ascendente da artéria cólica esquerda?', correct: 'Arco de Riolan', wrong: ['Arco de Treitz', 'Arco de Sudeck', 'Arco de Meckel'], why: 'Slide 48: o arco de Riolan fica entre a cólica média e o ramo ascendente da cólica esquerda.' }),
+      q('36', { q: 'Where do the two branches of the cystic artery anastomose?', correct: 'Over the body and fundus of the gallbladder', wrong: ['Over the porta hepatis', 'Over the neck of the pancreas', 'Within the splenic hilum'], why: 'Slide 36: the superficial and deep branches of the cystic artery anastomose over the body and fundus.' },
+        { q: 'Onde os dois ramos da artéria cística se anastomosam?', correct: 'Sobre o corpo e o fundo da vesícula', wrong: ['Sobre o hilo hepático', 'Sobre o colo do pâncreas', 'No hilo esplênico'], why: 'Slide 36: os ramos superficial e profundo da artéria cística se anastomosam sobre o corpo e o fundo.' }),
+    ],
+  },
+  {
+    id: 'gbspleen-sup3', supply: true, title: t('Territories and drainage, both directions', 'Territórios e drenagem, nos dois sentidos'),
+    cards: [
+      {
+        id: 'gbspleen-sup-territories', ref: '40–43, 45', title: t('Who the SMA supplies, in both directions', 'Quem a AMS irriga, nos dois sentidos'),
+        focus: ['sma', 'ileocolic_a', 'right_colic_a', 'middle_colic_a', 'ileum', 'jejunum', 'appendix', 'ascending_colon', 'transverse_colon'], view: 'ant',
+        body: [
+          t('### From artery to territory', '### Da artéria ao território'),
+          t('The Superior mesenteric artery supplies the distal half of the duodenum, the jejunum and ileum, the caecum and appendix, the ascending colon, the right colic flexure and the proximal half of the transverse colon. The left-side jejunal and ileal arteries reach the jejunum and ileum, except for the distal end of the ileum. The Ileocolic artery reaches the distal ileum, the caecum and the appendix.',
+            'A artéria mesentérica superior irriga a metade distal do duodeno, o jejuno e o íleo, o ceco e o apêndice, o colo ascendente, a flexura cólica direita e a metade proximal do colo transverso. As artérias jejunais e ileais do lado esquerdo alcançam o jejuno e o íleo, exceto a extremidade distal do íleo. A artéria ileocólica alcança o íleo distal, o ceco e o apêndice.'),
+          t('### From territory to artery', '### Do território à artéria'),
+          t('Turn the list around when you revise. The jejunum and ileum come from the left-side jejunal and ileal arteries, the distal ileum from the Ileocolic artery, and the caecum and appendix from the caecal and appendicular branches of the Ileocolic artery. The ascending colon and hepatic flexure are fed by the marginal artery that the Right colic artery forms, and the transverse colon by the middle colic arcades.',
+            'Inverta a lista ao revisar. O jejuno e o íleo vêm das artérias jejunais e ileais do lado esquerdo, o íleo distal da artéria ileocólica, e o ceco e o apêndice dos ramos cecais e apendicular da ileocólica. O colo ascendente e a flexura hepática são irrigados pela artéria marginal que a cólica direita forma, e o colo transverso pelas arcadas da cólica média.'),
+          t('⚠ Deck 13 gives the Superior mesenteric territory as the proximal half of the transverse colon (p40–43), while deck 10 gives two-thirds of the transverse colon. Both values are kept as printed.',
+            '⚠ O deck 13 dá ao território da artéria mesentérica superior a metade proximal do colo transverso (p40–43), enquanto o deck 10 dá dois terços do colo transverso. Os dois valores são mantidos como impressos.'),
+        ],
+      },
+      {
+        id: 'gbspleen-sup-calot', ref: '38', title: t('Calot’s triangle and the cystic hilum', 'O triângulo de Calot e o hilo cístico'),
+        focus: ['gallbladder', 'cystic_duct', 'common_hepatic_duct', 'proper_hepatic_a'], view: 'ant',
+        body: [
+          t('### Opening the hilum', '### Abrindo o hilo'),
+          t('After the hepatoduodenal ligament is opened and its nerves and lymphatics are removed, the cystic hilum can be recognised by three structures: the cystic artery (or the ventral and inferior surface of the right lobe of the liver), the cystic duct and the common hepatic duct.',
+            'Depois de abrir o ligamento hepatoduodenal e retirar os nervos e linfáticos, o hilo cístico é reconhecido por três estruturas: a artéria cística (ou a face ventral e inferior do lobo direito do fígado), o ducto cístico e o ducto hepático comum.'),
+          t('### Why it matters', '### Por que importa'),
+          t('Recognising these three borders reduces complications of laparoscopic cholecystectomy, such as injury to the biliary tree. The figure text adds that 95% of extrahepatic bile duct injuries happen during surgery, mostly in cholecystectomy. The fundus is grasped and pulled up to open the triangle, and the artery and duct are clipped before they are cut.',
+            'Reconhecer essas três bordas reduz complicações da colecistectomia laparoscópica, como lesão da árvore biliar. O texto da figura acrescenta que 95% das lesões extra-hepáticas do ducto biliar acontecem durante a cirurgia, sobretudo na colecistectomia. O fundo é segurado e puxado para cima para abrir o triângulo, e a artéria e o ducto são clipados antes de serem cortados.'),
+        ],
+      },
+      {
+        id: 'gbspleen-sup-venous', ref: '37, 52', title: t('The venous drainage: portal routes', 'A drenagem venosa: as vias porta'),
+        focus: ['hepatic_portal_v', 'smv', 'splenic_v', 'imv', 'gallbladder'], view: 'ant',
+        diagram: VENOUS_TREE,
+        body: [
+          t('Walk the venous tree from the top. The Hepatic portal vein collects three routes: the Splenic vein, the Superior mesenteric vein and the right branch of the portal vein with the cystic veins. Tap each node, and then reveal the join where the Splenic and Superior mesenteric veins form the portal vein.',
+            'Percorra a árvore venosa de cima para baixo. A veia porta hepática recebe três vias: a veia esplênica, a veia mesentérica superior e o ramo direito da veia porta com as veias císticas. Toque em cada nó e depois revele a junção onde as veias esplênica e mesentérica superior formam a veia porta.'),
+          t('### Gallbladder veins', '### Veias da vesícula'),
+          t('The cystic veins are many and small. A few end in the right branch of the portal vein. The others run in the areolar tissue between the gallbladder and the liver and drain into segmental portal veins inside the liver, forming the cystic group of accessory hepatic portal veins. The figure also labels the anterior and posterior cystic veins.',
+            'As veias císticas são muitas e pequenas. Algumas terminam no ramo direito da veia porta. As outras correm no tecido areolar entre a vesícula e o fígado e drenam para veias porta segmentares dentro do fígado, formando o grupo cístico de veias porta hepáticas acessórias. A figura também indica as veias císticas anterior e posterior.'),
+          t('### Intestinal veins', '### Veias intestinais'),
+          t('The jejunal and ileal veins anastomose to form venous arches and drain into the Superior mesenteric vein. The Superior mesenteric vein and the Inferior mesenteric vein both join the Splenic vein, which then forms the hepatic portal vein. The figure also lists the middle and right colic, ileocolic, left colic, sigmoid and superior rectal veins among the intestinal drainage.',
+            'As veias jejunais e ileais se anastomosam para formar arcos venosos e drenam para a veia mesentérica superior. A veia mesentérica superior e a veia mesentérica inferior se unem à veia esplênica, que então forma a veia porta hepática. A figura também lista as veias cólicas média e direita, ileocólica, cólica esquerda, sigmoide e retal superior entre as drenagens intestinais.'),
+        ],
+      },
+    ],
+    questions: [
+      q('42', { q: 'Where does the superior mesenteric artery end?', correct: 'By anastomosing with the ileocolic artery in the right iliac fossa', wrong: ['In the rectum, as the superior rectal artery', 'In the splenic hilum', 'In the gallbladder fossa'], why: 'Slide 42: the SMA descends to the right iliac fossa, where it ends by anastomosing with the ileocolic artery.' },
+        { q: 'Onde termina a artéria mesentérica superior?', correct: 'Ao se anastomosar com a artéria ileocólica na fossa ilíaca direita', wrong: ['No reto, como artéria retal superior', 'No hilo esplênico', 'Na fossa da vesícula'], why: 'Slide 42: a AMS desce até a fossa ilíaca direita, onde termina anastomosando-se com a artéria ileocólica.' }),
+      q('40', { q: 'Which part of the duodenum does the superior mesenteric artery supply?', correct: 'The distal half', wrong: ['The proximal half', 'The first part only', 'None, the duodenum is supplied by the coeliac trunk only'], why: 'Slide 40: the SMA supplies the distal half of the duodenum.' },
+        { q: 'Qual parte do duodeno a artéria mesentérica superior irriga?', correct: 'A metade distal', wrong: ['A metade proximal', 'Apenas a primeira parte', 'Nenhuma; o duodeno é suprido só pelo tronco celíaco'], why: 'Slide 40: a AMS irriga a metade distal do duodeno.' }),
+      q('41', { q: 'Which structure does the superior mesenteric artery pass in front of, on its course behind the pancreas?', correct: 'The left renal vein', wrong: ['The splenic artery', 'The common bile duct', 'The gallbladder fundus'], why: 'Slide 41: the SMA passes in front of the uncinate process, the third part of the duodenum and the left renal vein.' },
+        { q: 'Diante de qual estrutura a artéria mesentérica superior passa, no seu trajeto atrás do pâncreas?', correct: 'Veia renal esquerda', wrong: ['Artéria esplênica', 'Colédoco', 'Fundo da vesícula'], why: 'Slide 41: a AMS passa na frente do processo uncinado, da terceira parte do duodeno e da veia renal esquerda.' }),
+      q('52', { q: 'Which vein receives the venous arches of the jejunum and ileum before the portal vein?', correct: 'Superior mesenteric vein', wrong: ['Inferior vena cava', 'Right branch of the portal vein', 'Left renal vein'], why: 'Slide 52: the jejunal and ileal veins form venous arches that drain into the SMV.' },
+        { q: 'Qual veia recebe os arcos venosos do jejuno e do íleo antes da veia porta?', correct: 'Veia mesentérica superior', wrong: ['Veia cava inferior', 'Ramo direito da veia porta', 'Veia renal esquerda'], why: 'Slide 52: as veias jejunais e ileais formam arcos venosos que drenam para a VMS.' }),
+      q('52', { q: 'What does the inferior mesenteric vein join to contribute to the hepatic portal vein?', correct: 'The splenic vein', wrong: ['The inferior vena cava', 'The cystic group of accessory veins', 'The left renal vein'], why: 'Slide 52: the IMV joins the splenic vein, which together with the SMV forms the hepatic portal vein.' },
+        { q: 'À qual veia a veia mesentérica inferior se une para contribuir com a veia porta?', correct: 'Veia esplênica', wrong: ['Veia cava inferior', 'Grupo cístico de veias acessórias', 'Veia renal esquerda'], why: 'Slide 52: a VMI se une à veia esplênica, que junto com a VMS forma a veia porta hepática.' }),
+      q('38', { q: 'What percentage of extrahepatic bile duct injuries are said to happen during surgery?', correct: '95%', wrong: ['46%', '13%', '5%'], why: 'Slide 38: the figure text states that 95% of extrahepatic bile duct injuries happen during surgery.' },
+        { q: 'Qual porcentagem das lesões extra-hepáticas do ducto biliar ocorre durante a cirurgia?', correct: '95%', wrong: ['46%', '13%', '5%'], why: 'Slide 38: o texto da figura afirma que 95% das lesões extra-hepáticas do ducto biliar ocorrem durante a cirurgia.' }),
+    ],
+  },
+];
+
+export const pt = Object.fromEntries(Object.entries(PT).filter(([, value]) => value));
