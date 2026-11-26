@@ -1,15 +1,15 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=107';
-import { createEngine } from './aulas-engine.js?v=107';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=107';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=114';
+import { createEngine } from './aulas-engine.js?v=114';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=114';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=107';
+} from './study.js?v=114';
 
 // Boot the selected subject before any UI state is derived. Start fetching the
 // viewer module and model assets in parallel so the 3D scene doesn't wait on
 // the subject pack waterfall.
-const V = '?v=107';
+const V = '?v=114';
 const subjectId = subjectFromUrl();
 const subject = SUBJECTS.find(entry => entry.id === subjectId) || SUBJECTS[0];
 let viewerModulePromise = import(`./viewer.js${V}`);
@@ -31,7 +31,7 @@ try { savedLanguage = localStorage.getItem('anatomy_language') || 'en'; } catch 
 const requestedLanguage = new URLSearchParams(location.search).get('lang');
 const language = ['en', 'pt-BR'].includes(requestedLanguage) ? requestedLanguage : savedLanguage === 'pt-BR' ? 'pt-BR' : 'en';
 const sourcePack = (await subject.load()).default;
-const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=107') : null;
+const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=114') : null;
 const pack = localization ? localization.localizePack(sourcePack) : sourcePack;
 document.documentElement.lang = language;
 initStudy(pack);
@@ -47,6 +47,7 @@ const SLIDE_UNITS = pack.slideUnits || {};
 const BLOOD_FLOW = pack.bloodFlow || [];
 const AULAS = pack.aulas || [];
 const AULAS_ORDER = AULAS.map(block => block.id);
+const SUPPLY_BLOCKS = AULAS.filter(block => block.supply);
 const aulas = createEngine({ packId: pack.id });
 const aulasQuestions = new Map(SLIDE_QUESTIONS.map(question => [question.id, question]));
 const VEIN_ARTERY_PAIRS = pack.veinArteryPairs || {};
@@ -918,18 +919,13 @@ function renderMap() {
   const aulasDone = hasAulas ? AULAS.filter(block => aulasProgress[block.id]?.passed).length : 0;
   const nextAula = hasAulas ? AULAS.find(block => !aulasProgress[block.id]?.passed && aulaOpen(block)) : null;
   const troubleCount = troubleQuestions().length;
-  const totalPct = hasAulas
-    ? Math.round((aulasDone + done) / (AULAS.length + levels.length) * 100)
-    : Math.round(done / Math.max(1, levels.length) * 100);
   const nextLabel = next?.id === 'orientation' ? 'Start' : 'Continue';
 
   let primaryStrip;
   if (nextAula) {
-    const unitLabel = SLIDE_UNITS[nextAula.unit || 'heart']?.label || '';
     primaryStrip = `<section class="map-next" aria-label="${aulaText('Next step', 'Próximo passo')}" translate="no">
       <div class="map-next-copy">
         <h2>${escape(nextAula.title)}</h2>
-        <p>${escape(unitLabel)}${unitLabel ? ' · ' : ''}${aulaText('Study, practise and pass the test', 'Estudo, prática e teste')}</p>
       </div>
       <div class="map-next-actions">
         ${troubleCount ? button(`${aulaText('Trouble spots', 'Pontos fracos')} (${troubleCount})`, startTrouble) : ''}
@@ -940,7 +936,7 @@ function renderMap() {
     primaryStrip = `<section class="map-next" aria-label="${aulaText('Next step', 'Próximo passo')}">
       <div class="map-next-copy">
         <h2>${next ? escape(next.title) : LEVELS.some(l => l.bonus) ? 'Required levels passed' : 'All levels passed'}</h2>
-        <p>${next?.id === 'orientation' ? 'Start here: directions and landmarks.' : 'Your next level on the path.'}</p>
+        ${next?.id === 'orientation' ? '<p>Start here: directions and landmarks.</p>' : ''}
       </div>
       <div class="map-next-actions">
         ${troubleCount ? button(`<span translate="no">${aulaText('Trouble spots', 'Pontos fracos')} (${troubleCount})</span>`, startTrouble) : ''}
@@ -952,7 +948,7 @@ function renderMap() {
   const tabs = [
     ...(hasAulas ? [{ id: 'aulas', label: aulaText('Lessons', 'Aulas'), count: `${aulasDone}/${AULAS.length}` }] : []),
     { id: 'regions', label: aulaText('3D Regions', 'Regiões 3D'), count: `${done}/${levels.length}` },
-    { id: 'practice', label: aulaText('Practice', 'Prática'), count: troubleCount ? `${troubleCount}` : '' },
+    { id: 'practice', label: aulaText('Practice', 'Prática') },
   ];
   const tabBar = `<div class="map-tabs" role="tablist" aria-label="${aulaText('Study views', 'Modos de navegação')}" translate="no">${tabs.map(tab =>
     button(`<span>${escape(tab.label)}</span>${tab.count ? `<small>${escape(tab.count)}</small>` : ''}`,
@@ -1013,7 +1009,7 @@ function renderMap() {
   } else {
     const modeRow = (iconName, title, text, action, highlight = false) => `<li class="mode-row ${highlight ? 'is-featured' : ''}">
       <span class="mode-row-icon" aria-hidden="true">${icon(iconName, 17)}</span>
-      <div class="mode-row-text"><h3>${title}</h3><p>${text}</p></div>
+      <div class="mode-row-text"><h3>${title}</h3>${text ? `<p>${text}</p>` : ''}</div>
       <div class="mode-row-action">${action}</div>
     </li>`;
     panelMarkup = `<div class="map-panel" role="tabpanel">
@@ -1021,9 +1017,9 @@ function renderMap() {
         ${troubleCount ? modeRow('crosshair', aulaText('Trouble spots', 'Pontos fracos'),
           `<span translate="no">${aulaText(`${troubleCount} questions to fix · each leaves after 2 right in a row`, `${troubleCount} questões para corrigir · cada uma sai após 2 acertos seguidos`)}</span>`,
           button(aulaText('Practise', 'Praticar'), startTrouble, { class: 'primary' }), true) : ''}
-        ${modeRow('arrow-right', next ? escape(next.title) : LEVELS.some(l => l.bonus) ? 'Required levels passed' : 'All levels passed',
-          next?.id === 'orientation' ? 'Start here: directions and landmarks.' : 'Your next level on the path.',
-          next ? button(nextLabel, () => next.id === 'orientation' ? startOrientation() : openLevel(next), { iconEnd: 'arrow-right' }) : button('Open Daily', () => setPage('daily')))}
+        ${nextAula && modeRow('arrow-right', next ? escape(next.title) : LEVELS.some(l => l.bonus) ? 'Required levels passed' : 'All levels passed',
+          next?.id === 'orientation' ? 'Start here: directions and landmarks.' : '',
+          next ? button(nextLabel, () => next.id === 'orientation' ? startOrientation() : openLevel(next), { iconEnd: 'arrow-right' }) : button('Open Daily', () => setPage('daily'))) || ''}
         ${BLOOD_FLOW.length ? modeRow('route', aulaText('Blood pathway', 'Trajeto do sangue'), aulaText('Follow the 12 steps of blood flow through the heart in 3D.', 'Acompanhe as 12 etapas do trajeto do sangue no coração em 3D.'), button(aulaText('Study', 'Estudar'), startBloodFlow)) : ''}
         ${aulaSequences.map(sequence => modeRow('route', escape(sequence.title), sequence.unit === 'lymph'
           ? aulaText('Follow lymph from the tissues to the veins.', 'Acompanhe a linfa dos tecidos até as veias.')
@@ -1031,6 +1027,7 @@ function renderMap() {
           button(aulaText('Open', 'Abrir'), () => startAula(sequence)))).join('')}
         ${TERRITORIES.length ? modeRow('crosshair', 'Coronary territories', 'Match each wall to its artery.', button(aulaText('Open', 'Abrir'), startTerritories)) : ''}
         ${SLIDE_QUESTIONS.length ? modeRow('book', "Professor's slides", `<span translate="no">${aulaText(`${slidesMastered()} questions mastered`, `${slidesMastered()} questões dominadas`)}</span>`, button(aulaText('Open', 'Abrir'), startSlides)) : ''}
+        ${SUPPLY_BLOCKS.length ? modeRow('route', aulaText('Supply guide: branching and territories', 'Guia de vascularização: ramificações e territórios'), aulaText('Arteries, veins and nerves of each organ, the branching trees and the territories, without unlocking the course.', 'Artérias, veias e nervos de cada órgão, as árvores de ramificação e os territórios, sem precisar destravar o curso.'), button(aulaText('Open', 'Abrir'), startSupply)) : ''}
         ${BRANCHES.length ? modeRow('route', 'Artery branching', 'Where each artery comes from, what it divides into, where it changes name.', button(aulaText('Open', 'Abrir'), startBranching)) : ''}
         ${modeRow('calendar', 'Structure of the day', 'One structure from memory.', button('Recall', () => startDailyStructure()))}
         ${modeRow('rotate-cw', 'All structures', `${IDS.length} structures · one continuous recall, including unstudied material.`, button('Recall all', () => startFullRecall()))}
@@ -1038,17 +1035,9 @@ function renderMap() {
     </div>`;
   }
 
-  const progressSummary = hasAulas
-    ? `<span translate="no">${aulaText(`${aulasDone}/${AULAS.length} lessons · ${done}/${levels.length} 3D levels`, `${aulasDone}/${AULAS.length} aulas · ${done}/${levels.length} níveis 3D`)}</span>`
-    : `${done} of ${levels.length} levels passed`;
-
   return `<div class="map-content">
     <div class="page-head map-head">
       <h1>${escape(pack.mapHeading || `${pack.name} map`)}</h1>
-      <div class="map-progress">
-        <div class="progress-line"><span style="--pct:${totalPct}%"></span></div>
-        <p class="map-progress-meta">${progressSummary}</p>
-      </div>
     </div>
     ${primaryStrip}
     ${tabBar}
@@ -1253,7 +1242,61 @@ const richList = (values, opts) => `<ul>${values.map(value => `<li>${richText(va
 // Full-page explanations: card.body is a list of paragraphs ("### " starts a subhead).
 const richBody = (paragraphs, opts) => `<div class="aulas-body">${paragraphs.map(text => text.startsWith('### ')
   ? `<h3 class="aulas-subhead">${escape(text.slice(4))}</h3>` : `<p>${richText(text, opts)}</p>`).join('')}</div>`;
-const cardText = (card, opts) => card.body ? richBody(card.body, opts) : richList(card.facts || [], opts);
+const cardText = (card, opts) => (card.diagram ? renderDiagram(card.diagram) : '') + (card.body ? richBody(card.body, opts) : richList(card.facts || [], opts));
+
+// Schematic tree diagrams (SVG) for vessels and nerves: an indented tree whose labels stay
+// hidden until tapped, with dashed brackets for anastomoses listed in a numbered legend.
+// diagram = { root: { label, note?, children? }, links?: [{ from, to, label }] } (from/to are labels).
+function renderDiagram(diagram) {
+  const rows = [];
+  const walk = (node, depth, parent) => {
+    const row = { node, depth, parent, index: rows.length };
+    rows.push(row);
+    (node.children || []).forEach(child => walk(child, depth + 1, row));
+  };
+  walk(diagram.root, 0, null);
+  const H = 30, X = 14, INDENT = 22, W = 360;
+  const links = (diagram.links || []).map((link, index) => ({ ...link, n: index + 1,
+    a: rows.find(row => row.node.label === link.from), b: rows.find(row => row.node.label === link.to) })).filter(link => link.a && link.b);
+  const height = rows.length * H + 10;
+  const y = row => row.index * H + 20;
+  const lines = rows.filter(row => row.parent).map(row => {
+    const px = X + row.parent.depth * INDENT + 5;
+    return `<path class="dg-edge" d="M${px} ${y(row.parent) + 6} V${y(row)} H${X + row.depth * INDENT - 2}"/>`;
+  }).join('');
+  const nodes = rows.map(row => {
+    const x = X + row.depth * INDENT;
+    const hidden = row.depth > 0 ? ' dg-hidden' : '';
+    const note = row.node.note ? ` <tspan class="dg-note">${escape(row.node.note)}</tspan>` : '';
+    return `<g class="dg-node${hidden}" tabindex="0" role="button" data-dg="${row.index}">
+      <circle cx="${x + 5}" cy="${y(row)}" r="4"/>
+      <text class="dg-label" x="${x + 14}" y="${y(row) + 4}">${escape(row.node.label)}${note}</text>
+      <rect class="dg-mask" x="${x + 12}" y="${y(row) - 10}" width="${Math.min(150, W - x - 30)}" height="20" rx="6"/>
+      <text class="dg-q" x="${x + 20}" y="${y(row) + 4}">?</text></g>`;
+  }).join('');
+  const arcs = links.map((link, i) => {
+    const ax = W - 14 - i * 9, y1 = y(link.a), y2 = y(link.b);
+    return `<path class="dg-link" d="M${ax - 8} ${y1} H${ax} V${y2} H${ax - 8}"/><text class="dg-link-n" x="${ax + 3}" y="${(y1 + y2) / 2 + 4}">${link.n}</text>`;
+  }).join('');
+  const legend = links.length ? `<ol class="dg-legend">${links.map(link => `<li>${escape(link.label || '')} <span class="dg-pair">${escape(link.from)} ⟷ ${escape(link.to)}</span></li>`).join('')}</ol>` : '';
+  return `<figure class="dg" data-diagram>
+    <div class="dg-tools"><span class="muted">${aulaText('Tap a branch to reveal it.', 'Toque em um ramo para revelá-lo.')}</span>
+      <button type="button" class="dg-all">${aulaText('Reveal all', 'Revelar tudo')}</button></div>
+    <svg viewBox="0 0 ${W} ${height}" role="img">${lines}${arcs}${nodes}</svg>${legend}</figure>`;
+}
+document.addEventListener('click', event => {
+  const all = event.target.closest?.('.dg-all');
+  if (all) {
+    const figure = all.closest('.dg');
+    const hide = figure.dataset.revealed === '1';
+    figure.querySelectorAll('.dg-node').forEach((node, index) => index && node.classList.toggle('dg-hidden', hide));
+    figure.dataset.revealed = hide ? '' : '1';
+    all.textContent = hide ? aulaText('Reveal all', 'Revelar tudo') : aulaText('Hide all', 'Esconder tudo');
+    return;
+  }
+  const node = event.target.closest?.('.dg-node');
+  if (node) node.classList.remove('dg-hidden');
+});
 
 document.addEventListener('click', event => {
   const reset = event.target.closest('[data-focus-reset]');
@@ -1265,19 +1308,17 @@ document.addEventListener('click', event => {
 
 const aulaStageLabel = () => [aulaText('Study', 'Estudo'), aulaText('Practice', 'Prática'), aulaText('Test', 'Teste')];
 const aulaUnitOrder = unit => AULAS.filter(b => (b.unit || 'heart') === (unit || 'heart')).map(b => b.id);
-const aulaOpen = block => aulas.isUnlocked(block.id, aulaUnitOrder(block.unit));
+const aulaOpen = () => true; // every lesson can be opened (skipping does not mark anything as passed)
 const aulaItems = block => (block.questions || block.questionIds.map(id => aulasQuestions.get(id))).filter(Boolean);
 const REVIEW_INTERVAL_MS = 3 * 24 * 60 * 60 * 1000;
 function startAula(block) {
   if (!block?.cards.length || (AULAS.includes(block) && !aulaOpen(block))) return;
-  if (!block.sequenceOnly && aulas.hasSavedSession(block.id, 'practice')) {
-    launch('aulas', { block, stage: 'practice', cardIndex: 0 });
-    changeAulaStage('practice');
-    return;
-  }
-  if (!block.sequenceOnly && aulas.hasSavedSession(block.id, 'test')) {
-    launch('aulas', { block, stage: 'test', cardIndex: 0 });
-    changeAulaStage('test');
+  const saved = block.sequenceOnly ? null : ['practice', 'test'].find(stage => aulas.hasSavedSession(block.id, stage));
+  if (saved) {
+    stopTimers();
+    activity = { type: 'aulas', block, stage: saved, cardIndex: 0 };
+    started = performance.now();
+    changeAulaStage(saved);
     return;
   }
   launch('aulas', { block, stage: 'study', cardIndex: 0 });
@@ -1291,8 +1332,7 @@ function renderAulasMap() {
     const unit = block.unit || 'heart';
     if (!groups.has(unit)) groups.set(unit, []);
     const listInUnit = groups.get(unit);
-    const prev = listInUnit[listInUnit.length - 1]?.block;
-    listInUnit.push({ block, open: !prev || Boolean(blocks[prev.id]?.passed) });
+    listInUnit.push({ block });
   }
   const currentUnit = AULAS.find(block => !blocks[block.id]?.passed)?.unit || 'heart';
   const nowMs = Date.now();
@@ -1301,13 +1341,14 @@ function renderAulasMap() {
       const completed = entries.filter(({ block }) => blocks[block.id]?.passed).length;
       return `<details ${unit === currentUnit ? 'open' : ''}>
         <summary><span>${escape(SLIDE_UNITS[unit]?.label || unit)}</span><small>${completed}/${entries.length}</small></summary>
-        <ol class="aulas-blocks">${entries.map(({ block, open }) => {
+        <ol class="aulas-blocks">${entries.map(({ block }, index) => {
       const record = blocks[block.id];
       const reviewDue = Boolean(record?.passed && record.lastReviewedAt && nowMs - record.lastReviewedAt >= REVIEW_INTERVAL_MS);
-      const status = reviewDue ? aulaText('Review due', 'Revisar') : record?.passed ? aulaText('Passed', 'Concluído') : open ? aulaText('Ready', 'Disponível') : aulaText('Locked', 'Bloqueado');
-      const stateClass = record?.passed ? 'is-passed' : open ? 'aulas-available' : 'is-locked';
-      return `<li>${button(`<span>${escape(block.title)}</span><small>${record?.passed ? icon('check', 15) : ''}${status}</small>`, () => startAula(block),
-        { class: `aulas-block ${stateClass}`, disabled: !open })}</li>`;
+      const status = reviewDue ? aulaText('Review due', 'Revisar') : record?.passed ? aulaText('Passed', 'Concluído') : '';
+      const mark = record?.passed ? icon('check', 15) : '';
+      const stateClass = record?.passed ? 'is-passed' : 'aulas-available';
+      return `<li>${button(`<span class="aulas-num">${index + 1}.</span><span>${escape(block.title)}</span>${status || mark ? `<small>${mark}${status}</small>` : ''}`, () => startAula(block),
+        { class: `aulas-block ${stateClass}` })}</li>`;
         }).join('')}</ol></details>`;
     }).join('')}
   </section>`;
@@ -1387,7 +1428,6 @@ function renderAulas() {
   const stageIds = ['study', 'practice', 'test'];
   const activeStage = stageIds.indexOf(stage === 'result' ? 'test' : stage);
   const goAulaStage = target => {
-    if (target === stage && stage !== 'result') return;
     if (target === 'study') {
       stopTimers();
       state.stage = 'study';
@@ -1400,7 +1440,9 @@ function renderAulas() {
     changeAulaStage(target, { fresh: stage === 'result' && target === 'test' });
   };
   const header = block.sequenceOnly ? '' : `<ol class="aulas-stages" aria-label="${aulaText('Lesson stages', 'Etapas da aula')}">${labels.map((label, index) =>
-    `<li ${index === activeStage ? 'aria-current="step"' : ''}>${button(
+    `<li ${index === activeStage ? 'aria-current="step"' : ''}>${stageIds[index] === stage
+      ? `<span class="aulas-stage-btn">${label}</span>`
+      : button(
       `${index < activeStage ? icon('check', 14) : ''}${label}`,
       () => goAulaStage(stageIds[index]),
       { class: 'aulas-stage-btn' }
@@ -1509,7 +1551,7 @@ function renderAulas() {
   const count = testing ? `${session.index + 1}/${session.total}` : aulaText(`${learned}/${session.total} learned`, `${learned}/${session.total} aprendidos`);
   return `<div class="screen aulas-screen prompt" translate="no">${header}
     <p class="aulas-count">${count}${testing ? ' · <time id="aulas-timer"></time>' : ''}</p>
-    <h1>${testing ? labels[2] : labels[1]}</h1>
+    <h1>${escape(block.title)}</h1>
     <div class="quiz"><p class="question">${escape(question.q)}</p>
       ${hint === 3 && !feedback ? `<form class="aulas-retype">
         <label for="aulas-answer">${aulaText('Retype the answer', 'Digite a resposta novamente')} <strong>${escape(name)}</strong></label>
@@ -1561,7 +1603,7 @@ function renderLevelRow(level, selected) {
   const label = level === selected ? 'selected' : '';
   return `<div class="level-item ${label}">
     <div class="level-heading"><h2>${escape(level.title)}${level.bonus ? ' <span class="bonus-tag">Bonus</span>' : ''}</h2>${starsHTML(level.id)}</div>
-    <p>${level.ids.length} structures · ${!open ? (previousRequired(level) ? `Pass ${escape(previousRequired(level).title)} to ${level.bonus ? 'open this bonus' : 'unlock'}` : level.bonus ? 'Pass the previous level to open the bonus' : 'Pass the previous level to unlock') : passedLevel(level) ? 'Passed' : savedLevel(level.id).clearedOn ? 'Replay the recall rounds to pass' : level.bonus ? 'Optional · not required to progress' : 'Ready'}</p>
+    <p>${level.ids.length} structures${!open || passedLevel(level) || savedLevel(level.id).clearedOn ? ' · ' : ''}${!open ? (previousRequired(level) ? `Pass ${escape(previousRequired(level).title)} to ${level.bonus ? 'open this bonus' : 'unlock'}` : level.bonus ? 'Pass the previous level to open the bonus' : 'Pass the previous level to unlock') : passedLevel(level) ? 'Passed' : savedLevel(level.id).clearedOn ? 'Replay the recall rounds to pass' : ''}</p>
     ${open ? `<div class="actions">${button(passedLevel(level) ? 'Name it' : savedLevel(level.id).lesson ? 'Start rounds' : 'Memorize',
       () => openLevel(level), { class: level === selected ? 'primary' : '' })}
       ${savedLevel(level.id).lesson ? button('Memorize again', () => startMemorize(level), { icon: 'rotate-ccw' }) : ''}
@@ -2118,6 +2160,17 @@ function startBranching() {
   })) }], 'branching');
 }
 
+
+function startSupply() {
+  const title = aulaText('Supply guide', 'Guia de vascularização');
+  openAulasCatalog(title, Object.entries(SLIDE_UNITS).map(([unit, info]) => ({
+    label: info.label,
+    entries: SUPPLY_BLOCKS.filter(block => block.unit === unit).map(block => ({
+      label: block.title, open: () => startAula({ ...block, id: `drill-supply-${block.id}` }),
+    })),
+  })).filter(section => section.entries.length), 'supply');
+}
+
 function startSlides() {
   const title = aulaText("Professor's slides", 'Slides do professor');
   openAulasCatalog(title, Object.entries(SLIDE_UNITS).map(([unit, info]) => ({
@@ -2137,6 +2190,10 @@ function resolveAulaBlock(blockId) {
   if (blockId === 'drill-trouble') return troubleBlock();
   if (blockId.startsWith('drill-territory-')) return territoryBlock(blockId.slice('drill-territory-'.length));
   if (blockId.startsWith('drill-branch-')) return branchingBlock(blockId.slice('drill-branch-'.length));
+  if (blockId.startsWith('drill-supply-')) {
+    const base = AULAS.find(block => block.id === blockId.slice('drill-supply-'.length));
+    return base ? { ...base, id: blockId } : null;
+  }
   if (blockId.startsWith('drill-slides-')) {
     const base = AULAS.find(block => block.id === blockId.slice('drill-slides-'.length));
     return base ? { ...base, id: blockId } : null;
@@ -2155,7 +2212,6 @@ function renderAulasCatalog() {
     { class: 'aulas-block' })}</li>`).join('')}</ul>`;
   return `<div class="screen aulas-screen" translate="no">
     <h1>${escape(title)}</h1>
-    <p>${aulaText('Choose what to study, practise and test.', 'Escolha o que estudar, praticar e testar.')}</p>
     <div class="aulas-map">${sections.map(({ label, entries }, i) => label
       ? `<details ${i === 0 ? 'open' : ''}><summary>${escape(label)}</summary>${entriesMarkup(entries)}</details>` : entriesMarkup(entries)).join('')}</div>
     <div class="actions">${button(aulaText('Back to map', 'Voltar ao mapa'), () => setPage('map'), { icon: 'arrow-left' })}</div>
@@ -2451,10 +2507,10 @@ function renderProgress() {
       <div><b>${streak(progress)}</b><span>day streak</span></div><div><b>${seconds < 60 ? `${seconds}s` : `${Math.floor(seconds / 60)}m`}</b><span>study time</span></div></div>
     <div class="study-row"><div><h2>Weakest structures</h2><p>${weakest.length ? weakest.map(id => escape(ITEMS[id].pt)).join(' · ') : Object.keys(progress.cards).length ? 'Every studied structure is mastered.' : 'Finish a recall round to start tracking.'}</p></div>
       ${weakest.length ? button('Drill weakest', () => beginRecall(weakest, 'weak'), { class: 'primary' }) : ''}</div>
-    <div class="study-row"><div><h2>Mock oral exam</h2>
-      ${progress.mocks.length ? list(progress.mocks.slice(-5).reverse().map(entry => `${entry.date} · ${mockScore(entry)}`))
-        : '<p>Completed exams will appear here.</p>'}</div>
-      ${button('Mock exam', startMock)}</div>
+    <div class="study-row">
+      ${progress.mocks.length ? `<div><h2 translate="no">${aulaText('Recent mock exams', 'Simulados recentes')}</h2>
+        ${list(progress.mocks.slice(-5).reverse().map(entry => `${entry.date} · ${mockScore(entry)}`))}</div>` : ''}
+      ${button(`<span translate="no">${aulaText('Start mock oral exam', 'Começar simulado oral')}</span>`, startMock)}</div>
     <h2>Mastery by region</h2>
     ${REGIONS.map(region => `<details><summary>${escape(region.title)} <span class="muted">${region.ids.filter(id => progress.cards[id]?.box === 5).length}/${region.ids.length} mastered</span></summary>
       <div class="progress-levels">${region.levels.map(level => `<div><span>${escape(level.title)}${level.bonus ? ' <span class="bonus-tag">Bonus</span>' : ''}</span>${starsHTML(level.id)}</div>`).join('')}</div>
@@ -2557,7 +2613,7 @@ function renderAtlas() {
   const anyMatch = ATLAS_GROUPS.some(group => group.ids.some(id => !query || atlasSearchText(id).includes(query)));
   queueMicrotask(syncAtlasGroups);
   return `<div class="atlas-content">
-    <div class="page-head"><h1>Atlas</h1><p>All ${ATLAS_IDS.length} structures on one model. Show or hide parts, then click a name or the model to focus it. ${escape(pack.atlasNote || '')}</p></div>
+    <div class="page-head"><h1>Atlas</h1><p>Show or hide parts, then click a name or the model to focus it. ${escape(pack.atlasNote || '')}</p></div>
     ${pack.id === 'cardio' ? lobeLegendMarkup() : ''}
     <button type="button" class="button atlas-drawer-toggle" id="atlas-drawer-toggle" data-atlas-drawer="open" aria-controls="atlas-panel" aria-expanded="false">${icon('layers', 16)}Structures <b id="atlas-drawer-count">${visible.length}</b></button>
     ${atlasDetailMarkup()}
@@ -2629,6 +2685,10 @@ function syncAtlasGroups() {
   syncAtlasSelection();
   const total = ATLAS_IDS.length;
   const shown = total - atlas.hidden.size;
+  const showAll = document.querySelector('[data-atlas-action="show"]');
+  const hideAll = document.querySelector('[data-atlas-action="hide"]');
+  if (showAll) showAll.disabled = shown === total;
+  if (hideAll) hideAll.disabled = shown === 0;
   const count = $('atlas-visible-count');
   if (count) count.textContent = `${shown} of ${total} shown`;
   const drawer = $('atlas-drawer-count');
@@ -3361,6 +3421,7 @@ function restoreAppState() {
     if (act.catalogKind === 'territories') startTerritories();
     else if (act.catalogKind === 'branching') startBranching();
     else if (act.catalogKind === 'slides') startSlides();
+    else if (act.catalogKind === 'supply') startSupply();
     return;
   }
   if (act.type === 'lesson') {

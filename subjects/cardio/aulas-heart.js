@@ -1,6 +1,6 @@
 // Lesson content follows the Heart slide digest (H6–H54). Question IDs use the
 // same stable formula as slides/index.js; each slide belongs to one block.
-import heartQuestions from './slides/heart.js?v=107';
+import heartQuestions from './slides/heart.js?v=114';
 
 const textPairs = [
   ['Circulation and position', 'Circulação e posição'],

@@ -1346,7 +1346,9 @@ body { -webkit-font-smoothing: antialiased; }
 .aulas-block.aulas-available { border-color: var(--accent); }
 .aulas-stages { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--line); }
 .aulas-stages li { display: flex; align-items: stretch; }
-.button.aulas-stage-btn {
+.aulas-stage-btn {
+  display: inline-flex;
+  align-items: center;
   position: relative;
   min-height: 44px;
   padding: 0 12px 2px;
@@ -1360,8 +1362,8 @@ body { -webkit-font-smoothing: antialiased; }
   transform: none;
 }
 .button.aulas-stage-btn:not(:disabled):hover { background: var(--surface); color: var(--ink); transform: none; }
-.aulas-stages li[aria-current="step"] .button.aulas-stage-btn { color: var(--ink); font-weight: 600; }
-.aulas-stages li[aria-current="step"] .button.aulas-stage-btn::after {
+.aulas-stages li[aria-current="step"] .aulas-stage-btn { color: var(--ink); font-weight: 600; }
+.aulas-stages li[aria-current="step"] .aulas-stage-btn::after {
   content: '';
   position: absolute;
   left: 0;
@@ -1426,10 +1428,6 @@ body { -webkit-font-smoothing: antialiased; }
 /* Compact page header with inline progress */
 .map-head { gap: 10px; margin: 0; }
 .map-head h1 { font-size: clamp(26px, 3vw, 34px); letter-spacing: -.03em; line-height: 1.12; }
-.map-progress { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.map-progress .progress-line { flex: 1 1 160px; max-width: 240px; height: 4px; background: var(--surface-2); }
-.map-progress .progress-line span { background: var(--accent); }
-.map-progress-meta { font-size: 13px; color: var(--mute); font-variant-numeric: tabular-nums; margin: 0; }
 
 /* Single clear primary action strip */
 .map-next {
@@ -1554,6 +1552,9 @@ body { -webkit-font-smoothing: antialiased; }
 .map-panel .aulas-block.is-locked { opacity: .45; }
 .map-panel .aulas-block small { flex: none; font-size: 12.5px; white-space: nowrap; }
 .map-panel .aulas-block > span { min-width: 0; }
+.map-panel .aulas-block .aulas-num { flex: none; min-width: 2ch; color: var(--soft); font-variant-numeric: tabular-nums; }
+.map-panel .aulas-block.button { justify-content: flex-start; gap: 10px; text-align: left; }
+.map-panel .aulas-block.button > span:not(.aulas-num) { flex: 1; }
 
 /* Tab 2: Compact 3D Regions selector + inline selected region levels */
 .map-panel .map-areas { display: grid; gap: 18px; }
@@ -1670,7 +1671,7 @@ body { -webkit-font-smoothing: antialiased; }
   .mode-row { grid-template-columns: 20px minmax(0, 1fr); }
   .mode-row-action { grid-column: 2; justify-self: start; }
 }
-@media (max-width: 360px) {
+@media (max-width: 400px) {
   .map-tabs { flex-wrap: nowrap; }
   .button.map-tab { flex: 1; min-width: 0; flex-direction: column; gap: 1px; padding: 4px; font-size: 12px; }
 }
@@ -1680,3 +1681,23 @@ body { -webkit-font-smoothing: antialiased; }
 .aulas-body p { margin: 0; }
 .aulas-subhead { margin: 8px 0 0; font-size: 1rem; }
 .aulas-ref { margin: 0; font-size: .85rem; }
+
+/* Schematic vessel/nerve diagrams */
+.dg { margin: 12px 0 16px; padding: 10px 10px 6px; border: 1px solid var(--line, rgba(127,127,127,.25)); border-radius: 12px; }
+.dg-tools { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 4px; }
+.dg-tools button { font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 8px; border: 1px solid currentColor; background: none; color: inherit; cursor: pointer; }
+.dg svg { width: 100%; height: auto; display: block; }
+.dg-edge, .dg-link { fill: none; stroke: currentColor; stroke-opacity: .45; stroke-width: 1.3; }
+.dg-link { stroke-dasharray: 4 3; stroke-opacity: .8; }
+.dg-link-n { font-size: 10px; fill: currentColor; }
+.dg-node { cursor: pointer; outline: none; }
+.dg-node circle { fill: currentColor; }
+.dg-label { font-size: 13px; fill: currentColor; }
+.dg-note { font-size: 11px; fill-opacity: .6; }
+.dg-mask, .dg-q { display: none; }
+.dg-node.dg-hidden .dg-label { visibility: hidden; }
+.dg-node.dg-hidden .dg-mask { display: inline; fill: currentColor; fill-opacity: .12; }
+.dg-node.dg-hidden .dg-q { display: inline; font-size: 12px; fill: currentColor; fill-opacity: .7; }
+.dg-legend { font-size: 13px; margin: 6px 0 0; padding-left: 20px; }
+.dg-pair { opacity: .7; }
+.dg:not([data-revealed="1"]) .dg-pair { display: none; }

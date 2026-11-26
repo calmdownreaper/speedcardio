@@ -1,7 +1,7 @@
-import content from './pt-br-content.js?v=107';
-import aliases from './pt-br-aliases.js?v=107';
-import ui from './pt-br-ui.js?v=107';
-import { structureNames } from './pt-br.js?v=107';
+import content from './pt-br-content.js?v=114';
+import aliases from './pt-br-aliases.js?v=114';
+import ui from './pt-br-ui.js?v=114';
+import { structureNames } from './pt-br.js?v=114';
 
 // Disambiguate anatomy terms and UI messages whose general translation can mislead.
 Object.assign(content, {
