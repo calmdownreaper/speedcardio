@@ -1,7 +1,7 @@
-import content from './pt-br-content.js?v=100';
-import aliases from './pt-br-aliases.js?v=100';
-import ui from './pt-br-ui.js?v=100';
-import { structureNames } from './pt-br.js?v=100';
+import content from './pt-br-content.js?v=107';
+import aliases from './pt-br-aliases.js?v=107';
+import ui from './pt-br-ui.js?v=107';
+import { structureNames } from './pt-br.js?v=107';
 
 // Disambiguate anatomy terms and UI messages whose general translation can mislead.
 Object.assign(content, {
@@ -161,7 +161,7 @@ Object.assign(ui, {
   'Pass ZXVAR0ZX to ZXVAR1ZX': 'Conclua ZXVAR0ZX para ZXVAR1ZX',
   'open this bonus': 'abrir este bônus', 'unlock': 'desbloquear',
   'One structure from memory.': 'Uma estrutura para lembrar de memória.',
-  'Practice': 'Praticar', 'Check answer': 'Conferir resposta',
+  'Practice': 'Praticar',
   'Theme settings (Dark)': 'Configurações de tema (Escuro)',
   'Theme settings (Light)': 'Configurações de tema (Claro)',
   'Theme settings (System)': 'Configurações de tema (Sistema)',
@@ -307,7 +307,7 @@ const templates = Object.entries(ui).filter(([source, target]) => {
   return { source, target, tokens, regex: new RegExp(`^${pattern}$`), specificity: source.replace(/ZXVAR\d+ZX/g, '').length };
 }).sort((a, b) => b.specificity - a.specificity);
 
-export function translateInterface(text, depth = 0) {
+function translateInterface(text, depth = 0) {
   const normalized = squash(text);
   if (!normalized) return text;
   let result = Object.hasOwn(ui, normalized) ? ui[normalized] : content[normalized];

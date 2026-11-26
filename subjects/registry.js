@@ -1,6 +1,6 @@
 // Subject registry. Add a subject by exporting its pack module and listing it
 // here; the engine loads only the selected subject's modules.
-const V = '?v=102';
+const V = '?v=107';
 
 export const SUBJECTS = [
   {
@@ -23,7 +23,7 @@ export const SUBJECTS = [
   },
 ];
 
-export const DEFAULT_SUBJECT = 'cardio';
+const DEFAULT_SUBJECT = 'cardio';
 
 export function subjectFromUrl(search = window.location.search) {
   const requested = new URLSearchParams(search).get('s');

@@ -1,4 +1,4 @@
-const V = '?v=100';
+const V = '?v=107';
 // Add a region by writing regions/<id>.js and listing it here.
 const REGION_FILES = ['skull', 'spine', 'thorax', 'pelvis', 'upper', 'abdomen', 'lower'];
 const ALL = (await Promise.all(REGION_FILES.map(async name => {

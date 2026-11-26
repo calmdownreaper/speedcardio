@@ -1,19 +1,19 @@
 // SpeedGastro aulas: one module per professor deck (Prof. Fiume). Each module
 // exports { unit, blocks, pt }. Blocks carry raw question rows; this file turns
 // them into SLIDE_QUESTIONS with the same stable id/answer formula as cardio.
-import * as oral from './oral.js?v=102';
-import * as salivary from './salivary.js?v=102';
-import * as pharynx from './pharynx.js?v=102';
-import * as oesophagus from './oesophagus.js?v=102';
-import * as peritoneum from './peritoneum.js?v=102';
-import * as stomach from './stomach.js?v=102';
-import * as liver from './liver.js?v=102';
-import * as duodenum from './duodenum.js?v=102';
-import * as jejunoileum from './jejunoileum.js?v=102';
-import * as largeint from './largeint.js?v=102';
-import * as rectum from './rectum.js?v=102';
-import * as pancreas from './pancreas.js?v=102';
-import * as gbspleen from './gbspleen.js?v=102';
+import * as oral from './oral.js?v=107';
+import * as salivary from './salivary.js?v=107';
+import * as pharynx from './pharynx.js?v=107';
+import * as oesophagus from './oesophagus.js?v=107';
+import * as peritoneum from './peritoneum.js?v=107';
+import * as stomach from './stomach.js?v=107';
+import * as liver from './liver.js?v=107';
+import * as duodenum from './duodenum.js?v=107';
+import * as jejunoileum from './jejunoileum.js?v=107';
+import * as largeint from './largeint.js?v=107';
+import * as rectum from './rectum.js?v=107';
+import * as pancreas from './pancreas.js?v=107';
+import * as gbspleen from './gbspleen.js?v=107';
 
 const DECKS = [oral, salivary, pharynx, oesophagus, peritoneum, stomach, liver, duodenum, jejunoileum, largeint, rectum, pancreas, gbspleen];
 

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ITEMS } from './study.js?v=100';
+import { ITEMS } from './study.js?v=107';
 
-export const VIEWS = {
+const VIEWS = {
   ant: [0, -1, .15],
   post: [0, 1, .15],
   dir: [-1, 0, .1],
@@ -11,7 +11,7 @@ export const VIEWS = {
   inf: [0, -.25, -1],
 };
 
-const VERSION = '?v=100';
+const VERSION = '?v=107';
 const GHOST_ORDER = 1;
 const GHOST_DEFAULT = 40;
 
@@ -1212,9 +1212,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
       controls.update();
       schedule();
     },
-    has(id) { return Object.hasOwn(meta.parts, id) || markerPoints.has(id); },
     loadedFor,
     onReady(fn) { onModelReady = fn; },
-    pendingFor(ids) { return !loadedFor(ids); },
   };
 }

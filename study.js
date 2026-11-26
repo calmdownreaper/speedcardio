@@ -2,17 +2,6 @@
 // subjects/registry.js, then initStudy() fills the shared bindings below.
 // Nothing here may import subject data directly.
 
-const SHORT_NAMES = {
-  pap_vd_ant: 'Anterior RV papillary muscle',
-  pap_vd_post: 'Posterior RV papillary muscle',
-  pap_vd_sep: 'Septal RV papillary muscle',
-  vent_ant_d_dae: 'Right anterior branches of LAD',
-  vent_ant_acd: 'Anterior ventricular branch of RCA',
-  vent_post_acd: 'Posterior ventricular branch of RCA',
-  sd_lat: 'Lateral middle lobe segment',
-  sd_med: 'Medial middle lobe segment',
-};
-
 export let ITEMS = {};
 export let IDS = [];
 export let REGIONS = [];
@@ -20,10 +9,8 @@ export let LEVELS = [];
 export let REGION_CONTEXT = {};
 export let NEIGHBOR_MAP = {};
 export let storagePrefix = 'sc2_';
-export let subjectId = 'cardio';
 
 export function initStudy(pack, { structureNames = {} } = {}) {
-  subjectId = pack.id;
   storagePrefix = pack.storagePrefix || 'sc2_';
   NEIGHBOR_MAP = pack.neighborMap || {};
   ITEMS = Object.fromEntries(pack.decks.flatMap(deck => deck.itens.map(item => {
@@ -214,6 +201,66 @@ export class Recall {
     this.index++;
     this.resetPrompt();
     return true;
+  }
+
+  toJSON() {
+    const results = {};
+    for (const [round, entry] of Object.entries(this.results)) {
+      results[round] = {
+        correct: [...entry.correct],
+        missed: [...entry.missed],
+        hinted: [...entry.hinted],
+        retries: { ...entry.retries },
+      };
+    }
+    return {
+      ids: this.ids,
+      kind: this.kind,
+      keys: this.keys,
+      good: this.good,
+      chars: this.chars,
+      active: this.active,
+      round: this.round,
+      queue: this.queue,
+      index: this.index,
+      typed: this.typed,
+      position: this.position,
+      hint: this.hint,
+      feedback: this.feedback,
+      results,
+    };
+  }
+
+  static fromJSON(data) {
+    if (!data || !Array.isArray(data.ids) || !Array.isArray(data.queue)) return null;
+    const validIds = data.ids.filter(id => ITEMS[id]);
+    const validQueue = data.queue.filter(id => ITEMS[id]);
+    if (!validIds.length || !validQueue.length) return null;
+    const run = new Recall(validIds, data.kind || 'level');
+    run.keys = Number(data.keys) || 0;
+    run.good = Number(data.good) || 0;
+    run.chars = Number(data.chars) || 0;
+    run.active = Number(data.active) || 0;
+    run.round = Number(data.round) || 1;
+    run.queue = validQueue;
+    run.index = Math.min(Math.max(Number(data.index) || 0, 0), validQueue.length);
+    run.typed = typeof data.typed === 'string' ? data.typed : '';
+    run.position = Number(data.position) || 0;
+    run.hint = Boolean(data.hint);
+    run.feedback = data.feedback || null;
+    run.results = {};
+    for (const [round, entry] of Object.entries(data.results || {})) {
+      run.results[round] = {
+        correct: new Set((entry?.correct || []).filter(id => ITEMS[id])),
+        missed: new Set((entry?.missed || []).filter(id => ITEMS[id])),
+        hinted: new Set((entry?.hinted || []).filter(id => ITEMS[id])),
+        retries: { ...(entry?.retries || {}) },
+      };
+    }
+    if (!run.results[run.round]) {
+      run.results[run.round] = { correct: new Set(), missed: new Set(), hinted: new Set(), retries: {} };
+    }
+    return run;
   }
 }
 

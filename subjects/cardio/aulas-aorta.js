@@ -1,4 +1,4 @@
-import questions from './slides/arteries.js?v=100';
+import questions from './slides/arteries.js?v=107';
 
 // English and Portuguese are paired at the point of authorship.
 const translations = {};

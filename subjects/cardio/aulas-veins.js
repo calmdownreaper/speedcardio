@@ -1,4 +1,4 @@
-import questions from './slides/veins.js?v=100';
+import questions from './slides/veins.js?v=107';
 const translations = {};
 const t = ([en, pt]) => (translations[en] = pt, en);
 const card = (id, ref, title, facts, confusion, focus = []) => ({ id: `veins-${id}`, ref, title: t(title), facts: facts.map(t), confusion: t(confusion), focus });

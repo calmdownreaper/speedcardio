@@ -1,4 +1,4 @@
-import questions from './slides/airways_upper.js?v=100';
+import questions from './slides/airways_upper.js?v=107';
 
 const textPairs = [
   [

@@ -1,15 +1,15 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=100';
-import { createEngine } from './aulas-engine.js?v=100';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=102';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=107';
+import { createEngine } from './aulas-engine.js?v=107';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=107';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
-} from './study.js?v=100';
+} from './study.js?v=107';
 
 // Boot the selected subject before any UI state is derived. Start fetching the
 // viewer module and model assets in parallel so the 3D scene doesn't wait on
 // the subject pack waterfall.
-const V = '?v=100';
+const V = '?v=107';
 const subjectId = subjectFromUrl();
 const subject = SUBJECTS.find(entry => entry.id === subjectId) || SUBJECTS[0];
 let viewerModulePromise = import(`./viewer.js${V}`);
@@ -31,7 +31,7 @@ try { savedLanguage = localStorage.getItem('anatomy_language') || 'en'; } catch 
 const requestedLanguage = new URLSearchParams(location.search).get('lang');
 const language = ['en', 'pt-BR'].includes(requestedLanguage) ? requestedLanguage : savedLanguage === 'pt-BR' ? 'pt-BR' : 'en';
 const sourcePack = (await subject.load()).default;
-const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=101') : null;
+const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=107') : null;
 const pack = localization ? localization.localizePack(sourcePack) : sourcePack;
 document.documentElement.lang = language;
 initStudy(pack);
@@ -67,6 +67,7 @@ const REGION_OVERVIEW = material.REGION_OVERVIEW || {};
 const LEVEL_CONTRAST = material.LEVEL_CONTRAST || {};
 const LEVEL_CHECK = material.LEVEL_CHECK || {};
 const $ = id => document.getElementById(id);
+const appHeader = document.querySelector('.app-header');
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 })[char]);
@@ -86,7 +87,6 @@ const studyTime = seconds => {
   const minutes = Math.round(total / 60);
   return minutes < 60 ? `${minutes}m` : `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 };
-const dateSeries = (count, offset = 0) => Array.from({ length: count }, (_, index) => day(index - count + 1 + offset));
 const progress = readProgress();
 const regions = Object.fromEntries(REGIONS.map(region => [region.id, region]));
 const orientation = { id: 'orientation', title: 'Orientation', area: 'Heart' };
@@ -149,7 +149,7 @@ function button(label, run, options = {}) {
   if (options.key) shortcuts.set(options.key, run);
   const start = options.icon ? icon(options.icon, 16) : '';
   const end = options.iconEnd ? icon(options.iconEnd, 16) : '';
-  return `<button type="button" class="button ${options.class || ''}" data-action="${index}"${options.attrs ? ` ${options.attrs}` : ''} ${options.disabled ? 'disabled' : ''}>${start}${label}${end}${options.key === 'Enter' ? `<kbd aria-hidden="true">${icon('enter', 12)}</kbd>` : ''}</button>`;
+  return `<button type="button" class="button ${options.class || ''}" data-action="${index}"${options.attrs ? ` ${options.attrs}` : ''} ${options.disabled ? 'disabled' : ''}>${start}${label}${end}</button>`;
 }
 
 // Ask before abandoning a recall run that is under way.
@@ -190,9 +190,8 @@ function launch(type, state) {
 }
 
 function scrollBelowHeader(element) {
-  const headerHeight = document.querySelector('.app-header').offsetHeight;
-  window.scrollBy({
-    top: element.getBoundingClientRect().top - headerHeight - 8,
+  element.scrollIntoView({
+    block: 'start',
     behavior: reducedMotion.matches ? 'auto' : 'smooth',
   });
 }
@@ -303,6 +302,7 @@ function render({ top = false, activate = false } = {}) {
     title?.focus({ preventScroll: true });
   }
   if (top) window.scrollTo(0, 0);
+  saveAppState();
 }
 
 function setModel(ids, options = {}) {
@@ -722,6 +722,7 @@ function renderLesson() {
   const jump = index => goStage('structure', { index });
   const openFind = () => goStage('find', { found: [], order: null, findFeedback: null, revealed: false, misses: 0, findView: undefined });
   const afterFind = () => memorize ? startRounds() : contrast ? goStage('contrast') : openCheck();
+  const skipLessonButton = () => button(language === 'pt-BR' ? 'Pular para o treino' : 'Skip to practice', startRounds);
 
   if (stage === 'structure') {
     const index = Math.min(Math.max(Number(activity.index) || 0, 0), Math.max(total - 1, 0));
@@ -747,6 +748,7 @@ function renderLesson() {
       <div class="chips">${level.ids.map((key, position) => chip(key, key === id, () => key === id ? focusStructure(key) : jump(position))).join('')}</div>
       <div class="actions">
         ${button('Previous', () => index ? jump(index - 1) : goStage('overview'), { icon: 'arrow-left', disabled: memorize && !index })}
+        ${skipLessonButton()}
         ${button(last ? 'Find them on the model' : 'Next structure', last ? openFind : () => jump(index + 1), { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}
       </div></div>`;
   }
@@ -791,6 +793,7 @@ function renderLesson() {
       ${viewerStatus === 'ready' && !ready ? '<p class="support" role="status">Loading the 3D region…</p>' : ''}
       <div class="actions">
         ${button('Previous', () => jump(total - 1), { icon: 'arrow-left' })}
+        ${skipLessonButton()}
         ${allFound ? button(memorize ? 'Start Round 1' : contrast ? 'Next: contrast' : 'Take the check', afterFind, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })
           : button('Show me', reveal, { icon: 'eye', disabled: activity.revealed })}
       </div></div>`;
@@ -805,6 +808,7 @@ function renderLesson() {
       <div class="chips">${[contrast.a, contrast.b].filter(id => ITEMS[id]).map(id => chip(id, false, () => focusStructure(id))).join('')}</div>
       <div class="actions">
         ${button('Previous', openFind, { icon: 'arrow-left' })}
+        ${skipLessonButton()}
         ${button('Take the check', openCheck, { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}
       </div></div>`;
   }
@@ -867,7 +871,7 @@ function renderLesson() {
     <h2 class="legend-title">${plural(total, 'structure')} in this level</h2>
     <div class="chips legend">${level.ids.map(id => chip(id, false, () => focusStructure(id))).join('')}</div>
     <p class="support">${lungSeg ? (language === 'pt-BR' ? 'As cores representam os lobos pulmonares. Clique em um nome para destacar o segmento isolado.' : 'Colours match the lung lobes. Click a name to highlight that segment alone.') : 'Each colour stays with its structure for the whole lesson. Click a name to light it alone.'}</p>
-    <div class="actions">${button('Learn the structures', () => jump(0), { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}</div>
+    <div class="actions">${skipLessonButton()}${button('Learn the structures', () => jump(0), { class: 'primary', key: 'Enter', iconEnd: 'arrow-right' })}</div>
   </div>`;
 }
 
@@ -891,7 +895,7 @@ function renderMap() {
       if (!heading) return;
       heading.focus({ preventScroll: true });
       const box = heading.getBoundingClientRect();
-      if (box.top > window.innerHeight * .6 || box.top < document.querySelector('.app-header').offsetHeight) scrollBelowHeader(heading);
+      if (box.top > window.innerHeight * .6 || box.top < appHeader.getBoundingClientRect().bottom) scrollBelowHeader(heading);
     });
   }
   const requiredIds = region ? region.ids.filter(id => region.levels.some(level => !level.bonus && level.ids.includes(id))) : [];
@@ -904,7 +908,11 @@ function renderMap() {
   });
   const hasAulas = AULAS.length > 0;
   const activeTab = (mapTab && (mapTab !== 'aulas' || hasAulas)) ? mapTab : (hasAulas ? 'aulas' : 'regions');
-  const setMapTab = tab => { mapTab = tab; render(); };
+  const setMapTab = tab => {
+    mapTab = tab;
+    render();
+    document.querySelector('.map-tab[aria-selected="true"]')?.focus({ preventScroll: true });
+  };
 
   const aulasProgress = hasAulas ? aulas.getProgress().blocks : {};
   const aulasDone = hasAulas ? AULAS.filter(block => aulasProgress[block.id]?.passed).length : 0;
@@ -1262,6 +1270,16 @@ const aulaItems = block => (block.questions || block.questionIds.map(id => aulas
 const REVIEW_INTERVAL_MS = 3 * 24 * 60 * 60 * 1000;
 function startAula(block) {
   if (!block?.cards.length || (AULAS.includes(block) && !aulaOpen(block))) return;
+  if (!block.sequenceOnly && aulas.hasSavedSession(block.id, 'practice')) {
+    launch('aulas', { block, stage: 'practice', cardIndex: 0 });
+    changeAulaStage('practice');
+    return;
+  }
+  if (!block.sequenceOnly && aulas.hasSavedSession(block.id, 'test')) {
+    launch('aulas', { block, stage: 'test', cardIndex: 0 });
+    changeAulaStage('test');
+    return;
+  }
   launch('aulas', { block, stage: 'study', cardIndex: 0 });
 }
 
@@ -1319,14 +1337,14 @@ function aulaScene(entry, unit, reveal = true, trail = []) {
     subtleContext: trailIds, controls: true, padding: 1.3, frameFocus: focus.length > 0 });
 }
 
-function changeAulaStage(stage) {
+function changeAulaStage(stage, { fresh = false } = {}) {
   const state = activity;
   stopTimers();
   state.stage = stage;
   const questions = aulaItems(state.block);
   const previousSlides = stage === 'practice' ? slidesStats() : {};
   const weakIds = new Set(questions.filter(question => previousSlides[question.id] === 0).map(question => question.id));
-  state.session = aulas.createSession({ mode: stage, blockId: state.block.id, questions, weakIds });
+  state.session = aulas.createSession({ mode: stage, blockId: state.block.id, questions, weakIds, fresh });
   delete state.feedback;
   render({ top: true, activate: true });
 }
@@ -1366,9 +1384,27 @@ function renderAulas() {
   const state = activity;
   const { block, stage } = state;
   const labels = aulaStageLabel();
-  const activeStage = ['study', 'practice', 'test'].indexOf(stage === 'result' ? 'test' : stage);
+  const stageIds = ['study', 'practice', 'test'];
+  const activeStage = stageIds.indexOf(stage === 'result' ? 'test' : stage);
+  const goAulaStage = target => {
+    if (target === stage && stage !== 'result') return;
+    if (target === 'study') {
+      stopTimers();
+      state.stage = 'study';
+      state.cardIndex = Math.min(Math.max(Number(state.cardIndex) || 0, 0), Math.max(block.cards.length - 1, 0));
+      delete state.feedback;
+      render({ top: true, activate: true });
+      return;
+    }
+    aulas.completeStudy(block.id);
+    changeAulaStage(target, { fresh: stage === 'result' && target === 'test' });
+  };
   const header = block.sequenceOnly ? '' : `<ol class="aulas-stages" aria-label="${aulaText('Lesson stages', 'Etapas da aula')}">${labels.map((label, index) =>
-    `<li ${index === activeStage ? 'aria-current="step"' : ''}>${index < activeStage ? icon('check', 14) : ''}${label}</li>`).join('')}</ol>`;
+    `<li ${index === activeStage ? 'aria-current="step"' : ''}>${button(
+      `${index < activeStage ? icon('check', 14) : ''}${label}`,
+      () => goAulaStage(stageIds[index]),
+      { class: 'aulas-stage-btn' }
+    )}</li>`).join('')}</ol>`;
   const back = button(aulaText('Back to map', 'Voltar ao mapa'), () => setPage('map'), { icon: 'arrow-left' });
   if (stage === 'study') {
     const index = state.cardIndex;
@@ -1414,8 +1450,8 @@ function renderAulas() {
       <p>${aulaText(`${correct} of ${total} correct · ${studyTime(elapsedMs / 1000)} · Best: ${record?.bestScore ?? score}%`, `${correct} de ${total} acertos · ${studyTime(elapsedMs / 1000)} · Melhor resultado: ${record?.bestScore ?? score}%`)}</p>
       <p>${aulaText('Passing score: 90%.', 'Nota para aprovação: 90%.')}</p>
       <div class="actions">${back}
-        ${button(aulaText('Practise again', 'Praticar de novo'), () => changeAulaStage('practice'))}
-        ${button(aulaText('Retake test', 'Refazer o teste'), () => changeAulaStage('test'))}
+        ${button(aulaText('Practise again', 'Praticar de novo'), () => changeAulaStage('practice', { fresh: true }))}
+        ${button(aulaText('Retake test', 'Refazer o teste'), () => changeAulaStage('test', { fresh: true }))}
         ${passed && next ? button(aulaText('Open next block', 'Abrir próximo bloco'), () => startAula(next), { class: 'primary', key: 'Enter' }) : ''}
       </div>
       ${misses.length ? `<h2>${aulaText('Review missed questions', 'Revisar questões erradas')}</h2>
@@ -1428,7 +1464,7 @@ function renderAulas() {
     return `<div class="screen aulas-screen" translate="no">${header}<h1>${escape(block.title)}</h1>
       <p>${aulaText('You answered every question correctly without help.', 'Você respondeu a todas as questões corretamente e sem ajuda.')}</p>
       <p>${aulaText('The test records your time, gives one attempt per question and has no hints. Pass with 90%.', 'O teste registra o tempo, dá uma tentativa por questão e não tem dicas. Para passar, obtenha 90%.')}</p>
-      <div class="actions">${back}${button(aulaText('Start timed test', 'Começar o teste cronometrado'), () => changeAulaStage('test'), { class: 'primary', key: 'Enter' })}</div>
+      <div class="actions">${back}${button(aulaText('Start timed test', 'Começar o teste cronometrado'), () => changeAulaStage('test', { fresh: true }), { class: 'primary', key: 'Enter' })}</div>
     </div>`;
   }
   const feedback = state.feedback;
@@ -1492,6 +1528,7 @@ function renderAulas() {
         : `<p role="status">${aulaText('First letter', 'Primeira letra')}: ${escape(name.match(/\p{L}/u)?.[0] || name[0])}</p>`) : ''}
     </div>
     <div class="actions">${back}
+      ${!testing && !feedback && session.answers.length > 0 ? button(aulaText('Restart', 'Recomeçar'), () => changeAulaStage('practice', { fresh: true })) : ''}
       ${!testing && !feedback && hint < 3 ? button([
         aulaText('Eliminate 2 wrong options', 'Eliminar 2 incorretas'),
         studyCard ? aulaText('Show study card', 'Ver cartão de estudo') : aulaText('Show first letter', 'Mostrar primeira letra'),
@@ -1740,6 +1777,7 @@ function showRecallFeedback() {
   const { run } = activity;
   const { feedback, item, round } = run;
   if (!feedback) return;
+  saveAppState();
   clearTimeout(wrongTimer);
   drawWord();
   const line = $('feedback');
@@ -2017,44 +2055,67 @@ function troubleQuestions() {
   return Object.keys(trouble).map(id => pool.get(id)).filter(Boolean);
 }
 
-function startTrouble() {
+function troubleBlock() {
   const questions = troubleQuestions();
-  if (!questions.length) return;
+  if (!questions.length) return null;
   const title = aulaText('Trouble spots', 'Pontos fracos');
-  startAula({ id: 'drill-trouble', title, unit: 'heart', questions, cards: [{
-    id: 'trouble-intro', title, ref: '', focus: [],
-    facts: [aulaText(`${questions.length} questions you missed or needed help with, from every lesson and drill.`, `${questions.length} questões que você errou ou em que precisou de ajuda, de todas as aulas e treinos.`),
-      aulaText('Each one leaves this list after 2 right answers in a row without help.', 'Cada uma sai desta lista após 2 acertos seguidos sem ajuda.')],
-  }] });
+  return {
+    id: 'drill-trouble', title, unit: 'heart', questions, cards: [{
+      id: 'trouble-intro', title, ref: '', focus: [],
+      facts: [aulaText(`${questions.length} questions you missed or needed help with, from every lesson and drill.`, `${questions.length} questões que você errou ou em que precisou de ajuda, de todas as aulas e treinos.`),
+        aulaText('Each one leaves this list after 2 right answers in a row without help.', 'Cada uma sai desta lista após 2 acertos seguidos sem ajuda.')],
+    }],
+  };
+}
+
+function startTrouble() {
+  const block = troubleBlock();
+  if (block) startAula(block);
+}
+
+const territoryChoices = () => [
+  ['all', aulaText('Both directions', 'Os dois sentidos')],
+  ['standard', aulaText('Territory to artery', 'Do território à artéria')],
+  ['reverse', aulaText('Artery to territory', 'Da artéria ao território')],
+];
+
+function territoryBlock(mode) {
+  const choice = territoryChoices().find(([id]) => id === mode);
+  if (!choice) return null;
+  const title = aulaText('Coronary territories', 'Territórios coronários');
+  const cards = AULAS.find(block => block.id === 'coronary')?.cards.slice(0, 4) || [];
+  return {
+    id: `drill-territory-${mode}`, title: `${title} · ${choice[1]}`, unit: 'heart',
+    cards, questions: territoryQuestions.filter(question => mode === 'all' || question.mode === mode),
+  };
 }
 
 function startTerritories() {
   const title = aulaText('Coronary territories', 'Territórios coronários');
-  const cards = AULAS.find(block => block.id === 'coronary')?.cards.slice(0, 4) || [];
-  const choices = [
-    ['all', aulaText('Both directions', 'Os dois sentidos')],
-    ['standard', aulaText('Territory to artery', 'Do território à artéria')],
-    ['reverse', aulaText('Artery to territory', 'Da artéria ao território')],
-  ];
-  openAulasCatalog(title, [{ entries: choices.map(([mode, label]) => ({
-    label, open: () => startAula({
-      id: `drill-territory-${mode}`, title: `${title} · ${label}`, unit: 'heart',
-      cards, questions: territoryQuestions.filter(question => mode === 'all' || question.mode === mode),
-    }),
-  })) }]);
+  openAulasCatalog(title, [{ entries: territoryChoices().map(([mode, label]) => ({
+    label, open: () => startAula(territoryBlock(mode)),
+  })) }], 'territories');
+}
+
+const branchingChoices = () => [['all', aulaText('Entire tree', 'Árvore completa')],
+  ...Object.entries(BRANCH_GROUPS).map(([id, group]) => [id, group.label])];
+
+function branchingBlock(group) {
+  const choice = branchingChoices().find(([id]) => id === group);
+  if (!choice) return null;
+  const title = aulaText('Artery branching', 'Ramificação das artérias');
+  return {
+    id: `drill-branch-${group}`, title: `${title} · ${choice[1]}`, unit: 'arteries',
+    cards: arteryTree.filter(card => group === 'all' || card.group === group),
+    questions: branchingQuestions.filter(question => group === 'all' || question.group === group),
+  };
 }
 
 function startBranching() {
   const title = aulaText('Artery branching', 'Ramificação das artérias');
-  const choices = [['all', aulaText('Entire tree', 'Árvore completa')],
-    ...Object.entries(BRANCH_GROUPS).map(([id, group]) => [id, group.label])];
-  openAulasCatalog(title, [{ entries: choices.map(([group, label]) => ({
-    label, open: () => startAula({
-      id: `drill-branch-${group}`, title: `${title} · ${label}`, unit: 'arteries',
-      cards: arteryTree.filter(card => group === 'all' || card.group === group),
-      questions: branchingQuestions.filter(question => group === 'all' || question.group === group),
-    }),
-  })) }]);
+  openAulasCatalog(title, [{ entries: branchingChoices().map(([group, label]) => ({
+    label, open: () => startAula(branchingBlock(group)),
+  })) }], 'branching');
 }
 
 function startSlides() {
@@ -2065,11 +2126,26 @@ function startSlides() {
       label: block.title, detail: aulaText(`${slidesMastered(aulaItems(block))} mastered`, `${slidesMastered(aulaItems(block))} dominadas`),
       open: () => startAula({ ...block, id: `drill-slides-${block.id}` }),
     })),
-  })));
+  })), 'slides');
 }
 
-function openAulasCatalog(title, sections) {
-  launch('aulasCatalog', { title, sections });
+function resolveAulaBlock(blockId) {
+  if (!blockId) return null;
+  const direct = AULAS.find(block => block.id === blockId) || aulaSequences.find(block => block.id === blockId);
+  if (direct) return direct;
+  if (bloodFlowDrill?.id === blockId) return bloodFlowDrill;
+  if (blockId === 'drill-trouble') return troubleBlock();
+  if (blockId.startsWith('drill-territory-')) return territoryBlock(blockId.slice('drill-territory-'.length));
+  if (blockId.startsWith('drill-branch-')) return branchingBlock(blockId.slice('drill-branch-'.length));
+  if (blockId.startsWith('drill-slides-')) {
+    const base = AULAS.find(block => block.id === blockId.slice('drill-slides-'.length));
+    return base ? { ...base, id: blockId } : null;
+  }
+  return null;
+}
+
+function openAulasCatalog(title, sections, catalogKind = null) {
+  launch('aulasCatalog', { title, sections, catalogKind });
 }
 
 function renderAulasCatalog() {
@@ -2667,7 +2743,7 @@ function filterAtlas(value) {
   if (clear) clear.hidden = !value.trim();
 }
 
-const atlasNarrow = matchMedia('(max-width: 770px)');
+const atlasNarrow = matchMedia('(max-width: 900px)');
 
 function setAtlasDrawer(open, { restoreFocus = true } = {}) {
   if (open && !atlasNarrow.matches) return;
@@ -3158,5 +3234,215 @@ $('view-retry')?.addEventListener('click', () => {
   if (viewerStatus !== 'loading') void loadViewer();
 });
 
+new ResizeObserver(() => {
+  document.documentElement.style.setProperty('--header-height', `${appHeader.offsetHeight}px`);
+}).observe(appHeader);
+
+const STATE_KEY = `sc2_state_${pack.id}`;
+
+function serializeActivity() {
+  if (!activity) return null;
+  const { type } = activity;
+  if (type === 'aulas' && activity.block?.id) {
+    return { type, blockId: activity.block.id, stage: activity.stage, cardIndex: activity.cardIndex || 0 };
+  }
+  if (type === 'aulasCatalog' && activity.catalogKind) {
+    return { type, catalogKind: activity.catalogKind };
+  }
+  if (type === 'lesson' && activity.level?.id) {
+    return {
+      type,
+      levelId: activity.level.id,
+      mode: activity.mode,
+      stage: activity.stage,
+      index: activity.index || 0,
+      found: activity.found || [],
+      revealed: Boolean(activity.revealed),
+      answer: activity.answer,
+      check: activity.check || null,
+    };
+  }
+  if (type === 'quiz') {
+    return {
+      type,
+      levelId: activity.level?.id || null,
+      topicTitle: activity.topic?.title || null,
+      title: activity.title,
+      label: activity.label,
+      questions: activity.questions,
+      index: activity.index || 0,
+      correct: activity.correct || 0,
+      answer: activity.answer,
+    };
+  }
+  if (type === 'find' && activity.level?.id) {
+    return {
+      type,
+      levelId: activity.level.id,
+      ids: activity.ids,
+      index: activity.index || 0,
+      tries: activity.tries || 0,
+      feedback: activity.feedback || '',
+      correct: activity.correct || 0,
+      done: Boolean(activity.done),
+    };
+  }
+  if (type === 'oral' && activity.level?.id) {
+    return {
+      type,
+      levelId: activity.level.id,
+      ids: activity.ids,
+      index: activity.index || 0,
+      revealed: Boolean(activity.revealed),
+    };
+  }
+  if (type === 'topic' && activity.topic?.title) {
+    return { type, topicTitle: activity.topic.title };
+  }
+  if (type === 'recall' && activity.run) {
+    return {
+      type,
+      levelId: activity.level?.id || null,
+      recallTitle: activity.recallTitle || null,
+      challengeDate: activity.challengeDate || null,
+      fromId: activity.from?.id || null,
+      run: activity.run.toJSON(),
+    };
+  }
+  return null;
+}
+
+function saveAppState() {
+  try {
+    const payload = {
+      page,
+      selectedRegion,
+      selectedLevel,
+      mapTab,
+      activity: serializeActivity(),
+    };
+    localStorage.setItem(STATE_KEY, JSON.stringify(payload));
+  } catch { /* storage unavailable */ }
+}
+
+function restoreAppState() {
+  let saved;
+  try {
+    saved = JSON.parse(localStorage.getItem(STATE_KEY) || 'null');
+  } catch { return; }
+  if (!saved || typeof saved !== 'object') return;
+  if (['map', 'atlas', 'daily', 'theory', 'progress'].includes(saved.page)) page = saved.page;
+  if (saved.selectedRegion) selectedRegion = saved.selectedRegion;
+  if (saved.selectedLevel) selectedLevel = saved.selectedLevel;
+  if (['aulas', 'regions', 'practice'].includes(saved.mapTab)) mapTab = saved.mapTab;
+  const act = saved.activity;
+  if (!act || typeof act !== 'object') return;
+  if (act.type === 'aulas') {
+    const block = resolveAulaBlock(act.blockId);
+    if (!block?.cards?.length) return;
+    if (act.stage === 'practice' || act.stage === 'test') {
+      const questions = aulaItems(block);
+      if (!questions.length) return;
+      const previousSlides = act.stage === 'practice' ? slidesStats() : {};
+      const weakIds = new Set(questions.filter(question => previousSlides[question.id] === 0).map(question => question.id));
+      const session = aulas.createSession({ mode: act.stage, blockId: block.id, questions, weakIds });
+      activity = { type: 'aulas', block, stage: act.stage, cardIndex: act.cardIndex || 0, session };
+    } else {
+      activity = {
+        type: 'aulas',
+        block,
+        stage: 'study',
+        cardIndex: Math.min(Math.max(Number(act.cardIndex) || 0, 0), Math.max(block.cards.length - 1, 0)),
+      };
+    }
+    return;
+  }
+  if (act.type === 'aulasCatalog') {
+    if (act.catalogKind === 'territories') startTerritories();
+    else if (act.catalogKind === 'branching') startBranching();
+    else if (act.catalogKind === 'slides') startSlides();
+    return;
+  }
+  if (act.type === 'lesson') {
+    const level = LEVELS.find(entry => entry.id === act.levelId);
+    if (!level) return;
+    activity = {
+      type: 'lesson',
+      level,
+      mode: act.mode || 'memorize',
+      stage: act.stage || 'structure',
+      index: Number(act.index) || 0,
+      found: Array.isArray(act.found) ? act.found : [],
+      revealed: Boolean(act.revealed),
+      answer: act.answer,
+      check: act.check || undefined,
+    };
+    return;
+  }
+  if (act.type === 'quiz' && Array.isArray(act.questions) && act.questions.length) {
+    const level = act.levelId ? LEVELS.find(entry => entry.id === act.levelId) : undefined;
+    const topic = act.topicTitle ? THEORY.find(entry => entry.title === act.topicTitle) : undefined;
+    activity = {
+      type: 'quiz',
+      level,
+      topic,
+      title: act.title || 'Quiz',
+      label: act.label || '',
+      questions: act.questions,
+      index: Math.min(Math.max(Number(act.index) || 0, 0), act.questions.length - 1),
+      correct: Number(act.correct) || 0,
+      answer: act.answer,
+    };
+    return;
+  }
+  if (act.type === 'find') {
+    const level = LEVELS.find(entry => entry.id === act.levelId);
+    if (!level || !Array.isArray(act.ids)) return;
+    activity = {
+      type: 'find',
+      level,
+      ids: act.ids.filter(id => ITEMS[id]),
+      index: Number(act.index) || 0,
+      tries: Number(act.tries) || 0,
+      feedback: act.feedback || '',
+      correct: Number(act.correct) || 0,
+      done: Boolean(act.done),
+    };
+    return;
+  }
+  if (act.type === 'oral') {
+    const level = LEVELS.find(entry => entry.id === act.levelId);
+    if (!level || !Array.isArray(act.ids)) return;
+    activity = {
+      type: 'oral',
+      level,
+      ids: act.ids.filter(id => ITEMS[id]),
+      index: Number(act.index) || 0,
+      revealed: Boolean(act.revealed),
+    };
+    return;
+  }
+  if (act.type === 'topic') {
+    const topic = THEORY.find(entry => entry.title === act.topicTitle);
+    if (topic) activity = { type: 'topic', topic };
+    return;
+  }
+  if (act.type === 'recall' && act.run) {
+    const run = Recall.fromJSON(act.run);
+    if (!run) return;
+    const level = act.levelId ? LEVELS.find(entry => entry.id === act.levelId) : undefined;
+    const from = act.fromId ? regions[act.fromId] : undefined;
+    activity = {
+      type: 'recall',
+      level,
+      from,
+      recallTitle: act.recallTitle || undefined,
+      challengeDate: act.challengeDate || undefined,
+      run,
+    };
+  }
+}
+
+restoreAppState();
 render();
 void loadViewer();
