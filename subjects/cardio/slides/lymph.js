@@ -1,7 +1,7 @@
 // Professor's slides — Lymphatic system. Source: research/prof_slides/lymph (Ratti, slides L2–L30).
 export default [
   // General and functions (L2–L5)
-  { ref: "L2", topic: "General and functions", q: "What do lymphatic vessels do, according to the slide?",
+  { ref: "L2", topic: "General and functions", q: "What do lymphatic vessels do, according to the class material?",
     correct: "Collect lymph from the tissues and drain it to the venous system", wrong: ["Carry arterial blood from the heart out to every tissue of the body", "Produce red blood cells in the bone marrow of the long bones", "Secrete bile into the duodenum to digest dietary fats"],
     why: "Lymphatic vessels collect lymph from the tissues and drain it into the venous system; lymphatic tissue is a large group of lymphocytes and other cells." },
   { ref: "L3", topic: "General and functions", q: "Which of these is one of the three functions of the lymphatic system on L3?",
@@ -69,7 +69,7 @@ export default [
     why: "L17: the lymphatics of the myocardial network often accompany the coronary capillaries, in the opposite direction." },
   { ref: "L18", topic: "Heart lymphatics", q: "Lymph from the left heart territories drains through the common left trunk to which venous angle?",
     correct: "Right venous angle", wrong: ["Left venous angle", "Right atrium directly", "Superior vena cava"],
-    why: "L18: left territories go to the right venous angle, a crossed drainage pattern shown on the slide." },
+    why: "L18: left territories go to the right venous angle, a crossed drainage pattern shown in the class material." },
   { ref: "L18", topic: "Heart lymphatics", q: "Lymph from the right heart territories drains through the common right trunk to which venous angle?",
     correct: "Left venous angle", wrong: ["Right venous angle", "Azygos arch", "Coronary sinus"],
     why: "L18: right territories go to the left venous angle, the opposite side from the trunk that collects them." },

@@ -1,7 +1,7 @@
 // Salivary glands typing deck. Source: research/gastro_slides/02_salivary_glands/digest.md
 // (saliva p3–4, parotid p5–16 and 26–30, submandibular p17–22 and 31, sublingual p23–25 and 32, histology p33–44).
 const NM = (en, pt) => [`Not in the 3D model. Highlighted: ${en}`, `Não está no modelo 3D. Destacado: ${pt}`];
-const it = (id, q, a, info, focus, note) => ({ id, q, a, info, d3: note ? { focus, note } : { focus } });
+const it = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
 const PAR = NM('teeth, the nearest landmark. The parotid is not in the 3D model (it lies beside the cheek and the mandibular ramus).', 'os dentes, referência mais próxima. A parótida não está no modelo 3D (fica ao lado da bochecha e do ramo da mandíbula).');
 const HIST = NM('the major glands (histology is not modelled).', 'as glândulas maiores (a histologia não é modelada).');
 
@@ -11,7 +11,7 @@ export default {
   id: 'salivary_glands',
   title: ['Salivary glands', 'Glândulas salivares'],
   rules: {
-    share: ['Share of saliva: submandibular 65%, parotid 20% (up to 50% stimulated), sublingual 15%, minor glands ~10%.', 'Parcela da saliva: submandibular 65%, parótida 20% (até 50% estimulada), sublingual 15%, glândulas menores ~10%.'],
+    share: ['Share of saliva: submandibular 65%, parotid 20% (up to 50% stimulated), sublingual ~5% (class material: 15%), minor glands ~10%.', 'Parcela da saliva: submandibular 65%, parótida 20% (até 50% estimulada), sublingual ~5% (material da aula: 15%), glândulas menores ~10%.'],
   },
   sets: [
     {
@@ -20,7 +20,7 @@ export default {
         it('largest', ['Largest salivary gland (15–30 g, purely serous)?', 'Maior glândula salivar (15–30 g, puramente serosa)?'], [['parotid', 'parotid gland', 'parótida', 'glândula parótida', 'parotida']],
           ['The parotid weighs 15–30 g, is bilateral and lobulated, and is purely serous; its enzyme-rich secretion goes into the vestibule.', 'A parótida pesa 15–30 g, é bilateral e lobulada, puramente serosa; sua secreção rica em enzimas vai ao vestíbulo.'], ['teeth'], PAR),
         it('smallest', ['Smallest major salivary gland (4 g, almost all mucous)?', 'Menor glândula salivar maior (4 g, quase toda mucosa)?'], [['sublingual', 'sublingual gland', 'glândula sublingual']],
-          ['Narrow, flat, almond-shaped, 4 g; makes 15% of saliva, almost all mucous.', 'Estreita, plana, em forma de amêndoa, 4 g; produz 15% da saliva, quase toda mucosa.'], ['sublingual_gland']),
+          ['Narrow, flat, almond-shaped, 4 g; makes about 5% of saliva, almost all mucous.', 'Estreita, plana, em forma de amêndoa, 4 g; produz cerca de 5% da saliva, quase toda mucosa.'], ['sublingual_gland'], null, ['The class material gives the sublingual 15%. Standard physiology gives about 5% (submandibular ~70%, parotid ~25%; Guyton & Hall; Moore).', 'O material da aula dá 15% para a sublingual. A fisiologia padrão dá cerca de 5% (submandibular ~70%, parótida ~25%; Guyton & Hall; Moore).']),
         it('pct65', ['Which gland makes 65% of saliva?', 'Qual glândula produz 65% da saliva?'], [['submandibular', 'submandibular gland', 'glândula submandibular', 'submaxilar']],
           ['Walnut-sized, 7–8 g, mostly serous and partly mucous.', 'Do tamanho de uma noz, 7–8 g, principalmente serosa e em parte mucosa.'], ['submandibular_gland']),
         it('pct20', ['Which gland makes 20% of saliva (up to 50% when stimulated)?', 'Qual glândula produz 20% da saliva (até 50% quando estimulada)?'], [['parotid', 'parotid gland', 'parótida', 'glândula parótida', 'parotida']],

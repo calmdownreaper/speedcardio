@@ -119,7 +119,7 @@ export default {
       rule: ['Pes anserinus = SGT: Sartorius, Gracilis, Semitendinosus — three tendons inserting together on the proximal medial tibia.',
         'Pata de ganso = SGT: Sartório, Grácil, Semitendíneo — três tendões inserindo juntos na tíbia medial proximal.'],
       items: [
-        { id: 'sart-o', extra: true, d3: { focus: ['sartorius'], view: 'ant', frame: ['sartorius', 'hip_bone'], glass: .12 }, q: o('sartorius', 'sartório'), a: [['anterior superior iliac spine', 'espinha ilíaca anterossuperior', 'ASIS'], ['notch below the ASIS', 'incisura abaixo da EIAS']] },
+        { id: 'sart-o', extra: true, d3: { focus: ['sartorius'], view: 'ant', frame: ['sartorius', 'hip_bone'], glass: .12 }, q: o('sartorius', 'sartório'), a: [['anterior superior iliac spine', 'espinha ilíaca anterossuperior', 'ASIS', 'EIAS', 'notch below the ASIS', 'incisura abaixo da EIAS']] },
         { id: 'sart-i', d3: { focus: ['sartorius'], view: 'ant', frame: ['sartorius', 'tibia'], glass: .12 }, q: i('sartorius', 'sartório'), a: [PES] },
         { id: 'pes-m', d3: { focus: ['sartorius','gracilis','semitendinosus'], view: 'ant', frame: ['sartorius','gracilis','semitendinosus','femur','tibia'], glass: .15 }, q: ['Which three muscles insert at the pes anserinus?', 'Quais três músculos inserem na pata de ganso?'], a: [['sartorius', 'sartório'], ['gracilis', 'grácil'], ['semitendinosus', 'semitendíneo']] },
         { id: 'pes-loc', d3: { focus: ['sartorius','gracilis','semitendinosus'], view: 'ant', frame: ['sartorius','gracilis','semitendinosus','femur','tibia'], glass: .15 }, q: ['Where is the pes anserinus?', 'Onde fica a pata de ganso?'], a: [PES] },

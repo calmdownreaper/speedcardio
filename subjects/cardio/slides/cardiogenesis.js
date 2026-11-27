@@ -3,7 +3,7 @@ export default [
   // ---- Overview and timing (C2–C5)
   { ref: 'C2', topic: 'Overview and timing', q: 'Which period of cardiovascular development carries the highest risk of congenital malformation?',
     correct: 'Fetal system (4th to 8th week)', wrong: ['Primitive system (3rd to 4th week)', 'Definitive system (at birth)', 'Pulmonary system (after birth)'],
-    why: 'The fetal system (4th–8th week) turns the tubular heart into a four-chambered heart with three highly asymmetric vessel networks. The slide calls it the most crucial period.' },
+    why: 'The fetal system (4th–8th week) turns the tubular heart into a four-chambered heart with three highly asymmetric vessel networks. The class material calls it the most crucial period.' },
   { ref: 'C3', topic: 'Overview and timing', q: 'Inside one period of evolution, how do most developmental events occur?',
     correct: 'At the same time, simultaneously', wrong: ['One after another, in a fixed order', 'Each must finish before the next starts', 'Only one event happens per week'],
     why: 'The TIMING box: even within the same period of evolution, most events happen at the same time.' },
@@ -15,7 +15,7 @@ export default [
     why: 'The embryo must work while it is built: nutrients come from the yolk sac or placenta, oxygen from the chorion, and waste goes to the allantois or placenta.' },
   { ref: 'C5', topic: 'Overview and timing', q: 'What are the main embryonic vessels created from?',
     correct: 'Extra-embryonic structures', wrong: ['The embryonic heart tube and its own cardiomyocytes', 'The embryonic somites', 'The neural tube'],
-    why: 'The slide states that the main embryonic vessels must be created from extra-embryonic structures such as the yolk sac and chorion.' },
+    why: 'The class material states that the main embryonic vessels must be created from extra-embryonic structures such as the yolk sac and chorion.' },
 
   // ---- Primitive system: angiogenesis and tube (C6–C12)
   { ref: 'C6', topic: 'Primitive system: angiogenesis and tube', q: 'At the end of the 3rd week, where do the first angiogenic cell clusters form?',
@@ -52,7 +52,7 @@ export default [
     why: 'The central part of the dorsal mesocardium vacuolises and disappears, leaving the transverse sinus of the pericardium in the adult.' },
   { ref: 'C15', topic: 'Primitive system: looping and conduction', q: 'Between which days does the cardiac tube assume an S shape?',
     correct: '23rd to 28th day', wrong: ['18th to 23rd day, before the tube folds', '25th to 30th day, after circulation starts', '28th to 35th day, at the end of the embryonic period'],
-    why: 'Between the 23rd and 28th day the cardiac tube assumes an S shape, as shown in the slide timeline.' },
+    why: 'Between the 23rd and 28th day the cardiac tube assumes an S shape, as shown in the class timeline.' },
 
   // ---- Primitive system: venous inflow and yolk sac (C16–C20)
   { ref: 'C16', topic: 'Primitive system: venous inflow and yolk sac', q: 'Which three venous systems bring blood to the horns of the venous sinus?',
@@ -103,7 +103,7 @@ export default [
     why: 'The right fourth arch forms part of the right subclavian artery; the left fourth arch forms part of the aortic arch.', focus: ['scd'] },
   { ref: 'C26', topic: 'Fetal system: arteries', q: 'What does the left fourth aortic arch give rise to?',
     correct: 'Part of the aortic arch', wrong: ['Left subclavian artery', 'Left common carotid artery', 'Ductus arteriosus'],
-    why: 'The left fourth arch forms part of the definitive aortic arch, which the slide describes as the arch segment derived from the IV left arch.', focus: ['arco', 'aoasc'] },
+    why: 'The left fourth arch forms part of the definitive aortic arch, which the class material describes as the arch segment derived from the IV left arch.', focus: ['arco', 'aoasc'] },
   { ref: 'C26', topic: 'Fetal system: arteries', q: 'What does the right sixth aortic arch give rise to?',
     correct: 'Proximal part of the pulmonary artery', wrong: ['Ductus arteriosus (Botallo), which stays open after birth', 'Brachiocephalic trunk, the first branch of the aortic arch', 'Aortic arch, the proximal segment of the arch'],
     why: 'The right sixth arch gives the proximal part of the pulmonary artery; the left sixth arch forms the arterial duct of Botallo.', focus: ['tp', 'apd'] },
@@ -230,7 +230,7 @@ export default [
   { ref: 'C54', topic: 'Definitive system at birth', q: 'What does the residual ductus become after it is permanently obliterated?',
     correct: 'Arterial ligament between the pulmonary trunk and aortic arch', wrong: ['Venous ligament between the liver and the inferior vena cava, at birth', 'Round ligament of the liver', 'Medial umbilical ligament'],
     why: 'The obliterated duct, usually a few weeks after birth, persists as the arterial ligament stretched between the pulmonary trunk and the aortic arch.', focus: ['tp', 'arco'] },
-  { ref: 'C55', topic: 'Definitive system at birth', q: 'What heart rate does the newborn reach at birth, according to the slide?',
+  { ref: 'C55', topic: 'Definitive system at birth', q: 'What heart rate does the newborn reach at birth, according to the class material?',
     correct: 'Up to 180 bpm', wrong: ['Up to 140 bpm, the fetal rate', 'Up to 70 bpm, the adult rate', 'Up to 100 bpm, the rate at one year of life'],
     why: 'The fetal rate of 140–150 bpm rises to 180 bpm at birth, falls to 170 after 10 minutes and settles at 120–140 bpm within an hour.' },
 ];

@@ -15,7 +15,7 @@ export function createAulaSequences(text) {
       ]),
       card('cardiogenesis-week-4', t('Week 4', 'Semana 4'), t('Looping and early circulation', 'Formação da alça e circulação inicial'), 'C13, C15, C20', [
         t('The cardiac tube folds into an S shape between days 23 and 28.', 'O tubo cardíaco dobra-se em forma de S entre os dias 23 e 28.'),
-        t('The slide places the first irregular contractions at the end of day 23 and intraembryonic circulation at day 25.', 'O slide situa as primeiras contrações irregulares no fim do dia 23 e a circulação intraembrionária no dia 25.')
+        t('The class material places the first irregular contractions at the end of day 23 and intraembryonic circulation at day 25.', 'O material da aula situa as primeiras contrações irregulares no fim do dia 23 e a circulação intraembrionária no dia 25.')
       ]),
       card('cardiogenesis-week-5', t('Week 5', 'Semana 5'), t('Chambers and septation', 'Câmaras e septação'), 'C31, C42, C52', [
         t('The asymmetric venous system and four cardiac chambers develop; aortic–pulmonary septation begins.', 'O sistema venoso assimétrico e as quatro câmaras cardíacas se desenvolvem; começa a septação aortopulmonar.'),
@@ -32,7 +32,7 @@ export function createAulaSequences(text) {
         t('The adult great vessels are shown only as context.', 'Os grandes vasos adultos são mostrados apenas como contexto.')
       ], ['aoasc','tp'], 'ant', true),
       card('cardiogenesis-week-8', t('Week 8', 'Semana 8'), t('Fetal heart configuration', 'Configuração do coração fetal'), 'C52', [
-        t('The slide places complete development of the heart valves in week eight.', 'O slide situa o desenvolvimento completo das valvas cardíacas na oitava semana.'),
+        t('The class material places complete development of the heart valves in week eight.', 'O material da aula situa o desenvolvimento completo das valvas cardíacas na oitava semana.'),
         t('The heart has the characteristics of the fetal apparatus.', 'O coração apresenta as características do aparelho fetal.'),
         t('The highlighted valves belong to the adult model.', 'As valvas destacadas pertencem ao modelo adulto.')
       ], ['tri_ant','tri_post','tri_sep','mit_ant','mit_post','ao_ant','ao_post_d','ao_post_e','pulm_ant_e','pulm_ant_d','pulm_post'], 'sup', true),
@@ -70,7 +70,7 @@ export function createAulaSequences(text) {
       ], ['vsc_e'], 'ant', true),
       card('lymph-right', t('Right drainage', 'Drenagem direita'), t('Right upper drainage', 'Drenagem superior direita'), 'L12, L15', [
         t('The right upper territory drains through the right jugular, subclavian and bronchomediastinal pathways.', 'O território superior direito drena pelas vias jugular, subclávia e broncomediastinal direitas.'),
-        t('The slide describes a common right lymphatic duct in 20% of people; otherwise the trunks drain separately into veins.', 'O slide descreve um ducto linfático direito comum em 20% das pessoas; nos demais casos os troncos drenam separadamente nas veias.'),
+        t('The class material describes a common right lymphatic duct in 20% of people; otherwise the trunks drain separately into veins.', 'O material da aula descreve um ducto linfático direito comum em 20% das pessoas; nos demais casos os troncos drenam separadamente nas veias.'),
         t('The highlighted right subclavian vein is a nearby landmark; the duct itself is not shown.', 'A veia subclávia direita destacada é uma referência próxima; o próprio ducto não está representado.')
       ], ['vsc_d'], 'ant', true),
       card('lymph-venous', t('Venous return', 'Retorno venoso'), t('Return to the venous system', 'Retorno ao sistema venoso'), 'L2, L12, L15', [

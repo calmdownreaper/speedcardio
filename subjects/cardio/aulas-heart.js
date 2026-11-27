@@ -1,6 +1,6 @@
 // Lesson content follows the Heart slide digest (H6–H54). Question IDs use the
 // same stable formula as slides/index.js; each slide belongs to one block.
-import heartQuestions from './slides/heart.js?v=115';
+import heartQuestions from './slides/heart.js?v=157';
 
 const textPairs = [
   ['Circulation and position', 'Circulação e posição'],
@@ -127,14 +127,14 @@ const textPairs = [
 
   ['Myocardial fibers', 'Fibras miocárdicas'],
   ['The myocardium is the muscular wall of the heart.', 'O miocárdio é a parede muscular do coração.'],
-  ['In the ventricles, the slide labels a superficial layer and an intermediate layer of myocardial fibers.', 'Nos ventrículos, o slide identifica uma camada superficial e uma camada intermediária de fibras miocárdicas.'],
+  ['In the ventricles, the class material labels a superficial layer and an intermediate layer of myocardial fibers.', 'Nos ventrículos, o material da aula identifica uma camada superficial e uma camada intermediária de fibras miocárdicas.'],
   ['These fiber layers curve around the ventricles toward the apex.', 'Essas camadas de fibras curvam-se ao redor dos ventrículos em direção ao ápice.'],
   ['Superficial and intermediate fiber layers belong to the myocardium, distinct from the epicardium and endocardium.', 'As camadas superficial e intermediária pertencem ao miocárdio, distintas do epicárdio e do endocárdio.'],
 
   ['Conduction and ECG', 'Condução e ECG'],
   ['Pacemaker P cells are modified cardiomyocytes—pale and rich in glycogen—that spontaneously generate electrical impulses; transitional (T) cells transmit them.', 'As células P (marcapasso) são cardiomiócitos modificados — pálidos e ricos em glicogênio — que geram impulsos espontaneamente; as células T (transicionais) transmitem o impulso.'],
   ['The sinoatrial (SA) node has the highest concentration of P cells and acts as the natural pacemaker, producing sinus rhythm.', 'O nó sinoatrial (SA) concentra as células P e atua como marcapasso natural, gerando o ritmo sinusal.'],
-  ['The AV node delays the impulse by about 0.09 seconds so the atria empty into the ventricles before ventricular contraction; conduction then follows the bundle of His, branches (moderator band) and Purkinje fibers.', 'O nó AV atrasa o impulso em cerca de 0,09 segundo para os átrios esvaziarem antes da contração ventricular; depois o impulso segue pelo feixe de His, ramos (banda moderadora) e fibras de Purkinje.'],
+  ['The AV node delays the impulse by about 0.09 seconds so the atria empty into the ventricles before ventricular contraction; conduction then follows the bundle of His, the right and left bundle branches (the right branch reaches the anterior papillary muscle through the moderator band) and the Purkinje fibers.', 'O nó AV atrasa o impulso em cerca de 0,09 segundo para os átrios esvaziarem antes da contração ventricular; depois o impulso segue pelo feixe de His, os ramos direito e esquerdo (o ramo direito chega ao músculo papilar anterior pela banda moderadora) e as fibras de Purkinje.'],
   ['On the ECG, the P wave is atrial depolarization, the QRS complex is ventricular depolarization and the T wave is ventricular repolarization.', 'No ECG, a onda P é a despolarização atrial, o complexo QRS é a despolarização ventricular e a onda T é a repolarização ventricular.'],
   ['P wave = atrial depolarization; QRS = ventricular depolarization; T wave = ventricular repolarization.', 'Onda P = despolarização atrial; QRS = despolarização ventricular; onda T = repolarização ventricular.'],
 
@@ -148,7 +148,7 @@ const textPairs = [
   ['Right coronary artery', 'Artéria coronária direita'],
   ['The right coronary artery (RCA) supplies the right atrium and right ventricle and gives off the SA nodal artery in 55% of cases.', 'A artéria coronária direita (ACD) irriga o átrio direito e o ventrículo direito e origina a artéria do nó SA em 55% dos casos.'],
   ['The RCA is dominant in 85% of hearts, giving off the posterior interventricular (posterior descending, PDA) branch.', 'A ACD é dominante em 85% dos corações, originando o ramo interventricular posterior (artéria descendente posterior, PDA).'],
-  ['Coronary dominance is defined by which artery supplies most of the heart surface, especially the inferior wall of the left ventricle and the AV node.', 'A dominância coronária é definida pela artéria que irriga a maior parte da superfície cardíaca, especialmente a parede inferior do ventrículo esquerdo e o nó AV.'],
+  ['Coronary dominance is defined by which artery gives the posterior interventricular (descending) artery, which supplies the inferior wall of the left ventricle, the posterior septum and usually the AV node (Moore).', 'A dominância coronária é definida pela artéria que dá a artéria interventricular posterior (descendente), que irriga a parede inferior do ventrículo esquerdo, o septo posterior e geralmente o nó AV (Moore).'],
   ['RCA arteriograms are shown in two standard projections: left anterior oblique (LAO) and right anterior oblique (RAO).', 'As arteriografias da ACD são mostradas em duas projeções: oblíqua anterior esquerda (LAO) e oblíqua anterior direita (RAO).'],
   ['Dominance is defined by who feeds the inferior LV wall and AV node (via the PDA), not by which artery feeds the largest total muscle mass.', 'Dominância define quem irriga a parede inferior do VE e o nó AV (pela PDA), não quem irriga a maior massa muscular total.'],
 

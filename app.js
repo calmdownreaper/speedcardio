@@ -1,6 +1,6 @@
 import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=148';
 import { createEngine } from './aulas-engine.js?v=115';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=151';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=157';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,

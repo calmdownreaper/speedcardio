@@ -1,7 +1,7 @@
 // Oral cavity typing deck. Source: research/gastro_slides/01_oral_cavity/digest.md and compact.md
 // (oral cavity p12–14, lips p15–23, cheeks p24–32, teeth p35–38, tongue p40–64, floor of the mouth p65–68).
 const NM = (en, pt) => [`Not in the 3D model. Highlighted: ${en}`, `Não está no modelo 3D. Destacado: ${pt}`];
-const it = (id, q, a, info, focus, note) => ({ id, q, a, info, d3: note ? { focus, note } : { focus } });
+const it = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
 
 const CTX = ['tongue', 'teeth', 'submandibular_gland', 'sublingual_gland', 'superior_constrictor', 'palatopharyngeus'];
 const FRAME = ['tongue', 'teeth', 'sublingual_gland', 'submandibular_gland'];
@@ -71,7 +71,7 @@ export default {
         it('periodontium', ['Collagen-rich tissue between root and alveolar bone that anchors the tooth?', 'Tecido rico em colágeno entre a raiz e o osso alveolar que ancora o dente?'], [['periodontium', 'periodontal ligament', 'periodonto', 'ligamento periodontal']],
           ['Lies between the root and the alveolar bone; its collagen fibres anchor the tooth to the bone.', 'Fica entre a raiz e o osso alveolar; suas fibras colágenas fixam o dente ao osso.'], ['teeth'], NM('teeth (internal layers are not modelled).', 'dentes (as camadas internas não são modeladas).')),
         it('first_molar', ['Which permanent tooth erupts first, at about 6 years?', 'Qual dente permanente erupciona primeiro, por volta dos 6 anos?'], [['first molar', '1st molar', 'primeiro molar', '1º molar', 'molar de 6 anos']],
-          ['Permanent eruption: 1st molar 6 y; central incisor 7; lateral incisor 8; 1st premolar 9; 2nd premolar 10; canine 11–12; 2nd molar 12–13; 3rd molars 17–25.', 'Erupção permanente: 1º molar 6 a; incisivo central 7; incisivo lateral 8; 1º pré-molar 9; 2º pré-molar 10; canino 11–12; 2º molar 12–13; 3º molares 17–25.'], ['teeth']),
+          ['Permanent eruption: 1st molar 6 y; central incisor 7; lateral incisor 8; 1st premolar 9; 2nd premolar 10; canine 11–12; 2nd molar 12–13; 3rd molars 17–25.', 'Erupção permanente: 1º molar 6 a; incisivo central 7; incisivo lateral 8; 1º pré-molar 9; 2º pré-molar 10; canino 11–12; 2º molar 12–13; 3º molares 17–25.'], ['teeth'], null, ["The class material gives 9 and 10 years for the premolars. Most dental references give about 10–11 y (1st) and 10–12 y (2nd) (ADA eruption chart; Moore).", "O material da aula dá 9 e 10 anos para os pré-molares. A maioria das referências odontológicas dá cerca de 10–11 a (1º) e 10–12 a (2º) (tabela de erupção da ADA; Moore)."]),
         it('third_molar', ['Last permanent teeth to erupt, between 17 and 25 years?', 'Últimos dentes permanentes a erupcionar, entre 17 e 25 anos?'], [['third molars', '3rd molars', 'wisdom teeth', 'terceiros molares', '3º molares', 'dentes do siso', 'siso']],
           ['The 3rd molars erupt at 17–25 years, after the 2nd molars (12–13).', 'Os 3º molares erupcionam aos 17–25 anos, depois dos 2º molares (12–13).'], ['teeth']),
       ],
