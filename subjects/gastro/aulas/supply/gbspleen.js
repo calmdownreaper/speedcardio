@@ -213,8 +213,8 @@ export const blocks = [
           t('### From territory to artery', '### Do território à artéria'),
           t('Turn the list around when you revise. The jejunum and ileum come from the left-side jejunal and ileal arteries, the distal ileum from the Ileocolic artery, and the caecum and appendix from the caecal and appendicular branches of the Ileocolic artery. The ascending colon and hepatic flexure are fed by the marginal artery that the Right colic artery forms, and the transverse colon by the middle colic arcades.',
             'Inverta a lista ao revisar. O jejuno e o íleo vêm das artérias jejunais e ileais do lado esquerdo, o íleo distal da artéria ileocólica, e o ceco e o apêndice dos ramos cecais e apendicular da ileocólica. O colo ascendente e a flexura hepática são irrigados pela artéria marginal que a cólica direita forma, e o colo transverso pelas arcadas da cólica média.'),
-          t('⚠ The superior mesenteric artery supplies the proximal half of the transverse colon in deck 13 (p. 40) and the proximal two-thirds in deck 10 (p. 40).',
-            '⚠ A artéria mesentérica superior irriga a metade proximal do colo transverso no deck 13 (p. 40) e os dois terços proximais no deck 10 (p. 40).'),
+          t('⚠ The superior mesenteric artery supplies the proximal half of the transverse colon in the Gallbladder and spleen lesson (page 40) and the proximal two-thirds in the Large intestine lesson (page 40).',
+            '⚠ A artéria mesentérica superior irriga a metade proximal do colo transverso na aula de Vesícula e baço (página 40) e os dois terços proximais na aula de Intestino grosso (página 40).'),
         ],
       },
       {

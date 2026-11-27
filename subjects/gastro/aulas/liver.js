@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/liver.js?v=158';
+import * as supply from './supply/liver.js?v=159';
 
 export const unit = {
   id: 'liver',
@@ -306,8 +306,8 @@ export const blocks = [
             'Na superfície do fígado, a linha de Cantlie atravessa a face diafragmática pela fossa da vesícula biliar e pelo sulco da veia cava inferior, separando as partes cirúrgicas direita e esquerda do fígado (ao contrário do ligamento falciforme e do ligamento redondo, que marcam os lobos anatômicos direito e esquerdo). Ela é a principal referência anatômica para a cirurgia do fígado.'),
           t('The hepatic segments are organised by left and right parts. The Left part consists of the Posterior part (segment I, Caudate lobe), the Left lateral division (segments II and III) and the Left medial division (segment IV). The Right part consists of the Right medial (anterior) division (V, anterior inferior, and VIII, anterior superior) and the Right lateral (posterior) division (VI, posterior inferior, and VII, posterior superior).',
             'Os segmentos hepáticos organizam-se em partes esquerda e direita. A Parte esquerda compreende a Parte posterior (segmento I, Lobo caudado), a divisão lateral esquerda (segmentos II e III) e a divisão medial esquerda (segmento IV). A Parte direita compreende a divisão medial (anterior) direita (V, anterior inferior, e VIII, anterior superior) e a divisão lateral (posterior) direita (VI, posterior inferior, e VII, posterior superior).'),
-          t('⚠ One table in the class material (page 28) groups V with VI and VII with VIII. That grouping is wrong: in Couinaud’s scheme the right medial (anterior) division is V + VIII and the right lateral (posterior) division is VI + VII, drained by the right anterior and posterior sectoral ducts (Sobotta; Gray’s). Deck 13, page 30 shows the correct grouping.',
-            '⚠ Uma tabela do material da aula (página 28) agrupa V com VI e VII com VIII. Esse agrupamento está errado: no esquema de Couinaud a divisão medial (anterior) direita é V + VIII e a divisão lateral (posterior) direita é VI + VII, drenadas pelos ductos setoriais anterior e posterior direitos (Sobotta; Gray’s). O deck 13, página 30, mostra o agrupamento correto.'),
+          t('⚠ One table in the class material (page 28) groups V with VI and VII with VIII. That grouping is wrong: in Couinaud’s scheme the right medial (anterior) division is V + VIII and the right lateral (posterior) division is VI + VII, drained by the right anterior and posterior sectoral ducts (Sobotta; Gray’s). The Gallbladder and spleen lesson (page 30) shows the correct grouping.',
+            '⚠ Uma tabela do material da aula (página 28) agrupa V com VI e VII com VIII. Esse agrupamento está errado: no esquema de Couinaud a divisão medial (anterior) direita é V + VIII e a divisão lateral (posterior) direita é VI + VII, drenadas pelos ductos setoriais anterior e posterior direitos (Sobotta; Gray’s). A aula de Vesícula e baço (página 30) mostra o agrupamento correto.'),
         ],
       },
     ],

@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/largeint.js?v=158';
+import * as supply from './supply/largeint.js?v=159';
 
 export const unit = {
   id: 'largeint',
@@ -423,8 +423,8 @@ export const blocks = [
             'Cada parte do intestino grosso é atribuída a um território arterial. A artéria mesentérica superior (intestino médio) irriga o apêndice, o ceco, o colo ascendente e os dois terços proximais do colo transverso. A artéria mesentérica inferior (intestino posterior), que nasce em L3, irriga o terço distal do colo transverso, o colo descendente, o colo sigmoide, o reto e a porção superior do canal anal.'),
           t('The SMA gives the ileocolic, right colic and middle colic arteries to the colon, as well as jejunal and ileal arteries. The inferior mesenteric artery gives left colic, sigmoid and superior rectal arteries.',
             'A AMS dá ao colo as artérias ileocólica, cólica direita e cólica média, além das artérias jejunais e ileais. A artéria mesentérica inferior dá as artérias cólica esquerda, sigmoides e retal superior.'),
-          t('⚠ Other decks of this course (deck 09, p018, and deck 13, p040) say the superior mesenteric artery supplies the «proximal one half» of the transverse colon, while this lesson gives two-thirds. Use two-thirds, and note the difference if it comes up.',
-            '⚠ Outros decks deste curso (deck 09, p018, e deck 13, p040) dizem que a artéria mesentérica superior irriga a «metade proximal» do colo transverso, enquanto esta aula diz dois terços. Use dois terços e registre a diferença se ela aparecer.'),
+          t('⚠ Other lessons of this course (Jejunum and ileum, page 18, and Gallbladder and spleen, page 40) say the superior mesenteric artery supplies the «proximal one half» of the transverse colon, while this lesson gives two-thirds. Use two-thirds, and note the difference if it comes up.',
+            '⚠ Outras aulas deste curso (Jejuno e íleo, página 18, e Vesícula e baço, página 40) dizem que a artéria mesentérica superior irriga a «metade proximal» do colo transverso, enquanto esta aula diz dois terços. Use dois terços e registre a diferença se ela aparecer.'),
         ],
       },
       {

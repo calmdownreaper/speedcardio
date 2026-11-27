@@ -109,8 +109,8 @@ export const blocks = [
           t('### Territory', '### Território'),
           t('The branches on the left side of the artery supply the small intestine, and the branches on the right supply the colon. The midgut territory is the distal half of the duodenum, the jejunum, the ileum, the caecum and appendix, the ascending colon, the right colic flexure and the proximal part of the transverse colon. It ends by anastomosing with its own branch, the ileocolic artery.',
             'Os ramos do lado esquerdo da artéria suprem o intestino delgado, e os ramos do lado direito suprem o cólon. O território do intestino médio é a metade distal do duodeno, o jejuno, o íleo, o ceco e o apêndice, o cólon ascendente, a flexura cólica direita e a parte proximal do cólon transverso. Termina por anastomose com um ramo próprio, a artéria ileocólica.'),
-          t('⚠ The class material gives the proximal one half of the transverse colon for the midgut. Another part of deck 08 gives two thirds, and deck 10 also gives the proximal two thirds. The deck records both versions, and this card does not choose between them.',
-            '⚠ O material da aula dá a metade proximal do cólon transverso para o intestino médio. Outra parte do deck 08 dá dois terços, e o deck 10 também dá os dois terços proximais. O material registra as duas versões, e este cartão não escolhe entre elas.'),
+          t('⚠ The class material gives the proximal one half of the transverse colon for the midgut. The Duodenum lesson gives two thirds, and the Large intestine lesson also gives the proximal two thirds. The class material records both versions, and this card does not choose between them.',
+            '⚠ O material da aula dá a metade proximal do cólon transverso para o intestino médio. A aula de Duodeno dá dois terços, e a aula de Intestino grosso também dá os dois terços proximais. O material registra as duas versões, e este cartão não escolhe entre elas.'),
         ],
       },
       {

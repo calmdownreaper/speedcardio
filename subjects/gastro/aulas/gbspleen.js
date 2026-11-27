@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/gbspleen.js?v=158';
+import * as supply from './supply/gbspleen.js?v=159';
 
 export const unit = {
   id: 'gbspleen',
@@ -524,8 +524,8 @@ export const blocks = [
         pt: { q: 'Qual artéria irriga o intestino médio?', correct: 'A artéria mesentérica superior', wrong: ['O tronco celíaco', 'A artéria mesentérica inferior', 'A artéria gástrica esquerda'], why: 'Tronco celíaco para o intestino anterior, AMS para o médio, AMI para o posterior.' } },
       { ref: '40', q: 'Where does the SMA arise from the aorta?', correct: '1 cm below the coeliac trunk, at L1', wrong: ['Just above the coeliac trunk, at T12', 'At the aortic bifurcation, at L4', 'At L3, together with the inferior mesenteric artery'], why: 'The SMA arrives from the aorta 1 cm below the coeliac trunk (L1).',
         pt: { q: 'De onde a AMS nasce na aorta?', correct: '1 cm abaixo do tronco celíaco, em L1', wrong: ['Logo acima do tronco celíaco, em T12', 'Na bifurcação aórtica, em L4', 'Em L3, junto com a artéria mesentérica inferior'], why: 'A AMS sai da aorta 1 cm abaixo do tronco celíaco (L1).' } },
-      { ref: '40', q: 'Which part of the transverse colon is assigned to the SMA?', correct: 'The proximal one half', wrong: ['The distal one half', 'The whole transverse colon', 'Only the splenic flexure'], why: 'The SMA supplies the proximal one half of the transverse colon (deck 10 says two-thirds).',
-        pt: { q: 'Qual parte do colo transverso é atribuída à AMS?', correct: 'A metade proximal', wrong: ['A metade distal', 'Todo o colo transverso', 'Somente a flexura esplênica'], why: 'A AMS irriga a metade proximal do colo transverso (o deck 10 diz dois terços).' } },
+      { ref: '40', q: 'Which part of the transverse colon is assigned to the SMA?', correct: 'The proximal one half', wrong: ['The distal one half', 'The whole transverse colon', 'Only the splenic flexure'], why: 'The SMA supplies the proximal one half of the transverse colon (the Large intestine lesson says two-thirds).',
+        pt: { q: 'Qual parte do colo transverso é atribuída à AMS?', correct: 'A metade proximal', wrong: ['A metade distal', 'Todo o colo transverso', 'Somente a flexura esplênica'], why: 'A AMS irriga a metade proximal do colo transverso (a aula de Intestino grosso diz dois terços).' } },
       { ref: '41', q: 'At which vertebral level does the coeliac trunk arise?', correct: 'T12', wrong: ['L1', 'L3', 'L4'], why: 'Coeliac trunk at T12; SMA at L1; IMA at L3; aortic bifurcation at L4.',
         pt: { q: 'Em qual nível vertebral nasce o tronco celíaco?', correct: 'T12', wrong: ['L1', 'L3', 'L4'], why: 'Tronco celíaco em T12; AMS em L1; AMI em L3; bifurcação aórtica em L4.' } },
       { ref: '42', q: 'Which structures does the SMA pass in front of?', correct: 'The uncinate process of the pancreas and the third part of the duodenum', wrong: ['The splenic artery and the stomach', 'The gallbladder and the cystic duct', 'The spleen and the left kidney'], why: 'The SMA passes in front of the uncinate process and the third part of the duodenum.',

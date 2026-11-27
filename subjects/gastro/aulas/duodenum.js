@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/duodenum.js?v=158';
+import * as supply from './supply/duodenum.js?v=159';
 
 export const unit = {
   id: 'duodenum',
@@ -247,8 +247,8 @@ export const blocks = [
         pt: { q: 'Qual artéria supre o território do intestino médio?', correct: 'Artéria mesentérica superior', wrong: ['Tronco celíaco', 'Artéria mesentérica inferior', 'Artéria ilíaca comum'], why: 'Intestino anterior — tronco celíaco; médio — mesentérica superior; posterior — mesentérica inferior.' } },
       { ref: '24', q: 'Which parasympathetic nerves supply the hindgut, according to the table?', correct: 'Pelvic splanchnic nerves', wrong: ['Vagus nerve', 'Greater splanchnic nerves', 'Phrenic nerves'], why: 'Foregut and midgut — vagus; hindgut — pelvic splanchnic nerves.',
         pt: { q: 'Quais nervos parassimpáticos suprem o intestino posterior, segundo a tabela da aula?', correct: 'Nervos esplâncnicos pélvicos', wrong: ['Nervo vago', 'Nervos esplâncnicos maiores', 'Nervos frênicos'], why: 'Intestino anterior e médio — vago; posterior — nervos esplâncnicos pélvicos.' } },
-      { ref: '24', q: 'How much of the transverse colon does the midgut supply, according to the table?', correct: 'Two-thirds', wrong: ['One-third', 'The whole transverse colon', 'One-half (proximal)'], why: 'The midgut includes 2/3 of the transverse colon and the hindgut the left 1/3. (Deck 13 states that the SMA supplies the proximal half, so the two sources differ; see the note on conflicting figures.)',
-        pt: { q: 'Quanto do colo transverso o intestino médio supre, segundo a tabela da aula?', correct: 'Dois terços', wrong: ['Um terço', 'O colo transverso inteiro', 'Metade proximal'], why: 'O intestino médio inclui 2/3 do colo transverso e o posterior o terço esquerdo. (O deck 13 diz que a mesentérica superior supre a metade proximal; as duas fontes diferem.)' } },
+      { ref: '24', q: 'How much of the transverse colon does the midgut supply, according to the table?', correct: 'Two-thirds', wrong: ['One-third', 'The whole transverse colon', 'One-half (proximal)'], why: 'The midgut includes 2/3 of the transverse colon and the hindgut the left 1/3. (The Gallbladder and spleen lesson states that the SMA supplies the proximal half, so the two sources differ; see the note on conflicting figures.)',
+        pt: { q: 'Quanto do colo transverso o intestino médio supre, segundo a tabela da aula?', correct: 'Dois terços', wrong: ['Um terço', 'O colo transverso inteiro', 'Metade proximal'], why: 'O intestino médio inclui 2/3 do colo transverso e o posterior o terço esquerdo. (A aula de Vesícula e baço diz que a mesentérica superior supre a metade proximal; as duas fontes diferem.)' } },
       { ref: '23', q: 'Which artery supplies the hindgut territory?', correct: 'Inferior mesenteric artery', wrong: ['Superior mesenteric artery', 'Celiac trunk', 'Common iliac artery'], why: 'The hindgut is supplied by the inferior mesenteric artery; the midgut by the superior mesenteric and the foregut by the celiac trunk.',
         pt: { q: 'Qual artéria supre o território do intestino posterior?', correct: 'Artéria mesentérica inferior', wrong: ['Artéria mesentérica superior', 'Tronco celíaco', 'Artéria ilíaca comum'], why: 'O intestino posterior é suprido pela artéria mesentérica inferior; o médio pela mesentérica superior e o anterior pelo tronco celíaco.' } },
     ],

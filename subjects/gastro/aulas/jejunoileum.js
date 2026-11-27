@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/jejunoileum.js?v=158';
+import * as supply from './supply/jejunoileum.js?v=159';
 
 export const unit = {
   id: 'jejunoileum',
@@ -157,8 +157,8 @@ export const blocks = [
         body: [
           t('The vascularisation of the gut as a whole: the early tube is supplied by the Celiac trunk (foregut), the Superior mesenteric artery (midgut) and the Inferior mesenteric artery (hindgut). The Superior mesenteric artery supplies the structures of the midgut: the distal half of the duodenum, the jejunum and the ileum, the cecum and the appendix, the ascending colon, the right colic flexure and the proximal one half of the transverse colon. It arises from the aorta 1 cm below the celiac trunk, at L1.',
             'A vascularização do intestino como um todo: o tubo inicial é suprido pelo Tronco celíaco (intestino anterior), pela Artéria mesentérica superior (intestino médio) e pela Artéria mesentérica inferior (intestino posterior). A Artéria mesentérica superior supre as estruturas do intestino médio: a metade distal do duodeno, o jejuno e o íleo, o ceco e o apêndice, o colo ascendente, a flexura cólica direita e a metade proximal do colo transverso. Ela nasce da aorta 1 cm abaixo do tronco celíaco, em L1.'),
-          t('⚠ Page 18 gives the midgut share of the transverse colon as the proximal one half. Deck 08 (page 24) gives two-thirds, and deck 10 (page 40) also says proximal two-thirds. The decks disagree; both versions are kept, and the value given in this card is one half.',
-            '⚠ A página 18 dá a parte do intestino médio no colo transverso como a metade proximal. O deck 08 (página 24) dá dois terços, e o deck 10 (página 40) também diz dois terços proximais. Os decks divergem; as duas versões são mantidas, e o valor deste cartão é a metade.'),
+          t('⚠ Page 18 gives the midgut share of the transverse colon as the proximal one half. The Duodenum lesson (page 24) gives two-thirds, and the Large intestine lesson (page 40) also says proximal two-thirds. The lessons disagree; both versions are kept, and the value given in this card is one half.',
+            '⚠ A página 18 dá a parte do intestino médio no colo transverso como a metade proximal. A aula de Duodeno (página 24) dá dois terços, e a aula de Intestino grosso (página 40) também diz dois terços proximais. As aulas divergem; as duas versões são mantidas, e o valor deste cartão é a metade.'),
         ],
       },
       {

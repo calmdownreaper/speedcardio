@@ -52,7 +52,7 @@ const STOP = new Set(['bone', 'bones', 'osso', 'ossos', 'the', 'of', 'de', 'do',
 const coarsePointer = matchMedia('(pointer: coarse)');
 
 const sourcePack = (await import('./subjects/msk/index.js?v=122')).default;
-const localization = lang === 'pt-BR' ? await import('./translations/localize.js?v=158') : null;
+const localization = lang === 'pt-BR' ? await import('./translations/localize.js?v=159') : null;
 const pack = localization ? localization.localizePack(sourcePack) : sourcePack;
 const structureNames = Object.fromEntries(Object.entries(BONE_MEMBER_NAMES).map(([id, names]) =>
   [id, lang === 'pt-BR' ? names[1] ?? names[0] : names[0]]));

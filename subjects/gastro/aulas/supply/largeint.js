@@ -44,7 +44,7 @@ const L = {
 
 const TERRITORY_TREE = {
   root: { label: L.terr, children: [
-    { label: L.mid, children: [{ label: L.app }, { label: L.asc }, { label: L.ptc, note: t('2/3 here, half on deck 09', '2/3 aqui, metade no deck 09') }] },
+    { label: L.mid, children: [{ label: L.app }, { label: L.asc }, { label: L.ptc, note: t('2/3 here, half in the Jejunum and ileum lesson', '2/3 aqui, metade na aula de Jejuno e íleo') }] },
     { label: L.hind, children: [{ label: L.dtc }, { label: L.dsc }, { label: L.rect }] },
   ] },
   links: [],
@@ -106,8 +106,8 @@ export const blocks = [
         body: [
           t('The large intestine is supplied by the same three gut territories as the rest of the tube. The superior mesenteric artery (midgut) supplies the appendix, the caecum, the ascending colon and the proximal part of the transverse colon. The inferior mesenteric artery (hindgut), which arises at L3, supplies the distal third of the transverse colon, the descending and sigmoid colon, the rectum and the upper anal canal.',
             'O intestino grosso é irrigado pelos mesmos três territórios intestinais do restante do tubo. A artéria mesentérica superior (intestino médio) irriga o apêndice, o ceco, o colo ascendente e a parte proximal do colo transverso. A artéria mesentérica inferior (intestino posterior), que nasce em L3, irriga o terço distal do colo transverso, o colo descendente e sigmoide, o reto e o canal anal superior.'),
-          t('⚠ Deck 09 gives the SMA the proximal half of the transverse colon, while this deck gives the proximal two thirds. Both values are recorded here, and the material does not settle which is right.',
-            '⚠ O deck 09 dá à AMS a metade proximal do colo transverso, enquanto este deck dá os dois terços proximais. Os dois valores ficam registrados aqui, e o material não diz qual está certo.'),
+          t('⚠ The Jejunum and ileum lesson gives the SMA the proximal half of the transverse colon, while this lesson gives the proximal two thirds. Both values are recorded here, and the material does not settle which is right.',
+            '⚠ A aula de Jejuno e íleo dá à AMS a metade proximal do colo transverso, enquanto esta aula dá os dois terços proximais. Os dois valores ficam registrados aqui, e o material não diz qual está certo.'),
         ],
       },
       {

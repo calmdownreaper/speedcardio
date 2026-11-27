@@ -1,13 +1,13 @@
 // Professor's slides: one question bank per lecture deck (Prof. Ratti, A.Y. 2026/27).
 // Every row cites the slide it comes from (ref). Built by the slides audit in
 // research/prof_slides/cobertura/. Answers rotate so the correct option is not fixed.
-import heart from './heart.js?v=158';
-import arteries from './arteries.js?v=158';
-import veins from './veins.js?v=158';
-import lymph from './lymph.js?v=158';
-import cardiogenesis from './cardiogenesis.js?v=158';
-import airwaysUpper from './airways_upper.js?v=158';
-import airwaysLower from './airways_lower.js?v=158';
+import heart from './heart.js?v=159';
+import arteries from './arteries.js?v=159';
+import veins from './veins.js?v=159';
+import lymph from './lymph.js?v=159';
+import cardiogenesis from './cardiogenesis.js?v=159';
+import airwaysUpper from './airways_upper.js?v=159';
+import airwaysLower from './airways_lower.js?v=159';
 
 const HEART = ['ad', 'ae', 'vd', 've', 'paredev', 'aoasc', 'arco', 'tp', 'vcs', 'vci'];
 
