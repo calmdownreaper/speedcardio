@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#08090b">
+  <script>
+    (() => {
+      let theme = 'dark', accent = 'blue';
+      try {
+        const t = localStorage.getItem('sc2_theme'), a = localStorage.getItem('sc2_accent');
+        if (['light', 'dark', 'system'].includes(t)) theme = t;
+        if (['violet', 'blue', 'teal', 'amber', 'rose', 'slate'].includes(a)) accent = a;
+      } catch { /* storage unavailable */ }
+      const root = document.documentElement;
+      root.dataset.theme = theme === 'system' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : theme;
+      root.dataset.accent = accent;
+    })();
+  </script>
+  <title>Typing drills</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css?v=124">
+  <link rel="stylesheet" href="./typing.css?v=143">
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js?v=115","three/addons/controls/OrbitControls.js":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js?v=115"}}
+  </script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-volume" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.8"/></symbol><symbol id="i-volume-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></symbol></svg>
+  <button id="ty-sound" class="sound-toggle ty-sound" type="button" aria-pressed="false"><svg class="icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-volume"/></svg></button>
+  <script type="module">
+    import { isMuted, setMuted, correctSound } from './sound.js?v=148';
+    const b = document.getElementById('ty-sound'), pt = new URLSearchParams(location.search).get('lang') === 'pt-BR';
+    const sync = () => { const off = isMuted(); b.setAttribute('aria-pressed', String(off)); const t = off ? (pt ? 'Ativar sons' : 'Turn sounds on') : (pt ? 'Silenciar sons' : 'Mute sounds'); b.title = t; b.setAttribute('aria-label', t); b.querySelector('use').setAttribute('href', off ? '#i-volume-x' : '#i-volume'); };
+    b.addEventListener('click', () => { setMuted(!isMuted()); sync(); if (!isMuted()) correctSound(); });
+    sync();
+  </script>
+  <main class="ty-layout">
+    <section class="ty-3d" id="ty-3d" hidden aria-label="3D">
+      <div class="ty-3d-head" hidden><strong id="ty-3d-label"></strong><span id="ty-3d-orient"></span></div>
+      <div id="view"><p id="model-status" role="status"></p></div>
+      <p class="ty-3d-note" id="ty-3d-note" hidden></p>
+    </section>
+    <div id="typing-root" class="ty-root"></div>
+  </main>
+  <script type="module">
+    import { mountTyping } from './typing.js?v=149';
+    const params = new URLSearchParams(location.search);
+    const subject = ['gastro', 'msk', 'cardio'].includes(params.get('s')) ? params.get('s') : 'gastro';
+    let lang = params.get('lang');
+    if (!['en', 'pt-BR'].includes(lang)) { try { lang = localStorage.getItem('anatomy_language') === 'pt-BR' ? 'pt-BR' : 'en'; } catch { lang = 'en'; } }
+    document.documentElement.lang = lang;
+    const { decks, title, model3d } = await import(`./subjects/${subject}/typing/index.js?v=143`);
+    if (title) document.title = lang === 'pt-BR' ? title[1] : title[0];
+    const back = new URL('./', location.href); back.searchParams.set('s', subject); if (params.get('lang')) back.searchParams.set('lang', lang);
+    const T = (en, pt) => lang === 'pt-BR' ? pt : en;
+    const L = v => Array.isArray(v) ? (lang === 'pt-BR' ? v[1] ?? v[0] : v[0]) : v || '';
+    let show3d = () => {};
+    if (model3d) {
+      const panel = document.getElementById('ty-3d'), host = document.getElementById('view');
+      const label = document.getElementById('ty-3d-label'), note = document.getElementById('ty-3d-note');
+      document.getElementById('ty-3d-orient').textContent = T('L/R = patient’s · drag to rotate', 'E/D = do paciente · arraste para girar');
+      document.getElementById('model-status').textContent = T('Loading the 3D model…', 'Carregando o modelo 3D…');
+      panel.hidden = false;
+      let viewer = null, pending = null, defaultCtx = [];
+      const paint = (item, info) => {
+        if (!viewer) { pending = [item, info]; return; }
+        if (info?.mode === 'summary') return paintSummary(info);
+        const spec = item?.d3 || null;
+        const ctx = (item && (item.set?.d3ctx || item.d3ctx)) || info?.deck?.sets?.[0]?.d3ctx || defaultCtx;
+        if (!spec) { viewer.paint({ ids: ctx, context: [], focus: [], markerIds: [], frameIds: (item?.set || info?.deck?.sets?.[0])?.d3frame || model3d.frame || ['stomach'], view: 'ant', neutral: true, padding: 1.15 }); viewer.glow([]); viewer.glowArea([]); label.textContent = info?.label || ''; note.hidden = true; return; }
+        const isMark = id => model3d.landmarks[id] || model3d.areas?.[id]; // an id may be a glow area alone
+        const marks = spec.focus.filter(isMark);
+        const meshes = spec.focus.filter(id => !isMark(id));
+        const frameIds = spec.frame || [...new Set([...(item.set?.d3frame || model3d.frame || ['stomach']), ...(item.set?.d3frame ? [] : meshes.filter(id => id !== 'esophagus'))])];
+        // Landmarks: organ turns to glass and the structure glows inside it.
+        const glass = Object.fromEntries([...(item.set?.d3anchor || []).filter(id => !meshes.includes(id)).map(id => [id, .22]), ...meshes.map(id => [id, .55])]);
+        if (spec.glass != null) for (const k in glass) if (glass[k] < .5) glass[k] = spec.glass; // optional per-item bone opacity
+        viewer.paint({ ids: [...new Set([...ctx, ...meshes])], context: [], focus: marks.length ? marks : ['__none'], markerIds: [],
+          anchors: [], glass, frameIds, view: spec.view || 'ant', close: false, neutral: true, padding: 1.15 });
+        // model3d.themeGlow: the highlight takes the page's accent colour (follows light/dark theme).
+        const themed = Boolean(model3d.themeGlow), accent = themed ? (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || undefined) : undefined;
+        viewer.glowArea([...marks.filter(id => model3d.areas?.[id]).map(id => model3d.areas[id]), ...meshes.map(id => ({ mesh: id, weight: () => 1, color: /_v$|^smv$/.test(id) ? '#4f8dff' : /_a$|^sma$|celiac|aorta/.test(id) ? '#ff4d4d' : undefined }))], accent); viewer.glow(marks.filter(id => !model3d.areas?.[id]).flatMap(id => { const lm = model3d.landmarks[id]; return Array.isArray(lm[0]?.[0]) ? lm : [lm]; }), meshes.length ? '#e8e2d0' : (themed ? accent : '#ffb347'), meshes.length ? .45 : 1);
+        label.textContent = info?.label || (info?.reveal ? spec.focus.map(id => L(model3d.names?.[id]) || '').filter(Boolean).join(' · ') || String(T(item.a?.[0]?.[0], item.a?.[0]?.[1] || item.a?.[0]?.[0]) || T('Highlighted', 'Destacado')) : T('Highlighted: the answer', 'Destacado: a resposta'));
+        note.textContent = L(spec.note); note.hidden = !spec.note;
+      };
+      // End of a test: whole region from the front, green = right, red = wrong, yellow = multi-part item partly right.
+      const RESULT = { ok: '#2fbf71', bad: '#e5484d', part: '#f2b33d' };
+      function paintSummary({ deck, results }) {
+        const isMark = id => model3d.landmarks[id] || model3d.areas?.[id];
+        const sets = deck.sets || [], uniq = a => [...new Set(a)];
+        const ctx = uniq(sets.flatMap(s => s.d3ctx || [])).concat(defaultCtx.length && !sets.some(s => s.d3ctx) ? defaultCtx : []);
+        const meshes = [], areas = [], paths = [];
+        for (const { item, state } of results) {
+          const color = RESULT[state];
+          for (const id of item.d3?.focus || []) {
+            if (model3d.areas?.[id]) areas.push({ ...model3d.areas[id], color });
+            else if (model3d.landmarks[id]) { const lm = model3d.landmarks[id]; (Array.isArray(lm[0]?.[0]) ? lm : [lm]).forEach(pts => paths.push({ pts, color })); }
+            else meshes.push({ mesh: id, weight: () => 1, color });
+          }
+        }
+        const meshIds = uniq(meshes.map(m => m.mesh));
+        const anchors = uniq(sets.flatMap(s => s.d3anchor || [])).filter(id => !meshIds.includes(id));
+        const frameIds = uniq(sets.flatMap(s => s.d3frame || [])); 
+        // Whole structures: solid colour (no additive glow, which washes overlapping parts out to white).
+        // One mesh asked in several items: yellow if results disagree.
+        const meshState = {};
+        for (const m of meshes) meshState[m.mesh] = meshState[m.mesh] && meshState[m.mesh] !== m.color ? RESULT.part : m.color;
+        viewer.paint({ ids: uniq([...ctx, ...meshIds]), context: [], focus: meshIds.length ? meshIds : ['__none'], palette: meshState, markerIds: [], anchors: [],
+          glass: Object.fromEntries(anchors.map(id => [id, .22])),
+          frameIds: frameIds.length ? frameIds : model3d.frame || ['stomach'], view: 'ant', close: false, neutral: true, padding: 1.15 });
+        // Small landmarks: one soft dot each, faint enough that neighbours stay distinct.
+        viewer.glowArea(areas.map(a => ({ ...a, gain: .4 })));
+        viewer.glow(paths, '#ffffff', paths.length * .2);
+        label.textContent = ''; note.hidden = true;
+      }
+      show3d = paint;
+      (async () => {
+        try {
+          const [{ SUBJECTS }, { initStudy }, { createViewer }] = await Promise.all([
+            import('./subjects/registry.js?v=122'), import('./study.js?v=115'), import('./viewer.js?v=149')]);
+          const entry = SUBJECTS.find(x => x.id === subject);
+          const pack = (await entry.load()).default;
+          initStudy(pack);
+          defaultCtx = decks[0]?.sets?.[0]?.d3ctx || [];
+          viewer = await createViewer(host, () => {}, () => { document.getElementById('model-status').textContent = T('3D view unavailable', '3D indisponível'); }, () => {},
+            { ...pack, ...pack.model, markers: { ...(pack.markers || {}), ...model3d.landmarks }, markerSpace: 'world', markerSize: .006, spotMm: model3d.spotMm });
+          document.getElementById('model-status').hidden = true;
+          const [item, info] = pending || [null, null]; pending = null; paint(item, info);
+        } catch (error) {
+          console.error(error);
+          document.getElementById('model-status').textContent = T('3D view unavailable', '3D indisponível');
+        }
+      })();
+    }
+    mountTyping(document.getElementById('typing-root'), { subject, decks, lang, onExit: () => { location.href = back.toString(); }, onItem: (item, info) => show3d(item, info) });
+  </script>
+</body>
+</html>

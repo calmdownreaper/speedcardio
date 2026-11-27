@@ -80,6 +80,9 @@ export default {
   content,
   lessons,
   aulas: AULAS,
+  hideAulas: true, // lesson track retired; files kept
+  typingUrl: './typing.html?s=gastro',
+  typingHeading: ['Typing drills: vessels, nerves and parts', 'Treino de digitação: vasos, nervos e partes'],
   aulasPt: AULAS_PT,
   slideQuestions: SLIDE_QUESTIONS,
   slideUnits: SLIDE_UNITS,

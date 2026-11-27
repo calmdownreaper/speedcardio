@@ -1,0 +1,323 @@
+/* Heart atlas page: layout on top of the site tokens. */
+
+.ah-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px 16px;
+  min-height: 68px;
+  padding: 10px var(--frame-gutter);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.ah-back {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: var(--h-control);
+  margin-left: -10px;
+  padding: 0 10px;
+  border-radius: var(--r-sm);
+  color: var(--mute);
+  font-size: 14px;
+  font-weight: 550;
+  text-decoration: none;
+  transition: color var(--ease), background var(--ease);
+}
+.ah-back:hover { color: var(--ink); background: var(--surface-2); }
+.ah-back .icon { color: var(--accent-2); }
+
+.ah-brand {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+.ah-brand-mark {
+  width: 11px;
+  height: 11px;
+  border-radius: 4px 8px 4px 8px;
+  background: var(--accent-2);
+  transform: rotate(-20deg);
+}
+
+.ah-tools {
+  justify-self: end;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ah-main { min-width: 0; }
+.ah-page {
+  width: min(100% - 2 * var(--gutter), 1440px);
+  margin-inline: auto;
+  padding: clamp(22px, 3vw, 38px) 0 clamp(40px, 5vw, 64px);
+}
+
+.ah-pagehead { display: grid; gap: 8px; margin-bottom: clamp(18px, 2.4vw, 30px); }
+.ah-pagehead h1 { max-width: 20ch; }
+.ah-lede { max-width: 68ch; color: var(--soft); font-size: clamp(14px, 1.05vw, 16px); line-height: 1.55; }
+.ah-meta { color: var(--mute); font-size: 12px; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+
+.ah-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(330px, .85fr);
+  align-items: start;
+  gap: var(--workspace-gap);
+}
+.ah-stage { display: grid; gap: 14px; min-width: 0; }
+.ah-stage .model-shell { min-height: clamp(360px, 56vh, 720px); }
+
+.ah-panel {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+
+.ah-field { display: grid; gap: 8px; min-width: 0; }
+.ah-label {
+  margin: 0;
+  color: var(--mute);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .075em;
+  text-transform: uppercase;
+}
+.ah-label-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.ah-label-count { color: var(--mute); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.ah-note { margin: 0; color: var(--mute); font-size: 12.5px; line-height: 1.45; }
+.ah-where { margin: 0; color: var(--accent-2); font-size: 12px; line-height: 1.4; }
+.ah-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Area buttons */
+.ah-areas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.ah-area {
+  display: grid;
+  align-content: center;
+  gap: 1px;
+  min-height: 52px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--soft);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--ease), background var(--ease), border-color var(--ease), box-shadow var(--ease);
+}
+.ah-area:hover { color: var(--ink); background: var(--surface-3); border-color: var(--line-strong); }
+.ah-area[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--accent-2) 55%, var(--line));
+  background: var(--accent-2-soft);
+  color: var(--ink);
+  box-shadow: inset 2px 0 var(--accent-2);
+}
+.ah-area:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ah-area-name { font-size: 12.5px; font-weight: 600; line-height: 1.25; }
+.ah-area-count { color: var(--mute); font-size: 11px; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.ah-area[aria-pressed="true"] .ah-area-count { color: var(--accent-2); }
+
+/* Segmented controls */
+.ah-seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+}
+.ah-seg button {
+  min-height: 38px;
+  padding: 4px 7px;
+  border: 0;
+  border-radius: calc(var(--r-sm) - 3px);
+  background: transparent;
+  color: var(--mute);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 550;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: color var(--ease), background var(--ease);
+}
+.ah-seg button:hover { color: var(--ink); background: var(--surface-3); }
+.ah-seg button[aria-pressed="true"] { color: var(--accent-2); background: var(--accent-soft); font-weight: 650; }
+.ah-seg button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+/* Vessel list */
+.ah-list {
+  display: grid;
+  gap: 0;
+  max-height: clamp(220px, 38vh, 460px);
+  margin-inline: -4px;
+  padding-inline: 4px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.ah-entry {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 48px;
+  padding: 7px 6px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--soft);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--ease), background var(--ease), box-shadow var(--ease);
+}
+.ah-entry:last-child { border-bottom: 0; }
+.ah-entry:hover { color: var(--ink); background: var(--surface-2); }
+.ah-entry.chosen { color: var(--ink); background: var(--surface-3); box-shadow: inset 2px 0 var(--accent-2); }
+.ah-entry:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.ah-entry-text { display: grid; gap: 1px; flex: 1; min-width: 0; }
+.ah-entry-text b { font-size: 13.5px; font-weight: 550; line-height: 1.3; overflow-wrap: anywhere; }
+.ah-entry-text small { color: var(--mute); font-size: 11px; line-height: 1.3; }
+.ah-entry-count { color: var(--mute); font-size: 11px; font-variant-numeric: tabular-nums; }
+.ah-swatch {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--swatch) 24%, transparent);
+}
+
+.ah-practice-note {
+  padding: 10px 12px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+}
+
+/* Selection detail */
+.ah-detail {
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent-2);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+}
+.ah-detail.is-empty { border-left-color: var(--line); background: var(--surface); }
+.ah-detail h3 { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.2; letter-spacing: -.02em; }
+.ah-members { display: flex; flex-wrap: wrap; gap: 4px; }
+.ah-members span {
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--soft);
+  font-size: 11.5px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+/* Session card under the model */
+.ah-session {
+  display: grid;
+  gap: 12px;
+  padding: clamp(14px, 1.6vw, 20px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.ah-session-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.ah-session-head > div { min-width: 0; }
+.ah-session h2 { margin-top: 2px; font-size: clamp(20px, 2vw, 26px); line-height: 1.15; letter-spacing: -.03em; }
+.ah-step { color: var(--mute); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ah-target { color: var(--accent-2); }
+.ah-score { display: flex; align-items: baseline; gap: 8px; color: var(--mute); font-size: 13px; }
+.ah-score b { color: var(--ink); font-size: clamp(30px, 3vw, 42px); font-weight: 300; letter-spacing: -.045em; }
+.ah-picked {
+  display: grid;
+  gap: 5px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent-2);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+}
+.ah-picked h2 { font-size: 18px; }
+.ah-meter { position: relative; height: 4px; overflow: hidden; border-radius: 99px; background: var(--line); }
+.ah-meter span { display: block; height: 100%; border-radius: inherit; background: var(--accent-2); transition: width var(--ease); }
+
+.ah-type { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: stretch; }
+.ah-type input {
+  width: 100%;
+  min-height: var(--h-control);
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+}
+.ah-type input::placeholder { color: var(--mute); opacity: 1; }
+.ah-type input:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.ah-type input[readonly] { color: var(--soft); }
+
+.ah-credits { line-height: 1.6; }
+[data-lang-only] { display: none; }
+html[lang="en"] [data-lang-only="en"] { display: inline; }
+html[lang="pt-BR"] [data-lang-only="pt-BR"] { display: inline; }
+
+@media (max-width: 1080px) {
+  .ah-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .ah-stage .model-shell { min-height: clamp(300px, 52svh, 560px); }
+  .ah-stage .view-structures { display: none; }
+  .ah-list { max-height: 34vh; }
+}
+
+@media (max-width: 760px) {
+  .ah-header { grid-template-columns: minmax(0, 1fr) auto; }
+  .ah-brand { display: none; }
+  .ah-page { width: min(100% - 24px, 1440px); }
+  .ah-pagehead h1 { font-size: clamp(28px, 8vw, 36px); }
+}
+
+@media (max-width: 480px) {
+  .ah-type { grid-template-columns: minmax(0, 1fr); }
+  .ah-type .button { justify-content: center; }
+  .ah-areas { grid-template-columns: minmax(0, 1fr); }
+  .ah-session-head { gap: 6px; }
+  .ah-step { white-space: normal; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ah-meter span { transition: none; }
+}

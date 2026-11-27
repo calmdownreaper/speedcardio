@@ -124,8 +124,8 @@ export const blocks = [
           t('### Anterior superior', '### Anterior superior'),
           t('The anterior superior artery descends in the anterior groove between the second part of the duodenum and the head of the pancreas. It anastomoses with the anterior division of the inferior pancreaticoduodenal artery, and it also supplies the first and second parts.',
             'A artéria anterior superior desce no sulco anterior, entre a segunda parte do duodeno e a cabeça do pâncreas. Anastomosa-se com o ramo anterior da artéria pancreaticoduodenal inferior e também irriga a primeira e a segunda partes.'),
-          t('⚠ Slide 27 labels the posterior superior artery as a branch of the gastroduodenal artery in its figure, but its text says it arises from the superior pancreatic artery. Both versions are recorded here, and the origin is not settled by the deck.',
-            '⚠ O slide 27 indica a artéria posterior superior como ramo da gastroduodenal na figura, mas o texto diz que ela nasce da artéria pancreática superior. As duas versões são registradas aqui, e o material não resolve a origem.'),
+          t('⚠ Page 26 gives the gastroduodenal artery as the origin of the posterior superior pancreaticoduodenal artery; page 27 gives the superior pancreatic artery.',
+            '⚠ A página 26 indica a gastroduodenal como origem da artéria pancreaticoduodenal superior posterior; a página 27 indica a artéria pancreática superior.'),
         ],
       },
       {

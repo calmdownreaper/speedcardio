@@ -72,8 +72,8 @@ export const blocks = [
         focus: ['superior_constrictor', 'middle_constrictor', 'inferior_constrictor'], ghost: ['tongue', 'esophagus'], view: 'ant',
         body: [
           t('### Motor and sensory', '### Motora e sensitiva'),
-          t('Swallowing starts voluntarily and then becomes involuntary. Its motor supply is the vagus nerve (X) together with an accessory to the vagus. The sensory supply comes from the glossopharyngeal nerve (IX) and the vagus nerve (X). The cranial nerve table also lists the glossopharyngeal nerve as the motor nerve of the stylopharyngeus.',
-            'A deglutição começa voluntária e depois fica involuntária. Sua inervação motora é o nervo vago (X), junto com um acessório do vago. A inervação sensitiva vem do nervo glossofaríngeo (IX) e do nervo vago (X). A tabela de nervos cranianos também lista o glossofaríngeo como o nervo motor do estilofaríngeo.'),
+          t('Swallowing starts voluntarily and then becomes involuntary. Its motor supply is the vagus nerve (X) together with an accessory to the vagus. The sensory supply comes from the glossopharyngeal nerve (IX) and the vagus nerve (X). The glossopharyngeal nerve is also the motor nerve of the stylopharyngeus.',
+            'A deglutição começa voluntária e depois fica involuntária. Sua inervação motora é o nervo vago (X), junto com um acessório do vago. A inervação sensitiva vem do nervo glossofaríngeo (IX) e do nervo vago (X). O glossofaríngeo é também o nervo motor do estilofaríngeo.'),
           t('### Soft palate muscles', '### Músculos do palato mole'),
           t('The levator veli palatini, the musculus uvulae, the palatoglossus and the palatopharyngeus receive the vagus through the pharyngeal plexus. The tensor veli palatini is supplied by the nerve to the medial pterygoid (CN V3), through the otic ganglion.',
             'O levantador do véu palatino, o músculo da úvula, o palatoglosso e o palatofaríngeo recebem o vago pelo plexo faríngeo. O tensor do véu palatino é suprido pelo nervo do pterigoide medial (V3), através do gânglio ótico.'),
@@ -91,8 +91,8 @@ export const blocks = [
         { q: 'Quais dois nervos dão a inervação sensitiva da faringe?', correct: 'Glossofaríngeo (IX) e vago (X)', wrong: ['Trigêmeo (V) e facial (VII)', 'Hipoglosso (XII) e acessório (XI)', 'Lingual (V3) e facial (VII)'], why: 'A inervação sensitiva da faringe vem do glossofaríngeo (IX) e do vago (X).' }),
       q('39', { q: 'Which nerves form the motor supply of swallowing?', correct: 'Vagus nerve (X) and an accessory to the vagus', wrong: ['Glossopharyngeal nerve (IX) only', 'Hypoglossal nerve (XII)', 'Facial nerve (VII)'], why: 'Swallowing starts voluntarily and becomes involuntary; its motor supply is the vagus and an accessory to the vagus.' },
         { q: 'Quais nervos formam a inervação motora da deglutição?', correct: 'Nervo vago (X) e um acessório do vago', wrong: ['Apenas o glossofaríngeo (IX)', 'Nervo hipoglosso (XII)', 'Nervo facial (VII)'], why: 'A deglutição começa voluntária e fica involuntária; a motora é o vago e um acessório do vago.' }),
-      q('11', { q: 'Which nerve supplies the levator veli palatini?', correct: 'Vagus through the pharyngeal plexus', wrong: ['Nerve to medial pterygoid (CN V3)', 'Hypoglossal nerve (XII)', 'Facial nerve (VII)'], why: 'The soft palate table gives the vagus through the pharyngeal plexus for the levator veli palatini.' },
-        { q: 'Qual nervo supre o levantador do véu palatino?', correct: 'Vago pelo plexo faríngeo', wrong: ['Nervo do pterigoide medial (V3)', 'Nervo hipoglosso (XII)', 'Nervo facial (VII)'], why: 'A tabela do palato mole dá o vago pelo plexo faríngeo para o levantador do véu palatino.' }),
+      q('11', { q: 'Which nerve supplies the levator veli palatini?', correct: 'Vagus through the pharyngeal plexus', wrong: ['Nerve to medial pterygoid (CN V3)', 'Hypoglossal nerve (XII)', 'Facial nerve (VII)'], why: 'The vagus supplies the levator veli palatini through the pharyngeal plexus.' },
+        { q: 'Qual nervo supre o levantador do véu palatino?', correct: 'Vago pelo plexo faríngeo', wrong: ['Nervo do pterigoide medial (V3)', 'Nervo hipoglosso (XII)', 'Nervo facial (VII)'], why: 'O vago inerva o levantador do véu palatino pelo plexo faríngeo.' }),
     ],
   },
   {
@@ -151,8 +151,8 @@ export const blocks = [
       },
     ],
     questions: [
-      q('39', { q: 'Which nerve is the motor nerve of the stylopharyngeus?', correct: 'Glossopharyngeal nerve (IX)', wrong: ['Vagus nerve (X)', 'Hypoglossal nerve (XII)', 'Facial nerve (VII)'], why: 'The cranial nerve table lists the glossopharyngeal nerve as the motor nerve of the stylopharyngeus.' },
-        { q: 'Qual nervo é o motor do estilofaríngeo?', correct: 'Nervo glossofaríngeo (IX)', wrong: ['Nervo vago (X)', 'Nervo hipoglosso (XII)', 'Nervo facial (VII)'], why: 'A tabela de nervos cranianos lista o glossofaríngeo como o motor do estilofaríngeo.' }),
+      q('39', { q: 'Which nerve is the motor nerve of the stylopharyngeus?', correct: 'Glossopharyngeal nerve (IX)', wrong: ['Vagus nerve (X)', 'Hypoglossal nerve (XII)', 'Facial nerve (VII)'], why: 'The glossopharyngeal nerve supplies the stylopharyngeus.' },
+        { q: 'Qual nervo é o motor do estilofaríngeo?', correct: 'Nervo glossofaríngeo (IX)', wrong: ['Nervo vago (X)', 'Nervo hipoglosso (XII)', 'Nervo facial (VII)'], why: 'O nervo glossofaríngeo inerva o estilofaríngeo.' }),
       q('11', { q: 'Which nerve supplies the tensor veli palatini?', correct: 'Nerve to the medial pterygoid (CN V3), through the otic ganglion', wrong: ['Vagus through the pharyngeal plexus', 'Hypoglossal nerve (XII)', 'Glossopharyngeal nerve (IX)'], why: 'The tensor veli palatini is supplied by the nerve to the medial pterygoid, a branch of CN V3, through the otic ganglion.' },
         { q: 'Qual nervo supre o tensor do véu palatino?', correct: 'Nervo do pterigoide medial (V3), pelo gânglio ótico', wrong: ['Vago pelo plexo faríngeo', 'Nervo hipoglosso (XII)', 'Nervo glossofaríngeo (IX)'], why: 'O tensor do véu palatino é suprido pelo nervo do pterigoide medial, ramo do V3, pelo gânglio ótico.' }),
       q('45', { q: 'Infection of the palatine tonsil that enters the jugular vein causes which condition?', correct: 'Bacteraemia and sepsis', wrong: ['Meningitis', 'Mediastinitis only', 'Cavernous sinus thrombosis'], why: 'Spread into the jugular vein causes bacteraemia and sepsis.' },

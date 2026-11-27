@@ -85,7 +85,7 @@ const NERVE_TREE_LI = {
   root: { label: t('Innervation of the large intestine', 'Inervação do intestino grosso'), children: [
     { label: t('Sympathetic', 'Simpático'), note: t('T10–T12', 'T10–T12'), children: [
       { label: t('Superior mesenteric ganglion', 'Gânglio mesentérico superior') },
-      { label: t('Inferior mesenteric ganglion (labelled on the figure)', 'Gânglio mesentérico inferior (indicado na figura)') },
+      { label: t('Inferior mesenteric ganglion', 'Gânglio mesentérico inferior') },
     ] },
     { label: t('Parasympathetic', 'Parassimpático'), children: [{ label: t('Vagus nerve (CN X)', 'Nervo vago (NC X)') }] },
     { label: t('Sacral nerves', 'Nervos sacrais'), children: [
@@ -106,8 +106,8 @@ export const blocks = [
         body: [
           t('The large intestine is supplied by the same three gut territories as the rest of the tube. The superior mesenteric artery (midgut) supplies the appendix, the caecum, the ascending colon and the proximal part of the transverse colon. The inferior mesenteric artery (hindgut), which arises at L3, supplies the distal third of the transverse colon, the descending and sigmoid colon, the rectum and the upper anal canal.',
             'O intestino grosso é irrigado pelos mesmos três territórios intestinais do restante do tubo. A artéria mesentérica superior (intestino médio) irriga o apêndice, o ceco, o colo ascendente e a parte proximal do colo transverso. A artéria mesentérica inferior (intestino posterior), que nasce em L3, irriga o terço distal do colo transverso, o colo descendente e sigmoide, o reto e o canal anal superior.'),
-          t('⚠ Deck 09 gives the SMA the proximal half of the transverse colon (slide 18), while this deck gives the proximal two thirds (slide 40). Both figures are recorded here, and the material does not settle which is right.',
-            '⚠ O deck 09 dá à AMS a metade proximal do colo transverso (slide 18), enquanto este deck dá os dois terços proximais (slide 40). As duas cifras são registradas aqui, e o material não diz qual está certa.'),
+          t('⚠ Deck 09 gives the SMA the proximal half of the transverse colon (slide 18), while this deck gives the proximal two thirds (slide 40). Both values are recorded here, and the material does not settle which is right.',
+            '⚠ O deck 09 dá à AMS a metade proximal do colo transverso (slide 18), enquanto este deck dá os dois terços proximais (slide 40). Os dois valores ficam registrados aqui, e o material não diz qual está certo.'),
         ],
       },
       {
@@ -201,8 +201,8 @@ export const blocks = [
         id: 'li-sup-lymph', ref: '49', title: t('Lymph node groups of the large intestine', 'Grupos de linfonodos do intestino grosso'),
         focus: ['ascending_colon', 'transverse_colon', 'descending_colon', 'sigmoid_a', 'rectum'], ghost: ['sma', 'ima'], view: 'ant',
         body: [
-          t('Lymphatics follow the arteries, and rectal cancers spread along them. The deck names these node groups: paracolic; middle colic, right colic and ileocolic, upper and lower; anterior and posterior caecal and appendicular; superior mesenteric and inferior mesenteric; left colic, ascending and descending, and sigmoid; superior rectal, perirectal, internal iliac and superficial inguinal.',
-            'Os linfáticos seguem as artérias, e os cânceres retais se espalham por eles. O deck cita estes grupos de linfonodos: paracólicos; cólico médio, cólico direito e ileocólicos, superiores e inferiores; cecais anteriores e posteriores e apendiculares; mesentéricos superiores e inferiores; cólico esquerdo, ascendente e descendente, e sigmoides; retal superior, perirretais, ilíacos internos e inguinais superficiais.'),
+          t('Lymphatics follow the arteries, and rectal cancers spread along them. Along the large intestine, lymph drains through these node groups: paracolic; middle colic, right colic and ileocolic, upper and lower; anterior and posterior caecal and appendicular; superior mesenteric and inferior mesenteric; left colic, ascending and descending, and sigmoid; superior rectal, perirectal, internal iliac and superficial inguinal.',
+            'Os linfáticos seguem as artérias, e os cânceres retais se espalham por eles. Ao longo do intestino grosso, a linfa drena por estes grupos de linfonodos: paracólicos; cólico médio, cólico direito e ileocólicos, superiores e inferiores; cecais anteriores e posteriores e apendiculares; mesentéricos superiores e inferiores; cólico esquerdo, ascendente e descendente, e sigmoides; retal superior, perirretais, ilíacos internos e inguinais superficiais.'),
         ],
       },
       {
@@ -210,10 +210,10 @@ export const blocks = [
         focus: ['sma', 'ima'], ghost: ['ascending_colon', 'transverse_colon', 'descending_colon'], view: 'ant',
         diagram: NERVE_TREE_LI,
         body: [
-          t('The sympathetic supply is T10 to T12, relayed through the superior mesenteric ganglion. The inferior mesenteric ganglion is also labelled in the sympathetic panel. The parasympathetic supply is the vagus nerve.',
-            'O suprimento simpático é de T10 a T12, com relé no gânglio mesentérico superior. O gânglio mesentérico inferior também está indicado no painel simpático. O suprimento parassimpático é o nervo vago.'),
-          t('The sacral nerves are drawn in the parasympathetic panel, going to the urinary bladder and the genital system, not to the colon.',
-            'Os nervos sacrais estão desenhados no painel parassimpático, indo à bexiga urinária e ao sistema genital, e não ao colo.'),
+          t('The sympathetic supply is T10 to T12, relayed through the superior mesenteric ganglion, while the inferior mesenteric ganglion also lies along the sympathetic outflow to the large intestine. The parasympathetic supply to the large intestine is the vagus nerve.',
+            'O suprimento simpático é de T10 a T12, com relé no gânglio mesentérico superior, enquanto o gânglio mesentérico inferior também integra a via simpática para o intestino grosso. O suprimento parassimpático para o intestino grosso é o nervo vago.'),
+          t('By contrast, the sacral nerves supply the urinary bladder and the genital system, not the colon.',
+            'Já os nervos sacrais suprem a bexiga urinária e o sistema genital, e não o colo.'),
         ],
       },
     ],
@@ -232,8 +232,8 @@ export const blocks = [
         { q: 'Quais linfonodos são citados como superiores e inferiores?', correct: 'Linfonodos ileocólicos', wrong: ['Linfonodos paracólicos', 'Linfonodos sigmoides', 'Linfonodos retais superiores'], why: 'Slide 49: os linfonodos ileocólicos são citados como superiores e inferiores.' }),
       q('53', { q: 'Through which ganglion does the sympathetic supply of the large intestine relay?', correct: 'The superior mesenteric ganglion', wrong: ['The ciliary ganglion', 'The otic ganglion', 'The pterygopalatine ganglion'], why: 'Slide 53: the sympathetic supply, T10–T12, passes through the superior mesenteric ganglion.' },
         { q: 'Por qual gânglio passa o suprimento simpático do intestino grosso?', correct: 'O gânglio mesentérico superior', wrong: ['O gânglio ciliar', 'O gânglio ótico', 'O gânglio pterigopalatino'], why: 'Slide 53: o suprimento simpático, T10–T12, passa pelo gânglio mesentérico superior.' }),
-      q('53', { q: 'Where do the sacral nerves drawn in the parasympathetic panel go?', correct: 'To the urinary bladder and genital system, not to the colon', wrong: ['To the transverse colon', 'To the rectum only', 'To the small intestine'], why: 'Slide 53: the sacral nerves are drawn going to the urinary bladder and genital system, not to the colon.' },
-        { q: 'Para onde vão os nervos sacrais desenhados no painel parassimpático?', correct: 'À bexiga urinária e ao sistema genital, não ao colo', wrong: ['Ao colo transverso', 'Apenas ao reto', 'Ao intestino delgado'], why: 'Slide 53: os nervos sacrais estão desenhados indo à bexiga e ao sistema genital, não ao colo.' }),
+      q('53', { q: 'Where do the sacral parasympathetic nerves go?', correct: 'To the urinary bladder and genital system, not to the colon', wrong: ['To the transverse colon', 'To the rectum only', 'To the small intestine'], why: 'Slide 53: the sacral nerves go to the urinary bladder and genital system, not to the colon.' },
+        { q: 'Para onde vão os nervos parassimpáticos sacrais?', correct: 'À bexiga urinária e ao sistema genital, não ao colo', wrong: ['Ao colo transverso', 'Apenas ao reto', 'Ao intestino delgado'], why: 'Slide 53: os nervos sacrais vão à bexiga e ao sistema genital, não ao colo.' }),
     ],
   },
 ];

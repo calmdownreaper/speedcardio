@@ -9,6 +9,7 @@ const VIEWS = {
   esq: [1, 0, .1],
   sup: [0, -.25, 1],
   inf: [0, -.25, -1],
+  inf_oblique: [.75, -.55, -.35], // from below, front and side: a vertical canal reads as a line
 };
 
 const VERSION = '?v=115';
@@ -685,7 +686,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
 
   function frame(direction = current.view, immediate = false) {
     const { ids, focus = [], anchors = [], close, neutral } = current;
-    const group = boxOf(regionMode && current.context?.length ? [...new Set([...ids, ...current.context])] : ids);
+    const group = boxOf(current.frameIds || (regionMode && current.context?.length ? [...new Set([...ids, ...current.context])] : ids));
     const markerFocus = focus.some(id => markerPoints.has(id));
     const support = [...new Set([...focus, ...(markerFocus ? anchors : [])])];
     const markerBox = markerFocus ? boxOf(focus.filter(id => markerPoints.has(id))) : null;
@@ -705,7 +706,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     // A tiny marker with no anchors keeps the regional context in frame instead.
     const targetExtent = target.isEmpty() ? 0 : Math.max(...target.getSize(new THREE.Vector3()).toArray());
     const tightMarker = markerFocus && anchors.length > 0 && !target.isEmpty();
-    const focused = !target.isEmpty() && (close || tightMarker)
+    const focused = !current.frameIds && !target.isEmpty() && (close || tightMarker)
       && (!regionMode || current.atlas || tightMarker || targetExtent >= .08);
     const box = focused ? target : group;
     if (box.isEmpty()) return;
@@ -802,7 +803,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     select.set(tone.select);
     selectDeep.set(tone.selectDeep);
     tint.set(tone.tint);
-    haloMaterial.color.set(tone.axis);
+    haloMaterial?.color.set(tone.axis);
     axisTube?.material.color.set(tone.axis);
     for (const child of axis.children) {
       const label = child.userData.label;
@@ -907,12 +908,21 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
             material.emissiveIntensity = .35;
           }
         }
-        if (material.transparent !== ghost) {
-          material.transparent = ghost;
+        const glass = current.glass?.[id];
+        if (glass != null && !active) {
+          // Glass: the organ stays in its own colour but see-through, so a glow inside shows.
+          material.color.set(baseColor(id));
+          material.emissive.copy(off);
+          material.emissiveIntensity = 0;
+          material.opacity = glass;
+        }
+        const see = ghost || (glass != null && !active);
+        if (material.transparent !== see) {
+          material.transparent = see;
           material.needsUpdate = true;
         }
-        material.depthWrite = !ghost;
-        mesh.renderOrder = ghost ? GHOST_ORDER : 0;
+        material.depthWrite = !see;
+        mesh.renderOrder = see ? GHOST_ORDER : 0;
       } else {
         material.depthWrite = material.opacity >= .8;
         mesh.renderOrder = active ? 2 : material.depthWrite ? 0 : 1;
@@ -960,7 +970,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
           marker.visible = false;
         } else if (regionMode && active && spotCount < MAX_SPOTS) {
           marker.userData.halo.visible = false;
-          const radius = (SPOT_MM[id] ?? 4) / (meta.scale || 848.8);
+          const radius = (source.spotMm?.[id] ?? SPOT_MM[id] ?? 4) / (meta.scale || 848.8);
           setSpotColor(spotCount, id);
           spotUniforms.uSpots.value[spotCount++].set(marker.position.x, marker.position.y, marker.position.z, radius);
         }
@@ -1181,8 +1191,70 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
   });
 
   host.prepend(renderer.domElement);
+  const glowGroup = new THREE.Group();
+  glowGroup.renderOrder = 10;
+  scene.add(glowGroup);
+  // Soft glow along a path (curvature) or around a point, drawn over see-through organs.
+  function glow(paths, color = '#ffb347', strength = 1) {
+    for (const child of [...glowGroup.children]) { glowGroup.remove(child); child.geometry.dispose(); child.material.dispose(); }
+    const scale = meta?.scale || 848.8;
+    const layers = [[1.6, .95], [4, .28], [8, .12]];
+    const count = (paths || []).length, dim = (count > 1 ? .8 / count : 1) * strength;
+    for (const entry of paths || []) {
+      const path = entry?.pts || entry, tint = entry?.color || color; // an entry may carry its own colour: { pts, color }
+      let pts = (Array.isArray(path[0]) ? path : [path]).map(markerPosition);
+      const closed = pts.length > 3 && pts[0].distanceTo(pts[pts.length - 1]) < 1e-6;
+      if (closed) pts = pts.slice(0, -1);
+      // Straighten jagged mesh-sampled paths: repeated neighbour averaging, ends fixed.
+      for (let pass = 0; !closed && pts.length > 2 && pass < 40; pass++) {
+        pts = pts.map((p, i) => i === 0 || i === pts.length - 1 ? p
+          : p.clone().multiplyScalar(.5).addScaledVector(pts[i - 1], .25).addScaledVector(pts[i + 1], .25));
+      }
+      for (const [mm, alpha] of layers) {
+        const r = mm / scale;
+        const geometry = pts.length > 1
+          ? new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, closed), Math.max(32, pts.length * 4), r, 12, closed)
+          : new THREE.SphereGeometry(r * 3, 24, 16).translate(pts[0].x, pts[0].y, pts[0].z);
+        const material = new THREE.MeshBasicMaterial({ color: new THREE.Color(tint), transparent: true, opacity: alpha * dim,
+          depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.renderOrder = 20;
+        glowGroup.add(mesh);
+      }
+    }
+    schedule();
+  }
+  // Soft glow painted over part of an organ: weight(mm point) gives 0..1 per vertex.
+  function glowArea(list, color = '#ffb347') {
+    for (const child of [...areaGlow.children]) { areaGlow.remove(child); child.geometry.dispose(); child.material.dispose(); }
+    for (const { mesh: id, weight, both, gain = 1, color: own } of list || []) {
+      const tint = new THREE.Color(own || color);
+      const base = meshFor(id);
+      if (!base) continue;
+      const geometry = base.geometry.clone();
+      const pos = geometry.getAttribute('position');
+      const colors = new Float32Array(pos.count * 3);
+      const scale = meta?.scale || 848.8, c = meta?.center || [0, 0, 0];
+      for (let i = 0; i < pos.count; i++) {
+        const w = weight([pos.getX(i) * scale + c[0], pos.getY(i) * scale + c[1], pos.getZ(i) * scale + c[2]]);
+        colors[i * 3] = tint.r * w; colors[i * 3 + 1] = tint.g * w; colors[i * 3 + 2] = tint.b * w;
+      }
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      const material = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: Math.min(1, .45 * gain),
+        depthWrite: false, blending: THREE.AdditiveBlending, side: both ? THREE.DoubleSide : THREE.FrontSide, toneMapped: false });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.copy(base.position); mesh.quaternion.copy(base.quaternion); mesh.scale.copy(base.scale);
+      mesh.renderOrder = 15;
+      areaGlow.add(mesh);
+    }
+    schedule();
+  }
+  const areaGlow = new THREE.Group();
+  scene.add(areaGlow);
   return {
     paint,
+    glow,
+    glowArea,
     focus,
     focusAxis,
     refreshTheme,

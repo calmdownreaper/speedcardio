@@ -1,6 +1,6 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=115';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=148';
 import { createEngine } from './aulas-engine.js?v=115';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=115';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=122';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
@@ -38,6 +38,21 @@ initStudy(pack);
 if (localization) localization.installInterfaceTranslation();
 document.documentElement.dataset.subject = pack.id;
 
+// MSK splits "All structures" into a bone atlas and a muscle recall. Bone ids
+// live in the atlas data module; the muscle list is authored separately.
+let BONE_IDS = [];
+let LEGACY_BONE_IDS = [];
+let PRACTICE_MUSCLES = [];
+if (subject.id === 'msk') {
+  const [boneAtlas, muscleList] = await Promise.all([
+    import('./subjects/msk/bone-atlas.js?v=3').catch(() => null),
+    import('./subjects/msk/practice-muscles.js?v=1').catch(() => null),
+  ]);
+  BONE_IDS = boneAtlas?.BONE_IDS || [];
+  LEGACY_BONE_IDS = boneAtlas?.LEGACY_BONE_IDS || [];
+  PRACTICE_MUSCLES = muscleList?.PRACTICE_MUSCLES || [];
+}
+
 const material = pack.content;
 const TERRITORIES = pack.territories || [];
 const BRANCHES = pack.branches || [];
@@ -45,7 +60,10 @@ const BRANCH_GROUPS = pack.branchGroups || {};
 const SLIDE_QUESTIONS = pack.slideQuestions || [];
 const SLIDE_UNITS = pack.slideUnits || {};
 const BLOOD_FLOW = pack.bloodFlow || [];
-const AULAS = pack.aulas || [];
+// Retired lesson tracks stay reachable from their own page (?aulas=1), off the main map.
+const AULAS_ARCHIVE = Boolean(pack.hideAulas && pack.aulas?.length);
+const AULAS = pack.hideAulas && !new URLSearchParams(location.search).has('aulas') ? [] : (pack.aulas || []);
+const TYPING_URL = pack.typingUrl || '';
 const AULAS_ORDER = AULAS.map(block => block.id);
 const SUPPLY_BLOCKS = AULAS.filter(block => block.supply);
 const aulas = createEngine({ packId: pack.id });
@@ -131,8 +149,9 @@ const answerCharacters = /[^\p{L}\p{M}\p{N} ()+'’‘–—-]/gu;
 let page = 'map';
 const firstNext = nextLevel();
 let selectedRegion = firstNext?.region || (ORIENTATION.length ? 'orientation' : REGIONS[0]?.id);
-let selectedLevel = firstNext?.id || (ORIENTATION.length ? undefined : REGIONS[0]?.levels[0]?.id);
-let mapTab = null;
+let lessonsExpanded = false;
+let expandedMapRegion;
+let expandedMapLevel;
 let activity;
 let viewer;
 let viewerStatus = 'loading';
@@ -484,7 +503,6 @@ function openLevel(level) {
   if (!level || !unlocked(level)) return;
   if (level === orientation) return startOrientation();
   selectedRegion = level.region;
-  selectedLevel = level.id;
   if (!savedLevel(level.id).lesson) startMemorize(level);
   else beginRecall(level.ids, 'level', level);
 }
@@ -876,144 +894,160 @@ function renderLesson() {
   </div>`;
 }
 
-function renderMap() {
+function setMapModel() {
   const region = regions[selectedRegion];
-  const next = nextLevel();
-  const level = region?.levels.find(item => item.id === selectedLevel) || region?.levels[0];
-  const levels = [...(ORIENTATION.length ? [orientation] : []), ...requiredLevels()];
-  const done = levels.filter(passedLevel).length;
-  const heartArea = REGIONS.find(r => ['camaras', 'vasos', 'valvas', 'coronarias', 'veias'].includes(r.id))?.area
-    || (language === 'pt-BR' ? 'Coração' : 'Heart');
-  const map = [...(ORIENTATION.length ? [{ id: 'orientation', title: 'Orientation', area: heartArea }] : []), ...REGIONS];
-  const groupedAreas = Boolean(pack.groupMapByArea) || new Set(REGIONS.map(r => r.area).filter(Boolean)).size < REGIONS.length;
-  function chooseRegion(id) {
-    selectedRegion = id;
-    selectedLevel = regions[id]?.levels.find(item => unlocked(item) && !passedLevel(item))?.id;
-    render();
-    // Bring the region's levels into view when they sit below the fold.
-    requestAnimationFrame(() => {
-      const heading = $('level-list-title');
-      if (!heading) return;
-      heading.focus({ preventScroll: true });
-      const box = heading.getBoundingClientRect();
-      if (box.top > window.innerHeight * .6 || box.top < appHeader.getBoundingClientRect().bottom) scrollBelowHeader(heading);
-    });
-  }
   const requiredIds = region ? region.ids.filter(id => region.levels.some(level => !level.bonus && level.ids.includes(id))) : [];
   const overviewIds = region && REGION_CONTEXT[region.id] ? requiredIds.filter(id => !SKELETON_IDS.includes(id)) : requiredIds;
   const meshOverviewIds = overviewIds.filter(id => !pack.markers?.[id]);
   setModel(overviewIds.length ? meshOverviewIds : MAP_DEFAULT_IDS, {
-    title: region?.title || 'Thoracic anatomy', layout: 'map-layout', view: pack.regionView?.[region?.id] || 'ant',
+    title: region?.title || 'Thoracic anatomy', layout: 'study-map-layout', view: pack.regionView?.[region?.id] || 'ant',
     context: region ? (REGION_CONTEXT[region.id] || ITEMS[region.ids[0]].deck.ctx) : [],
     ...(pack.regionPadding?.[region?.id] ? { padding: pack.regionPadding[region.id] } : {}),
   });
-  const hasAulas = AULAS.length > 0;
-  const activeTab = (mapTab && (mapTab !== 'aulas' || hasAulas)) ? mapTab : (hasAulas ? 'aulas' : 'regions');
-  const setMapTab = tab => {
-    mapTab = tab;
-    render();
-    document.querySelector('.map-tab[aria-selected="true"]')?.focus({ preventScroll: true });
-  };
+}
 
-  const aulasProgress = hasAulas ? aulas.getProgress().blocks : {};
-  const aulasDone = hasAulas ? AULAS.filter(block => aulasProgress[block.id]?.passed).length : 0;
-  const nextAula = hasAulas ? AULAS.find(block => !aulasProgress[block.id]?.passed && aulaOpen(block)) : null;
-  const troubleCount = troubleQuestions().length;
-  const nextLabel = next?.id === 'orientation' ? 'Start' : 'Continue';
+function setMapDisclosure(id, expanded) {
+  if (!id) return;
+  $(`${id}-toggle`).setAttribute('aria-expanded', String(expanded));
+  $(id).inert = !expanded;
+}
 
-  let primaryStrip;
-  if (nextAula) {
-    primaryStrip = `<section class="map-next" aria-label="${aulaText('Next step', 'Próximo passo')}" translate="no">
-      <div class="map-next-copy">
-        <h2>${escape(nextAula.title)}</h2>
-      </div>
-      <div class="map-next-actions">
-        ${troubleCount ? button(`${aulaText('Trouble spots', 'Pontos fracos')} (${troubleCount})`, startTrouble) : ''}
-        ${button(aulasDone ? aulaText('Continue', 'Continuar') : aulaText('Start', 'Começar'), () => startAula(nextAula), { class: 'primary', iconEnd: 'arrow-right' })}
-      </div>
-    </section>`;
-  } else {
-    primaryStrip = `<section class="map-next" aria-label="${aulaText('Next step', 'Próximo passo')}">
-      <div class="map-next-copy">
-        <h2>${next ? escape(next.title) : LEVELS.some(l => l.bonus) ? 'Required levels passed' : 'All levels passed'}</h2>
-        ${next?.id === 'orientation' ? '<p>Start here: directions and landmarks.</p>' : ''}
-      </div>
-      <div class="map-next-actions">
-        ${troubleCount ? button(`<span translate="no">${aulaText('Trouble spots', 'Pontos fracos')} (${troubleCount})</span>`, startTrouble) : ''}
-        ${next ? button(nextLabel, () => next.id === 'orientation' ? startOrientation() : openLevel(next), { class: 'primary', iconEnd: 'arrow-right' }) : button('Open Daily', () => setPage('daily'), { class: 'primary' })}
-      </div>
-    </section>`;
-  }
+function mapDisclosure({ id, heading, label, onToggle, expanded, content }) {
+  return `<div class="map-disclosure">
+    <${heading}>${button(label, onToggle, {
+      class: 'map-disclosure-toggle', iconEnd: 'chevron-down',
+      attrs: `id="${id}-toggle" aria-expanded="${expanded}" aria-controls="${id}"`,
+    })}</${heading}>
+    <div class="map-disclosure-panel" id="${id}"${expanded ? '' : ' inert'}>
+      <div class="map-disclosure-body">${content}</div>
+    </div>
+  </div>`;
+}
 
-  const tabs = [
-    ...(hasAulas ? [{ id: 'aulas', label: aulaText('Lessons', 'Aulas'), count: `${aulasDone}/${AULAS.length}` }] : []),
-    { id: 'regions', label: aulaText('3D Regions', 'Regiões 3D'), count: `${done}/${levels.length}` },
-    { id: 'practice', label: aulaText('Practice', 'Prática') },
-  ];
-  const tabBar = `<div class="map-tabs" role="tablist" aria-label="${aulaText('Study views', 'Modos de navegação')}" translate="no">${tabs.map(tab =>
-    button(`<span>${escape(tab.label)}</span>${tab.count ? `<small>${escape(tab.count)}</small>` : ''}`,
-      () => setMapTab(tab.id),
-      { class: `map-tab ${activeTab === tab.id ? 'is-active' : ''}`, attrs: `role="tab" aria-selected="${activeTab === tab.id}"` })
-  ).join('')}</div>`;
+function renderMap() {
+  setMapModel();
+  const next = nextLevel();
+  const blocks = AULAS.length ? aulas.getProgress().blocks : {};
+  const aulasDone = AULAS.filter(block => blocks[block.id]?.passed).length;
+  const nextAula = AULAS.find(block => !blocks[block.id]?.passed && aulaOpen(block));
+  const titlePt = { cardio: 'Mapa do coração e dos pulmões', gastro: 'Mapa gastrointestinal', msk: 'Mapa musculoesquelético' };
+  const mapRegions = renderMapRegions();
+  return `<div class="study-map-content">
+    <div class="page-head map-head"><h1 translate="no">${escape(aulaText(pack.mapHeading, titlePt[pack.id]))}</h1></div>
+    ${renderMapFeatured({ next, nextAula, aulasDone })}
+    <section class="study-map-regions" aria-labelledby="study-map-regions-title">
+      <h2 id="study-map-regions-title" translate="no">${aulaText('3D Regions', 'Regiões 3D')}</h2>
+      ${mapRegions}
+    </section>
+    <section class="study-map-practice" aria-labelledby="study-map-practice-title">
+      <h2 id="study-map-practice-title" translate="no">${aulaText('Practice', 'Prática')}</h2>
+      ${renderMapPractice({ nextAula, next, troubleCount: troubleQuestions().length })}
+    </section>
+  </div>`;
+}
 
-  let panelMarkup = '';
-  if (activeTab === 'aulas') {
-    panelMarkup = `<div class="map-panel" role="tabpanel">${renderAulasMap()}</div>`;
-  } else if (activeTab === 'regions') {
-    const stopMarkup = entry => {
-      const required = entry.levels?.filter(item => !item.bonus) || [];
-      const count = required.filter(passedLevel).length;
-      const status = entry.levels ? `${count}/${required.length}` : savedLevel(entry.id).passed ? icon('check', 14) : '';
-      return button(`<span class="path-name">${escape(entry.title)}</span><span class="path-count">${status}</span>`,
-        () => chooseRegion(entry.id), { class: `path-stop ${entry.id === selectedRegion ? 'chosen' : ''}` });
-    };
-    let regionsMarkup;
-    if (groupedAreas) {
-      const areaGroups = [];
-      const byArea = new Map();
-      map.forEach(entry => {
-        const areaName = entry.area || (language === 'pt-BR' ? 'Outros' : 'Other');
-        if (!byArea.has(areaName)) {
-          const group = { area: areaName, items: [] };
-          byArea.set(areaName, group);
-          areaGroups.push(group);
-        }
-        byArea.get(areaName).items.push(entry);
-      });
-      regionsMarkup = `<div class="map-areas" aria-label="Curriculum regions">${areaGroups.map(group => `
-        <section class="map-area" aria-label="${escape(group.area)}">
-          <h3 class="map-area-title"${language === 'pt-BR' ? ' translate="no"' : ''}>${escape(group.area)}</h3>
-          <div class="path">${group.items.map(stopMarkup).join('')}</div>
-        </section>`).join('')}</div>`;
-    } else {
-      regionsMarkup = `<div class="path" aria-label="Curriculum regions">${map.map(stopMarkup).join('')}</div>`;
+function renderMapFeatured({ next, nextAula, aulasDone }) {
+  let title, description, actions;
+  if (TYPING_URL) {
+    const href = `${TYPING_URL}${TYPING_URL.includes('?') ? '&' : '?'}lang=${language}`;
+    title = aulaText('Typing drills', 'Treino de digitação');
+    description = pack.id === 'gastro'
+      ? aulaText('Vessels, nerves and parts', 'Vasos, nervos e partes')
+      : aulaText('Origins, insertions, nerves and foramina', 'Origens, inserções, inervação e forames');
+    actions = `<a class="button primary" href="${escape(href)}">${aulaText('Browse drills', 'Ver exercícios')}${icon('arrow-right', 16)}</a>`;
+    if (AULAS_ARCHIVE && !AULAS.length) {
+      const archive = new URLSearchParams(location.search);
+      archive.set('aulas', '1');
+      actions += `<a class="button" href="?${escape(archive.toString())}">${aulaText('Lesson archive', 'Arquivo de aulas')}</a>`;
     }
-    const regionPurpose = REGION_PURPOSES[region?.id || 'orientation'] || '';
-    panelMarkup = `<div class="map-panel" role="tabpanel">
-      ${regionsMarkup}
-      <div class="region-detail">
-        <div class="region-detail-head">
-          <div>
-            <h2 class="level-list-title" id="level-list-title" tabindex="-1">${escape(region?.title || 'Orientation')}</h2>
-            ${regionPurpose ? `<p class="region-purpose">${escape(regionPurpose)}</p>` : ''}
-          </div>
-          ${region ? button('Recall region', () => startFullRecall(region), { class: 'region-recall-btn' }) : ''}
-        </div>
-        <div class="level-list">
-          ${!region ? `<div class="level-item"><div class="level-heading"><h2>Orientation tour</h2></div><p>Learn the heart’s surfaces, borders and axis on the 3D model.</p>
-            <div class="actions">${button(savedLevel('orientation').passed ? 'Redo orientation' : 'Start orientation', startOrientation, { class: 'primary' })}</div></div>`
-            : region.levels.map(entry => renderLevelRow(entry, level)).join('')}
-        </div>
-      </div>
-    </div>`;
   } else {
-    const modeRow = (iconName, title, text, action, highlight = false) => `<li class="mode-row ${highlight ? 'is-featured' : ''}">
+    title = aulaText('Lessons', 'Aulas');
+    description = nextAula?.title || (aulasDone === AULAS.length && AULAS.length
+      ? aulaText('All lessons completed', 'Todas as aulas concluídas')
+      : (next?.title || ''));
+    actions = nextAula
+      ? button(aulasDone ? aulaText('Continue lessons', 'Continuar aulas') : aulaText('Start lesson', 'Começar aula'),
+        () => startAula(nextAula), { class: 'primary', iconEnd: 'arrow-right' })
+      : '';
+  }
+  const catalog = AULAS.length ? mapDisclosure({
+    id: 'map-lesson-catalog', heading: 'h3', expanded: lessonsExpanded,
+    label: `<span>${aulaText('Browse lessons', 'Ver aulas')}</span><span class="study-map-count">${aulasDone}/${AULAS.length}</span>`,
+    onToggle: () => {
+      lessonsExpanded = !lessonsExpanded;
+      setMapDisclosure('map-lesson-catalog', lessonsExpanded);
+    },
+    content: `<div class="study-map-catalog">${renderAulasMap()}</div>`,
+  }) : '';
+  return `<section class="study-map-featured" aria-labelledby="study-map-featured-title" translate="no">
+    <div class="study-map-featured-header">
+      <div><h2 id="study-map-featured-title">${title}</h2>
+        ${description ? `<p>${escape(description)}</p>` : ''}</div>
+      ${actions ? `<div class="study-map-featured-actions">${actions}</div>` : ''}
+    </div>
+    ${catalog}
+  </section>`;
+}
+
+function renderMapRegions() {
+  const heartArea = REGIONS.find(region => region.id === 'camaras')?.area || aulaText('Heart', 'Coração');
+  const entries = ORIENTATION.length
+    ? [{ ...orientation, title: aulaText('Orientation', 'Orientação'), area: heartArea }, ...REGIONS]
+    : REGIONS;
+  const grouped = pack.groupMapByArea || new Set(REGIONS.map(region => region.area).filter(Boolean)).size < REGIONS.length;
+  const renderRegion = region => {
+    const id = `map-region-${region.id}`;
+    const required = region.levels?.filter(level => !level.bonus) || [];
+    const done = required.filter(passedLevel).length;
+    const purpose = REGION_PURPOSES[region.id];
+    const status = region.levels ? `${done}/${required.length}` : savedLevel(region.id).passed ? icon('check', 14) : '';
+    return mapDisclosure({
+      id, heading: grouped ? 'h4' : 'h3', expanded: expandedMapRegion === id,
+      label: `<span>${escape(region.title)}</span>${status ? `<span class="study-map-count">${status}</span>` : ''}`,
+      onToggle: () => {
+        const next = expandedMapRegion === id ? undefined : id;
+        setMapDisclosure(expandedMapLevel, false);
+        setMapDisclosure(expandedMapRegion, false);
+        expandedMapLevel = undefined;
+        expandedMapRegion = next;
+        if (!next) return;
+        setMapDisclosure(id, true);
+        selectedRegion = region.id;
+        setMapModel();
+        updateModel();
+        saveAppState();
+      },
+      content: `<div class="study-map-region-body">
+        ${purpose ? `<p class="region-purpose">${escape(purpose)}</p>` : ''}
+        ${region.levels ? `${region.levels.map(level => renderLevelRow(level,
+          region.levels.length === 1 && level.title === region.title && !level.bonus ? null : grouped ? 'h5' : 'h4')).join('')}
+          ${button('Recall region', () => startFullRecall(region), { class: 'region-recall-btn', icon: 'rotate-cw' })}`
+          : button(savedLevel('orientation').passed ? 'Redo orientation' : 'Start orientation', startOrientation,
+            { class: 'region-recall-btn primary' })}
+      </div>`,
+    });
+  };
+  if (!grouped) return `<div class="study-map-region-list">${entries.map(renderRegion).join('')}</div>`;
+  const groups = new Map();
+  for (const region of entries) {
+    const area = region.area || aulaText('Other', 'Outros');
+    if (!groups.has(area)) groups.set(area, []);
+    groups.get(area).push(region);
+  }
+  return Array.from(groups, ([area, items]) => `<div class="study-map-area">
+    <h3>${escape(area)}</h3>
+    <div class="study-map-region-list">${items.map(renderRegion).join('')}</div>
+  </div>`).join('');
+}
+
+function renderMapPractice({ nextAula, next, troubleCount }) {
+  const nextLabel = next?.id === 'orientation' ? 'Start' : 'Continue';
+  const modeRow = (iconName, title, text, action, highlight = false) => `<li class="mode-row ${highlight ? 'is-featured' : ''}">
       <span class="mode-row-icon" aria-hidden="true">${icon(iconName, 17)}</span>
       <div class="mode-row-text"><h3>${title}</h3>${text ? `<p>${text}</p>` : ''}</div>
       <div class="mode-row-action">${action}</div>
     </li>`;
-    panelMarkup = `<div class="map-panel" role="tabpanel">
-      <ul class="mode-list" aria-label="Study modes">
+  return `<ul class="mode-list" aria-label="Study modes">
         ${troubleCount ? modeRow('crosshair', aulaText('Trouble spots', 'Pontos fracos'),
           `<span translate="no">${aulaText(`${troubleCount} questions to fix · each leaves after 2 right in a row`, `${troubleCount} questões para corrigir · cada uma sai após 2 acertos seguidos`)}</span>`,
           button(aulaText('Practise', 'Praticar'), startTrouble, { class: 'primary' }), true) : ''}
@@ -1029,20 +1063,13 @@ function renderMap() {
         ${SLIDE_QUESTIONS.length ? modeRow('book', "Professor's slides", `<span translate="no">${aulaText(`${slidesMastered()} questions mastered`, `${slidesMastered()} questões dominadas`)}</span>`, button(aulaText('Open', 'Abrir'), startSlides)) : ''}
         ${SUPPLY_BLOCKS.length ? modeRow('route', aulaText('Supply guide: branching and territories', 'Guia de vascularização: ramificações e territórios'), aulaText('Arteries, veins and nerves of each organ, the branching trees and the territories, without unlocking the course.', 'Artérias, veias e nervos de cada órgão, as árvores de ramificação e os territórios, sem precisar destravar o curso.'), button(aulaText('Open', 'Abrir'), startSupply)) : ''}
         ${BRANCHES.length ? modeRow('route', 'Artery branching', 'Where each artery comes from, what it divides into, where it changes name.', button(aulaText('Open', 'Abrir'), startBranching)) : ''}
+        ${pack.id === 'cardio' ? modeRow('layers', aulaText('Vessel atlas', 'Atlas dos vasos'), aulaText('Areas of study, key vessels and grouped entries.', 'Áreas de estudo, vasos principais e entradas agrupadas.'), button(aulaText('Open vessel atlas', 'Abrir atlas dos vasos'), () => { const u = new URL('./atlas-heart.html', location.href); u.searchParams.set('s', 'cardio'); if (language === 'pt-BR') u.searchParams.set('lang', 'pt-BR'); location.href = u.toString(); }, { iconEnd: 'arrow-right' })) : ''}
         ${modeRow('calendar', 'Structure of the day', 'One structure from memory.', button('Recall', () => startDailyStructure()))}
-        ${modeRow('rotate-cw', 'All structures', `${IDS.length} structures · one continuous recall, including unstudied material.`, button('Recall all', () => startFullRecall()))}
-      </ul>
-    </div>`;
-  }
-
-  return `<div class="map-content">
-    <div class="page-head map-head">
-      <h1>${escape(pack.mapHeading || `${pack.name} map`)}</h1>
-    </div>
-    ${primaryStrip}
-    ${tabBar}
-    ${panelMarkup}
-  </div>`;
+        ${pack.id === 'msk'
+          ? `${modeRow('layers', aulaText('Bones', 'Ossos'), `<span translate="no">${BONE_IDS.length} ${aulaText('bone meshes', 'malhas ósseas')} · ${aulaText('areas of study, key bones and grouped entries.', 'áreas de estudo, ossos principais e entradas agrupadas.')}</span>`, button(aulaText('Open bone atlas', 'Abrir atlas dos ossos'), openBoneAtlas, { iconEnd: 'arrow-right' }))}
+            ${modeRow('rotate-cw', aulaText('Muscles', 'Músculos'), `<span translate="no">${musclePracticeIds().length} ${aulaText('muscles', 'músculos')} · ${aulaText('one continuous recall.', 'uma recordação contínua.')}</span>`, button(aulaText('Recall muscles', 'Recordar músculos'), startMuscleRecall))}`
+          : modeRow('rotate-cw', 'All structures', `${IDS.length} structures · one continuous recall, including unstudied material.`, button('Recall all', () => startFullRecall()))}
+      </ul>`;
 }
 
 const aulaText = (en, pt) => language === 'pt-BR' ? pt : en;
@@ -1378,6 +1405,23 @@ function aulaScene(entry, unit, reveal = true, trail = []) {
     subtleContext: trailIds, controls: true, padding: 1.3, frameFocus: focus.length > 0 });
 }
 
+// End of a test: front view, every structure asked coloured by result.
+// Green = always right, red = always wrong, yellow = asked more than once with mixed results.
+function aulaResultScene(block, session) {
+  const items = aulaItems(block), tally = {};
+  for (const answer of session.answers) {
+    const q = items.find(question => question.id === answer.id);
+    for (const id of new Set([...(q?.focus || []), ...(q?.reveal || [])])) (tally[id] ||= new Set()).add(Boolean(answer.correct));
+  }
+  const ids = Object.keys(tally);
+  if (!ids.length) return;
+  const palette = Object.fromEntries(ids.map(id => [id, tally[id].size > 1 ? '#ffc93c' : tally[id].has(true) ? '#3ddc84' : '#ff4d4d']));
+  const scene = SLIDE_UNITS[block.unit || 'heart'] || { visible: [], ghost: [], label: '' };
+  const focusSet = new Set(ids);
+  setModel([...new Set([...(scene.visible || []), ...ids])], { title: scene.label, context: (scene.ghost || []).filter(id => !focusSet.has(id)),
+    focus: ids, palette, view: 'ant', controls: true, padding: 1.3, frameFocus: false });
+}
+
 function changeAulaStage(stage, { fresh = false } = {}) {
   const state = activity;
   stopTimers();
@@ -1487,6 +1531,7 @@ function renderAulas() {
     const placement = AULAS.indexOf(block);
     const next = placement >= 0 ? AULAS[placement + 1] : null;
     const misses = session.answers.filter(answer => !answer.correct).map(answer => aulaItems(block).find(question => question.id === answer.id)).filter(Boolean);
+    aulaResultScene(block, session);
     return `<div class="screen aulas-screen result" translate="no">${header}
       <h1>${passed ? icon('check', 24) : ''} ${score}% · ${passed ? aulaText('Passed', 'Aprovado') : aulaText('Try again', 'Tente novamente')}</h1>
       <p>${aulaText(`${correct} of ${total} correct · ${studyTime(elapsedMs / 1000)} · Best: ${record?.bestScore ?? score}%`, `${correct} de ${total} acertos · ${studyTime(elapsedMs / 1000)} · Melhor resultado: ${record?.bestScore ?? score}%`)}</p>
@@ -1598,18 +1643,29 @@ document.addEventListener('submit', event => {
   answerAula(question.answer);
 });
 
-function renderLevelRow(level, selected) {
+function renderLevelRow(level, heading) {
   const open = unlocked(level);
-  const label = level === selected ? 'selected' : '';
-  return `<div class="level-item ${label}">
-    <div class="level-heading"><h2>${escape(level.title)}${level.bonus ? ' <span class="bonus-tag">Bonus</span>' : ''}</h2>${starsHTML(level.id)}</div>
-    <p>${level.ids.length} structures${!open || passedLevel(level) || savedLevel(level.id).clearedOn ? ' · ' : ''}${!open ? (previousRequired(level) ? `Pass ${escape(previousRequired(level).title)} to ${level.bonus ? 'open this bonus' : 'unlock'}` : level.bonus ? 'Pass the previous level to open the bonus' : 'Pass the previous level to unlock') : passedLevel(level) ? 'Passed' : savedLevel(level.id).clearedOn ? 'Replay the recall rounds to pass' : ''}</p>
+  const title = `${escape(level.title)}${level.bonus ? ' <span class="bonus-tag">Bonus</span>' : ''}`;
+  const content = `<p>${level.ids.length} structures${!open || passedLevel(level) || savedLevel(level.id).clearedOn ? ' · ' : ''}${!open ? (previousRequired(level) ? `Pass ${escape(previousRequired(level).title)} to ${level.bonus ? 'open this bonus' : 'unlock'}` : level.bonus ? 'Pass the previous level to open the bonus' : 'Pass the previous level to unlock') : passedLevel(level) ? 'Passed' : savedLevel(level.id).clearedOn ? 'Replay the recall rounds to pass' : ''}</p>
     ${open ? `<div class="actions">${button(passedLevel(level) ? 'Name it' : savedLevel(level.id).lesson ? 'Start rounds' : 'Memorize',
-      () => openLevel(level), { class: level === selected ? 'primary' : '' })}
+      () => openLevel(level), { class: 'primary' })}
       ${savedLevel(level.id).lesson ? button('Memorize again', () => startMemorize(level), { icon: 'rotate-ccw' }) : ''}
       ${button('Learn', () => startLearn(level), { icon: 'book' })}
-      ${passedLevel(level) ? modeButtons(level) : ''}</div>` : ''}
-  </div>`;
+      ${passedLevel(level) ? modeButtons(level) : ''}</div>` : ''}`;
+  const body = `<div class="study-map-level-body">${content}</div>`;
+  if (!heading) return body;
+  const id = `map-level-${level.id}`;
+  return mapDisclosure({
+    id, heading, expanded: expandedMapLevel === id,
+    label: `<span>${title}</span>${passedLevel(level) ? starsHTML(level.id) : ''}`,
+    onToggle: () => {
+      const next = expandedMapLevel === id ? undefined : id;
+      setMapDisclosure(expandedMapLevel, false);
+      expandedMapLevel = next;
+      setMapDisclosure(next, true);
+    },
+    content: body,
+  });
 }
 
 function modeButtons(level) {
@@ -1631,6 +1687,29 @@ function startFullRecall(region) {
   if (!ids.length) return;
   launch('recall', { recallTitle: region ? `${region.title} · full recall` : 'All structures',
     run: new Recall(ids, 'full') });
+}
+
+function openBoneAtlas() {
+  const url = new URL('./atlas-bone.html', location.href);
+  url.searchParams.set('s', 'msk');
+  if (language === 'pt-BR') url.searchParams.set('lang', 'pt-BR');
+  location.assign(url.href);
+}
+
+// PRACTICE_MUSCLES is authored separately. Until it is available, fall back to
+// everything that is neither a bone, a point marker nor a joint/ligament.
+function musclePracticeIds() {
+  const listed = PRACTICE_MUSCLES.filter(id => ITEMS[id]);
+  if (listed.length) return [...new Set(listed)];
+  const bones = new Set([...BONE_IDS, ...LEGACY_BONE_IDS]);
+  return IDS.filter(id => !bones.has(id) && !pack.markers?.[id]
+    && !/(joint|ligament|_lig$|disc|labrum|symphysis|cartilage|foramen|fissure|canal|meatus|ring|line|sheath|tract$)/.test(id));
+}
+
+function startMuscleRecall() {
+  const ids = musclePracticeIds();
+  if (!ids.length) return;
+  launch('recall', { recallTitle: aulaText('Muscles', 'Músculos'), run: new Recall(ids, 'full') });
 }
 
 function startDailyStructure(now = new Date()) {
@@ -3377,8 +3456,6 @@ function saveAppState() {
     const payload = {
       page,
       selectedRegion,
-      selectedLevel,
-      mapTab,
       activity: serializeActivity(),
     };
     localStorage.setItem(STATE_KEY, JSON.stringify(payload));
@@ -3393,8 +3470,6 @@ function restoreAppState() {
   if (!saved || typeof saved !== 'object') return;
   if (['map', 'atlas', 'daily', 'theory', 'progress'].includes(saved.page)) page = saved.page;
   if (saved.selectedRegion) selectedRegion = saved.selectedRegion;
-  if (saved.selectedLevel) selectedLevel = saved.selectedLevel;
-  if (['aulas', 'regions', 'practice'].includes(saved.mapTab)) mapTab = saved.mapTab;
   const act = saved.activity;
   if (!act || typeof act !== 'object') return;
   if (act.type === 'aulas') {

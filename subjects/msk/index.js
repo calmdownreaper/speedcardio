@@ -1,3 +1,4 @@
+import { deck as skeletonDeck, colors as skeletonColors } from './skeleton-items.js?v=1';
 const V = '?v=115';
 // Add a region by writing regions/<id>.js and listing it here.
 const REGION_FILES = ['skull', 'spine', 'thorax', 'pelvis', 'upper', 'abdomen', 'lower'];
@@ -29,7 +30,7 @@ function buildRegion(entry) {
 }
 
 const regions = ALL.map(buildRegion);
-const colors = Object.assign({}, ...ALL.map(entry => entry.colors));
+const colors = { ...Object.assign({}, ...ALL.map(entry => entry.colors)), ...skeletonColors };
 const markers = Object.assign({}, ...ALL.map(entry => entry.markers || {}));
 const markerMeta = Object.assign({}, ...ALL.map(entry => entry.markerMeta || {}));
 const lessons = Object.assign({}, ...ALL.map(entry => entry.lessons));
@@ -67,9 +68,10 @@ export default {
   tagline: 'Musculoskeletal anatomy',
   description: 'Study bones, joints and muscles region by region with 3D anatomy, recall drills and 30L exam content.',
   storagePrefix: 'sm2_',
+  typingUrl: './typing.html?s=msk',
   deriveOralFromLessons: true,
   findViewUsesTeaching: true,
-  decks: ALL.map(entry => entry.deck),
+  decks: [...ALL.map(entry => entry.deck), skeletonDeck],
   colors,
   defaultColor: '#d9b38c',
   baseColor: id => colors[id] || '#d9b38c',

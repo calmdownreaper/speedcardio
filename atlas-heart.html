@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Reference: SampleSize_1's Heart Atlas (samplesize1.com/tools/heart-atlas) for the
+       area-of-study selector and the Main/grouped vessel practice idea. Its model is
+       Z-Anatomy / BodyParts3D, CC BY-SA 4.0; this page renders our own cardio meshes. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+  <meta name="description" content="Learn the heart and great vessels on a 3D model: areas of study, key vessels and grouped sets, with explore, find and typing practice.">
+  <meta name="theme-color" content="#08090b">
+  <script>
+    (() => {
+      let theme = 'dark';
+      let accent = 'violet';
+      try {
+        const savedTheme = localStorage.getItem('sc2_theme');
+        const savedAccent = localStorage.getItem('sc2_accent');
+        if (['light', 'dark', 'system'].includes(savedTheme)) theme = savedTheme;
+        if (['violet', 'blue', 'teal', 'amber', 'rose', 'slate'].includes(savedAccent)) accent = savedAccent;
+      } catch { /* storage unavailable */ }
+      const root = document.documentElement;
+      root.dataset.theme = theme;
+      root.dataset.accent = accent;
+      const light = theme === 'light' || (theme === 'system' && matchMedia('(prefers-color-scheme: light)').matches);
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', light ? '#f6f7fb' : '#08090b');
+    })();
+  </script>
+  <title>SpeedCardio · Heart atlas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css?v=123">
+  <link rel="stylesheet" href="./atlas-heart.css?v=1">
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js?v=115","three/addons/controls/OrbitControls.js":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js?v=115"}}
+  </script>
+  <link rel="modulepreload" href="./viewer.js?v=115">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
+    <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36z"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
+    <symbol id="i-rotate-ccw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+    <symbol id="i-rotate-cw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  </svg>
+  <a class="skip" href="#main">Skip to the atlas</a>
+  <header class="ah-header">
+    <a class="ah-back" id="ah-back" href="index.html?s=cardio">
+      <svg class="icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
+      <span>SpeedCardio</span>
+    </a>
+    <div class="ah-brand">
+      <span class="ah-brand-mark" aria-hidden="true"></span>
+      <span data-i18n="title">Heart atlas</span>
+    </div>
+    <div class="ah-tools">
+      <div class="header-preferences">
+        <div class="control-select language-control">
+          <svg class="icon control-select-icon" aria-hidden="true" focusable="false"><use href="#i-globe"/></svg>
+          <select id="language-select" aria-label="Language / Idioma" translate="no">
+            <option value="en" lang="en" aria-label="English">EN</option>
+            <option value="pt-BR" lang="pt-BR" aria-label="Português (Brasil)">PT-BR</option>
+          </select>
+          <svg class="icon control-select-caret" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+        </div>
+        <button id="theme-toggle" class="sound-toggle theme-toggle" type="button" aria-expanded="false" aria-controls="theme-popover" aria-haspopup="dialog" aria-label="Theme settings" title="Theme settings">
+          <svg class="icon theme-icon theme-icon-sun" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
+          <svg class="icon theme-icon theme-icon-moon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-moon"/></svg>
+          <svg class="icon theme-icon theme-icon-system" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-monitor"/></svg>
+        </button>
+      </div>
+      <div id="theme-popover" class="theme-popover" role="dialog" aria-label="Theme settings" data-i18n-label="theme" hidden>
+        <div role="radiogroup" aria-labelledby="theme-mode-heading">
+          <p id="theme-mode-heading" class="theme-label" data-i18n="appearance">Appearance</p>
+          <div class="theme-choices">
+            <label><input type="radio" name="theme-choice" value="light"><span data-i18n="light">Light</span></label>
+            <label><input type="radio" name="theme-choice" value="dark"><span data-i18n="dark">Dark</span></label>
+            <label><input type="radio" name="theme-choice" value="system"><span data-i18n="system">System</span></label>
+          </div>
+        </div>
+        <div class="theme-accent" role="group" aria-labelledby="accent-heading">
+          <p id="accent-heading" class="theme-label" data-i18n="accent">Accent</p>
+          <div class="theme-swatches">
+            <button type="button" class="theme-swatch" data-accent-choice="violet" aria-label="Violet accent" aria-pressed="true" title="Violet"></button>
+            <button type="button" class="theme-swatch" data-accent-choice="blue" aria-label="Blue accent" aria-pressed="false" title="Blue"></button>
+            <button type="button" class="theme-swatch" data-accent-choice="teal" aria-label="Teal accent" aria-pressed="false" title="Teal"></button>
+            <button type="button" class="theme-swatch" data-accent-choice="amber" aria-label="Amber accent" aria-pressed="false" title="Amber"></button>
+            <button type="button" class="theme-swatch" data-accent-choice="rose" aria-label="Rose accent" aria-pressed="false" title="Rose"></button>
+            <button type="button" class="theme-swatch" data-accent-choice="slate" aria-label="Slate accent" aria-pressed="false" title="Slate"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="ah-main" tabindex="-1">
+    <div class="ah-page">
+      <header class="ah-pagehead">
+        <p class="eyebrow" data-i18n="eyebrow">Cardio · Atlas</p>
+        <h1 data-i18n="title">Heart atlas</h1>
+        <p class="ah-lede" data-i18n="lede">Learn the heart, the aorta and the great vessels on the 3D model. Choose an area, read the names, then find them or type them from memory.</p>
+        <p class="ah-meta" id="ah-meta"></p>
+      </header>
+
+      <div class="ah-grid">
+        <div class="ah-stage">
+          <section class="model-shell" aria-labelledby="model-label">
+            <div class="model-head">
+              <span id="model-label">Heart and vessels</span>
+              <span class="model-orient"><span id="model-angle"></span><span data-i18n="patientSides">L/R = patient’s</span></span>
+            </div>
+            <div id="view" aria-label="3D anatomy of the heart and vessels" data-i18n-label="canvasAria">
+              <p id="model-status" role="status" data-i18n="loading">Loading the 3D model…</p>
+              <div id="view-fallback" role="status" hidden>
+                <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+                  <path d="M32 54 11 33C-4 18 16 2 32 18c16-16 36 0 21 15Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+                <span data-i18n="viewerFailed">3D view unavailable</span>
+                <button id="view-retry" class="button" type="button" data-i18n="retry">Try again</button>
+              </div>
+            </div>
+            <div class="view-toolbar" aria-label="Model view controls" data-i18n-label="viewControls">
+              <div class="view-group view-camera">
+                <div class="control-select view-select">
+                  <svg class="icon control-select-icon" aria-hidden="true" focusable="false"><use href="#i-compass"/></svg>
+                  <select id="view-direction" aria-label="Model viewpoint" data-i18n-label="viewpoint"></select>
+                  <svg class="icon control-select-caret" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+                </div>
+                <div class="view-zoom">
+                  <button id="view-zoom-out" type="button" aria-label="Zoom out" title="Zoom out" data-i18n-label="zoomOut" data-i18n-title="zoomOut"><svg class="icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-minus"/></svg></button>
+                  <button id="view-zoom-in" type="button" aria-label="Zoom in" title="Zoom in" data-i18n-label="zoomIn" data-i18n-title="zoomIn"><svg class="icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg></button>
+                </div>
+                <button id="view-reset" type="button" aria-label="Reset view" title="Reset the camera" data-i18n-label="resetCamera" data-i18n-title="resetCamera">
+                  <svg class="icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg><span data-i18n="resetView">Reset view</span>
+                </button>
+              </div>
+              <div class="view-group view-structures">
+                <button id="view-rotate" type="button" aria-pressed="false" title="Auto-rotate the model" data-i18n-title="rotateTitle">
+                  <svg class="icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-rotate-cw"/></svg><span data-i18n="rotate">Rotate</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="ah-session" id="ah-session" aria-label="Atlas activity" data-i18n-label="activity"></section>
+        </div>
+
+        <aside class="ah-panel" aria-label="Atlas settings" data-i18n-label="settings">
+          <section class="ah-field">
+            <h2 class="ah-label" id="ah-area-label" data-i18n="area">Area of study</h2>
+            <div class="ah-areas" id="ah-areas" role="group" aria-labelledby="ah-area-label"></div>
+          </section>
+
+          <section class="ah-field">
+            <h2 class="ah-label" id="ah-mode-label" data-i18n="mode">Mode</h2>
+            <div class="ah-seg" id="ah-modes" role="group" aria-labelledby="ah-mode-label">
+              <button type="button" data-mode="explore" aria-pressed="true" data-i18n="modeExplore">Explore</button>
+              <button type="button" data-mode="find" aria-pressed="false" data-i18n="modeFind">Find it</button>
+              <button type="button" data-mode="type" aria-pressed="false" data-i18n="modeType">Type it</button>
+            </div>
+            <p class="ah-note" id="ah-mode-note"></p>
+          </section>
+
+          <section class="ah-field">
+            <div class="ah-label-row">
+              <h2 class="ah-label" id="ah-vessels-label" data-i18n="vessels">Vessels</h2>
+              <span class="ah-label-count" id="ah-list-count"></span>
+            </div>
+            <div class="ah-seg" id="ah-lists" role="group" aria-labelledby="ah-vessels-label">
+              <button type="button" data-list="key" aria-pressed="true" data-i18n="listKey">Most important</button>
+              <button type="button" data-list="general" aria-pressed="false" data-i18n="listGeneral">General</button>
+            </div>
+            <p class="ah-note" id="ah-list-note"></p>
+          </section>
+
+          <div class="ah-list" id="ah-list"></div>
+          <p class="ah-note ah-practice-note" id="ah-practice-note" hidden></p>
+          <div class="ah-detail" id="ah-detail"></div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer class="credits ah-credits" id="ah-credits">
+    <span data-lang-only="en">3D anatomy by <a href="https://www.z-anatomy.com/" target="_blank" rel="noopener">Z-Anatomy</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> and <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D © DBCLS</a> · <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a> · Area-of-study and vessel-grouping idea adapted from <a href="https://samplesize1.com/tools/heart-atlas/" target="_blank" rel="noopener">SampleSize_1’s Heart Atlas</a>; its model credits are Z-Anatomy / BodyParts3D, CC BY-SA 4.0.</span>
+    <span data-lang-only="pt-BR" lang="pt-BR">Anatomia 3D por <a href="https://www.z-anatomy.com/" target="_blank" rel="noopener">Z-Anatomy</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> e <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D © DBCLS</a> · <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a> · Ideia de área de estudo e agrupamento de vasos adaptada do <a href="https://samplesize1.com/tools/heart-atlas/" target="_blank" rel="noopener">Heart Atlas de SampleSize_1</a>; os créditos do modelo original são Z-Anatomy / BodyParts3D, CC BY-SA 4.0.</span>
+  </footer>
+
+  <noscript>SpeedCardio needs JavaScript to run.</noscript>
+  <script type="module" src="./atlas-heart.js?v=1"></script>
+</body>
+</html>

@@ -127,8 +127,8 @@ export const blocks = [
         { q: 'Para onde drena a via venosa torácica do esôfago?', correct: 'Veia ázigos ou hemiázigos até a veia cava superior', wrong: ['Veia gástrica esquerda até a veia porta', 'Veia esplênica até a veia mesentérica superior', 'Veias hepáticas até a veia cava inferior'], why: 'Slide 28: via torácica, ázigos ou hemiázigos até a veia cava superior.' }),
       q('28', { q: 'In cirrhosis, to which vein is portal blood diverted through the esophageal veins?', correct: 'The superior vena cava', wrong: ['The inferior vena cava', 'The hepatic veins', 'The pulmonary veins'], why: 'Slide 28: blocked portal flow is diverted through the esophageal veins to the superior vena cava.' },
         { q: 'Na cirrose, para qual veia o sangue porta é desviado pelas veias esofágicas?', correct: 'Veia cava superior', wrong: ['Veia cava inferior', 'Veias hepáticas', 'Veias pulmonares'], why: 'Slide 28: o fluxo porta bloqueado é desviado pelas veias esofágicas até a veia cava superior.' }),
-      q('29', { q: 'Which spinal segments give the sympathetic scheme for the esophagus?', correct: 'T1 to L2', wrong: ['T5 to T8', 'C6 to T1', 'S2 to S4'], why: 'Slide 29: the sympathetic scheme is labelled T1–L2.' },
-        { q: 'Quais segmentos espinhais dão o esquema simpático do esôfago?', correct: 'T1 a L2', wrong: ['T5 a T8', 'C6 a T1', 'S2 a S4'], why: 'Slide 29: o esquema simpático é indicado como T1–L2.' }),
+      q('29', { q: 'Which spinal segments give the sympathetic scheme for the esophagus?', correct: 'T1 to L2', wrong: ['T5 to T8', 'C6 to T1', 'S2 to S4'], why: 'The oesophageal sympathetic supply comes from T1–L2.' },
+        { q: 'Quais segmentos espinhais dão o esquema simpático do esôfago?', correct: 'T1 a L2', wrong: ['T5 a T8', 'C6 a T1', 'S2 a S4'], why: 'O suprimento simpático do esôfago vem de T1 a L2.' }),
     ],
   },
   {
