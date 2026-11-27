@@ -2,14 +2,12 @@
 // d3.focus: mesh ids from msk/models.json (muscles) or marker ids (foramina, from regions/skull.js).
 import shoulder from './shoulder.js?v=131';
 import arm from './arm.js?v=131';
-import forearm from './forearm.js?v=150';
-import hand from './hand.js?v=153';
+import forearm from './forearm.js?v=155';
 import hip from './hip.js?v=150';
 import thigh from './thigh.js?v=150';
-import leg from './leg.js?v=150';
-import foot from './foot.js?v=150';
+import leg from './leg.js?v=155';
 import trunk from './trunk.js?v=150';
-import headneck from './headneck.js?v=150';
+import headneck from './headneck.js?v=155';
 import cranium from './cranium.js?v=150';
 import { markers } from '../regions/skull.js?v=121';
 
@@ -26,7 +24,7 @@ const route = (pt, [dx, dy, dz]) => {
 };
 const patch = (pts, r) => p => Math.max(...pts.map(c => Math.exp(-((p[0] - c[0]) ** 2 + (p[1] - c[1]) ** 2 + (p[2] - c[2]) ** 2) / (2 * r * r))));
 export const title = ['SpeedMSK · Typing drills', 'SpeedMSK · Treino de digitação'];
-export const decks = [shoulder, arm, forearm, hand, hip, thigh, leg, foot, trunk, headneck, cranium];
+export const decks = [shoulder, arm, forearm, hip, thigh, leg, trunk, headneck, cranium];
 export const model3d = {
   // <id>_path: the route through the opening, one short glowing line per side (inside the skull → out).
   landmarks: Object.fromEntries(FORAMINA.filter(id => markers[id]).map(id => [`${id}_path`, pts(id).map(pt => route(pt, DIR[id]))])),

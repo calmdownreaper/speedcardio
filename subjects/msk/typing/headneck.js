@@ -51,13 +51,10 @@ export default {
     },
     {
       id: 'expression', d3ctx: ['frontal', 'parietal', 'temporal', 'occipital', 'sphenoid', 'ethmoid', 'maxilla', 'mandible', 'zygomatic', 'nasal'], d3anchor: ['mandible', 'maxilla'], d3frame: ['mandible', 'maxilla'],
-      title: ['Facial expression and neck · innervation', 'Expressão facial e pescoço · inervação'],
-      rule: ['Muscles of facial expression = FACIAL nerve (VII) — they move skin, not joints. The two "SCM + trapezius" neck muscles = ACCESSORY nerve (XI). Scalene muscles, like the rest of the deep neck, are cervical plexus / anterior rami.',
-        'Músculos da expressão facial = nervo FACIAL (VII) — movem a pele, não articulações. Os dois músculos do pescoço "ECM + trapézio" = nervo ACESSÓRIO (XI). Os escalenos, como o resto do pescoço profundo, são plexo cervical / ramos anteriores.'],
+      title: ['Neck · innervation', 'Pescoço · inervação'],
+      rule: ['The two "SCM + trapezius" neck muscles = ACCESSORY nerve (XI). Scalene muscles, like the rest of the deep neck, are cervical plexus / anterior rami.',
+        'Os dois músculos do pescoço "ECM + trapézio" = nervo ACESSÓRIO (XI). Os escalenos, como o resto do pescoço profundo, são plexo cervical / ramos anteriores.'],
       items: [
-        { id: 'oo-n', d3: { focus: ['orbital_part_of_orbicularis_oculi','palpebral_part_of_orbicularis_oculi'], view: 'ant', frame: ['orbital_part_of_orbicularis_oculi','palpebral_part_of_orbicularis_oculi','frontal','maxilla'], glass: .15 }, q: n('orbicularis oculi', 'orbicular da pálpebra'), a: [CN7] },
-        { id: 'oris-n', d3: { focus: ['orbicularis_oris_muscle'], view: 'ant', frame: ['orbicularis_oris_muscle','maxilla','mandible'], glass: .15 }, q: n('orbicularis oris', 'orbicular da boca'), a: [CN7] },
-        { id: 'bucc-n', d3: { focus: ['bucinator'], view: 'esq', frame: ['bucinator','maxilla','mandible'], glass: .15 }, q: n('buccinator', 'bucinador'), a: [CN7] },
         { id: 'scm-n', d3: { focus: ['sternocleidomastoid_muscle'], view: 'esq', frame: ['sternocleidomastoid_muscle','temporal','clavicle'], glass: .15 }, q: n('sternocleidomastoid', 'esternocleidomastoideo'), a: [CN11] },
         { id: 'trap-n', d3: { focus: ['trapezius'], view: 'post', frame: ['trapezius', 'cervical_vertebra'], glass: .15 }, q: n('trapezius', 'trapézio'), a: [CN11] },
         { id: 'scal-n', d3: { focus: ['scalenus_anterior'], view: 'ant', frame: ['scalenus_anterior', 'cervical_vertebra'], glass: .15 }, q: n('scalenes', 'escalenos'), a: [['cervical spinal nerves (anterior rami)', 'nervos espinais cervicais (ramos anteriores)', 'anterior rami of cervical nerves', 'ramos anteriores dos nervos cervicais', 'c5-c8']] },
@@ -93,13 +90,12 @@ export default {
     {
       id: 'tongue', d3ctx: ['mandible', 'temporal', 'occipital', 'sphenoid', 'cervical_vertebra'], d3anchor: ['mandible'], d3frame: ['mandible', 'cervical_vertebra'],
       title: ['Tongue and palate · innervation', 'Língua e palato · inervação'],
-      rule: ['All tongue muscles are hypoglossal (XII) EXCEPT palatoglossus, which is vagus (X). For taste, not movement: anterior two-thirds = chorda tympani (VII), posterior third = glossopharyngeal (IX).',
-        'Todos os músculos da língua são hipoglosso (XII), EXCETO o palatoglosso, que é vago (X). Para o paladar, não o movimento: dois terços anteriores = corda do tímpano (VII), terço posterior = glossofaríngeo (IX).'],
+      rule: ['The tongue muscles are hypoglossal (XII). For taste, not movement: anterior two-thirds = chorda tympani (VII), posterior third = glossopharyngeal (IX).',
+        'Os músculos da língua são hipoglosso (XII). Para o paladar, não o movimento: dois terços anteriores = corda do tímpano (VII), terço posterior = glossofaríngeo (IX).'],
       items: [
         { id: 'tongue-n', d3: { focus: ['genioglossus_muscle','hyoglossus_muscle'], view: 'esq', frame: ['genioglossus_muscle','hyoglossus_muscle','mandible'], glass: .15 }, q: n('intrinsic and extrinsic tongue muscles', 'músculos intrínsecos e extrínsecos da língua'), a: [CN12] },
         { id: 'genio-n', d3: { focus: ['genioglossus_muscle'], view: 'esq', frame: ['genioglossus_muscle','mandible'], glass: .15 }, q: n('genioglossus', 'genioglosso'), a: [CN12] },
         { id: 'stylo-n', d3: { focus: ['hyoglossus_muscle'], view: 'esq', frame: ['hyoglossus_muscle','mandible','temporal'], glass: .15 }, q: n('styloglossus', 'estiloglosso'), a: [CN12] },
-        { id: 'palato-n', d3: { focus: ['palatopharyngeus_muscle'], view: 'esq', frame: ['palatopharyngeus_muscle','mandible'], glass: .15 }, q: n('palatoglossus', 'palatoglosso'), a: [CN10] },
         { id: 'xii-inv', d3: { focus: ['genioglossus_muscle','hyoglossus_muscle'], view: 'esq', frame: ['genioglossus_muscle','hyoglossus_muscle','mandible'], glass: .15 }, q: ['Which tongue muscles does the hypoglossal nerve (XII) supply?', 'Quais músculos da língua o nervo hipoglosso (XII) inerva?'], a: [['genioglossus', 'genioglosso'], ['styloglossus', 'estiloglosso'], ['hyoglossus', 'hioglosso'], ['all intrinsic tongue muscles', 'todos os músculos intrínsecos da língua', 'intrinsic tongue muscles', 'músculos intrínsecos da língua']] },
         { id: 'taste-ant', d3: { focus: ['genioglossus_muscle','hyoglossus_muscle'], view: 'esq', frame: ['genioglossus_muscle','hyoglossus_muscle','mandible'], glass: .15 }, q: ['Taste of the anterior two-thirds of the tongue is carried by which nerve?', 'O paladar dos dois terços anteriores da língua é levado por qual nervo?'], a: [['chorda tympani (facial nerve, VII)', 'corda do tímpano (nervo facial, VII)', 'chorda tympani', 'corda do tímpano', 'facial nerve', 'nervo facial']] },
         { id: 'taste-post', d3: { focus: ['genioglossus_muscle','hyoglossus_muscle'], view: 'esq', frame: ['genioglossus_muscle','hyoglossus_muscle','mandible'], glass: .15 }, q: ['Taste of the posterior third of the tongue is carried by which nerve?', 'O paladar do terço posterior da língua é levado por qual nervo?'], a: [['glossopharyngeal nerve (IX)', 'nervo glossofaríngeo (IX)', 'glossopharyngeal nerve', 'nervo glossofaríngeo', 'ix', 'cn ix']] },
