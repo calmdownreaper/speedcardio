@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/pancreas.js?v=159';
+import * as supply from './supply/pancreas.js?v=160';
 
 export const unit = {
   id: 'pancreas',
@@ -44,8 +44,8 @@ export const blocks = [
         body: [
           t('The external conformation has four parts: the head, with the uncinate process; the neck; the body; and the tail. It measures 12–15 cm long, 2–3 cm wide and 4–5 cm high.',
             'A conformação externa tem quatro partes: a cabeça, com o processo uncinado; o colo; o corpo; e a cauda. Mede 12–15 cm de comprimento, 2–3 cm de largura e 4–5 cm de altura.'),
-          t('Arranged in situ from right to left, the head lies inside the curve of the duodenum with the inferior vena cava behind it, while the uncinate process hooks behind the superior mesenteric vein and artery. Inside the head, the bile duct and the main and accessory pancreatic ducts converge to open into the duodenum at the hepatopancreatic ampulla. Extending across in front of the left kidney, the body continues into the tail alongside the anterior border of the spleen.',
-            'Disposto in situ da direita para a esquerda, o pâncreas tem a cabeça encaixada na curva do duodeno com a veia cava inferior atrás dela, enquanto o processo uncinado se curva atrás da veia e da artéria mesentéricas superiores. Dentro da cabeça, o colédoco e os ductos pancreáticos principal e acessório convergem para abrir no duodeno pela ampola hepatopancreática. Estendendo-se à frente do rim esquerdo, o corpo continua na cauda junto à borda anterior do baço.'),
+          t('Arranged in situ from right to left, the head lies inside the curve of the duodenum with the inferior vena cava behind it, while the uncinate process hooks behind the superior mesenteric vein and artery. Inside the head, the bile duct and the main pancreatic duct converge to open into the duodenum at the hepatopancreatic ampulla (major duodenal papilla), while the accessory pancreatic duct opens separately, higher up, at the minor duodenal papilla. Extending across in front of the left kidney, the body continues into the tail alongside the anterior border of the spleen.',
+            'Disposto in situ da direita para a esquerda, o pâncreas tem a cabeça encaixada na curva do duodeno com a veia cava inferior atrás dela, enquanto o processo uncinado se curva atrás da veia e da artéria mesentéricas superiores. Dentro da cabeça, o colédoco e o ducto pancreático principal convergem para abrir no duodeno pela ampola hepatopancreática (papila duodenal maior), enquanto o ducto pancreático acessório se abre separadamente, mais acima, na papila duodenal menor. Estendendo-se à frente do rim esquerdo, o corpo continua na cauda junto à borda anterior do baço.'),
         ],
       },
       {
@@ -193,8 +193,8 @@ export const blocks = [
         body: [
           t('In the normal pattern, two pancreatic ducts enter the duodenum alongside the (common) bile duct: the (principal) pancreatic duct (Wirsung) and the accessory pancreatic duct (Santorini), situated near the pancreatic notch.',
             'No padrão normal, dois ductos pancreáticos entram no duodeno ao lado do colédoco: o ducto pancreático principal (de Wirsung) e o ducto pancreático acessório (de Santorini), situados junto à incisura pancreática.'),
-          t('Eight anatomical variations of the pancreatic ducts occur: a double accessory pancreatic duct (Santorini); an anastomosis between ducts; crossing ducts; double crossing of ducts; no communication between ducts; a double (principal) pancreatic duct (Wirsung); tortuosity of ducts; and absence of the accessory pancreatic duct (Santorini). None is designated as the commonest variant.',
-            'Ocorrem oito variações anatômicas dos ductos pancreáticos: ducto pancreático acessório duplo (Santorini); anastomose entre ductos; cruzamento de ductos; duplo cruzamento de ductos; ausência de comunicação entre ductos; ducto pancreático principal duplo (Wirsung); tortuosidade dos ductos; e ausência do ducto pancreático acessório (Santorini). Nenhuma é apontada como a mais comum.'),
+          t('Seven anatomical variations of the pancreatic ducts are shown: a double accessory pancreatic duct (Santorini); an anastomosis between ducts; crossing ducts; no communication between ducts; a double (principal) pancreatic duct (Wirsung); tortuosity of ducts; and absence of the accessory pancreatic duct (Santorini). None is designated as the commonest variant.',
+            'São mostradas sete variações anatômicas dos ductos pancreáticos: ducto pancreático acessório duplo (Santorini); anastomose entre ductos; cruzamento de ductos; ausência de comunicação entre ductos; ducto pancreático principal duplo (Wirsung); tortuosidade dos ductos; e ausência do ducto pancreático acessório (Santorini). Nenhuma é apontada como a mais comum.'),
         ],
       },
       {
@@ -703,6 +703,8 @@ export const blocks = [
             'Os ramos da artéria esplênica entram nas trabéculas como artérias trabeculares. Saem das trabéculas como artérias centrais, que ficam cercadas pela polpa branca. De dentro para fora, a polpa branca tem três partes. (1) A bainha linfática periarteriolar, PALS, que contém linfócitos T ao redor da artéria central. (2) Os folículos linfáticos, feitos de linfócitos B, irrigados por artérias radiais. (3) A zona marginal, ou perifolicular, que é a transição entre a polpa vermelha e a branca.'),
           t('The marginal zone is an important area of transit for lymphocytes leaving the systemic circulation to enter the white pulp. Around each splenic lymphoid nodule with its germinal centre and surrounding PALS, the central and radial arterioles supply the white pulp before continuing outward into the red pulp as penicillar arterioles, sheathed capillaries and sinusoids. At the interface between the two, the marginal sinus and marginal zone contain lymphocytes, marginal-zone macrophages, marginal-zone metallophilic macrophages, marginal-zone B cells, sinus-lining cells, reticular fibroblasts and dendritic cells.',
             'A zona marginal é uma área importante de trânsito para os linfócitos que deixam a circulação sistêmica para entrar na polpa branca. Ao redor de cada nódulo linfoide esplênico com seu centro germinativo e a PALS circundante, as arteríolas central e radial irrigam a polpa branca antes de seguir para a polpa vermelha como arteríolas penicilares, capilares embainhados e sinusoides. Na interface entre as duas regiões, o seio marginal e a zona marginal abrigam linfócitos, macrófagos da zona marginal, macrófagos metalofílicos da zona marginal, células B da zona marginal, células de revestimento dos seios, fibroblastos reticulares e células dendríticas.'),
+          t('Marker phenotypes of the marginal zone: marginal-zone macrophages are SIGNR1+ and MARCO+; marginal metallophilic macrophages are SIGLEC1+ (CD169); the sinus-lining cells are MAdCAM-1+; and marginal-zone B cells are CD1d+, CD9+, CD21-high and CD23-low or negative.',
+            'Fenótipos dos marcadores da zona marginal: os macrófagos da zona marginal são SIGNR1+ e MARCO+; os macrófagos metalofílicos marginais são SIGLEC1+ (CD169); as células que revestem os seios são MAdCAM-1+; e as células B da zona marginal são CD1d+, CD9+, CD21 alto e CD23 baixo ou negativo.'),
         ],
       },
       {
@@ -733,6 +735,8 @@ export const blocks = [
             'Dez por cento dos capilares embainhados continuam diretamente nos sinusoides da polpa vermelha. Essa é a circulação fechada, e é o contrapeso dos 90% da circulação aberta descritos acima.'),
           t('Organised from the whole spleen, its fibrous capsule and splenic trabecula inward: the white pulp houses the splenic lymphoid nodule with its germinal centre and PALS around the central and radial arterioles, while the red pulp contains the penicillar arterioles, sheathed capillaries and barrel-shaped venous sinusoids. Each venous sinusoid is built like a barrel: the elongated endothelial cells form the staves of the barrel, held together by reticular cells as the hoops of the barrel and resting on a discontinuous basement membrane with reticular fibres so erythrocytes can squeeze between the endothelial cells.',
             'Organizado a partir do baço inteiro, de sua cápsula fibrosa e trabécula esplênica para dentro: a polpa branca abriga o nódulo linfoide esplênico com seu centro germinativo e a PALS ao redor das arteríolas central e radial, enquanto a polpa vermelha contém as arteríolas penicilares, os capilares embainhados e os sinusoides venosos em forma de barril. Cada seio venoso é estruturado como um barril: as células endoteliais alongadas formam as aduelas do barril, unidas pelas células reticulares como os aros do barril e apoiadas em uma membrana basal descontínua com fibras reticulares para que os eritrócitos possam se espremer entre as células endoteliais.'),
+          t('Collateral branches of the central artery run across the lymphoid nodules and form a vascular network around the white pulp, which opens into the marginal zone and then the cords of the red pulp.',
+            'Ramos colaterais da artéria central atravessam os nódulos linfoides e formam uma rede vascular ao redor da polpa branca, que desemboca na zona marginal e depois nos cordões da polpa vermelha.'),
         ],
       },
     ],

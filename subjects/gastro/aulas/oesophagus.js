@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/oesophagus.js?v=159';
+import * as supply from './supply/oesophagus.js?v=160';
 
 export const unit = {
   id: 'oesophagus',
@@ -30,6 +30,8 @@ export const blocks = [
             'O esôfago é um tubo muscular, com 25 cm de comprimento, que liga a laringofaringe ao estômago. Começa como continuação da faringe no pescoço, em C6 ou na borda inferior da cartilagem cricoide. Desce pelo tórax à frente da coluna vertebral, atravessa o diafragma em T10 e termina no óstio cárdico do estômago em T11.'),
           t('The esophagus forms the middle conduit along the digestive tract from mouth to stomach. Food passes through the oral cavity (with the tongue, teeth, and the parotid, sublingual, and submandibular salivary glands), crosses the fauces into the oropharynx and laryngopharynx, descends through the cervical, thoracic, and abdominal parts of the esophagus, and enters the stomach, which ends at the pylorus. In the 3D model, the Esophagus is the tube between the pharynx and the Stomach, and the Stomach is its end.',
             'O esôfago forma o segmento intermediário ao longo do trato digestório, da boca ao estômago. O alimento passa pela cavidade oral (com a língua, os dentes e as glândulas salivares parótida, sublingual e submandibular), atravessa as fauces rumo à orofaringe e à laringofaringe, desce pelas partes cervical, torácica e abdominal do esôfago e chega ao estômago, que termina no piloro. No modelo 3D, o esôfago é o tubo entre a faringe e o estômago, e o estômago é a sua extremidade.'),
+          t('⚠ The oesophagus begins at C6, at the lower border of the cricoid cartilage, as the continuation of the pharynx (laryngopharynx). The class material says "of the larynx", but the larynx continues as the trachea, in front of the oesophagus (Gray\'s Anatomy; Moore).',
+            '⚠ O esôfago começa em C6, na borda inferior da cartilagem cricoide, como continuação da faringe (laringofaringe). O material da aula diz "da laringe", mas a laringe continua como traqueia, à frente do esôfago (Gray\'s Anatomy; Moore).'),
         ],
       },
       {
@@ -48,6 +50,8 @@ export const blocks = [
         body: [
           t('From its origin below the thyroid and cricoid cartilages—continuous with the inferior pharyngeal constrictor and its cricopharyngeus muscle—the esophagus descends behind the trachea and in front of the vertebral bodies (from C7 to L1) down to T4. Below T4 it moves forward, because the descending aorta takes its place behind it against the spine, so the esophagus passes behind the aortic arch and the heart toward the diaphragm.',
             'A partir de sua origem abaixo das cartilagens tireoide e cricoide — em continuação ao constritor faríngeo inferior e ao seu músculo cricofaríngeo —, o esôfago desce atrás da traqueia e à frente dos corpos vertebrais (de C7 a L1) até T4. Abaixo de T4 ele se desloca para a frente, porque a aorta descendente ocupa o lugar atrás dele junto à coluna, de modo que o esôfago passa atrás do arco da aorta e do coração em direção ao diafragma.'),
+          t('Vertebral landmarks along its descending course: it passes behind the left atrium around T6–T8, pierces the diaphragm at T10 and ends at the cardia at about T11, with the aorta passing through the diaphragm at T12.',
+            'Referências vertebrais ao longo de seu trajeto descendente: passa atrás do átrio esquerdo aproximadamente em T6–T8, atravessa o diafragma em T10 e termina na cárdia por volta de T11, enquanto a aorta atravessa o diafragma em T12.'),
         ],
       },
       {
@@ -89,6 +93,8 @@ export const blocks = [
             'O esôfago começa na linha média, depois a primeira curva se projeta para a esquerda, acima do arco da aorta. Em seguida endireita-se e desce, e uma segunda curva se projeta para a direita, logo acima do diafragma.'),
           t('From the neck to the stomach, neighboring structures surround those curves. In the neck, the cervical part sits in front of the longus colli between the common carotid arteries, scalene muscles, brachial plexus, subclavian vessels, thyrocervical and brachiocephalic trunks, internal jugular and brachiocephalic veins, internal thoracic artery, and the phrenic, vagus, and recurrent laryngeal nerves. Below the tracheal bifurcation and bronchi, the thoracic part curves past the arch of the aorta, descending along the thoracic aorta beside the azygos vein, thoracic duct, parietal pleura, esophageal plexus, and anterior vagal trunk behind the pericardium, before passing between the right and left crura of the diaphragm to reach the stomach near the inferior phrenic arteries, celiac trunk, abdominal aorta, inferior vena cava, and hepatic veins. Only the abdominal aorta is in the 3D set.',
             'Do pescoço ao estômago, estruturas vizinhas acompanham essas curvas. No pescoço, a parte cervical fica à frente do músculo longo do pescoço, entre as artérias carótidas comuns, os músculos escalenos, o plexo braquial, os vasos subclávios, os troncos tireocervical e braquiocefálico, as veias jugular interna e braquiocefálica, a artéria torácica interna e os nervos frênico, vago e laríngeos recorrentes. Abaixo da bifurcação da traqueia e dos brônquios, a parte torácica contorna o arco da aorta e desce ao longo da aorta torácica, ao lado da veia ázigos, do ducto torácico, da pleura parietal, do plexo esofágico e do tronco vagal anterior atrás do pericárdio, antes de passar entre os pilares direito e esquerdo do diafragma até o estômago, perto das artérias frênicas inferiores, do tronco celíaco, da aorta abdominal, da veia cava inferior e das veias hepáticas. Só a aorta abdominal está no conjunto 3D.'),
+          t('On the right, the superior lobar bronchus arises above the right pulmonary artery and is therefore called the eparterial bronchus.',
+            'À direita, o brônquio lobar superior origina-se acima da artéria pulmonar direita e, por isso, é chamado de brônquio eparterial.'),
         ],
       },
       {
@@ -158,6 +164,8 @@ export const blocks = [
             'Na junção faringoesofágica posterior — atrás das cartilagens tireoide e cricoide e acima da traqueia e do brônquio principal esquerdo —, a rafe faríngea, uma zona de fibras musculares escassas e a parte cricofaríngea do constritor faríngeo inferior (com fibras adicionais do lado contralateral) ficam logo acima da parede esofágica. Logo abaixo delas, a camada muscular longitudinal divide-se em duas massas laterais: um feixe muscular longitudinal principal sobe ventralmente para se fixar no meio da face posterior da cartilagem cricoide, acompanhado por um feixe acessório da sua face posterolateral. Essa divergência deixa uma área em V (de Laimer), onde a camada muscular circular tem apenas fibras longitudinais escassas. Na face ventral do esôfago voltada para a traqueia fica uma área nua ancorada por membranas fibroelásticas com fibras musculares escassas.'),
           t('In transverse relation at this level, the collapsed, folded esophagus sits directly posterior to the trachealis muscle and the lumen of the trachea, flanked laterally by the thyroid gland. Anteriorly and laterally, the trachea is supported by C-shaped tracheal cartilage lined internally with respiratory epithelium.',
             'Em relação transversal nesse nível, o esôfago colabado e pregueado situa-se diretamente atrás do músculo traqueal (trachealis) e da luz da traqueia, flanqueado lateralmente pela glândula tireoide. Anterior e lateralmente, a traqueia é sustentada pela cartilagem traqueal em C revestida internamente por epitélio respiratório.'),
+          t('A window is cut in the longitudinal muscle layer of the cricopharyngeal region in the figure to show the circular muscle beneath.',
+            'Na figura, uma janela é aberta na camada muscular longitudinal da região cricofaríngea para mostrar a musculatura circular subjacente.'),
         ],
       },
       {
@@ -168,6 +176,8 @@ export const blocks = [
             '⚠ Na página 14, a parte torácica vai de T2 ao diafragma, em T10. (A página 3 a começa em T1, e a página 15 coloca a passagem pelo diafragma em T11; esses níveis não se conciliam.) Desce no mediastino posterior, junto ao lado direito da aorta. Acima do arco da aorta, o esôfago se relaciona à frente com a traqueia e atrás com os corpos vertebrais; também se relaciona com as pleuras e com o ducto torácico. Abaixo do arco, à frente se relaciona com o coração (átrio esquerdo), atrás com a aorta descendente e a veia ázigos, e de cada lado com as pleuras.'),
           t('Spanning the cervical, thoracic, and abdominal segments (from C7 to L1 across the diaphragm), the thoracic esophagus descends behind the trachea and the superior and inferior lobar bronchi between the cervical, mediastinal, and diaphragmatic parts of the parietal pleurae. On its left side lie the aortic arch, ligamentum arteriosum, pulmonary arteries and veins, and thoracic aorta; on its right side lie the brachiocephalic veins, the arch of the azygos vein, the azygos vein, and the thoracic duct. Along its lower thoracic course, the right and left vagus nerves form the esophageal plexus around the esophagus before reaching the central tendon of the diaphragm and entering the stomach.',
             'Estendendo-se pelos segmentos cervical, torácico e abdominal (de C7 a L1 através do diafragma), o esôfago torácico desce atrás da traqueia e dos brônquios lobares superior e inferior, entre as partes cervical, mediastinal e diafragmática das pleuras parietais. À sua esquerda ficam o arco da aorta, o ligamento arterioso, as artérias e veias pulmonares e a aorta torácica; à sua direita ficam as veias braquiocefálicas, o arco da veia ázigos, a veia ázigos e o ducto torácico. No trajeto torácico inferior, os nervos vagos direito e esquerdo formam o plexo esofágico ao redor do esôfago antes de alcançar o tendão central do diafragma e entrar no estômago.'),
+          t('On the right side of the thoracic oesophagus the figure also shows the right pulmonary artery and the pulmonary trunk.',
+            'No lado direito do esôfago torácico, a figura também mostra a artéria pulmonar direita e o tronco pulmonar.'),
         ],
       },
     ],
@@ -252,6 +262,8 @@ export const blocks = [
             'A fáscia transversal aparece nas camadas da parede abdominal anterior. A aponeurose do oblíquo interno se divide para formar as lâminas anterior e posterior da bainha do reto. A aponeurose do oblíquo externo se une à lâmina anterior, e a aponeurose do transverso do abdome se une à lâmina posterior. As lâminas anterior e posterior se unem na linha mediana para formar a linha alba.'),
           t('Above the arcuate line, the anterior abdominal wall passes from superficial to deep through skin and subcutaneous fatty tissue, external oblique, internal oblique, transversus abdominis, rectus abdominis, and linea alba down to the transversalis fascia, extraperitoneal fascia, and peritoneum (with the falciform ligament in the midline). On the posterior (inner) surface of the anterior abdominal wall, the transversalis fascia extends up to the diaphragm above, while the posterior layer of the rectus sheath terminates at the arcuate line. The anterior abdominal wall is not in the 3D set, so the diaphragm is the nearest mesh paired with this card.',
             'Acima da linha arqueada, a parede abdominal anterior segue da superfície para a profundidade pela pele e tecido adiposo subcutâneo, músculos oblíquo externo, oblíquo interno, transverso do abdome, reto do abdome e linha alba, até a fáscia transversal, a fáscia extraperitoneal e o peritônio (com o ligamento falciforme na linha mediana). Na face posterior (interna) da parede abdominal anterior, a fáscia transversal sobe até o diafragma acima, enquanto a lâmina posterior da bainha do reto termina na linha arqueada. A parede abdominal anterior não está no conjunto 3D, então o diafragma é a malha mais próxima associada a este cartão.'),
+          t('The figure labels the inguinal ligament at the lower margin of the transversalis fascia.',
+            'A figura identifica o ligamento inguinal na margem inferior da fáscia transversal.'),
         ],
       },
       {
@@ -343,6 +355,8 @@ export const blocks = [
             'A ligação clínica: quando o fluxo venoso portal fica obstruído no fígado, como na cirrose, o sangue pode ser desviado pelas veias esofágicas para a veia cava superior. Essas são as colaterais portossistêmicas.'),
           t('Above the diaphragm, the esophageal venous plexus (a submucosal plexus) drains through the azygos, hemiazygos and accessory hemiazygos veins (the accessory hemiazygos joins the azygos), the intercostal veins, the brachiocephalic veins and the inferior thyroid veins into the superior vena cava. Below the diaphragm, the esophageal branches of the left gastric vein connect into the left gastric vein and the hepatic portal vein. The portal system also includes the short gastric, splenic, left and right gastro-omental, omental, right gastric, and superior and inferior mesenteric veins. The hepatic veins empty into the inferior vena cava.',
             'Acima do diafragma, o plexo venoso esofágico (um plexo submucoso) drena pelas veias ázigo, hemiázigo e hemiázigo acessória (a hemiázigo acessória se une à ázigo), pelas veias intercostais, braquiocefálicas e tireóideas inferiores até a veia cava superior. Abaixo do diafragma, os ramos esofágicos da veia gástrica esquerda se ligam à veia gástrica esquerda e à veia porta hepática. O sistema porta também inclui as veias gástricas curtas, esplênica, gastro-omentais esquerda e direita, omental, gástrica direita e mesentéricas superior e inferior. As veias hepáticas desembocam na veia cava inferior.'),
+          t('The venous figure also labels the left inferior phrenic vein and the right and left renal and suprarenal veins draining to the inferior vena cava (the left suprarenal via the left renal vein).',
+            'A figura venosa também identifica a veia frênica inferior esquerda e as veias renais e suprarrenais direita e esquerda drenando para a veia cava inferior (a suprarrenal esquerda por meio da veia renal esquerda).'),
         ],
       },
       {
@@ -353,6 +367,8 @@ export const blocks = [
             'Os nervos vagos (X direito e esquerdo) e os nervos laríngeos recorrentes (inferiores) direito e esquerdo se combinam com ramos esofágicos dos gânglios torácicos dos troncos simpáticos direito e esquerdo. Juntos formam o plexo esofágico. O plexo continua sobre o estômago como o tronco vagal anterior e o plexo gástrico. A inervação simpática geral é T1–L2.'),
           t('Two autonomic outflows reach the viscera. The sympathetic outflow (T1–L2) runs via the cervical, celiac and mesenteric ganglia and the splanchnic nerves. The parasympathetic outflow runs via cranial nerves III, VII, IX and X and the sacral nerves S2–S4 to the glands, heart, lungs and abdominal and pelvic viscera.',
             'Duas vias autonômicas chegam às vísceras. A via simpática (T1–L2) passa pelos gânglios cervicais, celíacos e mesentéricos e pelos nervos esplâncnicos. A via parassimpática passa pelos nervos cranianos III, VII, IX e X e pelos nervos sacrais S2–S4 até as glândulas, o coração, os pulmões e as vísceras abdominais e pélvicas.'),
+          t('The vagus nerve (X) and the other cranial parasympathetic fibres arise from the brainstem: the pons and medulla oblongata.',
+            'O nervo vago (X) e as demais fibras parassimpáticas cranianas originam-se no tronco encefálico: na ponte e no bulbo.'),
         ],
       },
     ],
@@ -417,6 +433,8 @@ export const blocks = [
             'A muscular externa tem uma camada circular interna (SC) e uma camada longitudinal externa (SL). No terço superior do esôfago há músculo esquelético; no terço médio há músculo esquelético e liso; no terço inferior há apenas músculo liso.'),
           t('The outer layer is the adventitia, except in the abdominal part, which is covered by peritoneum (serosa). This ties back to the general plan, where the adventitia replaces the serosa in the esophagus. In section, the inner circular (SC) and outer longitudinal (SL) muscle layers lie outside the submucosal glands (G) and the mucosa (E, MI, MM, LI).',
             'A camada externa é a adventícia, exceto na parte abdominal, que é coberta por peritônio (serosa). Isso retoma o plano geral, em que a adventícia substitui a serosa no esôfago. Em corte, as camadas musculares circular interna (SC) e longitudinal externa (SL) ficam por fora das glândulas submucosas (G) e da mucosa (E, MI, MM, LI).'),
+          t('Why does the muscle change along the oesophagus? The upper third is skeletal muscle, continuous with the pharyngeal constrictors and derived from pharyngeal-arch mesoderm, so the swallow started voluntarily is carried on quickly by branchial motor fibres of the vagus (nucleus ambiguus). The lower third is smooth muscle from splanchnic mesoderm, driven slowly by peristalsis through the enteric plexuses and the dorsal vagal nucleus. The middle third is the mixed transition between the two.',
+            'Por que a musculatura muda ao longo do esôfago? O terço superior é formado por músculo estriado esquelético, contínuo com os constritores da faringe e derivado do mesoderma dos arcos faríngeos, de modo que a deglutição iniciada voluntariamente prossegue rapidamente por fibras motoras branquiais do vago (núcleo ambíguo). O terço inferior é formado por músculo liso do mesoderma esplâncnico, acionado lentamente pelo peristaltismo por meio dos plexos entéricos e do núcleo dorsal do vago. O terço médio é a transição mista entre os dois.'),
         ],
       },
     ],

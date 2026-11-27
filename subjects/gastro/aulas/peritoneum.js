@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/peritoneum.js?v=159';
+import * as supply from './supply/peritoneum.js?v=160';
 
 export const unit = {
   id: 'peritoneum',
@@ -45,6 +45,10 @@ export const blocks = [
             'As duas partes principais são o Sistema nervoso central (encéfalo e medula espinal) e o Sistema nervoso periférico, que é todo tecido nervoso fora do SNC. Todas as respostas do sistema nervoso visam manter o organismo na melhor condição funcional, diante de estímulos externos e internos. Os estímulos são detectados pelo sistema nervoso periférico, que os envia ao SNC (medula espinal e encéfalo). O SNC reconhece e processa os estímulos e escolhe a resposta adequada. A resposta então volta pelo SNP aos efetores: músculos estriados e lisos, glândulas exócrinas e endócrinas e o sistema de condução do coração.'),
           t('Two loops summarise this: somatic sensory and motor divisions, and visceral sensory and sympathetic and parasympathetic motor divisions, all coming together at the integration centres of the brain and spinal cord.',
             'Dois circuitos resumem isso: divisões somáticas sensitiva e motora e divisões viscerais sensitiva e motoras simpática e parassimpática, todas convergindo para os centros de integração do encéfalo e da medula espinal.'),
+          t('The visceral motor division is driven from the hypothalamus.',
+            'A divisão motora visceral é comandada pelo hipotálamo.'),
+          t('Sensory input is classed into somatic and special receptors on one side and visceral receptors on the other.',
+            'As informações sensitivas são classificadas em receptores somáticos e especiais, de um lado, e receptores viscerais, do outro.'),
         ],
       },
       {
@@ -104,6 +108,8 @@ export const blocks = [
             'O sistema simpático é toracolombar: sua saída deixa a medula entre T1 e L2, e seus gânglios ficam junto à medula espinal, na cadeia ou tronco simpático. A cadeia corre ao longo da coluna vertebral, com os gânglios cervicais: superior, médio (gânglio tireóideo) e inferior. Da cadeia, os nervos simpáticos vão ao olho, às glândulas lacrimais e salivares, ao coração e aos pulmões, e aos órgãos abdominais: estômago, fígado, vesícula, pâncreas, intestino delgado, glândula suprarrenal, rim, intestino grosso, bexiga e sistema genital.'),
           t('The splanchnic nerves reach the prevertebral celiac, superior mesenteric and inferior mesenteric ganglia around the celiac trunk and superior mesenteric artery. Abdominal targets include the stomach, pancreas, gallbladder and liver, including its caudate lobe. Gray rami communicantes connect the sympathetic chain to spinal nerves and carry fibres to sweat glands, superficial vessels, hair follicles and adipose tissue.',
             'Os nervos esplâncnicos alcançam os gânglios pré-vertebrais celíaco, mesentérico superior e mesentérico inferior ao redor do tronco celíaco e da artéria mesentérica superior. Os alvos abdominais incluem estômago, pâncreas, vesícula biliar e fígado, inclusive seu lobo caudado. Os ramos comunicantes cinzentos ligam a cadeia simpática aos nervos espinhais e levam fibras às glândulas sudoríparas, aos vasos superficiais, aos folículos pilosos e ao tecido adiposo.'),
+          t('Sympathetic fibres also reach the submandibular, sublingual and parotid glands, besides the eye and the lacrimal gland.',
+            'As fibras simpáticas também alcançam as glândulas submandibular, sublingual e parótida, além do olho e da glândula lacrimal.'),
         ],
       },
       {
@@ -114,6 +120,8 @@ export const blocks = [
             'O sistema parassimpático é craniossacral: sua saída vem dos nervos cranianos III, VII, IX e X e dos nervos sacrais (S2–S4). Seus gânglios são terminais, colocados perto do órgão-alvo, ou intramurais, colocados dentro do próprio órgão-alvo. Cada saída vai a seus alvos: o nervo craniano III vai ao olho; o nervo craniano VII vai às glândulas lacrimal, submandibular e sublingual; o nervo craniano IX vai à glândula parótida; o nervo craniano X supre o coração, os pulmões, o estômago, o fígado, a vesícula biliar, o pâncreas, o intestino delgado, o rim e o intestino grosso; e os nervos sacrais (S2–S4) suprem a parte distal do intestino grosso, a bexiga urinária e o sistema genital.'),
           t('Compared with the sympathetic outflow, the parasympathetic leaves the brainstem and the sacrum, not the middle of the spinal cord. In the 3D model, follow the vagus to the Stomach: the parasympathetic fibres do not run in a short chain beside the spine, but come from the brainstem and reach the abdominal organs directly.',
             'Em comparação com a saída simpática, a parassimpática sai do tronco encefálico e do sacro, e não do meio da medula espinal. No modelo 3D, siga o vago até o Estômago: as fibras parassimpáticas não correm em uma cadeia curta ao lado da coluna, mas saem do tronco encefálico e chegam diretamente aos órgãos abdominais.'),
+          t('The brainstem origins of the cranial parasympathetic outflow are labelled the mesencephalon (midbrain), pons and medulla oblongata.',
+            'As origens no tronco encefálico da via parassimpática craniana são identificadas como mesencéfalo, ponte e bulbo.'),
         ],
       },
       {
@@ -124,6 +132,8 @@ export const blocks = [
             'A saída simpática é toracolombar. Seus gânglios ficam ao lado da medula espinal. Neurônios pré-ganglionares se conectam a neurônios pós-ganglionares, cujas fibras alcançam os alvos periféricos.'),
           t('The right and left greater and lesser splanchnic nerves reach the abdominal ganglia and plexuses. These include the celiac, aorticorenal, superior mesenteric and inferior mesenteric ganglia; the suprarenal, renal, intermesenteric, ureteral, testicular or ovarian, and superior hypogastric plexuses; and the sacral ganglia and pelvic splanchnic nerves. The celiac trunk, abdominal aorta and superior mesenteric artery lie among these structures.',
             'Os nervos esplâncnicos maiores e menores, direitos e esquerdos, alcançam os gânglios e plexos abdominais. Entre eles estão os gânglios celíaco, aorticorrenais, mesentérico superior e mesentérico inferior; os plexos suprarrenal, renal, intermesentérico, ureteral, testicular ou ovariano e hipogástrico superior; e os gânglios sacrais e nervos esplâncnicos pélvicos. O tronco celíaco, a aorta abdominal e a artéria mesentérica superior ficam entre essas estruturas.'),
+          t('The figure also lists the nasal glands and the scrotum among the sympathetic targets.',
+            'A figura também lista as glândulas nasais e o escroto entre os alvos simpáticos.'),
         ],
       },
       {
@@ -256,6 +266,8 @@ export const blocks = [
             'Perto do fim da semana 8, o intestino anterior gira 90 graus em torno do seu eixo longo. O fígado em crescimento, no mesogástrio ventral (que se torna o omento menor), move-se para a direita. O mesogástrio dorsal (que se torna o omento maior) começa a se projetar para a esquerda. Essa bolsa de mesentério dorsal vai crescer bastante para formar a pequena cavidade peritoneal, a bolsa omental.'),
           t('During rotation the stomach turns and the dorsal mesogastrium, containing the spleen, bulges left. The omental bursa communicates with the main peritoneal cavity. The pancreas lies within the mesoduodenum, and the superior mesenteric artery lies in the dorsal mesentery. The cecum on the caudal limb of the gut loop passes right. The adult liver includes the caudate lobe and is related to the gallbladder.',
             'Durante a rotação, o estômago gira e o mesogástrio dorsal, que contém o baço, abaula para a esquerda. A bolsa omental comunica-se com a cavidade peritoneal principal. O pâncreas fica no mesoduodeno e a artéria mesentérica superior, no mesentério dorsal. O ceco no ramo caudal da alça intestinal passa para a direita. O fígado adulto inclui o lobo caudado e relaciona-se com a vesícula biliar.'),
+          t('In the 8-week embryo, the midgut loop herniates through the umbilical ring into the umbilical cord. The loop has a cranial limb, which forms the distal duodenum, the jejunum and most of the ileum, and a caudal limb, which carries the caecal bud. The ureter is also labelled beside the urinary bladder, which the urorectal septum separates from the rectum.',
+            'No embrião de 8 semanas, a alça do intestino médio hernia através do anel umbilical para o cordão umbilical. A alça tem um ramo cranial, que forma o duodeno distal, o jejuno e a maior parte do íleo, e um ramo caudal, que contém o broto cecal. O ureter também está identificado ao lado da bexiga urinária, que o septo urorretal separa do reto.'),
         ],
       },
     ],
@@ -321,6 +333,8 @@ export const blocks = [
             'O omento maior pende abaixo do estômago, fígado e vesícula biliar como um avental sobre o colo transverso e o intestino delgado. O fígado tem lobos direito e esquerdo e ligamento falciforme. O mesocolo transverso fica profundo ao omento. O jejuno e o íleo ficam entre o colo ascendente, o ceco, as flexuras cólicas direita e esquerda e os colos descendente e sigmoide; a bexiga urinária fica abaixo.'),
           t('The lesser omentum reaches the fissure for the ligamentum venosum beside the caudate lobe of the liver. The lesser sac lies behind the stomach and lesser omentum. The hepatic artery, gastric antrum, pancreatic neck and uncinate process, third part of the duodenum and superior mesenteric artery lie in this region. The artery passes behind the pancreatic neck near the uncinate process. The transverse mesocolon joins the transverse colon and adheres to the posterior layers of the greater omentum. The mesentery suspends the small intestine.',
             'O omento menor alcança a fissura do ligamento venoso junto ao lobo caudado do fígado. A bolsa menor fica atrás do estômago e do omento menor. A artéria hepática, o antro gástrico, o colo e o processo uncinado do pâncreas, a terceira parte do duodeno e a artéria mesentérica superior situam-se nessa região. A artéria passa atrás do colo pancreático, perto do processo uncinado. O mesocolo transverso liga-se ao colo transverso e adere às lâminas posteriores do omento maior. O mesentério suspende o intestino delgado.'),
+          t('The descending colon is covered in front by coils of the small intestine (jejunum and ileum).',
+            'O colo descendente é coberto anteriormente por alças do intestino delgado (jejuno e íleo).'),
         ],
       },
       {
@@ -358,6 +372,8 @@ export const blocks = [
             'A raiz do mesocolo transverso separa o espaço supramesocólico, acima, do espaço submesocólico, abaixo. Acima ficam os espaços subfrênicos direito e esquerdo, o espaço sub-hepático direito, a bolsa omental e o ligamento gastroesplênico. Abaixo, a raiz oblíqua do mesentério separa o espaço mesentérico direito do espaço mesentérico-cólico esquerdo. Os recessos paracólicos direito e esquerdo ficam lateralmente, e a raiz do mesocolo sigmoide, inferiormente.'),
           t('The hierarchy is as follows. The abdominopelvic cavity has a peritoneal cavity and an extraperitoneal space. The peritoneal cavity is divided into the supramesocolic (supracolic) space and the submesocolic (infracolic) space. The supramesocolic space has three compartments (hepatic, gastric and splenic), two omenta (the lesser and greater omentum) and recesses: subphrenic, subhepatic, hepatorenal, gastrosplenic, phrenicosplenic, and the omental bursa (lesser sac). The submesocolic space has its own recesses (superior and inferior duodenal, paraduodenal, duodenojejunal, retroduodenal, intersigmoid, superior and inferior ileocecal, retrocecal, right and left mesenteric-colic, and right and left paracolic). The extraperitoneal space has a pelvic part (vesical, prostatic and rectal compartments, plus the retropubic, retrovesical, prerectal, retrorectal and laterorectal connective spaces) and the retroperitoneal space (renal and iliopsoas compartments).',
             'A hierarquia é a seguinte. A cavidade abdominopélvica tem uma cavidade peritoneal e um espaço extraperitoneal. A cavidade peritoneal se divide em espaço supramesocólico (supracólico) e espaço inframesocólico (infracólico). O espaço supramesocólico tem três compartimentos (hepático, gástrico e esplênico), dois omentos (o menor e o maior) e recessos: subfrênicos, sub-hepático, hepatorrenal, gastroesplênico, frenicoesplênico e a bolsa omental (pequena cavidade). O espaço inframesocólico tem recessos próprios (duodenais superior e inferior, paraduodenal, duodenojejunal, retroduodenal, intersigmoide, ileocecais superior e inferior, retrocecal, mesentérico-cólicos direito e esquerdo e paracólicos direito e esquerdo). O espaço extraperitoneal tem uma parte pélvica (compartimentos vesical, prostático e retal, mais os espaços conjuntivos retropúbico, retrovesical, pré-retal, retrorretal e laterorretal) e o espaço retroperitoneal (compartimentos renal e do ilíaco).'),
+          t('The submesocolic space is also called the infracolic space.',
+            'O espaço submesocólico também é chamado de espaço infracólico.'),
         ],
       },
       {
@@ -368,6 +384,8 @@ export const blocks = [
             'O ligamento hepatoduodenal envolve a veia porta hepática. A bolsa omental e as raízes do mesocolo transverso, do mesentério do intestino delgado e do mesocolo sigmoide relacionam-se com o peritônio parietal e visceral. O estômago, o colo transverso, o jejuno, o íleo e o colo sigmoide fixam-se por pregas peritoneais.'),
           t('The superior, descending, inferior and ascending parts of the duodenum curve around the pancreatic head; the pancreas also has a body and tail. Connective tissue lies behind the ascending and descending colon, alongside the right and left mesenteric-colic spaces. The rectum lies in the pelvis. Regional nodes include suprapyloric, superior and inferior pancreaticoduodenal, splenic, superior pancreatic, superior mesenteric and deep inguinal nodes. The vessels include left gastric, inferior pancreaticoduodenal, ileocolic, jejunal, sigmoid, superior rectal and left testicular arteries and veins. The right inguinal ligament lies inferiorly.',
             'As partes superior, descendente, inferior e ascendente do duodeno contornam a cabeça do pâncreas; o pâncreas também tem corpo e cauda. Há tecido conjuntivo atrás dos colos ascendente e descendente, junto aos espaços mesentérico-cólicos direito e esquerdo. O reto fica na pelve. Os linfonodos regionais incluem suprapilóricos, pancreaticoduodenais superiores e inferiores, esplênicos, pancreáticos superiores, mesentéricos superiores e inguinais profundos. Os vasos incluem artérias e veias gástricas esquerdas, pancreaticoduodenais inferiores, ileocólicas, jejunais, sigmoides, retais superiores e testiculares esquerdas. O ligamento inguinal direito fica inferiormente.'),
+          t('On the left the gonadal vessels are the left testicular artery and vein with the testicular plexus.',
+            'À esquerda, os vasos gonadais são a artéria e a veia testiculares esquerdas, com o plexo testicular.'),
         ],
       },
       {
@@ -388,6 +406,8 @@ export const blocks = [
             'O mesocolo transverso passa sobre o pâncreas e sustenta o colo transverso. O omento maior fica anteriormente. O mesentério suspende o jejuno e o íleo terminal. O colo ascendente, o ceco, o apêndice vermiforme e o recesso retrocecal ficam à direita; o colo descendente, o colo sigmoide e seu mesocolo ficam à esquerda, continuando até o reto. As goteiras paracólicas direita e esquerda acompanham o colo, que tem uma tênia livre (tenia libera) e apêndices omentais gordurosos.'),
           t('The liver has right and left lobes and a round ligament; the gallbladder lies near it. The hepatogastric and hepatoduodenal ligaments form the lesser omentum, with the omental foramen behind its free edge. The gastrosplenic ligament joins the stomach to the spleen. The pancreas lies behind the root of the transverse mesocolon. The superior and horizontal duodenum lead toward the duodenojejunal flexure. The mesenteric root runs obliquely toward the terminal ileum and cecum, near the ascending and descending colon, sigmoid mesocolon, rectum and lateral umbilical fold. The greater omentum descends from the stomach toward the transverse colon.',
             'O fígado tem lobos direito e esquerdo e um ligamento redondo; a vesícula biliar fica perto dele. Os ligamentos hepatogástrico e hepatoduodenal formam o omento menor, com o forame omental atrás de sua borda livre. O ligamento gastroesplênico liga o estômago ao baço. O pâncreas fica atrás da raiz do mesocolo transverso. As partes superior e horizontal do duodeno seguem em direção à flexura duodenojejunal. A raiz mesentérica segue obliquamente para o íleo terminal e o ceco, perto dos colos ascendente e descendente, mesocolo sigmoide, reto e prega umbilical lateral. O omento maior desce do estômago em direção ao colo transverso.'),
+          t('The lateral umbilical fold is raised by the inferior epigastric artery and vein. The three flat muscles of the wall, the external oblique, internal oblique and transversus abdominis, are labelled around the paracolic gutters.',
+            'A prega umbilical lateral é elevada pela artéria e pela veia epigástricas inferiores. Os três músculos planos da parede, oblíquo externo, oblíquo interno e transverso do abdome, estão identificados ao redor dos sulcos paracólicos.'),
         ],
       },
       {
@@ -398,6 +418,8 @@ export const blocks = [
             'O mesentério fixa o intestino delgado à parede abdominal posterior e deriva do mesogástrio dorsal. Sua borda anterior livre, em leque, contém o jejuno e o íleo e mede 6 m. Sua borda posterior fixada, a raiz do mesentério, mede 15 cm. A raiz segue obliquamente perto de L4, entre os mesocolos transverso e sigmoide. Perto ficam os recessos duodenais superior e inferior, ileocecal inferior, intersigmoide e retrocecal, os colos descendente e sigmoide e as pregas umbilicais anteriores. O omento maior e o colo transverso ficam acima.'),
           t('The fatty, fan-shaped mesentery contains arteries, veins, lymphatics and nerves. Its vessels radiate toward the intestinal wall. The jejunum and ileum hang from it; its attached root is 15 cm long.',
             'O mesentério gorduroso, em leque, contém artérias, veias, linfáticos e nervos. Seus vasos irradiam para a parede intestinal. O jejuno e o íleo pendem dele; sua raiz fixada mede 15 cm.'),
+          t('The medial umbilical fold carries the obliterated umbilical artery (medial umbilical ligament).',
+            'A prega umbilical medial contém a artéria umbilical obliterada (ligamento umbilical medial).'),
         ],
       },
       {

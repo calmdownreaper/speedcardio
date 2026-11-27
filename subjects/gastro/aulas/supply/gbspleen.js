@@ -227,6 +227,8 @@ export const blocks = [
           t('### Why it matters', '### Por que importa'),
           t('Recognising these borders reduces complications of laparoscopic cholecystectomy, including injury to the biliary tree. About 95% of extrahepatic bile duct injuries occur during surgery, mainly cholecystectomy. Lifting the gallbladder fundus opens the triangle. The cystic artery and duct are clipped before division.',
             'Identificar esses limites reduz complicações da colecistectomia laparoscópica, inclusive lesões da árvore biliar. Cerca de 95% das lesões das vias biliares extra-hepáticas ocorrem durante cirurgias, sobretudo colecistectomias. A elevação do fundo da vesícula abre o triângulo. A artéria e o ducto císticos são clipados antes da secção.'),
+          t('To expose and open Calot\'s triangle, the surgeon grasps the gallbladder fundus and retracts it slightly upwards over the liver, lifting the gallbladder from its bed and pulling it to the right while the anterior margin of the right lobe is pushed upwards.',
+            'Para expor e abrir o triângulo de Calot, o cirurgião segura o fundo da vesícula biliar e o retrai ligeiramente para cima sobre o fígado, elevando a vesícula de seu leito e puxando-a para a direita enquanto a margem anterior do lobo direito é empurrada para cima.'),
         ],
       },
       {

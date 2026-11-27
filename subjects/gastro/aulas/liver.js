@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/liver.js?v=159';
+import * as supply from './supply/liver.js?v=160';
 
 export const unit = {
   id: 'liver',
@@ -32,6 +32,8 @@ export const blocks = [
             'Na cavidade abdominal, o fígado situa-se no espaço supramesocólico e alcança superiormente a 5ª costela, ocupando o hipocôndrio direito (região hipocondríaca direita) e o epigástrio. Na topografia regional do abdome, os órgãos vizinhos ocupam regiões específicas: o Estômago estende-se pelas regiões epigástrica, hipocondríaca esquerda e umbilical; a Vesícula biliar e a flexura cólica direita ficam na região hipocondríaca direita; o colo ascendente ocupa a região lombar direita; e o intestino delgado e o reto ficam mais abaixo.'),
           t('Liver functions are not covered in this lesson; they belong to the physiology course («Funções: feitas na fisiologia»).',
             'As funções do fígado não são tratadas nesta aula; elas pertencem ao curso de fisiologia («Funções: feitas na fisiologia»).'),
+          t('In the regional map, the left lumbar region holds the descending colon, and the hypogastric (pubic) region holds the sigmoid colon and the rectum.',
+            'No mapa regional, a região lombar esquerda contém o colo descendente, e a região hipogástrica (púbica) contém o colo sigmoide e o reto.'),
         ],
       },
       {
@@ -42,6 +44,8 @@ export const blocks = [
             'Relações: a face diafragmática do fígado fica logo abaixo do diafragma e, com a interposição do diafragma, relaciona-se com a base do pulmão direito e com o coração. Nessa transição toracoabdominal, o coração (átrio direito e ventrículos), os pulmões direito e esquerdo e o recesso costodiafragmático situam-se acima do diafragma, enquanto o fígado, a veia cava inferior, a veia porta hepática, o estômago e a junção esofagogástrica ficam abaixo dele.'),
           t('On the diaphragmatic surface itself, the liver is contacted directly by the diaphragm and, with the interposition of the diaphragm, by the heart superiorly and by the inferior lobe of the right lung and the right diaphragmatic recess on its right lateral aspect. In the 3D model, the Inferior vena cava and the Diaphragm are the posterior and upper neighbours of the liver, while the Stomach is a near neighbour on the left.',
             'Na própria face diafragmática, o fígado entra em contato direto com o diafragma e, com interposição do diafragma, com o coração superiormente e com o lobo inferior do pulmão direito e o recesso diafragmático direito em sua face lateral direita. No modelo 3D, a Veia cava inferior e o Diafragma são os vizinhos posteriores e superiores do fígado, enquanto o Estômago é um vizinho próximo à esquerda.'),
+          t('The thoracic relations figure also labels the anterior scalene, the brachiocephalic trunk, the lateral cord of the brachial plexus, the clavicle and subclavius, the axillary artery, the deltoid and the pectoralis major.',
+            'A figura das relações torácicas também identifica o músculo escaleno anterior, o tronco braquiocefálico, o fascículo lateral do plexo braquial, a clavícula e o músculo subclávio, a artéria axilar e os músculos deltoide e peitoral maior.'),
         ],
       },
       {
@@ -136,6 +140,8 @@ export const blocks = [
             'Na face anterior, sob o diafragma, um mesentério ventral, o ligamento falciforme, prende o fígado à parede abdominal anterior e marca a divisão do fígado em lobo esquerdo e lobo direito. Um espessamento de sua margem inferior forma o ligamento redondo (teres), resíduo fibroso da veia umbilical fetal degenerada — que embriologicamente ligava o broto hepático à parede anterior (em frente ao estômago, broto esplênico, broto pancreático, rim esquerdo e espaço retroperitoneal) e, na circulação fetal, unia-se ao ducto venoso e à veia cava inferior.'),
           t('Peritoneal development repeats around the rotation of the foregut and its dorsal and ventral mesogastria: the liver lies in the ventral mesogastrium and the spleen in the dorsal one. The falciform ligament has two borders: the anterior border is attached to the anterior abdominal wall, and the posterior border hangs free down to the umbilicus.',
             'O desenvolvimento do peritônio se organiza em torno da rotação do intestino anterior e de seus mesogástrios dorsal e ventral: o fígado fica no mesogástrio ventral e o baço no dorsal. O ligamento falciforme tem duas bordas: a borda anterior é presa à parede abdominal anterior, e a borda posterior fica livre, descendo até o umbigo.'),
+          t('In the prenatal circulation figure the foramen ovale is open, letting oxygenated blood pass from the right to the left atrium.',
+            'Na figura da circulação pré-natal, o forame oval está aberto, permitindo que o sangue oxigenado passe do átrio direito para o esquerdo.'),
         ],
       },
       {
@@ -213,6 +219,8 @@ export const blocks = [
             'Em sua origem, o tronco celíaco divide-se nas artérias gástrica esquerda, esplênica e hepática comum; a artéria hepática comum emite as artérias gastroduodenal e gástrica direita antes de continuar como artéria hepática própria rumo ao fígado (enquanto ramos pancreaticoduodenais e gastromentais irrigam estômago, duodeno e pâncreas). Na margem livre do omento menor (o ligamento hepatoduodenal), a artéria hepática própria sobe anterior à veia porta e medial ao ducto biliar.'),
           t('Distally, the proper hepatic artery divides into its right and left hepatic branches serving segments I–VIII, and the cystic artery arises from the right hepatic artery within the cystohepatic triangle (of Calot). In the 3D model, the Gallbladder sits beside the Cystic duct and the Common hepatic duct, and the cystic artery arises from the right hepatic artery.',
             'Distalmente, a artéria hepática própria divide-se nos ramos hepáticos direito e esquerdo para os segmentos I–VIII, e a artéria cística nasce da artéria hepática direita dentro do triângulo cisto-hepático (de Calot). No modelo 3D, a Vesícula biliar fica ao lado do Ducto cístico e do Ducto hepático comum, e a artéria cística sai da artéria hepática direita.'),
+          t('Besides the right and left hepatic arteries, an intermediate (middle) hepatic artery, usually from the left hepatic artery, supplies segment IV.',
+            'Além das artérias hepáticas direita e esquerda, uma artéria hepática intermediária (média), geralmente originada da artéria hepática esquerda, irriga o segmento IV.'),
         ],
       },
       {
@@ -253,6 +261,8 @@ export const blocks = [
             'As variações da veia porta dizem respeito ao modo como seus afluentes entram na confluência. A veia gástrica esquerda frequentemente entra na junção das veias esplênica e mesentérica superior, e em 24% dos casos entra na veia esplênica. A veia mesentérica inferior pode entrar na junção das veias esplênica e mesentérica superior, ou pode entrar apenas na veia mesentérica superior — variando a forma como a Veia gástrica esquerda e a Veia mesentérica inferior se unem à Veia esplênica e à Veia mesentérica superior para formar a Veia porta hepática.'),
           t('In the 3D model, check the Gastric veins and the Inferior mesenteric vein when you trace the portal system: the Left gastric vein can join the Splenic vein, and the Inferior mesenteric vein can join the Superior mesenteric vein or the junction of the two.',
             'No modelo 3D, verifique as Veias gástricas e a Veia mesentérica inferior ao seguir o sistema porta: a veia gástrica esquerda pode se unir à Veia esplênica, e a veia mesentérica inferior pode se unir à Veia mesentérica superior ou à junção das duas.'),
+          t('Among the portal variations the figure shows "high intestinal veins", where intestinal veins join the portal system higher than usual.',
+            'Entre as variações portais, a figura mostra “veias intestinais altas”, em que as veias intestinais se unem ao sistema porta em uma posição mais alta que a habitual.'),
         ],
       },
     ],
@@ -294,6 +304,8 @@ export const blocks = [
             'Os segmentos funcionais baseiam-se na distribuição dos ramos da veia porta no parênquima, e são oito, de I a VIII, com o IV dividido em 4a e 4b. Segmentos vizinhos não têm anastomoses vasculares, o que torna possível a hepatectomia parcial. O primeiro segmento é o Lobo caudado. A divisão em segmentos segue as ramificações dos ductos biliares e dos vasos hepáticos, e não corresponde totalmente à divisão anatômica em lobos: cirurgicamente, as fissuras portais direita e esquerda, a fissura portal principal e a fissura umbilical separam os setores laterais direito e esquerdo e os setores mediais direito e esquerdo.'),
           t('In the 3D model, the Caudate lobe of liver is segment I. Use the Gallbladder and the Inferior vena cava as the landmarks for the surface division.',
             'No modelo 3D, o Lobo caudado do fígado é o segmento I. Use a Vesícula biliar e a Veia cava inferior como referências para a divisão de superfície.'),
+          t('Area names for the left segments: segment II is the lateral superior area, segment III the lateral inferior area, and segment IV the medial area, with anterior and posterior portions.',
+            'Nomes das áreas dos segmentos esquerdos: o segmento II é a área lateral superior, o segmento III é a área lateral inferior e o segmento IV é a área medial, com porções anterior e posterior.'),
         ],
       },
       {

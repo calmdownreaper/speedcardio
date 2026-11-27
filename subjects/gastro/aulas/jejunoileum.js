@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/jejunoileum.js?v=159';
+import * as supply from './supply/jejunoileum.js?v=160';
 
 export const unit = {
   id: 'jejunoileum',
@@ -69,6 +69,8 @@ export const blocks = [
             'Não há separação nítida entre o jejuno e o íleo; a transição é gradual. Seguindo distalmente, o intestino fica mais estreito (o jejuno mede 4 cm por fora e 3 cm por dentro, enquanto o íleo mede 3 cm por fora e 2,5 cm por dentro), com parede mais fina (as pregas circulares ficam progressivamente mais baixas) e menos vascularizado (as artérias jejunais são um pouco maiores que as ileais). Nos dois segmentos, o mesentério leva os vasa recta até a parede intestinal, cujas camadas — serosa, músculo longitudinal, músculo circular, submucosa (com o plexo arterial submucoso) e mucosa — passam de pregas circulares altas no jejuno a folículos linfáticos proeminentes e placas de Peyer no íleo.'),
           t('In the 3D model, the Jejunum sits higher and the Ileum lower and further to the right. Use the change in calibre along the loops to place the boundary, which is not sharp.',
             'No modelo 3D, o Jejuno fica mais alto e o Íleo mais baixo e mais à direita. Use a mudança de calibre ao longo das alças para situar a fronteira, que não é nítida.'),
+          t('The figure compares cadaver specimens of the jejunum (A) and the ileum (B).',
+            'A figura compara peças cadavéricas do jejuno (A) e do íleo (B).'),
         ],
       },
     ],
@@ -104,6 +106,8 @@ export const blocks = [
             'A raiz do mesentério tem 15–20 cm de comprimento e corre obliquamente da flexura duodenojejunal até a junção ileocecal. Na parede abdominal posterior (retroperitônio), ela cruza sobre o duodeno, a aorta abdominal, a veia cava inferior, o ureter direito e a artéria ilíaca comum direita em direção à junção ileocecal. Essa raiz oblíqua situa-se no espaço inframesocólico, entre as áreas retroperitoneais de fixação dos colos ascendente e descendente, abaixo da raiz do mesocolo transverso (abaixo do pâncreas e das artérias esplênica e hepática comum) e acima da raiz do mesocolo sigmoide (acima do reto e da bexiga urinária, com a artéria mesentérica inferior descendo entre a raiz do mesentério e a do sigmoide).'),
           t('⚠ Page 9 gives the root as 15–20 cm, while page 10 gives 14–17 cm; page 8 gives 15 cm. The class material disagrees on this measure.',
             '⚠ A página 9 dá a raiz como 15–20 cm, enquanto a página 10 dá 14–17 cm; a página 8 dá 15 cm. O material da aula diverge sobre essa medida.'),
+          t('The posterior abdominal wall figure with the root of the mesentery also shows, as landmarks, the right kidney, the left suprarenal gland, the right and left triangular ligaments of the liver, the left gastric artery and the cut abdominal oesophagus.',
+            'A figura da parede abdominal posterior com a raiz do mesentério também mostra, como referências, o rim direito, a glândula suprarrenal esquerda, os ligamentos triangulares direito e esquerdo do fígado, a artéria gástrica esquerda e o esôfago abdominal seccionado.'),
         ],
       },
       {
@@ -134,6 +138,14 @@ export const blocks = [
             'O mesentério tem três funções: contém vasos sanguíneos, linfáticos e nervos; permite a motilidade intestinal (peristaltismo); e tem ação anti-inflamatória. A motilidade assume dois tipos. O peristaltismo impulsiona o conteúdo ao longo do trato por contrações coordenadas das camadas circular e longitudinal: o músculo circular contrai-se atrás do bolo enquanto o longitudinal contrai-se à frente dele, empurrando uma onda para a frente. A segmentação envolve principalmente as camadas musculares circulares, que misturam o conteúdo sem produzir movimento líquido em uma única direção.'),
           t('In the 3D model, the Jejunum and the Ileum are the loops where you can see both kinds of movement: the peristaltic wave moves contents along the loop, while segmentation churns it in place.',
             'No modelo 3D, o Jejuno e o Íleo são as alças em que você pode ver os dois tipos de movimento: a onda peristáltica move o conteúdo ao longo da alça, enquanto a segmentação o mistura no lugar.'),
+          t('The relations figure also labels the liver lobes with the round and falciform ligaments, the fundus, body and pyloric antrum of the stomach, the gallbladder, the spleen, the hepatogastric, hepatoduodenal and gastrocolic ligaments, the left colic flexure and, low down, the inguinal ligament and the deep inguinal ring.',
+            'A figura das relações também identifica os lobos do fígado com os ligamentos redondo e falciforme, o fundo, o corpo e o antro pilórico do estômago, a vesícula biliar, o baço, os ligamentos hepatogástrico, hepatoduodenal e gastrocólico, a flexura cólica esquerda e, inferiormente, o ligamento inguinal e o anel inguinal profundo.'),
+          t('The posterior wall behind the mesentery root shows the right and left suprarenal glands, the right kidney, the twelfth rib, the horizontal and ascending parts of the duodenum, the head of the pancreas and the right ureter. Lower down the figure labels the posterior superior iliac spine, the gluteus medius and minimus, the tensor fasciae latae and the iliopectineal arch, which separates the muscular space (iliopsoas and femoral nerve) from the vascular space under the inguinal ligament.',
+            'A parede posterior atrás da raiz do mesentério mostra as glândulas suprarrenais direita e esquerda, o rim direito, a décima segunda costela, as partes horizontal e ascendente do duodeno, a cabeça do pâncreas e o ureter direito. Mais abaixo, a figura identifica a espinha ilíaca póstero-superior, os músculos glúteos médio e mínimo, o tensor da fáscia lata e o arco iliopectíneo, que separa o espaço muscular (iliopsoas e nervo femoral) do espaço vascular sob o ligamento inguinal.'),
+          t('Neighbours of the mesentery on the right and left include the body and tail of the pancreas, the inferior part of the duodenum, the middle colic artery and vein, and the left paracolic recess.',
+            'Entre as estruturas vizinhas ao mesentério à direita e à esquerda estão o corpo e a cauda do pâncreas, a parte inferior do duodeno, a artéria e a veia cólicas médias e o recesso paracólico esquerdo.'),
+          t('Para-aortic (lumbar) lymph nodes lie beside the aorta, around the origins of the superior and inferior mesenteric arteries. The figure also labels the hepatogastric ligament, the common hepatic artery, the stomach, the hepatic portal vein, the left renal vein, the posterior parietal peritoneum and the left common iliac artery and vein.',
+            'Os linfonodos para-aórticos (lombares) situam-se ao lado da aorta, ao redor das origens das artérias mesentéricas superior e inferior. A figura também identifica o ligamento hepatogástrico, a artéria hepática comum, o estômago, a veia porta hepática, a veia renal esquerda, o peritônio parietal posterior e a artéria e a veia ilíacas comuns esquerdas.'),
         ],
       },
     ],
@@ -169,6 +181,8 @@ export const blocks = [
             'Ao longo da coluna vertebral, a aorta abdominal emite seus principais ramos em níveis definidos: o tronco celíaco em T12, a artéria mesentérica superior em L1, as artérias renais em L1/L2, a artéria mesentérica inferior em L3 e a bifurcação aórtica nas artérias ilíacas comuns direita e esquerda em L4. De cima para baixo, a sequência completa de ramos compreende as artérias frênicas inferiores e suprarrenais superiores direita e esquerda; o tronco celíaco (dividindo-se nas artérias hepática comum — com as artérias gástrica direita, hepática própria e gastroduodenal —, gástrica esquerda e esplênica); a artéria mesentérica superior ladeada pelas artérias suprarrenais médias e inferiores e renais; as artérias lombares e a artéria testicular/ovariana esquerda; a artéria mesentérica inferior; e a bifurcação terminal nas artérias ilíacas comuns direita e esquerda com a artéria sacral mediana entre elas.'),
           t('In the 3D model, the Superior mesenteric artery sits at L1, one centimetre below the Celiac trunk, and the Inferior mesenteric artery lies lower at L3.',
             'No modelo 3D, a Artéria mesentérica superior fica em L1, um centímetro abaixo do Tronco celíaco, e a Artéria mesentérica inferior fica mais abaixo, em L3.'),
+          t('The lumbar arteries in the figure include the left first and fourth lumbar arteries, branches of the abdominal aorta.',
+            'As artérias lombares na figura incluem a primeira e a quarta artérias lombares esquerdas, ramos da aorta abdominal.'),
         ],
       },
       {

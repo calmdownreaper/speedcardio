@@ -50,7 +50,7 @@
     let lang = params.get('lang');
     if (!['en', 'pt-BR'].includes(lang)) { try { lang = localStorage.getItem('anatomy_language') === 'pt-BR' ? 'pt-BR' : 'en'; } catch { lang = 'en'; } }
     document.documentElement.lang = lang;
-    const { decks, title, model3d } = await import(`./subjects/${subject}/typing/index.js?v=159`);
+    const { decks, title, model3d } = await import(`./subjects/${subject}/typing/index.js?v=160`);
     if (title) document.title = lang === 'pt-BR' ? title[1] : title[0];
     const back = new URL('./', location.href); back.searchParams.set('s', subject); if (params.get('lang')) back.searchParams.set('lang', lang);
     const T = (en, pt) => lang === 'pt-BR' ? pt : en;
@@ -122,7 +122,7 @@
       (async () => {
         try {
           const [{ SUBJECTS }, { initStudy }, { createViewer }] = await Promise.all([
-            import('./subjects/registry.js?v=159'), import('./study.js?v=115'), import('./viewer.js?v=150')]);
+            import('./subjects/registry.js?v=160'), import('./study.js?v=115'), import('./viewer.js?v=150')]);
           const entry = SUBJECTS.find(x => x.id === subject);
           const pack = (await entry.load()).default;
           meshGroups = pack.meshGroups || {};

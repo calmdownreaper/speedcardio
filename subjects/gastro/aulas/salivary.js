@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/salivary.js?v=159';
+import * as supply from './supply/salivary.js?v=160';
 
 export const unit = {
   id: 'salivary',
@@ -71,6 +71,8 @@ export const blocks = [
             'A parte profunda: sua face anteromedial é sulcada pela borda posterior do ramo da mandíbula. Ela cobre a parte posteroinferior do masseter e a face lateral da articulação temporomandibular (ATM). Avança para a frente até alcançar o músculo pterigoide medial.'),
           t('The temporalis lies beneath the superficial and deep temporal fascia. The zygomatic arch and articular disc lie above the temporomandibular joint. The parotid duct crosses the superficial and deep masseter toward the buccinator and facial expression muscles. Deep to the gland are the medial and lateral pterygoids and lateral pterygoid plate, hamulus, choanae, cartilaginous auditory tube, sphenomandibular ligament, otic ganglion and masseteric and auriculotemporal nerves. The deep parotid lies between the masseter and TMJ anteriorly, the zygomatic arch above and sternocleidomastoid posteriorly.',
             'O temporal fica sob as lâminas superficial e profunda da fáscia temporal. O arco zigomático e o disco articular ficam acima da articulação temporomandibular. O ducto parotídeo cruza as partes superficial e profunda do masseter em direção ao bucinador e aos músculos da expressão facial. Profundamente à glândula ficam os pterigoideos medial e lateral e a lâmina pterigoide lateral, o hâmulo, as coanas, a parte cartilaginosa da tuba auditiva, o ligamento esfenomandibular, o gânglio ótico e os nervos massetérico e auriculotemporal. A parótida profunda fica entre o masseter e a ATM anteriormente, o arco zigomático acima e o esternocleidomastóideo posteriormente.'),
+          t('The tensor veli palatini and levator veli palatini are drawn next to the deep part of the parotid, near the pterygoid hamulus.',
+            'Os músculos tensor e levantador do véu palatino estão desenhados junto à parte profunda da parótida, perto do hâmulo pterigóideo.'),
         ],
       },
       {
@@ -166,6 +168,8 @@ export const blocks = [
             'O suprimento arterial da parótida vem de ramos da carótida externa vizinhos à glândula, junto com a artéria facial transversa, que é o primeiro ramo da artéria temporal superficial. Esses vasos formam uma rede capilar rica em volta dos ácinos, as unidades secretoras da glândula.'),
           t('Inside the parotid, the external carotid artery gives off the posterior auricular artery and ends as the superficial temporal and maxillary arteries. Its other branches in this region include the superior thyroid, ascending pharyngeal, lingual, facial and occipital arteries; a parotid branch arises near the posterior auricular and occipital arteries.',
             'Dentro da parótida, a carótida externa dá a artéria auricular posterior e termina nas artérias temporal superficial e maxilar. Seus outros ramos na região incluem as artérias tireóidea superior, faríngea ascendente, lingual, facial e occipital; um ramo parotídeo nasce perto das artérias auricular posterior e occipital.'),
+          t('The external carotid artery is one of the two terminal branches of the common carotid artery (the other is the internal carotid). On the parotid figure, the posterior auricular artery gives the posterior tympanic artery and auricular and occipital branches.',
+            'A artéria carótida externa é um dos dois ramos terminais da artéria carótida comum (o outro é a carótida interna). Na figura da parótida, a artéria auricular posterior emite a artéria timpânica posterior e ramos auricular e occipital.'),
         ],
       },
       {
@@ -208,6 +212,8 @@ export const blocks = [
             'A glândula submandibular produz 65% da saliva, e sua secreção é predominantemente serosa, mas também mucosa. A glândula tem o tamanho de uma noz e pesa de 7 a 8 g.'),
           t('The submandibular gland lies beneath the mandibular body against the mylohyoid and hyoglossus, between the digastric bellies and below the parotid. On the medial mandible, the mylohyoid line separates the submandibular fossa below from the sublingual fossa above and anteriorly. The digastric fossa and superior and inferior mental spines are nearby. The parotid is serous, the submandibular mostly serous and partly mucous, and the sublingual almost entirely mucous.',
             'A glândula submandibular fica sob o corpo da mandíbula, junto ao milo-hióideo e hioglosso, entre os ventres do digástrico e abaixo da parótida. Na face medial da mandíbula, a linha milo-hióidea separa a fossa submandibular abaixo da fossa sublingual acima e anteriormente. A fossa digástrica e as espinhas mentais superior e inferior ficam próximas. A parótida é serosa, a submandibular principalmente serosa e parcialmente mucosa, e a sublingual quase totalmente mucosa.'),
+          t('Landmarks of the mandible in the figure: the coronoid process in front and the condylar process behind (head and neck of the mandible), separated by the mandibular notch; the pterygoid fovea on the neck receives the lateral pterygoid. The superior and inferior mental spines on the inner surface of the mandible are also called the genial tubercles (origins of the genioglossus and geniohyoid). Also labelled: middle and inferior pharyngeal constrictors, thyrohyoid, superior belly of omohyoid and sternothyroid beside the submandibular gland, and further back longus capitis, splenius capitis, levator scapulae, the brachial plexus and the acromion.',
+            'Referências da mandíbula na figura: o processo coronóide anteriormente e o processo condilar posteriormente (cabeça e colo da mandíbula), separados pela incisura mandibular; a fóvea pterigóidea no colo recebe o músculo pterigóideo lateral. As espinhas mentuais superior e inferior na face interna da mandíbula também são chamadas de tubérculos genianos (origens do genioglosso e do gênio-hióideo). Também estão identificados: os constritores faríngeos médio e inferior, o tireo-hióideo, o ventre superior do omo-hióideo e o esternotireóideo ao lado da glândula submandibular e, mais posteriormente, o longo da cabeça, o esplênio da cabeça, o levantador da escápula, o plexo braquial e o acrômio.'),
         ],
       },
       {
@@ -244,6 +250,8 @@ export const blocks = [
         body: [
           t('The submandibular gland receives branches of the facial artery and drains into the facial vein. The facial artery also gives ascending palatine, tonsillar, submental, labial, angular and dorsal nasal branches. The external carotid gives the facial, superior thyroid, lingual, ascending pharyngeal, maxillary and superficial temporal arteries. The facial vein drains to the internal jugular vein. Nearby venous pathways include the external and anterior jugular, dural sinuses, superficial temporal, suprascapular, subclavian and left brachiocephalic veins.',
             'A glândula submandibular recebe ramos da artéria facial e drena para a veia facial. A artéria facial também dá ramos palatino ascendente, tonsilar, submentual, labiais, angular e nasal dorsal. A carótida externa dá as artérias facial, tireóidea superior, lingual, faríngea ascendente, maxilar e temporal superficial. A veia facial drena para a jugular interna. Vias venosas próximas incluem as jugulares externa e anterior, os seios durais e as veias temporal superficial, supraescapular, subclávia e braquiocefálica esquerda.'),
+          t('Along the face, the figure also labels the infraorbital artery (from the maxillary artery), the superior and inferior labial arteries (from the facial artery) and the mental artery (from the inferior alveolar artery). The dorsal nasal artery is a terminal branch of the ophthalmic artery, itself a branch of the internal carotid. Inside the skull the named dural venous sinuses are the superior sagittal, transverse, sigmoid and cavernous sinuses, with the confluence of the sinuses.',
+            'Ao longo da face, a figura também identifica a artéria infraorbital (da artéria maxilar), as artérias labiais superior e inferior (da artéria facial) e a artéria mentual (da artéria alveolar inferior). A artéria dorsal do nariz é um ramo terminal da artéria oftálmica, que é ramo da carótida interna. Dentro do crânio, os seios venosos da dura-máter nomeados são os seios sagital superior, transverso, sigmoide e cavernoso, com a confluência dos seios.'),
         ],
       },
     ],
@@ -297,6 +305,8 @@ export const blocks = [
             'A glândula sublingual é irrigada pelo ramo sublingual da artéria lingual. Sua drenagem venosa vai da veia sublingual para a veia lingual e depois para a veia jugular interna.'),
           t('The innervation is parasympathetic: fibres carried by the lingual nerve, originating from the submandibular ganglion. Both dissections trace these neurovascular bundles along the floor of the mouth: the lingual nerve carries the submandibular ganglion above the hyoglossus and hypoglossal nerve [XII], while the lingual artery and vein give off the sublingual artery (and deep lingual artery) between the mandible, hyoid bone, styloglossus, stylopharyngeus, stylohyoid and posterior belly of the digastric, alongside the glossopharyngeal nerve [IX], lingual nodes, occipital and carotid arteries, and the facial, submental and internal jugular veins.',
             'A inervação é parassimpática: fibras levadas pelo nervo lingual, originadas no gânglio submandibular. As duas dissecções acompanham esses feixes neurovasculares pelo assoalho da boca: o nervo lingual sustenta o gânglio submandibular acima do hioglosso e do nervo hipoglosso [XII], enquanto a artéria e veia linguais emitem a artéria sublingual (e a artéria lingual profunda) entre a mandíbula, o osso hioide, o estiloglosso, o estilofaríngeo, o estilo-hióideo e o ventre posterior do digástrico, ao lado do nervo glossofaríngeo [IX], dos linfonodos linguais, das artérias occipital e carótidas e das veias facial, submentual e jugular interna.'),
+          t('The styloid process of the temporal bone is a labelled landmark beside the sublingual vessels and the styloglossus.',
+            'O processo estiloide do osso temporal é uma referência identificada ao lado dos vasos sublinguais e do músculo estiloglosso.'),
         ],
       },
     ],
@@ -320,6 +330,8 @@ export const blocks = [
             'Um órgão sólido é envolvido por uma cápsula de tecido conjuntivo. Septos irradiam dela para dentro e formam o estroma, que sustenta vasos e nervos e divide o órgão em lobos e lóbulos. O parênquima é o componente típico do órgão e pode conter um ou mais tecidos. Os órgãos também podem ser ocos.'),
           t('Blood vessels enter an organ through its capsule or its hilum. In the pancreas, arterial branches enter along the surface and capsule; in the kidney, the renal artery enters at the hilum.',
             'Os vasos sanguíneos entram em um órgão pela cápsula ou pelo hilo. No pâncreas, ramos arteriais entram pela superfície e cápsula; no rim, a artéria renal entra pelo hilo.'),
+          t('Under the microscope, organs are classed as solid (parenchymatous) organs, such as the salivary glands, and hollow organs, such as the gut tube.',
+            'Ao microscópio, os órgãos são classificados em órgãos sólidos (parenquimatosos), como as glândulas salivares, e órgãos ocos, como o tubo intestinal.'),
         ],
       },
       {
@@ -350,6 +362,8 @@ export const blocks = [
             'Em nível de elétron, as células são: células serosas com microvilosidades apicais, vesículas pinocíticas, grânulos secretores heterogêneos e eletrondensos, canalículo secretor intercelular, junções oclusivas e núcleo esférico; células mucosas com junções oclusivas, vesículas secretoras homogêneas e eletrontransparentes e núcleo basal achatado (por vezes cobertas por uma semilua serosa); células dos ductos intercalares com uma rede apical proeminente de microfilamentos e um prolongamento subjacente de célula mioepitelial; e células dos ductos estriados com núcleo central, mitocôndrias e dobras da membrana plasmática basal que dão o aspecto estriado.'),
           t('Intercalated ducts follow the terminal secretory unit. Their cuboidal cells secrete water and electrolytes. Striated ducts have basal cytoplasmic infoldings with many mitochondria. They secrete K⁺ and reabsorb excess Na⁺, making saliva hypotonic; they also secrete lysozyme and IgA. Cl⁻ is also reabsorbed, while kallikrein and immunoglobulin enter the duct. The interlobular excretory ducts follow.',
             'Os ductos intercalares seguem a unidade secretora terminal. Suas células cúbicas secretam água e eletrólitos. Os ductos estriados têm pregas basais do citoplasma com muitas mitocôndrias. Secretam K⁺ e reabsorvem o excesso de Na⁺, tornando a saliva hipotônica; também secretam lisozima e IgA. Cl⁻ também é reabsorvido, enquanto calicreína e imunoglobulina entram no ducto. Em seguida vêm os ductos excretores interlobulares.'),
+          t('The striated (intralobular) duct is accompanied by a non-myelinated postganglionic autonomic axon.',
+            'O ducto estriado (intralobular) é acompanhado por um axônio autonômico pós-ganglionar não mielinizado.'),
         ],
       },
       {
@@ -368,6 +382,8 @@ export const blocks = [
             'A parótida consiste principalmente em unidades secretoras serosas que contêm enzimas, organizadas em lóbulos. Septos conjuntivos partem da cápsula entre os lóbulos e conduzem vasos, nervos e grandes ductos excretores. Células dos ductos estriados ficam entre as células serosas.'),
           t('The sublingual gland consists mostly of mucous acini, which stain poorly. Excretory ducts lie in fibrous septa with vessels and nerves. The amount of adipose tissue generally increases with age. The submandibular gland contains serous and mucous units, including mucous acini with serous demilunes.',
             'A glândula sublingual consiste principalmente em ácinos mucosos, que se coram pouco. Ductos excretores ficam nos septos fibrosos com vasos e nervos. A quantidade de tecido adiposo geralmente aumenta com a idade. A glândula submandibular contém unidades serosas e mucosas, incluindo ácinos mucosos com semiluas serosas.'),
+          t('The parotid is divided by septa into numerous lobules, and each lobule contains many secretory units.',
+            'A parótida é dividida por septos em numerosos lóbulos, e cada lóbulo contém muitas unidades secretoras.'),
         ],
       },
     ],

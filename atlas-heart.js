@@ -651,7 +651,7 @@ const PT_EXTRA = {
 
 async function loadStudyPack() {
   if (lang === 'pt-BR') {
-    const localize = await import('./translations/localize.js?v=159');
+    const localize = await import('./translations/localize.js?v=160');
     const pack = localize.localizePack({ decks: DECKS, regions: [] });
     const decks = pack.decks.map(deck => ({
       ...deck,

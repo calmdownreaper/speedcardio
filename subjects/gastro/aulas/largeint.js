@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/largeint.js?v=159';
+import * as supply from './supply/largeint.js?v=160';
 
 export const unit = {
   id: 'largeint',
@@ -26,6 +26,8 @@ export const blocks = [
             'O intestino grosso estende-se da válvula ileocecal ao orifício anal. Mede 1–1,8 m e forma uma moldura em ferradura ao redor do intestino delgado.'),
           t('The cecum lies in the right iliac fossa. The ascending colon rises to the right colic flexure; the transverse colon crosses to the left colic flexure. The descending colon runs to the sigmoid colon in the left lower quadrant, and the rectum continues into the anal canal.',
             'O ceco fica na fossa ilíaca direita. O colo ascendente sobe até a flexura cólica direita; o colo transverso atravessa até a flexura cólica esquerda. O colo descendente segue ao sigmoide no quadrante inferior esquerdo, e o reto continua no canal anal.'),
+          t('The class material groups the large intestine into three parts: the caecum (with the appendix), the colon (ascending, transverse, descending and sigmoid) and the rectum. In the quadrant map, the caecum lies in the right lower quadrant, the right colic flexure in the right upper quadrant, the left colic flexure in the left upper quadrant and the sigmoid colon in the left lower quadrant.',
+            'O material da aula divide o intestino grosso em três partes: o ceco (com o apêndice), o colo (ascendente, transverso, descendente e sigmoide) e o reto. No mapa dos quadrantes, o ceco situa-se no quadrante inferior direito, a flexura cólica direita no quadrante superior direito, a flexura cólica esquerda no quadrante superior esquerdo e o colo sigmoide no quadrante inferior esquerdo.'),
         ],
       },
       {
@@ -127,6 +129,8 @@ export const blocks = [
             'São contrastados dois movimentos. O peristaltismo é uma onda que empurra o conteúdo ao longo do trato por contrações coordenadas das camadas circular e longitudinal: o músculo circular se contrai atrás do bolo, e o longitudinal se contrai à frente dele. Os movimentos de segmentação envolvem principalmente as camadas musculares circulares. Eles misturam e revolvem o conteúdo, mas não produzem deslocamento líquido em nenhuma direção específica.'),
           t('During peristalsis the circular muscle contracts behind the bolus and the longitudinal muscle contracts ahead of it. The transverse colon has semilunar folds and haustra.',
             'Na peristalse, o músculo circular contrai-se atrás do bolo e o longitudinal à sua frente. O colo transverso tem pregas semilunares e haustrações.'),
+          t('The image shows the colonoscopic view of the transverse colon, whose lumen looks triangular because of the three taeniae coli.',
+            'A imagem mostra a visão colonoscópica do colo transverso, cujo lúmen parece triangular devido às três tênias do colo.'),
         ],
       },
       {
@@ -194,6 +198,8 @@ export const blocks = [
             'Todas as camadas da parede ileal, exceto o peritônio, contribuem para o orifício ileocecal. Fibras musculares circulares internas e longitudinais externas do íleo e do colo encontram-se na junção, na papila e na tênia.'),
           t('The ileal orifice opens into the ascending colon. Its commissure joins the superior ileocolic and inferior ileocecal lips.',
             'O orifício ileal abre-se no colo ascendente. Sua comissura une os lábios ileocólico superior e ileocecal inferior.'),
+          t('The title asks whether the ileocaecal valve is a sphincter: it is not a true anatomical sphincter, but its thickened circular muscle and lips act as a physiological one, slowing ileal emptying and limiting reflux from the caecum.',
+            'O título pergunta se a válvula ileocecal é um esfíncter: ela não é um verdadeiro esfíncter anatômico, mas seu músculo circular espessado e seus lábios funcionam como um esfíncter fisiológico, retardando o esvaziamento ileal e limitando o refluxo do ceco.'),
         ],
       },
       {
@@ -204,6 +210,8 @@ export const blocks = [
             'O apêndice vermiforme é um tubo estreito de extremidade cega, com 6–10 cm. Parece uma continuação do fundo do ceco, projeta-se para a cavidade abdominal e pode alcançar a pelve. Sua extremidade cega pode se mover livremente em quatro posições, com estas porcentagens: pélvica (voltada para baixo), 20%; retrocecal ou retrocólica (voltada para cima), 15%; pré-ileal (voltada para fora), 2–5%; e pós-ileal (voltada para dentro), 2–5%.'),
           t('The appendix can lie pelvic, retrocecal, preileal, postileal, promontoric, paracolic or prececal, or subcecal. Its base is related to the cecum, ileum and taeniae coli.',
             'O apêndice pode ocupar posição pélvica, retrocecal, pré-ileal, pós-ileal, promontórica, paracólica ou pré-cecal, ou subcecal. Sua base relaciona-se com o ceco, o íleo e as tênias do colo.'),
+          t('The orifice of the vermiform appendix opens on the posteromedial wall of the caecum, about 2–3 cm below the ileocaecal orifice.',
+            'O óstio do apêndice vermiforme abre-se na parede posteromedial do ceco, cerca de 2–3 cm abaixo do óstio ileocecal.'),
         ],
       },
       {
@@ -247,6 +255,8 @@ export const blocks = [
             'As goteiras paracólicas são recessos peritoneais laterais ao colo. Elas permitem a propagação de infecções. Em L3–L4, a goteira direita fica junto ao colo ascendente e a esquerda junto ao descendente. O colo transverso, o omento maior, os apêndices omentais, o ligamento redondo do fígado e as camadas da parede abdominal ficam anteriormente; o quadrado lombar, os psoas maior e menor, a veia cava inferior e a aorta ficam posteriormente.'),
           t('The ascending colon is 15–20 cm long, from the ileocolic junction to the hepatic flexure. It attaches to posterior peritoneum, iliac fascia and renal fascia. The right paracolic gutter lies lateral to it and the cecum. The ileocolic artery gives ileal, colic, anterior and posterior cecal and appendicular branches.',
             'O colo ascendente mede 15–20 cm, da junção ileocólica à flexura hepática. Fixa-se ao peritônio posterior, à fáscia ilíaca e à fáscia renal. A goteira paracólica direita fica lateral a ele e ao ceco. A artéria ileocólica dá ramos ileal, cólico, cecais anterior e posterior e apendicular.'),
+          t('Behind the ascending colon the figure also shows the latissimus dorsi, the spinous process of L3, the ligamentum flavum and the tendon of origin of the transversus abdominis (from the thoracolumbar fascia).',
+            'Atrás do colo ascendente, a figura também mostra o músculo latíssimo do dorso, o processo espinhoso de L3, o ligamento amarelo e o tendão de origem do transverso do abdome (a partir da fáscia toracolombar).'),
         ],
       },
       {
@@ -257,6 +267,8 @@ export const blocks = [
             'As relações são listadas por face. A face lateral se volta para a parede abdominal lateral e para o recesso paracólico direito. A face medial se volta para o psoas maior, para o intestino delgado mesentérico, para o ureter e para os vasos gonadais.'),
           t('The ascending colon and cecum lie lateral to the small intestine and its mesentery, beside the right paracolic recess. The duodenum, pancreas, middle colic vessels, transverse colon, left paracolic recess and descending colon are nearby. The posterior muscular bed includes psoas major and minor, quadratus lumborum and iliacus. The ascending colon lies over the right kidney near the duodenum, right suprarenal gland, mesenteric root, ureters and testicular vessels.',
             'O colo ascendente e o ceco ficam laterais ao intestino delgado e seu mesentério, junto ao recesso paracólico direito. Duodeno, pâncreas, vasos cólicos médios, colo transverso, recesso paracólico esquerdo e colo descendente ficam próximos. O leito muscular posterior inclui psoas maior e menor, quadrado lombar e ilíaco. O colo ascendente fica sobre o rim direito perto do duodeno, suprarrenal direita, raiz do mesentério, ureteres e vasos testiculares.'),
+          t('The duodenojejunal flexure is labelled near the transverse colon and the pancreas.',
+            'A flexura duodenojejunal está identificada perto do colo transverso e do pâncreas.'),
         ],
       },
       {
@@ -328,6 +340,8 @@ export const blocks = [
             'O ligamento frenocólico vai da flexura esplênica ao diafragma no nível do polo inferior do baço, na décima costela. Ele sustenta o baço.'),
           t('The phrenicocolic ligament supports the spleen near the left colic flexure. The gastrophrenic, gastrosplenic and splenorenal ligaments, hepatoduodenal ligament beside the omental foramen and transverse mesocolon relate to the omental bursa. The gastro-omental arterial arch runs in the greater omentum. Behind these structures lie the pancreas, left suprarenal gland, kidney, inferior vena cava and common hepatic artery.',
             'O ligamento frenocólico sustenta o baço perto da flexura cólica esquerda. Os ligamentos gastrofrênico, gastroesplênico e esplenorrenal, o hepatoduodenal junto ao forame omental e o mesocolo transverso relacionam-se com a bolsa omental. O arco arterial gastro-omental corre no omento maior. Atrás dessas estruturas ficam o pâncreas, a suprarrenal esquerda, o rim, a veia cava inferior e a artéria hepática comum.'),
+          t('The left gastric artery runs in the gastropancreatic fold, and the caudate lobe of the liver is labelled in the same figure.',
+            'A artéria gástrica esquerda percorre a prega gastropancreática, e o lobo caudado do fígado está identificado na mesma figura.'),
         ],
       },
       {
@@ -350,6 +364,8 @@ export const blocks = [
             'O mesocolo sigmoide suspende o colo sigmoide. Sua raiz relaciona-se com o recesso intersigmoide, o ureter e os vasos ilíacos comuns. O omento maior, o mesocolo transverso, o colo descendente, a junção retossigmoide, o levantador do ânus e o esfíncter anal externo ficam próximos.'),
           t('On the sigmoid, the anterior free taenia and the posterior omental taenia remain, and the mesocolic taenia is lost. The sigmoid then moves medially into the small pelvis and inferiorly in the pelvis, down to the third sacral vertebra. At the rectosigmoid junction, the taeniae spread out and unite to form a continuous longitudinal muscle layer.',
             'No sigmoide, permanecem a tênia livre anterior e a tênia omental posterior, e a tênia mesocólica se perde. Em seguida o sigmoide se move medialmente para a pequena pelve e inferiormente na pelve, até a terceira vértebra sacral. Na junção retossigmoide, as tênias se abrem e se unem para formar uma camada muscular longitudinal contínua.'),
+          t('The figure also shows the pararectal fossa beside the rectum and the femoral artery and vein below the inguinal ligament.',
+            'A figura também mostra a fossa pararretal ao lado do reto e a artéria e a veia femorais abaixo do ligamento inguinal.'),
         ],
       },
       {
@@ -380,6 +396,8 @@ export const blocks = [
             'A retocolite ulcerativa é uma inflamação crônica do intestino grosso, frequentemente iniciada no reto. Os sintomas incluem diarreia, às vezes com sangue, dor, perda de peso e inflamação de outros órgãos. Ela aumenta o risco de carcinoma colorretal.'),
           t('Malignant tumours of the colon and rectum are frequent solid tumours; the source states that over 90% occur after age 50. Early disease may be asymptomatic; later symptoms include loss of appetite, altered bowel habits and weight loss. Blood in the stool needs thorough investigation. Haemorrhoids are not a sufficient explanation unless other tests, including colonoscopy, are negative. A tumour can partially obstruct the colon lumen.',
             'Tumores malignos do colo e do reto são tumores sólidos frequentes; a fonte afirma que mais de 90% ocorrem após os 50 anos. A doença inicial pode ser assintomática; depois pode causar perda de apetite, alteração do hábito intestinal e perda de peso. Sangue nas fezes requer investigação cuidadosa. Hemorroidas não são explicação suficiente sem resultados negativos nos demais exames, incluindo colonoscopia. Um tumor pode obstruir parcialmente o lúmen do colo.'),
+          t('Imaging: a double-contrast (barium) radiograph shows early-phase colitis, and colonoscopy shows ulcerative colitis and a carcinoma.',
+            'Exames de imagem: uma radiografia com duplo contraste (bário) mostra colite em fase inicial, e a colonoscopia mostra colite ulcerativa e um carcinoma.'),
         ],
       },
     ],
@@ -565,8 +583,8 @@ export const blocks = [
         body: [
           t('The innervation of the large intestine is given in two lines. The sympathetic supply comes from T10–T12, through the superior mesenteric ganglion. The parasympathetic supply is the vagus nerve.',
             'A inervação do intestino grosso é dada em duas linhas. A inervação simpática vem de T10–T12, pelo gânglio mesentérico superior. A inervação parassimpática é o nervo vago.'),
-          t('The sympathetic pathway includes cervical ganglia and splanchnic nerves. The cranial parasympathetic outflow includes cranial nerves III, VII, IX and X. The vagus supplies the large intestine; sacral nerves reach the bladder and genital system.',
-            'A via simpática inclui gânglios cervicais e nervos esplâncnicos. A saída parassimpática craniana inclui os nervos cranianos III, VII, IX e X. O vago supre o intestino grosso; nervos sacrais alcançam a bexiga e o sistema genital.'),
+          t('The sympathetic pathway includes cervical ganglia and splanchnic nerves. The cranial parasympathetic outflow includes cranial nerves III, VII, IX and X. The vagus supplies the large intestine up to about the left colic flexure; beyond it the sacral nerves (pelvic splanchnic nerves, S2–S4) supply the distal colon, and they also reach the bladder and genital system.',
+            'A via simpática inclui gânglios cervicais e nervos esplâncnicos. A saída parassimpática craniana inclui os nervos cranianos III, VII, IX e X. O vago supre o intestino grosso até perto da flexura cólica esquerda; depois dela, os nervos sacrais (esplâncnicos pélvicos, S2–S4) suprem o colo distal e também alcançam a bexiga e o sistema genital.'),
           t('The large intestine receives sympathetic fibres through the superior mesenteric ganglion and parasympathetic fibres through the vagus.',
             'O intestino grosso recebe fibras simpáticas pelo gânglio mesentérico superior e parassimpáticas pelo vago.'),
         ],

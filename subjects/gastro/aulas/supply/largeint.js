@@ -87,9 +87,9 @@ const NERVE_TREE_LI = {
       { label: t('Superior mesenteric ganglion', 'Gânglio mesentérico superior') },
       { label: t('Inferior mesenteric ganglion', 'Gânglio mesentérico inferior') },
     ] },
-    { label: t('Parasympathetic', 'Parassimpático'), children: [{ label: t('Vagus nerve (CN X)', 'Nervo vago (NC X)') }] },
+    { label: t('Parasympathetic', 'Parassimpático'), children: [{ label: t('Vagus nerve (CN X): caecum to about the left colic flexure', 'Nervo vago (NC X): do ceco até perto da flexura cólica esquerda') }] },
     { label: t('Sacral nerves', 'Nervos sacrais'), children: [
-      { label: t('Urinary bladder and genital system, not the colon', 'Bexiga urinária e sistema genital, não o colo') },
+      { label: t('Pelvic splanchnic nerves (S2–S4): colon beyond the left colic flexure, plus urinary bladder and genital system', 'Nervos esplâncnicos pélvicos (S2–S4): colo depois da flexura cólica esquerda, além da bexiga urinária e do sistema genital') },
     ] },
   ] },
   links: [],
@@ -212,8 +212,8 @@ export const blocks = [
         body: [
           t('The sympathetic supply is T10 to T12, relayed through the superior mesenteric ganglion, while the inferior mesenteric ganglion also lies along the sympathetic outflow to the large intestine. The parasympathetic supply to the large intestine is the vagus nerve.',
             'O suprimento simpático é de T10 a T12, com relé no gânglio mesentérico superior, enquanto o gânglio mesentérico inferior também integra a via simpática para o intestino grosso. O suprimento parassimpático para o intestino grosso é o nervo vago.'),
-          t('By contrast, the sacral nerves supply the urinary bladder and the genital system, not the colon.',
-            'Já os nervos sacrais suprem a bexiga urinária e o sistema genital, e não o colo.'),
+          t('The vagus reaches only the midgut part of the large intestine: caecum, appendix, ascending colon and roughly the proximal two-thirds of the transverse colon. Beyond the left colic flexure (distal transverse, descending and sigmoid colon, then the rectum) the parasympathetic supply comes from the sacral outflow: the pelvic splanchnic nerves (S2–S4), which climb through the inferior hypogastric plexus. The same sacral nerves also supply the urinary bladder and the genital system. The hindgut sympathetic fibres come from the lumbar splanchnic nerves (L1–L2) and relay in the inferior mesenteric ganglion.',
+            'O vago alcança só a parte do intestino grosso que vem do intestino médio: ceco, apêndice, colo ascendente e cerca dos dois terços proximais do colo transverso. Depois da flexura cólica esquerda (transverso distal, colo descendente e sigmoide, e depois o reto) o parassimpático vem da saída sacral: os nervos esplâncnicos pélvicos (S2–S4), que sobem pelo plexo hipogástrico inferior. Os mesmos nervos sacrais também suprem a bexiga urinária e o sistema genital. As fibras simpáticas do intestino posterior vêm dos nervos esplâncnicos lombares (L1–L2) e fazem sinapse no gânglio mesentérico inferior.'),
         ],
       },
     ],
@@ -232,8 +232,8 @@ export const blocks = [
         { q: 'Quais linfonodos são citados como superiores e inferiores?', correct: 'Linfonodos ileocólicos', wrong: ['Linfonodos paracólicos', 'Linfonodos sigmoides', 'Linfonodos retais superiores'], why: 'Os linfonodos ileocólicos são citados como superiores e inferiores.' }),
       q('53', { q: 'Through which ganglion does the sympathetic supply of the large intestine relay?', correct: 'The superior mesenteric ganglion', wrong: ['The ciliary ganglion', 'The otic ganglion', 'The pterygopalatine ganglion'], why: 'The sympathetic supply, T10–T12, passes through the superior mesenteric ganglion.' },
         { q: 'Por qual gânglio passa o suprimento simpático do intestino grosso?', correct: 'O gânglio mesentérico superior', wrong: ['O gânglio ciliar', 'O gânglio ótico', 'O gânglio pterigopalatino'], why: 'O suprimento simpático, T10–T12, passa pelo gânglio mesentérico superior.' }),
-      q('53', { q: 'Where do the sacral parasympathetic nerves go?', correct: 'To the urinary bladder and genital system, not to the colon', wrong: ['To the transverse colon', 'To the rectum only', 'To the small intestine'], why: 'The sacral nerves go to the urinary bladder and genital system, not to the colon.' },
-        { q: 'Para onde vão os nervos parassimpáticos sacrais?', correct: 'À bexiga urinária e ao sistema genital, não ao colo', wrong: ['Ao colo transverso', 'Apenas ao reto', 'Ao intestino delgado'], why: 'Os nervos sacrais vão à bexiga e ao sistema genital, não ao colo.' }),
+      q('53', { q: 'Which nerves carry the parasympathetic supply of the descending and sigmoid colon?', correct: 'The pelvic splanchnic nerves (S2–S4)', wrong: ['The vagus nerve', 'The greater splanchnic nerves', 'The lumbar splanchnic nerves'], why: 'The vagus stops at about the left colic flexure; beyond it the sacral outflow (pelvic splanchnic nerves, S2–S4) takes over, and it also supplies the bladder and genital system.' },
+        { q: 'Quais nervos levam o parassimpático do colo descendente e do sigmoide?', correct: 'Os nervos esplâncnicos pélvicos (S2–S4)', wrong: ['O nervo vago', 'Os nervos esplâncnicos maiores', 'Os nervos esplâncnicos lombares'], why: 'O vago para perto da flexura cólica esquerda; depois dela assume a saída sacral (nervos esplâncnicos pélvicos, S2–S4), que também supre a bexiga e o sistema genital.' }),
     ],
   },
 ];

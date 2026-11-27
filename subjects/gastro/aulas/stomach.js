@@ -2,7 +2,7 @@
 // One card per slide page (or a short run of pages on one topic). Every card
 // body explains the whole page, in order, using only the slide's own facts.
 // t(en, pt) records the pt-BR pair and returns the English text.
-import * as supply from './supply/stomach.js?v=159';
+import * as supply from './supply/stomach.js?v=160';
 
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
@@ -55,6 +55,8 @@ export const blocks = [
             'Em termos de regiões abdominais, o estômago ocupa o hipocôndrio esquerdo, o epigástrio e a região umbilical. Em termos de compartimentos, ele pertence à região supramesocólica, a parte do abdome acima do mesocolo transverso. As nove regiões contêm diferentes órgãos (por exemplo, fígado e vesícula no hipocôndrio direito, pâncreas e intestino delgado na região umbilical) e QSD e QSE são quadrantes; o plano transpilórico cruza o estômago.'),
           t('Mean capacity in adults is 1–4 l. This wide range reflects how the stomach changes size and shape a lot depending on how full it is and on the body type.',
             'A capacidade média no adulto é de 1–4 l. Essa faixa ampla reflete como o estômago muda muito de tamanho e de forma conforme está cheio e conforme o tipo corporal.'),
+          t('Organs by region: right hypochondrium liver, gallbladder, right colic flexure; right lumbar ascending colon; left hypochondrium stomach, left colic flexure; left lumbar descending colon; right iliac appendix; left iliac descending and sigmoid colon; hypogastric small intestine, sigmoid colon, rectum; epigastrium liver, stomach; umbilical stomach, pancreas, small intestine.',
+            'Órgãos por região: hipocôndrio direito: fígado, vesícula biliar, flexura direita do colo; região lombar direita: colo ascendente; hipocôndrio esquerdo: estômago, flexura esquerda do colo; região lombar esquerda: colo descendente; região ilíaca direita: apêndice; região ilíaca esquerda: colo descendente e sigmoide; hipogástrio: intestino delgado, colo sigmoide, reto; epigástrio: fígado, estômago; região umbilical: estômago, pâncreas, intestino delgado.'),
         ],
       },
       {
@@ -296,6 +298,8 @@ export const blocks = [
             'Artéria gastromental esquerda (da artéria esplênica) + artéria gastromental direita (da artéria gastroduodenal). Neste conjunto 3D as duas aparecem como uma única malha, as artérias gastromentais.'),
           t('Related vessels also include the left and right hepatic arteries, the cystic artery, the portal vein, the anterior and posterior superior pancreaticoduodenal arteries, duodenal branches, pancreatic branches and the inferior pancreaticoduodenal artery from the Superior mesenteric artery.',
             'Os vasos relacionados também incluem as artérias hepáticas esquerda e direita, a artéria cística, a veia porta, as artérias pancreaticoduodenais superiores anterior e posterior, ramos duodenais, ramos pancreáticos e a artéria pancreaticoduodenal inferior vinda da artéria mesentérica superior.'),
+          t('The other named branches of the abdominal aorta in the figure are the inferior phrenic arteries, the superior, middle and inferior suprarenal arteries (middle from the aorta, superior from the inferior phrenic, inferior from the renal), the renal arteries, the lumbar arteries, the gonadal (testicular or ovarian) arteries, the median sacral artery and the two common iliac arteries.',
+            'Os outros ramos nomeados da aorta abdominal na figura são as artérias frênicas inferiores, as artérias suprarrenais superiores, médias e inferiores (as médias originam-se da aorta, as superiores das frênicas inferiores e as inferiores das renais), as artérias renais, lombares e gonadais (testiculares ou ováricas), a artéria sacral mediana e as duas artérias ilíacas comuns.'),
         ],
       },
       {
@@ -328,6 +332,8 @@ export const blocks = [
             '(I) A artéria gastromental direita corre para a esquerda ao longo da curvatura maior e termina em anastomose com a artéria gastromental esquerda, ramo da artéria esplênica. Ela dá vários ramos viscerais ao estômago e ramos omentais ao omento maior. No modelo, faz parte da malha das artérias gastromentais.'),
           t('(II) The superior pancreaticoduodenal artery goes down on the right, behind the head of the pancreas, supplying stomach, pancreas and duodenum. It terminates by anastomosing with the inferior pancreaticoduodenal artery, a branch of the Superior mesenteric artery. In the model, both run in the Pancreaticoduodenal arteries mesh around the pancreatic head. This is a link between the celiac territory and the superior mesenteric territory.',
             '(II) A artéria pancreaticoduodenal superior desce à direita, atrás da cabeça do pâncreas, irrigando estômago, pâncreas e duodeno. Termina em anastomose com a artéria pancreaticoduodenal inferior, ramo da artéria mesentérica superior. No modelo, as duas estão na malha das artérias pancreaticoduodenais em volta da cabeça do pâncreas. Essa é uma ligação entre o território celíaco e o território mesentérico superior.'),
+          t('Territories: the celiac trunk supplies the abdominal oesophagus, stomach, upper duodenum, spleen, pancreas, liver, gallbladder and greater omentum. The common hepatic artery supplies the stomach, greater omentum, pancreas, duodenum, liver and gallbladder; the proper hepatic artery the liver, gallbladder and pyloric part of the stomach; the cystic artery the gallbladder; and the anterior superior pancreaticoduodenal artery the front of the duodenum and of the pancreatic head.',
+            'Territórios: o tronco celíaco irriga o esôfago abdominal, o estômago, o duodeno superior, o baço, o pâncreas, o fígado, a vesícula biliar e o omento maior. A artéria hepática comum irriga o estômago, o omento maior, o pâncreas, o duodeno, o fígado e a vesícula biliar; a artéria hepática própria, o fígado, a vesícula biliar e a parte pilórica do estômago; a artéria cística, a vesícula biliar; e a artéria pancreaticoduodenal superior anterior, a face anterior do duodeno e da cabeça do pâncreas.'),
         ],
       },
       {
@@ -373,6 +379,8 @@ export const blocks = [
             'As rugas são pregas longitudinais da mucosa que desaparecem quando o estômago está distendido; as fossetas são pequenas aberturas na superfície.'),
           t('The gastric mucosa has three parts. (I) Epithelium: a secretory simple columnar epithelium that covers the entire luminal surface. Its cells produce and secrete large amounts of mucus, which forms a layer on the inner surface and protects the wall from the corrosive gastric juice (pH 1–2). That is why it is called a secretory epithelium. (II) Lamina propria: contains the gastric glands. (III) Muscularis mucosae: thin smooth muscle cells around the gastric glands that help them secrete.',
             'A mucosa gástrica tem três partes. (I) Epitélio: um epitélio simples colunar secretor que reveste toda a superfície luminal. Suas células produzem e secretam grandes quantidades de muco, que forma uma camada na superfície interna e protege a parede do suco gástrico corrosivo (pH 1–2). Por isso é chamado de epitélio secretor. (II) Lâmina própria: contém as glândulas gástricas. (III) Muscular da mucosa: finas células musculares lisas em volta das glândulas gástricas que ajudam na secreção.'),
+          t('The intramural plexus is the general name for the enteric plexuses in the gut wall, the submucosal (Meissner) and myenteric (Auerbach) plexuses.',
+            'O plexo intramural é o nome geral dos plexos entéricos na parede intestinal: os plexos submucoso (de Meissner) e mioentérico (de Auerbach).'),
         ],
       },
       {
@@ -464,6 +472,10 @@ export const blocks = [
             'O nervo vago esquerdo forma o plexo gástrico anterior e o nervo vago direito forma o plexo gástrico posterior. (O material da aula afirma o inverso; Moore e Netter dão esquerdo → anterior, direito → posterior.) A saída parassimpática inclui nervos cranianos III, VII, IX e X a partir do tronco encefálico e os nervos sacrais, com seus órgãos-alvo, entre eles estômago, fígado, vesícula, pâncreas e intestinos delgado e grosso. O tronco vagal anterior fica sobre o esôfago; próximos estão os gânglios celíacos, os nervos esplâncnicos maior e menor, os plexos esplênico e mesentérico superior e o gânglio mesentérico superior em volta da aorta.'),
           t('The sympathetic pathway is: greater splanchnic nerve + lesser splanchnic nerve + celiac ganglia (on the aorta), from neuromeres T5–T8 (Moore: T6–T9). The celiac ganglia sit around the origin of the Celiac trunk, so in the 3D model the trunk marks where the sympathetic fibres relay before following the arteries to the stomach. The sympathetic trunk has its cervical, thoracic and lumbar ganglia and the superior and inferior mesenteric ganglia.',
             'A via simpática é: nervo esplâncnico maior + nervo esplâncnico menor + gânglios celíacos (sobre a aorta), a partir dos neurômeros T5–T8 (Moore: T6–T9). Os gânglios celíacos ficam em volta da origem do tronco celíaco, então no modelo 3D o tronco marca onde as fibras simpáticas fazem sinapse antes de seguir as artérias até o estômago. O tronco simpático tem seus gânglios cervicais, torácicos e lombares e os gânglios mesentéricos superior e inferior.'),
+          t('Around the aortic branches the figure also shows the phrenic, suprarenal, renal, splenic and gonadal (testicular or ovarian) plexuses. Beyond the gut, the parasympathetic targets drawn are the eye, lacrimal gland, submandibular, sublingual and parotid glands, heart, lungs, kidney, urinary bladder and genital system.',
+            'Ao redor dos ramos da aorta, a figura também mostra os plexos frênico, suprarrenal, renal, esplênico e gonadal (testicular ou ovárico). Além do intestino, os alvos parassimpáticos representados são o olho, a glândula lacrimal, as glândulas submandibular, sublingual e parótida, o coração, os pulmões, o rim, a bexiga urinária e o sistema genital.'),
+          t('The cervical sympathetic ganglia are the superior cervical ganglion (C1–C4 level), the middle cervical (thyroid) ganglion and the inferior cervical ganglion. Gray rami communicantes return to all spinal nerves to supply sweat glands, hair follicles (arrector pili), superficial blood vessels and adipose tissue. The figure also shows the aorticorenal ganglia, the suprarenal and renal plexuses and the right and left hypogastric nerves.',
+            'Os gânglios simpáticos cervicais são o gânglio cervical superior (nível de C1–C4), o gânglio cervical médio (tireóideo) e o gânglio cervical inferior. Os ramos comunicantes cinzentos retornam a todos os nervos espinais para inervar glândulas sudoríparas, folículos pilosos (músculos eretores dos pelos), vasos sanguíneos superficiais e tecido adiposo. A figura também mostra os gânglios aorticorrenais, os plexos suprarrenais e renais e os nervos hipogástricos direito e esquerdo.'),
         ],
       },
     ],

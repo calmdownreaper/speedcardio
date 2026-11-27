@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/gbspleen.js?v=159';
+import * as supply from './supply/gbspleen.js?v=160';
 
 export const unit = {
   id: 'gbspleen',
@@ -387,6 +387,8 @@ export const blocks = [
             'Os cálculos biliares são pedras duras, possivelmente com alguns centímetros, encontradas na vesícula ou nos ductos. São compostos principalmente de colesterol, carbonato de cálcio e bilirrubina. Causam dor intensa quando obstruem os ductos biliares, ou quando a vesícula ou os ductos se contraem.'),
           t('When stones block bile flow to the duodenum, jaundice can result. Bile pigments enter the blood and accumulate in tissues, yellowing the skin and whites of the eyes. Pancreatic cancer in the head can also obstruct bile flow.',
             'Quando cálculos bloqueiam o fluxo de bile ao duodeno, pode surgir icterícia. Pigmentos biliares entram no sangue e acumulam-se nos tecidos, amarelando a pele e o branco dos olhos. O câncer na cabeça do pâncreas também pode obstruir o fluxo biliar.'),
+          t('Bilirubin, the pigment that causes jaundice, is processed (conjugated) in the liver, leaves it in the bile and flows into the intestine. When the bile ducts are blocked, the jaundice is called posthepatic (obstructive), as opposed to prehepatic (excess haemolysis) and hepatic (liver-cell disease).',
+            'A bilirrubina, pigmento que causa a icterícia, é processada (conjugada) no fígado, sai dele na bile e segue para o intestino. Quando os ductos biliares estão obstruídos, a icterícia é chamada pós-hepática (obstrutiva), em contraste com a pré-hepática (hemólise excessiva) e a hepática (doença das células hepáticas).'),
         ],
       },
       {
