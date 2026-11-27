@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/pancreas.js?v=157';
+import * as supply from './supply/pancreas.js?v=158';
 
 export const unit = {
   id: 'pancreas',

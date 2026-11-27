@@ -1,4 +1,4 @@
-import questions from './slides/airways_upper.js?v=157';
+import questions from './slides/airways_upper.js?v=158';
 
 const textPairs = [
   [
@@ -394,6 +394,10 @@ const textPairs = [
     "A aritenoide tem processos vocal e muscular."
   ],
   [
+    "The epiglottis is lined by non-keratinized stratified squamous epithelium on its anterior (lingual) surface and by ciliated columnar epithelium with goblet cells on its posterior (laryngeal) surface.",
+    "A epiglote é revestida por epitélio estratificado pavimentoso não queratinizado na face anterior (lingual) e por epitélio colunar ciliado com células caliciformes na face posterior (laríngea)."
+  ],
+  [
     "The vocal and muscular processes are parts of the arytenoid.",
     "Os processos vocal e muscular são partes da aritenoide."
   ],
@@ -696,7 +700,7 @@ const specs = [
         "epiglottis",
         "Epiglottis and arytenoid",
         "R1-30–R1-32",
-        3,
+        4,
         [
           "lar_epi",
           "lar_ari"

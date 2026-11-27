@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/duodenum.js?v=157';
+import * as supply from './supply/duodenum.js?v=158';
 
 export const unit = {
   id: 'duodenum',
@@ -127,8 +127,8 @@ export const blocks = [
         id: 'dud-p15', ref: '15', title: t('The fourth ascending part', 'A quarta parte: ascendente'),
         focus: ['duodenum', 'abdominal_aorta_g', 'pancreas', 'sma'], ghost: ['transverse_colon', 'stomach'], view: 'ant',
         body: [
-          t('The ascending part is 2.5 cm long. It ascends to L2 on the right of the aorta and beside the vertebral bodies, then turns forward and down at the duodenojejunal flexure into the jejunum. The suspensory ligament supports the flexure. The duodenum lies near the inferior vena cava, celiac trunk, superior mesenteric artery, esophagus and crura of the diaphragm.',
-            'A parte ascendente mede 2,5 cm. Sobe até L2 à direita da aorta e ao lado dos corpos vertebrais; depois vira para a frente e para baixo na flexura duodenojejunal, continuando no jejuno. O ligamento suspensor sustenta a flexura. O duodeno fica perto da veia cava inferior, tronco celíaco, artéria mesentérica superior, esôfago e pilares do diafragma.'),
+          t('The ascending part is 2.5 cm long. It ascends to L2 on the left of the aorta (⚠ the class material says "on the right"; Moore and Gray\'s place it to the left of the aorta) and beside the vertebral bodies, then turns forward and down at the duodenojejunal flexure into the jejunum. The suspensory ligament supports the flexure. The duodenum lies near the inferior vena cava, celiac trunk, superior mesenteric artery, esophagus and crura of the diaphragm.',
+            'A parte ascendente mede 2,5 cm. Sobe até L2 à esquerda da aorta (⚠ o material da aula diz "à direita"; Moore e Gray\'s a colocam à esquerda da aorta) e ao lado dos corpos vertebrais; depois vira para a frente e para baixo na flexura duodenojejunal, continuando no jejuno. O ligamento suspensor sustenta a flexura. O duodeno fica perto da veia cava inferior, tronco celíaco, artéria mesentérica superior, esôfago e pilares do diafragma.'),
         ],
       },
     ],

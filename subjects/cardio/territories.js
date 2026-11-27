@@ -94,7 +94,7 @@ const CASES = [
     prompt: 'Which coronary artery most commonly supplies the sinoatrial node?',
     correct: 'RCA',
     wrong: ['LAD', 'LCx', 'PDA'],
-    why: 'The SA nodal branch arises from the RCA in about 60% of people and from the circumflex in most of the remainder.',
+    why: 'The SA nodal branch arises from the RCA in about 55–60% of people (class material: 55%) and from the circumflex in most of the remainder.',
     focus: ['ad'],
     reveal: ['acd'],
     view: 'ant',

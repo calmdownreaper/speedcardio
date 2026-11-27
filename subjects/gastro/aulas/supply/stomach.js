@@ -182,8 +182,8 @@ export const blocks = [
         focus: ['celiac_trunk', 'stomach', 'esophagus'], ghost: ['stomach'], view: 'ant',
         diagram: NERVE_TREE,
         body: [
-          t('Tap through the three systems. Sympathetic: from T5–T8 (Moore: T6–T9), through the greater and lesser splanchnic nerves, relayed in the celiac ganglia on the aorta and delivered by branches of the celiac plexus. Parasympathetic: the vagus, with the right vagus forming the anterior gastric plexus and the left vagus the posterior gastric plexus. Enteric: the submucosal and myenteric plexuses inside the wall, through which both autonomic systems act.',
-            'Toque nos três sistemas. Simpático: de T5–T8 (Moore: T6–T9), pelos nervos esplâncnicos maior e menor, com relé nos gânglios celíacos sobre a aorta e distribuído por ramos do plexo celíaco. Parassimpático: o vago, com o vago direito formando o plexo gástrico anterior e o vago esquerdo o plexo gástrico posterior. Entérico: os plexos submucoso e mioentérico dentro da parede, pelos quais os dois sistemas autônomos agem.'),
+          t('Tap through the three systems. Sympathetic: from T5–T8 (Moore: T6–T9), through the greater and lesser splanchnic nerves, relayed in the celiac ganglia on the aorta and delivered by branches of the celiac plexus. Parasympathetic: the vagus, with the left vagus forming the anterior gastric plexus and the right vagus the posterior gastric plexus. Enteric: the submucosal and myenteric plexuses inside the wall, through which both autonomic systems act.',
+            'Toque nos três sistemas. Simpático: de T5–T8 (Moore: T6–T9), pelos nervos esplâncnicos maior e menor, com relé nos gânglios celíacos sobre a aorta e distribuído por ramos do plexo celíaco. Parassimpático: o vago, com o vago esquerdo formando o plexo gástrico anterior e o vago direito o plexo gástrico posterior. Entérico: os plexos submucoso e mioentérico dentro da parede, pelos quais os dois sistemas autônomos agem.'),
         ],
       },
     ],

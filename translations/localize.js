@@ -1,4 +1,4 @@
-import content from './pt-br-content.js?v=115';
+import content from './pt-br-content.js?v=158';
 import aliases from './pt-br-aliases.js?v=115';
 import ui from './pt-br-ui.js?v=115';
 import { structureNames } from './pt-br.js?v=115';

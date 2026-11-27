@@ -4,7 +4,7 @@
 // t(en, pt) records the pt-BR pair and returns the English text.
 const PT = {};
 const t = (en, pt) => { PT[en] = pt; return en; };
-import * as supply from './supply/oral.js?v=157';
+import * as supply from './supply/oral.js?v=158';
 
 export const unit = {
   id: 'oral',
@@ -199,8 +199,8 @@ export const blocks = [
         id: 'oral-p022', ref: '22', title: t('Venous drainage of the lips and face', 'Drenagem venosa dos lábios e da face'),
         focus: ['teeth'], view: 'ant',
         body: [
-          t('Venous drainage of the lips follows two routes: the superior labial vein drains into the facial vein, and the inferior labial vein drains into the submental vein. In the venous drainage of the head and neck, blood drains downward via the facial, submental and jugular veins (internal, external and anterior jugulars toward the subclavian and left brachiocephalic veins), while upward it communicates via the angular and ophthalmic veins and the pterygoid plexus with the cavernous sinus and the other dural sinuses (superior sagittal, transverse and sigmoid). Keep this upward connection in mind, as the angular vein is the direct link to the cavernous sinus.',
-            'A drenagem venosa dos lábios segue duas vias: a veia labial superior drena para a veia facial, e a veia labial inferior drena para a veia submentual. Na drenagem venosa da cabeça e do pescoço, o sangue drena para baixo pelas veias facial, submentual e jugulares (interna, externa e anterior até as veias subclávia e braquiocefálica esquerda), enquanto para cima se comunica pelas veias angular e oftálmicas e pelo plexo pterigoide com o seio cavernoso e os outros seios da dura-máter (sagital superior, transverso e sigmoide). Guarde essa conexão superior, pois a veia angular é a ligação direta com o seio cavernoso.'),
+          t('Venous drainage of the lips follows two routes: both the superior and the inferior labial veins drain into the facial vein (the inferior one also communicates with the submental vein). In the venous drainage of the head and neck, blood drains downward via the facial, submental and jugular veins (internal, external and anterior jugulars toward the subclavian and left brachiocephalic veins), while upward it communicates via the angular and ophthalmic veins and the pterygoid plexus with the cavernous sinus and the other dural sinuses (superior sagittal, transverse and sigmoid). Keep this upward connection in mind, as the angular vein is the direct link to the cavernous sinus.',
+            'A drenagem venosa dos lábios segue duas vias: as veias labiais superior e inferior drenam para a veia facial (a inferior também se comunica com a veia submentual). Na drenagem venosa da cabeça e do pescoço, o sangue drena para baixo pelas veias facial, submentual e jugulares (interna, externa e anterior até as veias subclávia e braquiocefálica esquerda), enquanto para cima se comunica pelas veias angular e oftálmicas e pelo plexo pterigoide com o seio cavernoso e os outros seios da dura-máter (sagital superior, transverso e sigmoide). Guarde essa conexão superior, pois a veia angular é a ligação direta com o seio cavernoso.'),
         ],
       },
       {

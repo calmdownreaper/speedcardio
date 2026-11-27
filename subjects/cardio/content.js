@@ -1012,7 +1012,7 @@ const mediastinum = {
     definition: ['Small veins draining the superior surface of the diaphragm.'],
     course: ['Accompany the superior phrenic arteries from the thoracic aorta.'],
     relations: ['Run between the diaphragm and the pericardium.'],
-    branches: ['Drain into pericardiophrenic and internal thoracic veins.'],
+    branches: ['Drain into the azygos/hemiazygos system and into pericardiophrenic and internal thoracic veins.'],
     clinical: ['They form part of the collateral venous channels of the diaphragm.'],
     imaging: ['CT shows small veins along the superior diaphragmatic surface.'],
   }, [
@@ -3372,7 +3372,7 @@ export const LESSON_DETAIL = {
   // Coronary arteries
   acd: {
     text: "**Right coronary artery (RCA)** leaves the right aortic sinus between the pulmonary trunk and right auricle. The small cardiac vein shares its right AV groove. Find conus and atrial branches proximally, then RV and acute marginal branches. At the crux, look for the AV nodal branch and the PDA in right dominance. Posterolateral branches extend onto the inferior LV.",
-    clinical: "An inferior infarct usually implicates the RCA in right dominance. Proximal occlusion may also affect the RV or nodal supply: the SA nodal branch comes from the RCA in about 60% of hearts, and the AV nodal branch from the dominant artery, usually the RCA (about 80–90%).",
+    clinical: "An inferior infarct usually implicates the RCA in right dominance. Proximal occlusion may also affect the RV or nodal supply: the SA nodal branch comes from the RCA in about 55–60% of hearts (class material: 55%), and the AV nodal branch from the dominant artery, usually the RCA (about 80–90%).",
   },
   tce: {
     text: "**Left main coronary artery** leaves the left aortic sinus. It passes between the pulmonary trunk and left auricle. The LAD turns toward the apex. The circumflex turns left into the AV groove. A ramus intermedius may arise between them.",
@@ -3408,7 +3408,7 @@ export const LESSON_DETAIL = {
     text: "**Anterior ventricular branch of the RCA** is a small right coronary branch that crosses the anterior wall of the right ventricle. It supplies the anterior right ventricular myocardium and anastomoses with right anterior branches of the LAD. On the model, find it leaving the right atrioventricular groove and passing onto the front of the ventricle.",
   },
   dp: {
-    text: "**Posterior descending artery (PDA)** runs from the crux toward the apex beside the middle cardiac vein. Its septal perforators supply the posterior third of the septum. In right dominance it comes from the RCA, and in left dominance from the circumflex. Check the posterolateral supply for codominance. Dominance is right in about 70% of hearts, left in about 10% and codominant in about 20%.",
+    text: "**Posterior descending artery (PDA)** runs from the crux toward the apex beside the middle cardiac vein. Its septal perforators supply the posterior third of the septum. In right dominance it comes from the RCA, and in left dominance from the circumflex. Check the posterolateral supply for codominance. Dominance is right in about 70–85% of hearts (class material: 85%), left in about 10–15% and codominant in about 10–20%.",
   },
   vent_post_acd: {
     text: "**Posterior ventricular branch of the RCA** leaves the right coronary artery near the crux and crosses the diaphragmatic surface toward the left ventricle. Also called posterolateral branches, they supply the inferior and posterior left ventricular wall in right-dominant hearts. On the model, find the branches running leftward on the underside of the heart.",
@@ -3649,7 +3649,7 @@ export const LESSON_DETAIL = {
     text: "**Inferior phrenic veins** accompany the inferior phrenic arteries on the underside of the diaphragm. The right usually drains into the inferior vena cava, while the left often drains into the left suprarenal or left renal vein. On the model, find the thin veins on the abdominal surface of the diaphragm.",
   },
   phren_sup_v: {
-    text: "**Superior phrenic veins** are small veins on the upper surface of the diaphragm, between it and the pericardium. They accompany the superior phrenic arteries and drain into pericardiophrenic and internal thoracic veins, forming part of the collateral venous channels. On the model, find them on the thoracic surface of the diaphragm.",
+    text: "**Superior phrenic veins** are small veins on the upper surface of the diaphragm, between it and the pericardium. They accompany the superior phrenic arteries and drain into the azygos/hemiazygos system and into pericardiophrenic and internal thoracic veins, forming part of the collateral venous channels. On the model, find them on the thoracic surface of the diaphragm.",
   },
 
   // Thoracic skeleton
@@ -4109,8 +4109,8 @@ export const LEVEL_CHECK = {
     { q: "Posterior ventricular branches of the RCA supply which surface?", options: ["The diaphragmatic surface of the left ventricle in right-dominant hearts", "The anterior right atrium", "The septum only", "The pulmonary trunk"], answer: 0, why: "Posterolateral branches cross the diaphragmatic surface toward the left ventricle in right-dominant hearts." },
     { q: "In right dominance, which LV wall loses its usual blood supply with RCA occlusion proximal to the PDA?", options: ["Inferior wall", "Anterior wall", "Lateral wall", "Apex only"], answer: 0, why: "The RCA gives the PDA and posterolateral branches in right dominance. Together they supply the inferior LV and posterior septum.", exam: true },
     { q: "Inferior myocardial infarction often causes heart block because the RCA usually supplies which structure?", options: ["AV node", "SA node only", "Left bundle branch", "Bundle of His via the LAD"], answer: 0, why: "The AV nodal branch usually leaves the dominant artery near the crux. The RCA supplies it in most hearts.", exam: true },
-    { q: "Which artery gives the posterior descending branch in about 70% of hearts?", options: ["Right coronary artery", "Circumflex artery", "LAD", "Left main coronary artery"], answer: 0, why: "Right dominance is usual (about 70%); left dominance is about 10% and codominance about 20%.", exam: true },
-    { q: "Which statement about nodal arterial supply is correct?", options: ["SA node about 60% RCA; AV node about 80–90% RCA", "SA node about 90% RCA; AV node about 10% RCA", "Both nodes are supplied mainly by the LAD", "Both nodes are supplied mainly by the circumflex"], answer: 0, why: "The SA nodal branch comes from the RCA in about 60% of hearts; the AV nodal branch comes from the dominant artery, usually the RCA (about 80–90%).", exam: true },
+    { q: "Which artery gives the posterior descending branch in most hearts (about 70–85%)?", options: ["Right coronary artery", "Circumflex artery", "LAD", "Left main coronary artery"], answer: 0, why: "Right dominance is usual (about 70–85%; class material: 85%); left dominance is about 10–15% and codominance about 10–20%.", exam: true },
+    { q: "Which statement about nodal arterial supply is correct?", options: ["SA node about 55–60% RCA; AV node about 80–90% RCA", "SA node about 90% RCA; AV node about 10% RCA", "Both nodes are supplied mainly by the LAD", "Both nodes are supplied mainly by the circumflex"], answer: 0, why: "The SA nodal branch comes from the RCA in about 55–60% of hearts (class material: 55%); the AV nodal branch comes from the dominant artery, usually the RCA (about 80–90%).", exam: true },
   ],
   "veias-1": [
     { q: "Most cardiac veins drain into which structure?", options: ["Coronary sinus", "Superior vena cava", "Pulmonary veins", "Inferior vena cava"], answer: 0, why: "The coronary sinus collects most myocardial venous blood and opens into the right atrium." },

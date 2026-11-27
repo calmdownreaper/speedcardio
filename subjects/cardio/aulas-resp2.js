@@ -1,4 +1,4 @@
-import questions from './slides/airways_lower.js?v=157';
+import questions from './slides/airways_lower.js?v=158';
 
 const textPairs = [
   [
@@ -60,6 +60,10 @@ const textPairs = [
   [
     "The right main bronchus has a more vertical course.",
     "O brônquio principal direito tem trajeto mais vertical."
+  ],
+  [
+    "The angle between the two main bronchi at the bifurcation is about 70°.",
+    "O ângulo entre os dois brônquios principais na bifurcação é de cerca de 70°."
   ],
   [
     "The right and left main bronchi differ in direction.",
@@ -458,6 +462,10 @@ const textPairs = [
     "A parte cervical forma a cúpula pleural."
   ],
   [
+    "The lung apex is closely related to the inferior cervical (stellate) sympathetic ganglion and the supreme intercostal artery.",
+    "O ápice pulmonar tem relação íntima com o gânglio simpático cervical inferior (estrelado) e com a artéria intercostal suprema."
+  ],
+  [
     "These are continuous portions of parietal pleura.",
     "Essas são porções contínuas da pleura parietal."
   ],
@@ -556,7 +564,7 @@ const specs = [
         "bifurcation",
         "Bifurcation",
         "R2-6",
-        3,
+        4,
         [
           "traqueia",
           "bpd",
@@ -771,7 +779,7 @@ const specs = [
         "parts",
         "Parietal pleura",
         "R2-43–R2-45",
-        3,
+        4,
         []
       ],
       [
