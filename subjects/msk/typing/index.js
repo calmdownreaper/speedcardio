@@ -1,13 +1,13 @@
 // SpeedMSK typing drills (shared engine: site/typing.js). All regions.
 // d3.focus: mesh ids from msk/models.json (muscles) or marker ids (foramina, from regions/skull.js).
 import shoulder from './shoulder.js?v=131';
-import arm from './arm.js?v=131';
-import forearm from './forearm.js?v=155';
+import arm from './arm.js?v=156';
+import forearm from './forearm.js?v=156';
 import hip from './hip.js?v=150';
-import thigh from './thigh.js?v=150';
-import leg from './leg.js?v=155';
-import trunk from './trunk.js?v=150';
-import headneck from './headneck.js?v=155';
+import thigh from './thigh.js?v=156';
+import leg from './leg.js?v=156';
+import trunk from './trunk.js?v=156';
+import headneck from './headneck.js?v=156';
 import cranium from './cranium.js?v=150';
 import { markers } from '../regions/skull.js?v=121';
 

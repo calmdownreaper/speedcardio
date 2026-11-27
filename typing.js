@@ -193,7 +193,14 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
   const ruleText = r => !r ? '' : typeof r === 'string' ? (deck.rules?.[r] ? L(deck.rules[r]) : r) : L(r);
   const ruleOf = item => ruleText(item.rule || item.note || item.set.rule);
   const infoOf = item => (item.info ? L(item.info) : '');
-  const showInfo = (el, item, on) => { const t = infoOf(item); el.textContent = t; el.hidden = !t || !on; };
+  // item.extra: true marks content beyond what was taught in class (still worth knowing).
+  // item.warn: [en, pt] flags where the class material disagrees with the reference texts; it is shown with the answer.
+  const showInfo = (el, item, on) => {
+    const t = infoOf(item); el.textContent = t; el.hidden = !t || !on;
+    const box = el.parentElement, tag = box.querySelector('[data-q="tag"]'), warn = box.querySelector('[data-q="warn"]');
+    if (tag) tag.hidden = !item.extra;
+    if (warn) { const w = item.warn ? L(item.warn) : ''; warn.querySelector('span').textContent = w; warn.hidden = !w || !on; }
+  };
   const ruleKey = item => { const r = item.rule || item.note || item.set.rule; return !r ? '' : typeof r === 'string' ? r : r[0]; };
   const isHtml = item => Boolean(item.html ?? item.set.html ?? deck.html);
   const setPrompt = (el, item) => { if (isHtml(item)) el.innerHTML = L(item.q); else el.textContent = L(item.q); };
@@ -231,6 +238,8 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
       <div class="ty-progress-wrap"><div class="ty-progress"><div class="ty-progress-fill" data-stat="fill"></div></div><span class="ty-progress-label" data-stat="count"></span></div>
       <section class="ty-card" aria-live="polite">
         <h2 class="ty-q" data-q="text"></h2>
+        <span class="ty-tag" data-q="tag" hidden title="${T('Beyond what was taught in class, but standard anatomy worth knowing', 'Além do que foi dado em aula, mas anatomia padrão que vale saber')}">${T('Extra', 'Extra')}</span>
+        <p class="ty-warn" data-q="warn" role="note" hidden><b>⚠</b> <span></span></p>
         <p class="ty-rule" data-q="rule" hidden></p>
         <p class="ty-info" data-q="info" hidden></p>
         <ul class="ty-slots" data-q="slots"></ul>
@@ -531,7 +540,7 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
         const full = prepared.items.find(x => x.key === `${set.id}:${item.id}`);
         const rule = ruleOf(full);
         const info = infoOf(full);
-        return `<li data-key="${esc(full.key)}" tabindex="0" data-text="${esc(normalize(plainPrompt(full) + ' ' + item.a.flat().join(' ') + ' ' + rule + ' ' + info))}" class="${learned[full.key] ? 'is-learned' : ''}"><span>${esc(plainPrompt(full))}${rule ? `<small class="ty-rule-inline">${esc(rule)}</small>` : ''}${info ? `<small class="ty-info-inline">${esc(info)}</small>` : ''}</span><strong>${esc(answers.join(' · '))}</strong></li>`;
+        return `<li data-key="${esc(full.key)}" tabindex="0" data-text="${esc(normalize(plainPrompt(full) + ' ' + item.a.flat().join(' ') + ' ' + rule + ' ' + info))}" class="${learned[full.key] ? 'is-learned' : ''}"><span>${esc(plainPrompt(full))}${full.extra ? ` <small class="ty-tag">${T('Extra', 'Extra')}</small>` : ''}${rule ? `<small class="ty-rule-inline">${esc(rule)}</small>` : ''}${info ? `<small class="ty-info-inline">${esc(info)}</small>` : ''}${full.warn ? `<small class="ty-info-inline">⚠ ${esc(L(full.warn))}</small>` : ''}</span><strong>${esc(answers.join(' · '))}</strong></li>`;
       }).join('')}</ul></section>`).join('')}
     </div>`;
     root.querySelector('[data-act="back"]').addEventListener('click', () => showDeck(deck, scope));

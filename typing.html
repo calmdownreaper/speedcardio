@@ -20,7 +20,7 @@
   <title>Typing drills</title>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css?v=124">
-  <link rel="stylesheet" href="./typing.css?v=143">
+  <link rel="stylesheet" href="./typing.css?v=156">
   <script type="importmap">
     {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js?v=115","three/addons/controls/OrbitControls.js":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js?v=115"}}
   </script>
@@ -44,13 +44,13 @@
     <div id="typing-root" class="ty-root"></div>
   </main>
   <script type="module">
-    import { mountTyping } from './typing.js?v=149';
+    import { mountTyping } from './typing.js?v=156';
     const params = new URLSearchParams(location.search);
     const subject = ['gastro', 'msk', 'cardio'].includes(params.get('s')) ? params.get('s') : 'gastro';
     let lang = params.get('lang');
     if (!['en', 'pt-BR'].includes(lang)) { try { lang = localStorage.getItem('anatomy_language') === 'pt-BR' ? 'pt-BR' : 'en'; } catch { lang = 'en'; } }
     document.documentElement.lang = lang;
-    const { decks, title, model3d } = await import(`./subjects/${subject}/typing/index.js?v=155`);
+    const { decks, title, model3d } = await import(`./subjects/${subject}/typing/index.js?v=156`);
     if (title) document.title = lang === 'pt-BR' ? title[1] : title[0];
     const back = new URL('./', location.href); back.searchParams.set('s', subject); if (params.get('lang')) back.searchParams.set('lang', lang);
     const T = (en, pt) => lang === 'pt-BR' ? pt : en;

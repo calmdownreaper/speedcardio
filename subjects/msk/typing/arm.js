@@ -54,9 +54,9 @@ export default {
         { id: 'brach-n', d3: { focus: ['brachialis'], view: 'ant', frame: ['brachialis', 'humerus'], glass: .12 }, q: n('brachialis', 'braquial'), a: [MC] },
         { id: 'cora-n', d3: { focus: ['coracobrachialis'], view: 'ant', frame: ['coracobrachialis', 'humerus'], glass: .12 }, q: n('coracobrachialis', 'coracobraquial'), a: [MC] },
         { id: 'tri-n', d3: { focus: ['triceps_brachii'], view: 'post', frame: ['triceps_brachii', 'humerus'], glass: .12 }, q: n('triceps brachii', 'tríceps braquial'), a: [RAD] },
-        { id: 'anc-n', d3: { focus: ['triceps_brachii'], view: 'post', frame: ['triceps_brachii', 'humerus'], glass: .12 }, q: n('anconeus', 'ancôneo'), a: [RAD] },
+        { id: 'anc-n', extra: true, d3: { focus: ['triceps_brachii'], view: 'post', frame: ['triceps_brachii', 'humerus'], glass: .12 }, q: n('anconeus', 'ancôneo'), a: [RAD] },
         { id: 'mc-inv', d3: { focus: ['biceps_brachii', 'brachialis', 'coracobrachialis'], view: 'ant', frame: ['biceps_brachii', 'coracobrachialis', 'humerus'], glass: .12 }, q: ['Which muscles does the musculocutaneous nerve supply?', 'Quais músculos o nervo musculocutâneo inerva?'], a: [['biceps brachii', 'bíceps braquial'], ['brachialis', 'braquial'], ['coracobrachialis', 'coracobraquial']] },
-        { id: 'rad-inv', d3: { focus: ['triceps_brachii'], view: 'post', frame: ['triceps_brachii', 'humerus'], glass: .12 }, q: ['Which muscles of the arm does the radial nerve supply?', 'Quais músculos do braço o nervo radial inerva?'], a: [['triceps brachii', 'tríceps braquial'], ['anconeus', 'ancôneo']] },
+        { id: 'rad-inv', extra: true, d3: { focus: ['triceps_brachii'], view: 'post', frame: ['triceps_brachii', 'humerus'], glass: .12 }, q: ['Which muscles of the arm does the radial nerve supply?', 'Quais músculos do braço o nervo radial inerva?'], a: [['triceps brachii', 'tríceps braquial'], ['anconeus', 'ancôneo']] },
       ],
     },
     {

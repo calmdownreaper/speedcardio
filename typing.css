@@ -476,6 +476,31 @@
   line-height: 1.48;
 }
 
+.ty-warn {
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in oklab, var(--warn, #e0a33a) 55%, var(--line));
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--warn, #e0a33a) 10%, var(--surface-2));
+  color: var(--ink);
+  font-size: .92rem;
+  line-height: 1.48;
+}
+.ty-warn b { color: var(--warn, #e0a33a); font-weight: 600; }
+
+.ty-tag {
+  align-self: flex-start;
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--mute);
+  font-size: .74rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.ty-tag[hidden],
+.ty-warn[hidden],
 .ty-info[hidden],
 .ty-rule[hidden] { display: none; }
 
