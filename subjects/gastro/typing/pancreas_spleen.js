@@ -1,6 +1,36 @@
 // Pancreas and spleen typing deck. Source: research/gastro_slides/12_pancreas_spleen (digest.md + compact.md).
 const NM = (en, pt) => ['Not in the 3D model. Highlighted: ' + en + '.', 'Não está no modelo 3D. Destacado: ' + pt + '.'];
-const I = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  uncinate: rv('The uncinate process of the pancreas hooks behind which two vessels?', 'O processo uncinado do pâncreas se curva atrás de quais dois vasos?', [['smv', 'superior mesenteric vein', 'vms', 'veia mesentérica superior', 'veia mesenterica superior'], ['sma', 'superior mesenteric artery', 'ams', 'artéria mesentérica superior', 'arteria mesenterica superior']]),
+  headrel: rv('Which part of the pancreas sits in the C-loop of the duodenum?', 'Qual parte do pâncreas fica na alça em C do duodeno?', [['head', 'head of the pancreas', 'cabeça', 'cabeca', 'cabeça do pâncreas', 'cabeca do pancreas']]),
+  cbd: rv('The common bile duct runs behind which part of the pancreas?', 'O ducto colédoco passa atrás de qual parte do pâncreas?', [['head', 'head of the pancreas', 'cabeça', 'cabeca', 'cabeça do pâncreas', 'cabeca do pancreas']]),
+  neckrel: rv('Which part of the pancreas lies in front of the superior mesenteric vessels?', 'Qual parte do pâncreas fica à frente dos vasos mesentéricos superiores?', [['neck', 'neck of the pancreas', 'colo', 'pescoço', 'pescoco', 'colo do pâncreas']]),
+  portal: rv('Which two veins join behind the neck of the pancreas to form the portal vein?', 'Quais duas veias se unem atrás do colo do pâncreas para formar a veia porta?', [['splenic vein', 'splenic', 'veia esplênica', 'veia esplenica', 'veia lienal'], ['smv', 'superior mesenteric vein', 'vms', 'veia mesentérica superior', 'veia mesenterica superior']]),
+  tail: rv('Which part of the pancreas is intraperitoneal within the splenorenal ligament?', 'Qual parte do pâncreas é intraperitoneal dentro do ligamento esplenorrenal?', [['tail', 'cauda']]),
+  treitz: rv('The fascia of Treitz lies behind which part of the pancreas?', 'A fáscia de Treitz fica atrás de qual parte do pâncreas?', [['head', 'cabeça', 'cabeca']]),
+  toldt: rv('The fascia of Toldt lies behind which two parts of the pancreas?', 'A fáscia de Toldt fica atrás de quais duas partes do pâncreas?', [['body', 'corpo'], ['tail', 'cauda']]),
+  wirsung: rv('Where does the duct of Wirsung open?', 'Onde se abre o ducto de Wirsung?', [['major duodenal papilla', 'major papilla', 'papila duodenal maior', 'papila maior']]),
+  santorini: rv('Where does the duct of Santorini open?', 'Onde se abre o ducto de Santorini?', [['minor duodenal papilla', 'minor papilla', 'papila duodenal menor', 'papila menor']]),
+  oddi: rv('The sphincter of Oddi surrounds which ampulla?', 'O esfíncter de Oddi envolve qual ampola?', [['hepatopancreatic ampulla', 'ampulla of vater', 'ampulla', 'ampola hepatopancreática', 'ampola hepatopancreatica', 'ampola de vater']]),
+  ventral: rv('Which two parts of the pancreas are formed by the ventral pancreatic bud?', 'Quais duas partes do pâncreas são formadas pelo broto pancreático ventral?', [['uncinate process', 'processo uncinado'], ['lower head', 'inferior head', 'parte inferior da cabeça', 'parte inferior da cabeca']]),
+  annular: rv('Which organ is encircled in an annular pancreas?', 'Qual órgão é envolvido no pâncreas anular?', [['duodenum', 'duodeno']]),
+  cck: rv('What does CCK stimulate the pancreas to secrete?', 'O que a CCK estimula o pâncreas a secretar?', [['enzymes', 'pancreatic enzymes', 'enzimas', 'enzimas pancreáticas', 'enzimas pancreaticas']]),
+  secretin: rv('What does secretin stimulate the pancreas to secrete?', 'O que a secretina estimula o pâncreas a secretar?', [['bicarbonate', 'bicarbonato']]),
+  enterokinase: rv('Enterokinase from the duodenum converts trypsinogen into what?', 'A enteroquinase do duodeno converte tripsinogênio em quê?', [['trypsin', 'tripsina']]),
+  beta: rv('Which hormone do pancreatic beta cells produce?', 'Qual hormônio as células beta do pâncreas produzem?', [['insulin', 'insulina']]),
+  alpha: rv('Which hormone do pancreatic alpha cells produce?', 'Qual hormônio as células alfa do pâncreas produzem?', [['glucagon']]),
+  delta: rv('Which hormone do pancreatic delta cells produce?', 'Qual hormônio as células delta do pâncreas produzem?', [['somatostatin', 'somatostatina']]),
+  splart: rv('Which two parts of the pancreas are supplied by the splenic artery?', 'Quais duas partes do pâncreas são irrigadas pela artéria esplênica?', [['body', 'corpo'], ['tail', 'cauda']]),
+  bodyvein: rv('Which two parts of the pancreas drain into the splenic vein?', 'Quais duas partes do pâncreas drenam para a veia esplênica?', [['body', 'corpo'], ['tail', 'cauda']]),
+  gs: rv('The gastrosplenic ligament joins the spleen to which organ?', 'O ligamento gastroesplênico liga o baço a qual órgão?', [['stomach', 'estômago', 'estomago']]),
+  sr: rv('The splenorenal ligament joins the spleen to the kidney and carries which part of the pancreas?', 'O ligamento esplenorrenal liga o baço ao rim e contém qual parte do pâncreas?', [['tail', 'pancreatic tail', 'cauda', 'cauda do pâncreas', 'cauda do pancreas']]),
+  sc: rv('The splenocolic ligament joins the spleen to which flexure of the colon?', 'O ligamento esplenocólico liga o baço a qual flexura do cólon?', [['left colic flexure', 'splenic flexure', 'flexura cólica esquerda', 'flexura colica esquerda', 'flexura esplênica', 'flexura esplenica']]),
+  sp: rv('The splenophrenic ligament joins the spleen to which structure?', 'O ligamento esplenofrênico liga o baço a qual estrutura?', [['diaphragm', 'diafragma']]),
+  pcol: rv('The phrenicocolic ligament runs between which two structures to help stabilise the spleen?', 'O ligamento frenocólico vai entre quais duas estruturas para ajudar a estabilizar o baço?', [['colon', 'left colic flexure', 'cólon', 'flexura cólica esquerda'], ['diaphragm', 'diafragma']]),
+  sv: rv('The splenic vein and SMV join to form which vein?', 'A veia esplênica e a VMS se unem para formar qual veia?', [['portal vein', 'hepatic portal vein', 'veia porta']]),
+};
+const I = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), ...(REV[id] ? { rev: REV[id] } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
 
 const PCTX = ['pancreas', 'pancreatic_duct', 'duodenum', 'stomach', 'spleen', 'celiac_trunk', 'splenic_a', 'splenic_v', 'smv', 'sma', 'hepatic_portal_v', 'abdominal_aorta_g', 'ivc_g', 'common_hepatic_duct', 'gastroduodenal_a', 'pancreaticoduodenal_a'];
 const SCTX = ['spleen', 'stomach', 'pancreas', 'descending_colon', 'transverse_colon', 'diaphragm_g', 'celiac_trunk', 'splenic_a', 'splenic_v', 'smv', 'hepatic_portal_v', 'abdominal_aorta_g', 'ivc_g'];
@@ -8,6 +38,7 @@ const P = ['pancreas'];
 
 export default {
   id: 'pancreas_spleen',
+  rewards: true,
   title: ['Pancreas and spleen', 'Pâncreas e baço'],
   sets: [
     {

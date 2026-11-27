@@ -2,6 +2,11 @@
    Every class is prefixed .at- so a page can add its own CSS without clashes.
    Colours, radii and control sizes come from style.css tokens. */
 
+:root {
+  --model-select: var(--accent);
+  --model-select-deep: var(--accent-soft);
+}
+
 .at-page {
   display: grid;
   gap: clamp(14px, 2vw, 22px);
@@ -56,7 +61,8 @@
   min-height: 24px;
 }
 
-.at-panel-head h2 {
+.at-panel-head h2,
+.at-panel-toggle h2 {
   margin: 0;
   font-size: 13px;
   font-weight: 650;
@@ -71,6 +77,70 @@
   color: var(--mute);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
+}
+
+.at-panel-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--soft);
+  text-align: left;
+  cursor: pointer;
+}
+
+.at-panel-toggle:hover h2,
+.at-panel-toggle:hover .at-chevron {
+  color: var(--ink);
+}
+
+.at-panel-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.at-panel-summary,
+.at-panel-toggle .at-count {
+  margin-left: auto;
+  color: var(--soft);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.at-chevron {
+  flex: none;
+  color: var(--mute);
+  transition: transform var(--ease), color var(--ease);
+}
+
+.at-panel-toggle[aria-expanded="true"] .at-chevron {
+  transform: rotate(180deg);
+}
+
+.at-panel-body {
+  margin-top: 10px;
+}
+
+.at-panel-body[hidden] {
+  display: none;
+}
+
+.at-panel-body > .at-chips,
+.at-panel-body > .at-seg {
+  margin-top: 0;
+}
+
+.at-panel-body > .at-note {
+  margin-top: 8px;
+  color: var(--mute);
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .at-panel > p {
@@ -228,7 +298,15 @@
 }
 
 .at-stage {
-  min-height: clamp(360px, 62vh, 640px);
+  min-height: clamp(460px, 72vh, 760px);
+}
+
+.at-stage:has(+ .at-prompt[hidden]) {
+  min-height: clamp(540px, calc(100dvh - var(--header-height, 68px) - 72px), 880px);
+}
+
+.at-prompt[hidden] {
+  display: none;
 }
 
 .at-stage .at-stage-head {
@@ -506,7 +584,7 @@
 
   .at-stage {
     order: 2;
-    min-height: clamp(300px, 48svh, 460px);
+    min-height: clamp(360px, 56svh, 520px);
   }
 
   .at-prompt {
@@ -549,7 +627,8 @@
   .at-chip,
   .at-seg button,
   .at-nav a,
-  .at-row {
+  .at-row,
+  .at-chevron {
     transition: none;
   }
 }

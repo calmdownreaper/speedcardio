@@ -19,6 +19,7 @@ const f = (en, pt) => [`Main action of ${en}?`, `Função principal do ${pt}?`];
 
 export default {
   id: 'hip',
+  rewards: true,
   title: ['Hip', 'Quadril'],
   sets: [
     {
@@ -128,6 +129,28 @@ export default {
         { id: 'oe-i', d3: { focus: ['obturator_externus'], view: 'ant', frame: ['obturator_externus','hip_bone','femur'], glass: .15 }, q: i('obturator externus', 'obturador externo'), a: [['trochanteric fossa', 'fossa trocantérica']] },
         { id: 'oe-n', d3: { focus: ['obturator_externus'], view: 'ant', frame: ['obturator_externus','hip_bone','femur'], glass: .15 }, q: n('obturator externus', 'obturador externo'), a: [['obturator nerve', 'nervo obturatório']] },
         { id: 'oe-f', d3: { focus: ['obturator_externus'], view: 'ant', frame: ['obturator_externus','hip_bone','femur'], glass: .15 }, q: f('obturator externus', 'obturador externo'), a: [LR, ['adduction', 'adução'], ['stabilizes the pelvis', 'estabiliza a pelve']] },
+      ],
+    },
+    {
+      id: 'by-landmark', d3ctx: ['hip_bone', 'sacrum', 'femur', 'lumbar_vertebra'], d3anchor: ['hip_bone', 'femur'], d3frame: ['hip_bone', 'femur'],
+      title: ['Hip · by landmark', 'Quadril · por ponto ósseo'],
+      items: [
+        { id: 'lm-o-ischial-tuberosity', info: ['quadratus femoris: lateral border; inferior gemellus: ischial tuberosity.', 'quadrado femoral: borda lateral; gêmeo inferior: túber isquiático.'], d3: { focus: ['quadratus_femoris_muscle', 'inferior_gemellus_muscle'], view: 'post', frame: ['quadratus_femoris_muscle', 'hip_bone', 'femur'], glass: .12 }, q: ['Which hip muscles originate from the ischial tuberosity?', 'Quais músculos do quadril se originam no túber isquiático?'], a: [['quadratus femoris', 'quadrado femoral'], ['inferior gemellus', 'gêmeo inferior', 'gemeo inferior']] },
+        { id: 'lm-o-ischial-spine', d3: { focus: ['superior_gemellus_muscle'], view: 'post', frame: ['superior_gemellus_muscle', 'hip_bone', 'femur'], glass: .12 }, q: ['Which hip muscle originates from the ischial spine?', 'Qual músculo do quadril se origina na espinha isquiática?'], a: [['superior gemellus', 'gêmeo superior', 'gemeo superior']] },
+        { id: 'lm-o-iliac-fossa', d3: { focus: ['iliacus'], view: 'ant', frame: ['iliacus', 'hip_bone'], glass: .12 }, q: ['Which hip muscle originates from the iliac fossa?', 'Qual músculo do quadril se origina na fossa ilíaca?'], a: [['iliacus', 'ilíaco', 'iliaco']] },
+        { id: 'lm-o-asis', d3: { focus: ['tensor_fasciae_latae'], view: 'esq', frame: ['tensor_fasciae_latae', 'hip_bone'], glass: .12 }, q: ['Which hip muscle originates from the anterior superior iliac spine (ASIS)?', 'Qual músculo do quadril se origina na espinha ilíaca anterossuperior (EIAS)?'], a: [['tensor fasciae latae', 'tensor da fáscia lata', 'tensor da fascia lata', 'TFL']] },
+        { id: 'lm-i-greater-trochanter', info: ['medius: lateral surface; minimus: anterior surface; piriformis: superior border/apex; obturator internus & gemelli: medial surface.', 'médio: face lateral; mínimo: face anterior; piriforme: borda superior/ápice; obturador interno e gêmeos: face medial.'], d3: { focus: ['gluteus_medius', 'gluteus_minimus', 'piriformis', 'obturator_internus', 'superior_gemellus_muscle', 'inferior_gemellus_muscle'], view: 'post', frame: ['gluteus_medius', 'femur'], glass: .12 }, q: ['Which hip muscles insert on the greater trochanter?', 'Quais músculos do quadril se inserem no trocânter maior?'], a: [['gluteus medius', 'glúteo médio', 'gluteo medio'], ['gluteus minimus', 'glúteo mínimo', 'gluteo minimo'], ['piriformis', 'piriforme'], ['obturator internus', 'obturador interno'], ['superior gemellus', 'gêmeo superior', 'gemeo superior'], ['inferior gemellus', 'gêmeo inferior', 'gemeo inferior']] },
+        { id: 'lm-i-lesser-trochanter', d3: { focus: ['iliacus', 'psoas_major'], view: 'ant', frame: ['iliacus', 'psoas_major', 'femur'], glass: .12 }, q: ['Which hip muscle inserts on the lesser trochanter?', 'Qual músculo do quadril se insere no trocânter menor?'], a: [['iliopsoas', 'iliopsoas']] },
+        { id: 'lm-i-trochanteric-fossa', d3: { focus: ['obturator_externus'], view: 'ant', frame: ['obturator_externus', 'hip_bone', 'femur'], glass: .12 }, q: ['Which hip muscle inserts on the trochanteric fossa?', 'Qual músculo do quadril se insere na fossa trocantérica?'], a: [['obturator externus', 'obturador externo']] },
+        { id: 'lm-i-quadrate-tubercle', d3: { focus: ['quadratus_femoris_muscle'], view: 'post', frame: ['quadratus_femoris_muscle', 'hip_bone', 'femur'], glass: .12 }, q: ['Which hip muscle inserts on the quadrate tubercle?', 'Qual músculo do quadril se insere no tubérculo quadrado?'], a: [['quadratus femoris', 'quadrado femoral']] },
+      ],
+    },
+    {
+      id: 'by-nerve', d3ctx: ['hip_bone', 'sacrum', 'femur', 'lumbar_vertebra'], d3anchor: ['hip_bone', 'femur'], d3frame: ['hip_bone', 'femur'],
+      title: ['Hip · by nerve', 'Quadril · por nervo'],
+      items: [
+        { id: 'nv-nerve-to-obturator-internus', d3: { focus: ['obturator_internus', 'superior_gemellus_muscle'], view: 'post', frame: ['obturator_internus', 'hip_bone'], glass: .12 }, q: ['Which hip muscles does the nerve to obturator internus supply?', 'Quais músculos do quadril o nervo do obturador interno inerva?'], a: [['obturator internus', 'obturador interno'], ['superior gemellus', 'gêmeo superior', 'gemeo superior']] },
+        { id: 'nv-nerve-to-quadratus-femoris', d3: { focus: ['quadratus_femoris_muscle', 'inferior_gemellus_muscle'], view: 'post', frame: ['quadratus_femoris_muscle', 'hip_bone', 'femur'], glass: .12 }, q: ['Which hip muscles does the nerve to quadratus femoris supply?', 'Quais músculos do quadril o nervo do quadrado femoral inerva?'], a: [['quadratus femoris', 'quadrado femoral'], ['inferior gemellus', 'gêmeo inferior', 'gemeo inferior']] },
       ],
     },
   ],

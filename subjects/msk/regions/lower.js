@@ -146,6 +146,16 @@ export const deck = {
       'Adducts the hip, flexes the knee and medially rotates the flexed knee. Supplied by the obturator nerve (L2, L3).',
       'Arises from the body and inferior ramus of the pubis. Inserts on the proximal medial tibia at the pes anserinus.',
     ]),
+    S('pectineus_muscle', 'Pectineus', 'Pectineus', ['pectineus muscle'], 'Flat medial thigh muscle in front of adductor brevis, from the pecten pubis to the femur', [
+      'In the upper medial thigh, in front of adductor brevis.',
+      'Adducts, laterally rotates and slightly flexes the hip. Supplied by the femoral nerve and sometimes the obturator nerve.',
+      'Arises from the pecten pubis. Inserts on the pectineal line of the femur and proximal linea aspera.',
+    ]),
+    S('adductor_brevis', 'Adductor brevis', 'Adductor brevis', ['adductor brevis muscle'], 'Short adductor lying behind pectineus and adductor longus', [
+      'In the medial thigh, behind pectineus and adductor longus and in front of adductor magnus.',
+      'Adducts and flexes the hip. Supplied by the obturator nerve.',
+      'Arises from the inferior pubic ramus. Inserts on the upper third of the medial lip of the linea aspera.',
+    ]),
     S('tensor_fasciae_latae', 'Tensor fasciae latae', 'Tensor fasciae latae', ['TFL', 'tensor fasciae latae muscle', 'tensor of the fascia lata'], 'Small hip muscle that tightens the lateral band', [
       'Superficial at the anterolateral hip, between sartorius and gluteus medius.',
       'Flexes, abducts and medially rotates the hip and tenses the iliotibial tract, stabilizing the knee in extension. Supplied by the superior gluteal nerve (L4, L5).',
@@ -201,6 +211,11 @@ export const deck = {
       'Extends toes 2 to 5 and dorsiflexes the ankle. Supplied by the deep fibular nerve (L5, S1).',
       'Arises from the lateral tibial condyle, anterior fibula and interosseous membrane. Inserts on the middle and distal phalanges of toes 2 to 5 through the dorsal extensor expansions.',
     ]),
+    S('extensor_hallucis_longus', 'Extensor hallucis longus', 'Extensor hallucis longus', ['extensor hallucis longus muscle', 'EHL'], 'Anterior leg muscle whose tendon runs to the dorsal great toe', [
+      'In the anterior compartment of the leg, crossing in front of the ankle to the great toe.',
+      'Supplied by the deep fibular nerve.',
+      'Arises from the middle third of the medial surface of the fibula and the interosseous membrane. Inserts on the base of the distal phalanx and dorsal aponeurosis of the great toe.',
+    ]),
     S('flexor_digitorum_longus', 'Flexor digitorum longus', 'Flexor digitorum longus', ['flexor digitorum longus muscle', 'FDL'], 'Deep calf muscle that curls the lesser toes', [
       'On the tibial side of the deep posterior compartment, medial to tibialis posterior.',
       'Flexes toes 2 to 5, plantarflexes the ankle and supports the medial and lateral longitudinal arches. Supplied by the tibial nerve (L5, S1).',
@@ -211,6 +226,66 @@ export const deck = {
       'Flexes the great toe, plantarflexes the ankle and supports the medial arch. Supplied by the tibial nerve (S2, S3).',
       'Arises from the posterior surface of the fibula. Inserts on the base of the distal phalanx of the great toe.',
     ]),
+    S('abductor_hallucis', 'Abductor hallucis', 'Abductor hallucis', ['abductor hallucis muscle'], 'Medial muscle of the first plantar layer that abducts the great toe', [
+      'Medially in the first plantar layer of the foot.',
+      'Abducts and flexes the great toe and helps hold the longitudinal arch. Supplied by the medial plantar nerve.',
+      'Arises from the medial process of the calcaneal tuberosity. Inserts on the base of the proximal phalanx of the great toe and the medial sesamoid.',
+    ]),
+    S('flexor_digitorum_brevis', 'Flexor digitorum brevis', 'Flexor digitorum brevis', ['flexor digitorum brevis muscle', 'FDB'], 'Central muscle of the first plantar layer to toes 2 to 5', [
+      'In the middle of the first plantar layer of the foot.',
+      'Flexes toes 2 to 5. Supplied by the medial plantar nerve.',
+      'Arises from the calcaneal tuberosity. Inserts on the middle phalanges of toes 2 to 5.',
+    ]),
+    S('flexor_hallucis_brevis', 'Flexor hallucis brevis', 'Flexor hallucis brevis', ['flexor hallucis brevis muscle', 'FHB'], 'Two-bellied short flexor of the great toe with two sesamoids', [
+      'In the third plantar layer, splitting into two bellies around the flexor hallucis longus tendon.',
+      'Flexes the great toe at the metatarsophalangeal joint. Supplied by the medial plantar nerve.',
+      'Arises from the plantar surface of the cuboid and lateral cuneiform. Inserts on the proximal phalanx of the great toe and the medial and lateral sesamoids.',
+    ]),
+    S('abductor_digiti_minimi_of_foot', 'Abductor digiti minimi of foot', 'Abductor digiti minimi of foot', ['abductor digiti minimi', 'abductor digiti minimi muscle of foot', 'abductor digiti minimi pedis'], 'Lateral muscle of the first plantar layer to the fifth toe', [
+      'Laterally in the first plantar layer of the foot.',
+      'Pulls the fifth toe away from the second toe. Supplied by the lateral plantar nerve.',
+      'Arises from the calcaneal tuberosity. Inserts on the base of the proximal phalanx of the fifth toe.',
+    ]),
+    S('quadratus_plantae_muscle', 'Quadratus plantae', 'Quadratus plantae', ['quadratus plantae muscle', 'flexor accessorius'], 'Plantar muscle from the calcaneus into the flexor digitorum longus tendon', [
+      'In the sole of the foot, attaching to the flexor digitorum longus tendon.',
+      'Straightens the pull of flexor digitorum longus and assists toe flexion. Supplied by the lateral plantar nerve.',
+      'Arises from the calcaneus. Inserts on the tendon of flexor digitorum longus.',
+    ]),
+    S('lumbrical_muscles_of_foot', 'Lumbrical muscles of foot', 'Lumbrical muscles of foot', ['lumbricals of foot', 'lumbricals', 'foot lumbricals', 'lumbrical muscles of the foot'], 'Four small muscles from the flexor digitorum longus tendons to toes 2 to 5', [
+      'In the second plantar layer of the foot, attached to the tendons of flexor digitorum longus.',
+      'Flex the metatarsophalangeal joints and extend the interphalangeal joints. Supplied by the medial plantar nerve (1st) and lateral plantar nerve (2nd to 4th).',
+      'Arise from the tendons of flexor digitorum longus. Insert on the dorsal expansions and proximal phalanges of toes 2 to 5.',
+    ]),
+    S('adductor_hallucis', 'Adductor hallucis', 'Adductor hallucis', ['adductor hallucis muscle'], 'Deep plantar muscle with a transverse head pulling the great toe toward the midline', [
+      'In the deepest plantar layer, crossing the metatarsals.',
+      'Adducts and flexes the great toe. Supplied by the lateral plantar nerve.',
+      'Oblique head arises from the bases of metatarsals 2 to 4; transverse head from the metatarsophalangeal joint capsules of toes 3 to 5. Inserts on the proximal phalanx of the great toe and the lateral sesamoid.',
+    ]),
+    S('plantar_interossei_muscles', 'Plantar interossei muscles', 'Plantar interossei muscles', ['plantar interossei', 'plantar interosseous muscles'], 'Deep interosseous muscles on the sole that adduct the toes', [
+      'In the deepest plantar layer, between the metatarsal shafts.',
+      'Adduct the toes toward the second toe and flex the metatarsophalangeal joints. Supplied by the lateral plantar nerve.',
+      'Arise from the metatarsal shafts. Insert on the proximal phalanges and dorsal expansions.',
+    ]),
+    S('dorsal_interossei_muscles_of_foot', 'Dorsal interossei muscles of foot', 'Dorsal interossei muscles of foot', ['dorsal interossei of foot', 'dorsal interossei', 'dorsal interosseous muscles of foot'], 'Deep interosseous muscles between the metatarsals that abduct the toes', [
+      'In the deepest layer of the foot, in the interosseous spaces between the metatarsals.',
+      'Abduct the toes away from the second toe and flex the metatarsophalangeal joints. Supplied by the lateral plantar nerve.',
+      'Arise from the metatarsal shafts. Insert on the proximal phalanges and dorsal expansions.',
+    ]),
+    S('extensor_digitorum_brevis', 'Extensor digitorum brevis', 'Extensor digitorum brevis', ['extensor digitorum brevis muscle', 'EDB'], 'Intrinsic muscle on the dorsum of the foot to toes 2 to 4', [
+      'On the dorsum of the foot.',
+      'Extends toes 2 to 4. Supplied by the deep fibular nerve.',
+      'Arises from the dorsal calcaneus and inferior extensor retinaculum. Inserts on the dorsal aponeurosis of toes 2 to 4.',
+    ]),
+    S('extensor_hallucis_brevis', 'Extensor hallucis brevis', 'Extensor hallucis brevis', ['extensor hallucis brevis muscle', 'EHB'], 'Medial part of the dorsal foot extensor going to the great toe', [
+      'On the dorsum of the foot, medial to extensor digitorum brevis.',
+      'Extends the great toe. Supplied by the deep fibular nerve.',
+      'Arises from the dorsal calcaneus and inferior extensor retinaculum. Inserts on the base of the proximal phalanx of the great toe.',
+    ]),
+    S('flexor_digiti_minimi_of_foot', 'Flexor digiti minimi brevis of foot', 'Flexor digiti minimi brevis of foot', ['flexor digiti minimi brevis', 'flexor digiti minimi of foot', 'flexor digiti minimi brevis muscle of foot'], 'Short flexor on the lateral sole inserting on the fifth toe', [
+      'On the lateral plantar side of the foot.',
+      'Flexes the fifth toe at the metatarsophalangeal joint. Supplied by the lateral plantar nerve.',
+      'Inserts on the base of the proximal phalanx of the fifth toe.',
+    ]),
   ],
 };
 
@@ -220,8 +295,9 @@ export const levels = [
   { title: 'Bones of the lower limb', ids: ['femur', 'tibia', 'fibula', 'patella', 'tarsal_bones', 'metatarsals', 'toe_phalanges'] },
   { title: 'Hip and knee joints and ligaments', ids: ['hip_joint', 'knee_joint', 'anterior_cruciate_ligament', 'posterior_cruciate_ligament', 'medial_collateral_ligament', 'lateral_collateral_ligament', 'patellar_ligament'] },
   { title: 'Ankle and foot', ids: ['ankle_joint', 'calcaneal_tendon', 'long_plantar_lig'] },
-  { title: 'Thigh muscles', ids: ['sartorius', 'rectus_femoris', 'vastus_lateralis', 'vastus_medialis', 'vastus_intermedius', 'biceps_femoris', 'semitendinosus', 'semimembranosus', 'adductor_longus', 'adductor_magnus', 'gracilis', 'tensor_fasciae_latae', 'iliotibial_tract'] },
-  { title: 'Leg muscles', ids: ['gastrocnemius', 'soleus', 'plantaris', 'popliteus', 'tibialis_anterior', 'tibialis_posterior', 'fibularis_longus', 'fibularis_brevis', 'extensor_digitorum_longus', 'flexor_digitorum_longus', 'flexor_hallucis_longus'] },
+  { title: 'Thigh muscles', ids: ['sartorius', 'rectus_femoris', 'vastus_lateralis', 'vastus_medialis', 'vastus_intermedius', 'biceps_femoris', 'semitendinosus', 'semimembranosus', 'adductor_longus', 'adductor_magnus', 'gracilis', 'pectineus_muscle', 'adductor_brevis', 'tensor_fasciae_latae', 'iliotibial_tract'] },
+  { title: 'Leg muscles', ids: ['gastrocnemius', 'soleus', 'plantaris', 'popliteus', 'tibialis_anterior', 'tibialis_posterior', 'fibularis_longus', 'fibularis_brevis', 'extensor_digitorum_longus', 'extensor_hallucis_longus', 'flexor_digitorum_longus', 'flexor_hallucis_longus'] },
+  { title: 'Foot muscles', ids: ['abductor_hallucis', 'flexor_digitorum_brevis', 'flexor_hallucis_brevis', 'abductor_digiti_minimi_of_foot', 'quadratus_plantae_muscle', 'lumbrical_muscles_of_foot', 'adductor_hallucis', 'plantar_interossei_muscles', 'dorsal_interossei_muscles_of_foot', 'extensor_digitorum_brevis', 'extensor_hallucis_brevis', 'flexor_digiti_minimi_of_foot'] },
   { title: '30L origins and insertions', bonus: true, ids: ['sartorius', 'rectus_femoris', 'biceps_femoris', 'semitendinosus', 'semimembranosus', 'adductor_longus', 'adductor_magnus', 'gracilis', 'gastrocnemius', 'tibialis_anterior'] },
 ];
 

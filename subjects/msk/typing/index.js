@@ -1,14 +1,16 @@
 // SpeedMSK typing drills (shared engine: site/typing.js). All regions.
 // d3.focus: mesh ids from msk/models.json (muscles) or marker ids (foramina, from regions/skull.js).
-import shoulder from './shoulder.js?v=131';
-import arm from './arm.js?v=156';
-import forearm from './forearm.js?v=160';
-import hip from './hip.js?v=160';
-import thigh from './thigh.js?v=160';
-import leg from './leg.js?v=160';
-import trunk from './trunk.js?v=160';
-import headneck from './headneck.js?v=160';
-import cranium from './cranium.js?v=150';
+import shoulder from './shoulder.js?v=165';
+import arm from './arm.js?v=165';
+import forearm from './forearm.js?v=165';
+import hand from './hand.js?v=166';
+import hip from './hip.js?v=165';
+import thigh from './thigh.js?v=165';
+import leg from './leg.js?v=165';
+import foot from './foot.js?v=167';
+import trunk from './trunk.js?v=165';
+import headneck from './headneck.js?v=165';
+import cranium from './cranium.js?v=165';
 import { markers } from '../regions/skull.js?v=121';
 
 const FORAMINA = ['foramen_magnum', 'foramen_ovale', 'foramen_rotundum', 'foramen_spinosum', 'jugular_foramen', 'superior_orbital_fissure', 'optic_canal', 'mental_foramen', 'infraorbital_foramen'];
@@ -24,7 +26,7 @@ const route = (pt, [dx, dy, dz]) => {
 };
 const patch = (pts, r) => p => Math.max(...pts.map(c => Math.exp(-((p[0] - c[0]) ** 2 + (p[1] - c[1]) ** 2 + (p[2] - c[2]) ** 2) / (2 * r * r))));
 export const title = ['SpeedMSK · Typing drills', 'SpeedMSK · Treino de digitação'];
-export const decks = [shoulder, arm, forearm, hip, thigh, leg, trunk, headneck, cranium];
+export const decks = [shoulder, arm, forearm, hand, hip, thigh, leg, foot, trunk, headneck, cranium];
 export const model3d = {
   // <id>_path: the route through the opening, one short glowing line per side (inside the skull → out).
   landmarks: Object.fromEntries(FORAMINA.filter(id => markers[id]).map(id => [`${id}_path`, pts(id).map(pt => route(pt, DIR[id]))])),

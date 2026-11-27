@@ -16,11 +16,12 @@ export function mountRewards({ deck, items, learned, lang }) {
   document.body.classList.add('ty-focus');
 
   // ---------- atlas ----------
+  const setTitle = s => String(L(s.title) ?? s.id ?? '').split(' · ')[0];
   const sets = deck.sets.map(set => ({ set, items: items.filter(it => it.set === set) })).filter(g => g.items.length);
   const atlas = document.createElement('aside');
   atlas.className = 'rw-atlas';
   atlas.setAttribute('aria-label', T('Atlas', 'Atlas'));
-  atlas.innerHTML = `${sets.map(g => `<div class="rw-row"><span class="rw-set">${esc(L(g.set.title).split(' · ')[0])}</span><span class="rw-dots">${g.items.map(it => `<i class="rw-star" data-k="${esc(it.key)}" title="${esc(it.slots.map(s => s.label).join(' · '))}"></i>`).join('')}</span></div>`).join('')}
+  atlas.innerHTML = `${sets.map(g => `<div class="rw-row"><span class="rw-set">${esc(setTitle(g.set))}</span><span class="rw-dots">${g.items.map(it => `<i class="rw-star" data-k="${esc(it.key)}" title="${esc((it.slots || []).map(s => s.label).join(' · '))}"></i>`).join('')}</span></div>`).join('')}
     <p class="rw-cap">${T('Atlas lit', 'Atlas aceso')} <b data-rw="lit">0</b>/${items.length}</p>`;
   document.body.appendChild(atlas);
   const star = key => atlas.querySelector(`[data-k="${CSS.escape(key)}"]`);
@@ -37,9 +38,12 @@ export function mountRewards({ deck, items, learned, lang }) {
   }
 
   // ---------- overlay pieces ----------
-  const view = document.getElementById('view') || document.body;
+  const has3d = it => Boolean(it?.d3 || it?.set?.d3ctx || it?.set?.d3anchor);
+  const viewBox = el => { if (!el) return null; const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 ? r : null; };
+  const viewEl = document.getElementById('view');
   const pulse = document.createElement('div'); pulse.className = 'rw-pulse'; pulse.innerHTML = '<i class="rw-flash"></i><i class="rw-ring"></i>';
-  view.appendChild(pulse);
+  if (items.some(has3d) && viewBox(viewEl)) viewEl.appendChild(pulse);
+  else { pulse.style.position = 'fixed'; document.body.appendChild(pulse); }
   const badge = document.createElement('div'); badge.className = 'rw-badge'; badge.setAttribute('aria-hidden', 'true');
   const toast = document.createElement('div'); toast.className = 'rw-toast'; toast.setAttribute('role', 'status');
   document.body.append(badge, toast);
@@ -64,21 +68,26 @@ export function mountRewards({ deck, items, learned, lang }) {
   addEventListener('keydown', onKey, true);
   addEventListener('pointerup', onUp, true);
 
-  let toastTimer = 0;
+  let toastTimer = 0, learnTimer = 0, destroyed = false;
   function say(html) { toast.innerHTML = html; toast.classList.add('on'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('on'), 2400); }
 
   function spark(item) {
     const to = star(item.key); if (!to) return Promise.resolve();
-    const v = view.getBoundingClientRect(), r = to.getBoundingClientRect();
-    const sx = v.left + v.width / 2, sy = v.top + v.height * .5, tx = r.left + r.width / 2, ty = r.top + r.height / 2;
+    const r = to.getBoundingClientRect();
+    if (!r.width && !r.height) return Promise.resolve();
+    const origin = (has3d(item) && viewBox(viewEl)) || viewBox(input()) || viewBox(document.querySelector('.ty-field')) || { left: innerWidth / 2, top: innerHeight / 2, width: 0, height: 0 };
+    const sx = origin.left + origin.width / 2, sy = origin.top + origin.height / 2, tx = r.left + r.width / 2, ty = r.top + r.height / 2;
     if (reduce()) return Promise.resolve();
     const s = document.createElement('i'); s.className = 'rw-spark'; document.body.appendChild(s);
+    if (typeof s.animate !== 'function') { s.remove(); return Promise.resolve(); }
     const mx = (sx + tx) / 2 + (tx > sx ? -90 : 90), my = Math.min(sy, ty) - 110;
-    const anim = s.animate([
-      { transform: `translate(${sx}px,${sy}px) scale(1.7)` },
-      { transform: `translate(${mx}px,${my}px) scale(1)`, offset: .45 },
-      { transform: `translate(${tx}px,${ty}px) scale(.5)` }], { duration: 820, easing: 'cubic-bezier(.5,0,.2,1)' });
-    return anim.finished.then(() => s.remove(), () => s.remove());
+    try {
+      const anim = s.animate([
+        { transform: `translate(${sx}px,${sy}px) scale(1.7)` },
+        { transform: `translate(${mx}px,${my}px) scale(1)`, offset: .45 },
+        { transform: `translate(${tx}px,${ty}px) scale(.5)` }], { duration: 820, easing: 'cubic-bezier(.5,0,.2,1)' });
+      return anim.finished.then(() => s.remove(), () => s.remove());
+    } catch { s.remove(); return Promise.resolve(); }
   }
 
   return {
@@ -115,13 +124,19 @@ export function mountRewards({ deck, items, learned, lang }) {
     },
     // Item just marked as learned.
     learned(item) {
-      setTimeout(() => spark(item).then(() => {
-        const n = paintAtlas();
-        const el = star(item.key); if (el) restart(el, 'fresh');
-        say(`<b>${esc(item.slots.map(s => s.label).join(' · '))}</b> ${T('lit in the atlas', 'aceso no atlas')} · ${n}/${items.length}`);
-      }), 200);
+      learnTimer = setTimeout(() => {
+        if (destroyed) return;
+        spark(item).then(() => {
+          if (destroyed) return;
+          const n = paintAtlas();
+          const el = star(item.key); if (el) restart(el, 'fresh');
+          say(`<b>${esc((item.slots || []).map(s => s.label).join(' · '))}</b> ${T('lit in the atlas', 'aceso no atlas')} · ${n}/${items.length}`);
+        });
+      }, 200);
     },
     destroy() {
+      destroyed = true;
+      clearTimeout(toastTimer); clearTimeout(learnTimer);
       document.body.classList.remove('ty-focus');
       removeEventListener('keydown', onKey, true); removeEventListener('pointerup', onUp, true);
       [atlas, pulse, badge, toast].forEach(el => el.remove());

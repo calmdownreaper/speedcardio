@@ -15,6 +15,7 @@ const f = (en, pt) => [`Main action of ${en}?`, `Função principal do ${pt}?`];
 
 export default {
   id: 'headneck',
+  rewards: true,
   title: ['Head and neck', 'Cabeça e pescoço'],
   sets: [
     {
@@ -99,6 +100,34 @@ export default {
         { id: 'xii-inv', extra: true, d3: { focus: ['genioglossus_muscle','hyoglossus_muscle'], view: 'esq', frame: ['genioglossus_muscle','hyoglossus_muscle','mandible'], glass: .15 }, q: ['Which tongue muscles does the hypoglossal nerve (XII) supply?', 'Quais músculos da língua o nervo hipoglosso (XII) inerva?'], a: [['genioglossus', 'genioglosso'], ['styloglossus', 'estiloglosso'], ['hyoglossus', 'hioglosso'], ['all intrinsic tongue muscles', 'todos os músculos intrínsecos da língua', 'intrinsic tongue muscles', 'músculos intrínsecos da língua']] },
         { id: 'taste-ant', extra: true, d3: { focus: ['genioglossus_muscle','hyoglossus_muscle'], view: 'esq', frame: ['genioglossus_muscle','hyoglossus_muscle','mandible'], glass: .15 }, q: ['Taste of the anterior two-thirds of the tongue is carried by which nerve?', 'O paladar dos dois terços anteriores da língua é levado por qual nervo?'], a: [['chorda tympani (facial nerve, VII)', 'corda do tímpano (nervo facial, VII)', 'chorda tympani', 'corda do tímpano', 'facial nerve', 'nervo facial']] },
         { id: 'taste-post', extra: true, d3: { focus: ['genioglossus_muscle','hyoglossus_muscle'], view: 'esq', frame: ['genioglossus_muscle','hyoglossus_muscle','mandible'], glass: .15 }, q: ['Taste of the posterior third of the tongue is carried by which nerve?', 'O paladar do terço posterior da língua é levado por qual nervo?'], a: [['glossopharyngeal nerve (IX)', 'nervo glossofaríngeo (IX)', 'glossopharyngeal nerve', 'nervo glossofaríngeo', 'ix', 'cn ix']] },
+      ],
+    },
+    {
+      id: 'by-landmark', d3ctx: ['maxilla', 'mandible', 'sphenoid', 'temporal', 'zygomatic'], d3anchor: ['mandible'], d3frame: ['mandible', 'maxilla'],
+      title: ["Head and neck · by landmark", "Cabeça e pescoço · por ponto ósseo"],
+      items: [
+        { id: 'lm-o-zygomatic-arch', d3: { focus: ["masseter"], view: 'esq', frame: ['masseter','mandible','zygomatic'], glass: .12 }, q: ["Which head and neck muscle originates from the zygomatic arch?", "Qual músculo da cabeça e pescoço se origina no arco zigomático?"], a: [["masseter"]] },
+        { id: 'lm-o-temporal-fossa', d3: { focus: ["temporalis_muscle"], view: 'esq', frame: ['temporalis_muscle','temporal','mandible'], glass: .12 }, q: ["Which head and neck muscle originates from the temporal fossa?", "Qual músculo da cabeça e pescoço se origina na fossa temporal?"], a: [["temporalis", "temporal"]] },
+        { id: 'lm-o-lateral-pterygoid-plate', d3: { focus: ["medial_pterygoid_muscle", "lateral_pterygoid"], view: 'inf', frame: ['medial_pterygoid_muscle','sphenoid','mandible'], glass: .12 }, q: ["Which head and neck muscles originate from the lateral pterygoid plate?", "Quais músculos da cabeça e pescoço se originam na lâmina pterigóidea lateral?"], a: [["medial pterygoid", "pterigóideo medial", "pterigoideo medial"], ["lateral pterygoid", "pterigóideo lateral", "pterigoideo lateral"]] },
+        { id: 'lm-o-pterygoid-fossa', d3: { focus: ["medial_pterygoid_muscle"], view: 'inf', frame: ['medial_pterygoid_muscle','sphenoid','mandible'], glass: .12 }, q: ["Which head and neck muscle originates from the pterygoid fossa?", "Qual músculo da cabeça e pescoço se origina na fossa pterigóidea?"], a: [["medial pterygoid", "pterigóideo medial", "pterigoideo medial"]] },
+        { id: 'lm-o-maxillary-tuberosity', d3: { focus: ["medial_pterygoid_muscle"], view: 'inf', frame: ['medial_pterygoid_muscle','sphenoid','mandible'], glass: .12 }, q: ["Which head and neck muscle originates from the maxillary tuberosity?", "Qual músculo da cabeça e pescoço se origina na tuberosidade da maxila?"], a: [["medial pterygoid", "pterigóideo medial", "pterigoideo medial"]] },
+        { id: 'lm-o-greater-wing-of-sphenoid', d3: { focus: ["lateral_pterygoid"], view: 'inf', frame: ['lateral_pterygoid','sphenoid','mandible'], glass: .12 }, q: ["Which head and neck muscle originates from the greater wing of sphenoid?", "Qual músculo da cabeça e pescoço se origina na asa maior do esfenoide?"], a: [["lateral pterygoid", "pterigóideo lateral", "pterigoideo lateral"]] },
+        { id: 'lm-o-manubrium-of-sternum', d3: { focus: ["sternocleidomastoid_muscle", "sternohyoid_muscle", "sternothyroid_muscle"], view: 'esq', frame: ['sternocleidomastoid_muscle','temporal','clavicle'], glass: .12 }, q: ["Which head and neck muscles originate from the manubrium of sternum?", "Quais músculos da cabeça e pescoço se originam no manúbrio do esterno?"], a: [["sternocleidomastoid", "esternocleidomastoideo"], ["sternohyoid", "esterno-hióideo", "esterno-hioideo"], ["sternothyroid", "esterno-tireóideo", "esterno-tireoideo"]] },
+        { id: 'lm-i-angle-of-mandible', d3: { focus: ["masseter", "medial_pterygoid_muscle"], view: 'esq', frame: ['masseter','mandible','zygomatic'], glass: .12 }, q: ["Which head and neck muscles insert on the angle of mandible?", "Quais músculos da cabeça e pescoço se inserem no ângulo da mandíbula?"], a: [["masseter"], ["medial pterygoid", "pterigóideo medial", "pterigoideo medial"]] },
+        { id: 'lm-i-ramus-of-mandible', d3: { focus: ["masseter", "medial_pterygoid_muscle"], view: 'esq', frame: ['masseter','mandible','zygomatic'], glass: .12 }, q: ["Which head and neck muscles insert on the ramus of mandible?", "Quais músculos da cabeça e pescoço se inserem no ramo da mandíbula?"], a: [["masseter"], ["medial pterygoid", "pterigóideo medial", "pterigoideo medial"]] },
+        { id: 'lm-i-coronoid-process-of-mandible', d3: { focus: ["temporalis_muscle"], view: 'esq', frame: ['temporalis_muscle','temporal','mandible'], glass: .12 }, q: ["Which head and neck muscle inserts on the coronoid process of mandible?", "Qual músculo da cabeça e pescoço se insere no processo coronoide da mandíbula?"], a: [["temporalis", "temporal"]] },
+        { id: 'lm-i-neck-of-mandible', d3: { focus: ["lateral_pterygoid"], view: 'inf', frame: ['lateral_pterygoid','sphenoid','mandible'], glass: .12 }, q: ["Which head and neck muscle inserts on the neck of mandible?", "Qual músculo da cabeça e pescoço se insere no colo da mandíbula?"], a: [["lateral pterygoid", "pterigóideo lateral", "pterigoideo lateral"]] },
+        { id: 'lm-i-mastoid-process', d3: { focus: ["sternocleidomastoid_muscle"], view: 'esq', frame: ['sternocleidomastoid_muscle','temporal','clavicle'], glass: .12 }, q: ["Which head and neck muscle inserts on the mastoid process?", "Qual músculo da cabeça e pescoço se insere no processo mastoide?"], a: [["sternocleidomastoid", "esternocleidomastoideo"]] },
+        { id: 'lm-i-superior-nuchal-line', d3: { focus: ["sternocleidomastoid_muscle"], view: 'esq', frame: ['sternocleidomastoid_muscle','temporal','clavicle'], glass: .12 }, q: ["Which head and neck muscle inserts on the superior nuchal line?", "Qual músculo da cabeça e pescoço se insere na linha nucal superior?"], a: [["sternocleidomastoid", "esternocleidomastoideo"]] },
+        { id: 'lm-i-acromion', d3: { focus: ["trapezius"], view: 'post', frame: ['trapezius', 'scapula'], glass: .12 }, q: ["Which head and neck muscle inserts on the acromion?", "Qual músculo da cabeça e pescoço se insere no acrômio?"], a: [["trapezius", "trapézio", "trapezio"]] },
+        { id: 'lm-i-spine-of-scapula', d3: { focus: ["trapezius"], view: 'post', frame: ['trapezius', 'scapula'], glass: .12 }, q: ["Which head and neck muscle inserts on the spine of scapula?", "Qual músculo da cabeça e pescoço se insere na espinha da escápula?"], a: [["trapezius", "trapézio", "trapezio"]] },
+      ],
+    },
+    {
+      id: 'by-nerve', d3ctx: ['maxilla', 'mandible', 'sphenoid', 'temporal', 'zygomatic'], d3anchor: ['mandible'], d3frame: ['mandible', 'maxilla'],
+      title: ["Head and neck · by nerve", "Cabeça e pescoço · por nervo"],
+      items: [
+        { id: 'nv-accessory-nerve', d3: { focus: ["sternocleidomastoid_muscle", "trapezius"], view: 'esq', frame: ['sternocleidomastoid_muscle','temporal','clavicle'], glass: .12 }, q: ["Which head and neck muscles does the accessory nerve supply?", "Quais músculos da cabeça e pescoço o nervo acessório inerva?"], a: [["sternocleidomastoid", "esternocleidomastoideo"], ["trapezius", "trapézio", "trapezio"]] },
       ],
     },
   ],

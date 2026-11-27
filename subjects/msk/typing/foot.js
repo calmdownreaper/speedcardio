@@ -11,10 +11,11 @@ const f = (en, pt) => [`Main action of ${en}?`, `Função principal do ${pt}?`];
 
 export default {
   id: 'foot',
+  rewards: true,
   title: ['Foot', 'Pé'],
   sets: [
     {
-      id: 'layer1-nerves', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones', 'metatarsals'], d3frame: ['tarsal_bones', 'metatarsals'],
+      id: 'layer1-nerves', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones', 'metatarsals'], d3frame: ['tarsal_bones', 'metatarsals'], d3half: 'lo',
       title: ['Plantar layer 1 · innervation', 'Camada plantar 1 · inervação'],
       rule: ['Medial plantar n. = abductor hallucis, flexor digitorum brevis and flexor hallucis brevis; everything else on the sole is lateral plantar n.',
         'N. plantar medial = abdutor do hálux, flexor curto dos dedos e flexor curto do hálux; todo o resto da planta é do n. plantar lateral.'],
@@ -28,7 +29,7 @@ export default {
       ],
     },
     {
-      id: 'layer1-oi', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones', 'metatarsals'], d3frame: ['tarsal_bones', 'metatarsals'],
+      id: 'layer1-oi', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones', 'metatarsals'], d3frame: ['tarsal_bones', 'metatarsals'], d3half: 'lo',
       title: ['Plantar layer 1 · origin and insertion', 'Camada plantar 1 · origem e inserção'],
       rule: ['The first layer sends three bellies from the calcaneal tuberosity — abductor hallucis medially, flexor digitorum brevis in the middle, abductor digiti minimi laterally.',
         'A primeira camada manda três ventres da tuberosidade do calcâneo — abdutor do hálux medialmente, flexor curto dos dedos no meio, abdutor do dedo mínimo lateralmente.'],
@@ -44,7 +45,7 @@ export default {
       ],
     },
     {
-      id: 'layer2-3', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones', 'metatarsals'], d3frame: ['tarsal_bones', 'metatarsals', 'toe_phalanges'],
+      id: 'layer2-3', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones', 'metatarsals'], d3frame: ['tarsal_bones', 'metatarsals', 'toe_phalanges'], d3half: 'lo',
       title: ['Plantar layers 2–3 · lumbricals and flexor hallucis brevis', 'Camadas plantares 2–3 · lumbricais e flexor curto do hálux'],
       rule: ['Lumbricals attach to the FDL tendons and extend the toes. Flexor hallucis brevis splits into two bellies around the flexor hallucis longus tendon, each with its own sesamoid.',
         'Os lumbricais ligam-se aos tendões do FDL e estendem os dedos. O flexor curto do hálux divide-se em dois ventres em torno do tendão do flexor longo do hálux, cada um com seu sesamoide.'],
@@ -57,12 +58,12 @@ export default {
       ],
     },
     {
-      id: 'layer4', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones', 'metatarsals'], d3frame: ['metatarsals', 'toe_phalanges', 'tarsal_bones'],
+      id: 'layer4', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones', 'metatarsals'], d3frame: ['metatarsals', 'toe_phalanges', 'tarsal_bones'], d3half: 'lo',
       title: ['Plantar layer 4 · adductor hallucis and interossei', 'Camada plantar 4 · adutor do hálux e interósseos'],
       rule: ['The deepest layer crosses the metatarsals in a transverse head (adductor hallucis) and in the interosseous spaces. The interossei are plantar flexors of the MTP joints that also abduct or adduct toward the second toe.',
         'A camada profunda cruza os metatarsais por um ventre transverso (adutor do hálux) e pelos espaços interósseos. Os interósseos fletem as articulações MTF e também abduzem ou aduzem rumo ao segundo dedo.'],
       items: [
-        { id: 'adh-o', d3: { focus: ['adductor_hallucis'], view: 'inf', frame: ['adductor_hallucis','metatarsals'], glass: .15 }, q: o('adductor hallucis', 'adutor do hálux'), a: [['tendons of flexor digitorum longus', 'tendões do flexor longo dos dedos'], ['plantar metatarsals', 'metatarsais plantares']] },
+        { id: 'adh-o', d3: { focus: ['adductor_hallucis'], view: 'inf', frame: ['adductor_hallucis','metatarsals'], glass: .15 }, q: o('adductor hallucis', 'adutor do hálux'), a: [['bases of metatarsals 2 to 4', 'bases dos metatarsais 2 a 4', 'metatarsal bases', 'bases dos metatarsais', 'oblique head', 'cabeça oblíqua', 'cabeca obliqua'], ['metatarsophalangeal joint capsules', 'cápsulas metatarsofalângicas', 'capsulas metatarsofalangicas', 'MTP capsules', 'deep transverse metatarsal ligament', 'transverse head', 'cabeça transversa', 'cabeca transversa']] },
         { id: 'adh-i', d3: { focus: ['adductor_hallucis'], view: 'inf', frame: ['adductor_hallucis','metatarsals'], glass: .15 }, q: i('adductor hallucis', 'adutor do hálux'), a: [['proximal phalanx of great toe', 'falange proximal do hálux'], ['lateral sesamoid', 'sesamoide lateral']] },
         { id: 'adh-n', d3: { focus: ['adductor_hallucis'], view: 'inf', frame: ['adductor_hallucis','metatarsals'], glass: .15 }, q: n('adductor hallucis', 'adutor do hálux'), a: [LPN] },
         { id: 'int-o', d3: { focus: ['plantar_interossei_muscles','dorsal_interossei_muscles_of_foot'], view: 'inf', frame: ['plantar_interossei_muscles','dorsal_interossei_muscles_of_foot','metatarsals'], glass: .15 }, q: o('interossei', 'interósseos'), a: [['metatarsal shafts', 'diáfises metatarsais']] },
@@ -72,7 +73,7 @@ export default {
       ],
     },
     {
-      id: 'dorsum', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones'], d3frame: ['tarsal_bones', 'metatarsals'],
+      id: 'dorsum', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones'], d3frame: ['tarsal_bones', 'metatarsals'], d3half: 'lo',
       title: ['Dorsum · extensor digitorum brevis', 'Dorso · extensor curto dos dedos'],
       rule: ['The only intrinsic muscle on the dorsum, the extensor digitorum brevis, is the only foot muscle supplied by the deep fibular nerve.',
         'O único músculo intrínseco do dorso, o extensor curto dos dedos, é o único músculo do pé inervado pelo nervo fibular profundo.'],
@@ -85,7 +86,7 @@ export default {
       ],
     },
     {
-      id: 'arches', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges'], d3anchor: ['tarsal_bones'], d3frame: ['tarsal_bones', 'metatarsals'],
+      id: 'arches', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges'], d3anchor: ['tarsal_bones'], d3frame: ['tarsal_bones', 'metatarsals'], d3half: 'lo',
       title: ['Plantar muscles · action', 'Músculos plantares · função'],
       rule: ['Plantar intrinsics flex the toes at the MTP joints and steady the arches; the abductors pull the toes away from the second toe.',
         'Os intrínsecos plantares fletem os dedos nas articulações MTF e estabilizam os arcos; os abdutores afastam os dedos do segundo dedo.'],
@@ -95,6 +96,25 @@ export default {
         { id: 'qp-f', d3: { focus: ['quadratus_plantae_muscle'], view: 'inf', frame: ['quadratus_plantae_muscle','tarsal_bones'], glass: .15 }, q: f('quadratus plantae', 'quadrado plantar'), a: [['straightens the pull of FDL', 'corrige a tração do FDL'], ['assists toe flexion', 'auxilia a flexão dos dedos']] },
         { id: 'adh-f', d3: { focus: ['adductor_hallucis'], view: 'inf', frame: ['adductor_hallucis','metatarsals'], glass: .15 }, q: f('adductor hallucis', 'adutor do hálux'), a: [['adducts the great toe', 'aduz o hálux'], ['flexes the great toe', 'flexiona o hálux']] },
         { id: 'pf-all', d3: { focus: ['plantar_aponeurosis','flexor_digitorum_brevis','abductor_hallucis'], view: 'inf', frame: ['plantar_aponeurosis','flexor_digitorum_brevis','abductor_hallucis','tarsal_bones','metatarsals'], glass: .15 }, q: ['Which muscles hold the longitudinal arch?', 'Quais músculos sustentam o arco longitudinal?'], a: [['tibialis posterior', 'tibial posterior'], ['flexor hallucis longus', 'flexor longo do hálux'], ['flexor digitorum longus', 'flexor longo dos dedos'], ['abductor hallucis', 'abdutor do hálux']] },
+      ],
+    },
+    {
+      id: 'by-landmark', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones', 'metatarsals'], d3frame: ['tarsal_bones', 'metatarsals'], d3half: 'lo',
+      title: ['Foot · by landmark', 'Pé · por ponto ósseo'],
+      items: [
+        { id: 'lm-o-calcaneal-tuberosity', info: ['abductor hallucis: medial process; flexor digitorum brevis, abductor digiti minimi, quadratus plantae: calcaneal tuberosity.', 'abdutor do hálux: processo medial; flexor curto dos dedos, abdutor do dedo mínimo, quadrado plantar: tuberosidade do calcâneo.'], d3: { focus: ['abductor_hallucis', 'flexor_digitorum_brevis', 'abductor_digiti_minimi_of_foot', 'quadratus_plantae_muscle'], view: 'inf', frame: ['abductor_hallucis', 'tarsal_bones', 'metatarsals'], glass: .12 }, q: ['Which foot muscles originate from the calcaneal tuberosity (plantar calcaneus)?', 'Quais músculos do pé se originam na tuberosidade do calcâneo (calcâneo plantar)?'], a: [['abductor hallucis', 'abdutor do hálux', 'abdutor do halux'], ['flexor digitorum brevis', 'flexor curto dos dedos', 'FDB'], ['abductor digiti minimi', 'abdutor do dedo mínimo', 'abdutor do dedo minimo'], ['quadratus plantae', 'quadrado plantar']] },
+        { id: 'lm-o-dorsal-calcaneus', d3: { focus: ['extensor_digitorum_brevis', 'extensor_hallucis_brevis'], view: 'sup', frame: ['extensor_digitorum_brevis', 'extensor_hallucis_brevis', 'tarsal_bones', 'metatarsals'], glass: .12 }, q: ['Which foot muscle originates from the dorsal calcaneus?', 'Qual músculo do pé se origina no calcâneo dorsal?'], a: [['extensor digitorum brevis', 'extensor curto dos dedos', 'EDB', 'extensor hallucis brevis', 'extensor curto do hálux', 'extensor curto do halux', 'EHB']] },
+        { id: 'lm-i-great-toe-proximal-phalanx', info: ['abductor hallucis: medial base; flexor hallucis brevis: both sides; adductor hallucis: lateral base; extensor digitorum brevis: dorsal base.', 'abdutor do hálux: base medial; flexor curto do hálux: ambos os lados; adutor do hálux: base lateral; extensor curto dos dedos: base dorsal.'], d3: { focus: ['abductor_hallucis', 'flexor_hallucis_brevis', 'adductor_hallucis', 'extensor_digitorum_brevis', 'extensor_hallucis_brevis'], view: 'inf', frame: ['abductor_hallucis', 'tarsal_bones', 'metatarsals'], glass: .12 }, q: ['Which foot muscles insert on the proximal phalanx of the great toe?', 'Quais músculos do pé se inserem na falange proximal do hálux?'], a: [['abductor hallucis', 'abdutor do hálux', 'abdutor do halux'], ['flexor hallucis brevis', 'flexor curto do hálux', 'flexor curto do halux', 'FHB'], ['adductor hallucis', 'adutor do hálux', 'adutor do halux'], ['extensor digitorum brevis', 'extensor curto dos dedos', 'EDB', 'extensor hallucis brevis', 'extensor curto do hálux', 'extensor curto do halux', 'EHB']] },
+        { id: 'lm-i-medial-sesamoid', d3: { focus: ['abductor_hallucis', 'flexor_hallucis_brevis'], view: 'inf', frame: ['abductor_hallucis', 'tarsal_bones', 'metatarsals'], glass: .12 }, q: ['Which foot muscles insert on the medial sesamoid of the great toe?', 'Quais músculos do pé se inserem no sesamoide medial do hálux?'], a: [['abductor hallucis', 'abdutor do hálux', 'abdutor do halux'], ['flexor hallucis brevis', 'flexor curto do hálux', 'flexor curto do halux', 'FHB']] },
+        { id: 'lm-i-lateral-sesamoid', d3: { focus: ['flexor_hallucis_brevis', 'adductor_hallucis'], view: 'inf', frame: ['flexor_hallucis_brevis', 'metatarsals'], glass: .12 }, q: ['Which foot muscles insert on the lateral sesamoid of the great toe?', 'Quais músculos do pé se inserem no sesamoide lateral do hálux?'], a: [['flexor hallucis brevis', 'flexor curto do hálux', 'flexor curto do halux', 'FHB'], ['adductor hallucis', 'adutor do hálux', 'adutor do halux']] },
+        { id: 'lm-i-fifth-toe-proximal-phalanx', d3: { focus: ['abductor_digiti_minimi_of_foot', 'flexor_digiti_minimi_of_foot'], view: 'inf', frame: ['abductor_digiti_minimi_of_foot', 'tarsal_bones', 'metatarsals'], glass: .12 }, q: ['Which foot muscles insert on the base of the proximal phalanx of the fifth toe?', 'Quais músculos do pé se inserem na base da falange proximal do quinto dedo?'], a: [['abductor digiti minimi', 'abdutor do dedo mínimo', 'abdutor do dedo minimo'], ['flexor digiti minimi brevis', 'flexor curto do dedo mínimo', 'flexor curto do dedo minimo']] },
+      ],
+    },
+    {
+      id: 'by-nerve', d3ctx: ['tarsal_bones', 'metatarsals', 'toe_phalanges', 'tibia', 'fibula'], d3anchor: ['tarsal_bones', 'metatarsals'], d3frame: ['tarsal_bones', 'metatarsals'], d3half: 'lo',
+      title: ['Foot · by nerve', 'Pé · por nervo'],
+      items: [
+        { id: 'nv-lateral-plantar-nerve', info: ['Supplies the 2nd–4th lumbricals (1st lumbrical is medial plantar nerve).', 'Inerva os 2º–4º lumbricais (o 1º lumbrical é do nervo plantar medial).'], d3: { focus: ['abductor_digiti_minimi_of_foot', 'flexor_digiti_minimi_of_foot', 'quadratus_plantae_muscle', 'lumbrical_muscles_of_foot', 'adductor_hallucis', 'plantar_interossei_muscles', 'dorsal_interossei_muscles_of_foot'], view: 'inf', frame: ['abductor_digiti_minimi_of_foot', 'quadratus_plantae_muscle', 'tarsal_bones', 'metatarsals'], glass: .12 }, q: ['Which foot muscles does the lateral plantar nerve supply?', 'Quais músculos do pé o nervo plantar lateral inerva?'], a: [['abductor digiti minimi', 'abdutor do dedo mínimo', 'abdutor do dedo minimo'], ['flexor digiti minimi brevis', 'flexor curto do dedo mínimo', 'flexor curto do dedo minimo'], ['quadratus plantae', 'quadrado plantar'], ['lumbricals', 'lumbricais', 'lateral three lumbricals', 'três lumbricais laterais', 'tres lumbricais laterais'], ['adductor hallucis', 'adutor do hálux', 'adutor do halux'], ['interossei', 'interósseos', 'interosseos']] },
       ],
     },
   ],

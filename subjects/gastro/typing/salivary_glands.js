@@ -1,7 +1,20 @@
 // Salivary glands typing deck. Source: research/gastro_slides/02_salivary_glands/digest.md
 // (saliva p3–4, parotid p5–16 and 26–30, submandibular p17–22 and 31, sublingual p23–25 and 32, histology p33–44).
 const NM = (en, pt) => [`Not in the 3D model. Highlighted: ${en}`, `Não está no modelo 3D. Destacado: ${pt}`];
-const it = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
+// Reverse cards for distinct one-to-one facts.
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  "amylase": rv("Salivary amylase starts digestion of what?", "A amilase salivar inicia a digestão de quê?", [["starch", "amido"]]),
+  "mucin": rv("What does mucin do to the mouth and bolus?", "O que a mucina faz com a boca e o bolo alimentar?", [["lubricates", "lubrication", "lubricates mouth and bolus", "lubrifica", "lubrificação", "lubrificacao"]]),
+  "par_capsule": rv("The parotid capsule comes from the investing layer of which fascia?", "A cápsula da parótida vem da lâmina de revestimento de qual fáscia?", [["deep cervical fascia", "cervical fascia", "fáscia cervical profunda", "fascia cervical profunda"]]),
+  "stensen": rv("Stensen’s duct drains which gland?", "O ducto de Stensen drena qual glândula?", [["parotid", "parotid gland", "parótida", "parotida", "glândula parótida", "glandula parotida"]]),
+  "retromandibular": rv("Which two veins form the retromandibular vein in the parotid?", "Quais veias formam a veia retromandibular na parótida?", [["superficial temporal", "superficial temporal vein", "temporal superficial", "veia temporal superficial"], ["maxillary", "maxillary vein", "maxilar", "veia maxilar"]]),
+  "wharton": rv("Wharton’s duct drains which gland?", "O ducto de Wharton drena qual glândula?", [["submandibular", "submandibular gland", "glândula submandibular", "glandula submandibular"]]),
+  "caruncle": rv("Which duct opens on the sublingual caruncle?", "Qual ducto se abre na carúncula sublingual?", [["submandibular duct", "wharton", "wharton's duct", "whartons duct", "wharton duct", "ducto submandibular", "ducto de wharton"]]),
+  "h_striated": rv("Which salivary duct reabsorbs sodium and secretes potassium?", "Qual ducto salivar reabsorve sódio e secreta potássio?", [["striated duct", "striated", "ducto estriado", "estriado"]]),
+  "h_myo": rv("What do myoepithelial cells expel when they contract around salivary end-pieces?", "O que as células mioepiteliais expulsam ao se contrair ao redor das unidades salivares?", [["saliva"]]),
+};
+const it = (id, q, a, info, focus, note, warn) => ({ ...(REV[id] ? { rev: REV[id] } : {}), ...(warn ? { warn } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
 const PAR = NM('teeth, the nearest landmark. The parotid is not in the 3D model (it lies beside the cheek and the mandibular ramus).', 'os dentes, referência mais próxima. A parótida não está no modelo 3D (fica ao lado da bochecha e do ramo da mandíbula).');
 const HIST = NM('the major glands (histology is not modelled).', 'as glândulas maiores (a histologia não é modelada).');
 
@@ -9,6 +22,7 @@ const CTX = ['tongue', 'teeth', 'submandibular_gland', 'sublingual_gland', 'supe
 
 export default {
   id: 'salivary_glands',
+  rewards: true,
   title: ['Salivary glands', 'Glândulas salivares'],
   rules: {
     share: ['Share of saliva: submandibular 65%, parotid 20% (up to 50% stimulated), sublingual ~5% (class material: 15%), minor glands ~10%.', 'Parcela da saliva: submandibular 65%, parótida 20% (até 50% estimulada), sublingual ~5% (material da aula: 15%), glândulas menores ~10%.'],

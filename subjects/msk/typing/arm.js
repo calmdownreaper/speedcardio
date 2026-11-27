@@ -13,6 +13,7 @@ const f = (en, pt) => [`Main action of ${en}?`, `Função principal do ${pt}?`];
 
 export default {
   id: 'arm',
+  rewards: true,
   title: ['Arm', 'Braço'],
   sets: [
     {
@@ -69,6 +70,20 @@ export default {
         { id: 'brach-f', d3: { focus: ['brachialis'], view: 'ant', frame: ['brachialis', 'humerus'], glass: .12 }, q: f('brachialis', 'braquial'), a: [FLEX] },
         { id: 'cora-f', d3: { focus: ['coracobrachialis'], view: 'ant', frame: ['coracobrachialis', 'humerus'], glass: .12 }, q: f('coracobrachialis', 'coracobraquial'), a: [['shoulder flexion', 'flexão do ombro', 'flexion of the arm', 'flexão do braço'], ['shoulder adduction', 'adução do ombro', 'adduction of the arm', 'adução do braço', 'adduction', 'adução']] },
         { id: 'tri-f', d3: { focus: ['triceps_brachii'], view: 'post', frame: ['triceps_brachii', 'humerus'], glass: .12 }, q: f('triceps brachii', 'tríceps braquial'), a: [EXT] },
+      ],
+    },
+    {
+      id: 'by-landmark', d3ctx: ['humerus', 'scapula', 'clavicle'], d3anchor: ['humerus', 'scapula'], d3frame: ['humerus', 'scapula'],
+      title: ["Arm · by landmark", "Braço · por ponto ósseo"],
+      items: [
+        { id: 'lm-o-supraglenoid-tubercle', d3: { focus: ["biceps_brachii"], view: 'ant', frame: ['biceps_brachii', 'humerus'], glass: .12 }, q: ["Which arm muscle originates from the supraglenoid tubercle?", "Qual músculo do braço se origina no tubérculo supraglenoidal?"], a: [["long head of biceps brachii", "cabeça longa do bíceps braquial", "long head of biceps", "cabeça longa do bíceps", "cabeca longa do biceps braquial", "cabeca longa do biceps"]] },
+        { id: 'lm-o-coracoid-process', d3: { focus: ["biceps_brachii", "coracobrachialis"], view: 'ant', frame: ['biceps_brachii', 'humerus'], glass: .12 }, q: ["Which arm muscles originate from the coracoid process?", "Quais músculos do braço se originam no processo coracoide?"], a: [["short head of biceps brachii", "cabeça curta do bíceps braquial", "short head of biceps", "cabeça curta do bíceps", "cabeca curta do biceps braquial", "cabeca curta do biceps"], ["coracobrachialis", "coracobraquial"]] },
+        { id: 'lm-i-radial-tuberosity', d3: { focus: ["biceps_brachii"], view: 'ant', frame: ['biceps_brachii', 'humerus'], glass: .12 }, q: ["Which arm muscle inserts on the radial tuberosity?", "Qual músculo do braço se insere na tuberosidade do rádio?"], a: [["biceps brachii", "bíceps braquial", "biceps braquial"]] },
+        { id: 'lm-i-ulnar-tuberosity', d3: { focus: ["brachialis"], view: 'ant', frame: ['brachialis', 'humerus'], glass: .12 }, q: ["Which arm muscle inserts on the ulnar tuberosity?", "Qual músculo do braço se insere na tuberosidade da ulna?"], a: [["brachialis", "braquial"]] },
+        { id: 'lm-i-coronoid-process-of-ulna', d3: { focus: ["brachialis"], view: 'ant', frame: ['brachialis', 'humerus'], glass: .12 }, q: ["Which arm muscle inserts on the coronoid process of ulna?", "Qual músculo do braço se insere no processo coronoide da ulna?"], a: [["brachialis", "braquial"]] },
+        { id: 'lm-o-infraglenoid-tubercle', d3: { focus: ["triceps_brachii"], view: 'post', frame: ['triceps_brachii', 'humerus'], glass: .12 }, q: ["Which arm muscle originates from the infraglenoid tubercle?", "Qual músculo do braço se origina no tubérculo infraglenoidal?"], a: [["triceps brachii · long head", "tríceps braquial · cabeça longa", "triceps brachii  long head", "triceps braquial  cabeca longa", "long head of triceps brachii", "cabeça longa do tríceps braquial", "long head of triceps", "cabeca longa do triceps"]] },
+        { id: 'lm-i-olecranon', d3: { focus: ["triceps_brachii"], view: 'post', frame: ['triceps_brachii', 'humerus'], glass: .12 }, q: ["Which arm muscles insert on the olecranon?", "Quais músculos do braço se inserem no olecrano?"], a: [["triceps brachii", "tríceps braquial", "triceps braquial"], ["anconeus", "ancôneo", "anconeo"]] },
+        { id: 'lm-o-lateral-epicondyle', d3: { focus: ["triceps_brachii"], view: 'post', frame: ['triceps_brachii', 'humerus'], glass: .12 }, q: ["Which arm muscle originates from the lateral epicondyle?", "Qual músculo do braço se origina no epicôndilo lateral?"], a: [["anconeus", "ancôneo", "anconeo"]] },
       ],
     },
   ],

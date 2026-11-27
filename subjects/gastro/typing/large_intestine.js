@@ -1,5 +1,33 @@
 // Large intestine typing deck. Source: research/gastro_slides/10_large_intestine/digest.md (and compact.md).
-const I = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  'asc-seg': rv('The ascending colon runs from the right iliac fossa to which flexure?', 'O cólon ascendente vai da fossa ilíaca direita até qual flexura?', [['right colic flexure', 'hepatic flexure', 'flexura cólica direita', 'flexura colica direita', 'flexura hepática', 'flexura hepatica']]),
+  'desc-seg': rv('The descending colon runs from the left colic flexure to which fossa?', 'O cólon descendente vai da flexura cólica esquerda até qual fossa?', [['left iliac fossa', 'fossa ilíaca esquerda', 'fossa iliaca esquerda']]),
+  epiploic: rv('Omental (epiploic) appendices are unique to which part of the GI tract?', 'Os apêndices omentais (epiploicos) são exclusivos de qual parte do tubo digestivo?', [['colon', 'large intestine', 'cólon', 'intestino grosso']]),
+  't-meso': rv('Which two mesocolons attach to the mesocolic taenia?', 'Quais dois mesocolos se fixam na tênia mesocólica?', [['transverse mesocolon', 'transverse', 'mesocolo transverso', 'transverso'], ['sigmoid mesocolon', 'sigmoid', 'mesocolo sigmoide', 'sigmoide']]),
+  haustra: rv('Which two wall layers form the haustra of the colon?', 'Quais duas camadas da parede formam os haustros do cólon?', [['mucosa'], ['submucosa']]),
+  semilunar: rv('The semilunar folds of the colon separate which structures?', 'As pregas semilunares do cólon separam quais estruturas?', [['haustra', 'haustros']]),
+  'anal-epi': rv('Which part of the large intestine is lined by stratified squamous epithelium?', 'Qual parte do intestino grosso é revestida por epitélio pavimentoso estratificado?', [['anal canal', 'canal anal']]),
+  caecum: rv('In which abdominal region does the caecum lie?', 'Em qual região abdominal o ceco se localiza?', [['right iliac fossa', 'fossa ilíaca direita', 'fossa iliaca direita']]),
+  'caecum-t': rv('Which 3 longitudinal bands start around the base of the appendix?', 'Quais 3 faixas longitudinais começam ao redor da base do apêndice?', [['taeniae coli', 'taeniae', 'teniae coli', 'tênias do cólon', 'tenias do colon', 'tênias', 'tenias']]),
+  'rec-sup': rv('What limits the superior ileocaecal recess in front?', 'O que limita o recesso ileocecal superior à frente?', [['vascular fold of the caecum', 'vascular fold of the cecum', 'vascular fold', 'prega vascular do ceco', 'prega vascular']]),
+  'rec-inf': rv('Which two folds limit the inferior ileocaecal recess?', 'Quais duas pregas limitam o recesso ileocecal inferior?', [['ileocaecal fold', 'ileocecal fold', 'bloodless fold of treves', 'treves', 'prega ileocecal', 'prega de treves'], ['mesoappendix', 'mesoapêndice', 'mesoapendice']]),
+  'rec-retro': rv('Which organ often lies inside the retrocaecal recess?', 'Qual órgão costuma ficar dentro do recesso retrocecal?', [['appendix', 'apêndice', 'apendice']]),
+  'lip-sup': rv('The ileocolic lip lies at the junction between which two parts?', 'O lábio ileocólico fica na junção entre quais duas partes?', [['ileum', 'íleo', 'ileo'], ['colon', 'ascending colon', 'cólon', 'cólon ascendente', 'colon ascendente']]),
+  'lip-inf': rv('The ileocaecal lip lies at the junction between which two parts?', 'O lábio ileocecal fica na junção entre quais duas partes?', [['ileum', 'íleo', 'ileo'], ['caecum', 'cecum', 'ceco']]),
+  frenula: rv('The frenula of the ileocaecal valve are formed by the fusion of which structures?', 'Os frênulos da válvula ileocecal são formados pela fusão de quais estruturas?', [['lips', 'ileocolic and ileocaecal lips', 'lábios', 'labios']]),
+  'meso-app': rv('Which artery runs in the mesoappendix?', 'Qual artéria corre no mesoapêndice?', [['appendicular artery', 'appendicular', 'artéria apendicular', 'arteria apendicular']]),
+  tonsil: rv('Which organ is called the "intestinal tonsil" because of its abundant lymphatic follicles?', 'Qual órgão é chamado de "amígdala intestinal" por seus abundantes folículos linfáticos?', [['appendix', 'apêndice', 'apendice']]),
+  phrenicocolic: rv('The phrenicocolic ligament acts as a shelf supporting which organ?', 'O ligamento frenocólico atua como uma prateleira que sustenta qual órgão?', [['spleen', 'baço', 'baco']]),
+  'sig-t': rv('In which colon segment is the mesocolic taenia lost?', 'Em qual segmento do cólon a tênia mesocólica desaparece?', [['sigmoid colon', 'sigmoid', 'cólon sigmoide', 'colon sigmoide', 'sigmoide']]),
+  intersig: rv('Which two structures lie behind the root of the intersigmoid recess?', 'Quais duas estruturas ficam atrás da raiz do recesso intersigmoide?', [['ureter', 'left ureter', 'ureter esquerdo'], ['common iliac vessels', 'iliac vessels', 'vasos ilíacos comuns', 'vasos iliacos comuns', 'vasos ilíacos', 'vasos iliacos']]),
+  'sup-rect': rv('The superior rectal artery is the terminal branch of which artery?', 'A artéria retal superior é o ramo terminal de qual artéria?', [['ima', 'inferior mesenteric artery', 'ami', 'artéria mesentérica inferior', 'arteria mesenterica inferior']]),
+  watershed: rv('Which arterial arcade has its weakest point (watershed) near the splenic flexure?', 'Qual arcada arterial tem seu ponto mais fraco (transição) perto da flexura esplênica?', [['marginal artery', 'marginal artery of drummond', 'drummond', 'artéria marginal', 'arteria marginal', 'artéria marginal de drummond']]),
+  riolan: rv('The arch of Riolan connects which two colic arteries?', 'O arco de Riolan conecta quais duas artérias cólicas?', [['middle colic', 'middle colic artery', 'cólica média', 'colica media', 'artéria cólica média'], ['left colic', 'left colic artery', 'cólica esquerda', 'colica esquerda', 'artéria cólica esquerda']]),
+  longa: rv('What do the vasa longa of the colon supply?', 'O que os vasos longos do cólon irrigam?', [['epiploic appendices', 'omental appendices', 'apêndices epiploicos', 'apendices epiploicos', 'apêndices omentais', 'apendices omentais']]),
+  para: rv('Up to which colic flexure does the vagus nerve supply the large intestine?', 'Até qual flexura cólica o nervo vago inerva o intestino grosso?', [['left colic flexure', 'splenic flexure', 'flexura cólica esquerda', 'flexura colica esquerda', 'flexura esplênica', 'flexura esplenica']]),
+};
+const I = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), ...(REV[id] ? { rev: REV[id] } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
 const NOT3D = (en, pt) => [`Not in the 3D model. Highlighted: ${en}`, `Não está no modelo 3D. Destacado: ${pt}`];
 
 const COLON = ['ileum', 'ileocecal_junction', 'appendix', 'mesoappendix', 'ascending_colon', 'transverse_colon', 'descending_colon', 'taeniae_coli', 'rectum', 'jejunum'];
@@ -9,6 +37,7 @@ const NERV = COLON.concat(['abdominal_aorta_g', 'sma', 'ima']);
 
 export default {
   id: 'large_intestine',
+  rewards: true,
   title: ['Large intestine', 'Intestino grosso'],
   sets: [
     {

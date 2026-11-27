@@ -158,6 +158,30 @@ export const deck = {
       'Flexes the elbow, strongest in midprone position. Supplied by the radial nerve (C5, C6).',
       'Arises from the lateral supracondylar ridge. Inserts on the lateral distal radius.',
     ]),
+    S('pronator_teres', 'Pronator teres', 'Pronator teres', ['pronator teres muscle'], 'Forearm pronator from the medial elbow', [
+      'Supplied by the median nerve.',
+      'Arises from the medial epicondyle and medial side of the coronoid process.',
+    ]),
+    S('palmaris_longus_muscle', 'Palmaris longus', 'Palmaris longus', ['palmaris longus muscle'], 'Superficial flexor from the medial epicondyle', [
+      'Supplied by the median nerve.',
+      'Arises from the medial epicondyle.',
+    ]),
+    S('flexor_digitorum_superficialis', 'Flexor digitorum superficialis', 'Flexor digitorum superficialis', ['flexor digitorum superficialis muscle', 'FDS'], 'Forearm flexor reaching the middle finger phalanges', [
+      'Supplied by the median nerve.',
+      'Arises from the medial epicondyle, coronoid process of the ulna and anterior radius. Inserts on the middle phalanges of digits 2 to 5.',
+    ]),
+    S('flexor_digitorum_profundus', 'Flexor digitorum profundus', 'Flexor digitorum profundus', ['flexor digitorum profundus muscle', 'FDP'], 'Deep forearm flexor reaching the distal finger phalanges', [
+      'Its lateral half is supplied by the median nerve and its medial half by the ulnar nerve.',
+      'Arises from the anterior ulna and interosseous membrane. Inserts on the distal phalanges of digits 2 to 5.',
+    ]),
+    S('flexor_pollicis_longus', 'Flexor pollicis longus', 'Flexor pollicis longus', ['flexor pollicis longus muscle', 'FPL'], 'Forearm flexor reaching the distal thumb phalanx', [
+      'Supplied by the median nerve.',
+      'Arises from the anterior radius and interosseous membrane. Inserts on the distal phalanx of the thumb.',
+    ]),
+    S('pronator_quadratus', 'Pronator quadratus', 'Pronator quadratus', ['pronator quadratus muscle'], 'Distal forearm pronator between ulna and radius', [
+      'Pronates the forearm. Supplied by the median nerve.',
+      'Arises from the distal ulna. Inserts on the distal radius.',
+    ]),
     S('flexor_carpi_radialis', 'Flexor carpi radialis', 'Flexor carpi radialis', ['flexor carpi radialis muscle', 'FCR'], 'Superficial forearm tendon just medial to the thumb-side pulse at the wrist', [
       'In the superficial anterior forearm, beside pronator teres and on the thumb side of palmaris longus.',
       'Flexes and abducts the wrist. Supplied by the median nerve (C6, C7).',
@@ -168,10 +192,68 @@ export const deck = {
       'Flexes and adducts the wrist. Supplied by the ulnar nerve (C7, C8).',
       'Arises from the medial epicondyle and olecranon. Inserts on the pisiform, hamate and metacarpal 5.',
     ]),
+    S('supinator', 'Supinator', 'Supinator', ['supinator muscle'], 'Forearm supinator arising from the lateral elbow', [
+      'Supinates the forearm. Supplied by the posterior interosseous nerve.',
+      'Arises from the lateral epicondyle, annular and radial collateral ligaments and supinator crest of the ulna.',
+    ]),
+    S('abductor_pollicis_longus', 'Abductor pollicis longus', 'Abductor pollicis longus', ['abductor pollicis longus muscle', 'APL'], 'Forearm muscle reaching the first metacarpal', [
+      'Inserts on the base of the first metacarpal.',
+    ]),
+    S('extensor_pollicis_brevis', 'Extensor pollicis brevis', 'Extensor pollicis brevis', ['extensor pollicis brevis muscle', 'EPB'], 'Forearm muscle reaching the proximal thumb phalanx', [
+      'Inserts on the base of the proximal phalanx of the thumb.',
+    ]),
+    S('extensor_pollicis_longus', 'Extensor pollicis longus', 'Extensor pollicis longus', ['extensor pollicis longus muscle', 'EPL'], 'Forearm muscle reaching the distal thumb phalanx', [
+      'Inserts on the distal phalanx of the thumb.',
+    ]),
+    S('extensor_digiti_minimi', 'Extensor digiti minimi', 'Extensor digiti minimi', ['extensor digiti minimi muscle', 'EDM'], 'Forearm extensor reaching the little finger', [
+      'Extends the little finger. Supplied by the posterior interosseous nerve.',
+      'Arises from the common extensor tendon. Inserts on the extensor expansion of the fifth digit.',
+    ]),
+    S('extensor_indicis', 'Extensor indicis', 'Extensor indicis', ['extensor indicis muscle', 'EI'], 'Forearm extensor reaching the index finger', [
+      'Extends the index finger. Supplied by the posterior interosseous nerve.',
+      'Arises from the posterior ulna and interosseous membrane. Inserts on the extensor expansion of the index finger.',
+    ]),
     S('extensor_digitorum', 'Extensor digitorum', 'Extensor digitorum', ['extensor digitorum muscle', 'EDC'], 'Muscle on the back of the forearm with four tendons', [
       'In the superficial posterior forearm, between extensor carpi radialis brevis and extensor digiti minimi.',
       'Extends the wrist and the medial four fingers. Supplied by the posterior interosseous branch of the radial nerve (C7, C8).',
       'Arises from the lateral epicondyle. Inserts on the extensor expansions of digits 2 to 5.',
+    ]),
+    S('abductor_pollicis_brevis', 'Abductor pollicis brevis', 'Abductor pollicis brevis', ['abductor pollicis brevis muscle', 'APB'], 'Thenar muscle that abducts the thumb', [
+      'Abducts the thumb. Supplied by the median nerve.',
+      'Arises from the flexor retinaculum, scaphoid and trapezium. Inserts on the base of the proximal phalanx of the thumb.',
+    ]),
+    S('flexor_pollicis_brevis', 'Flexor pollicis brevis', 'Flexor pollicis brevis', ['flexor pollicis brevis muscle', 'FPB'], 'Thenar muscle that flexes the thumb', [
+      'Flexes the thumb. Supplied by the median nerve.',
+    ]),
+    S('opponens_pollicis_muscle', 'Opponens pollicis', 'Opponens pollicis', ['opponens pollicis muscle'], 'Thenar muscle reaching the first metacarpal', [
+      'Opposes the thumb. Supplied by the median nerve.',
+      'Inserts on the first metacarpal.',
+    ]),
+    S('adductor_pollicis', 'Adductor pollicis', 'Adductor pollicis', ['adductor pollicis muscle'], 'Flat palm muscle between the metacarpals', [
+      'Adducts the thumb. Supplied by the ulnar nerve.',
+      'Arises from the second and third metacarpals.',
+    ]),
+    S('abductor_digiti_minimi_of_hand', 'Abductor digiti minimi', 'Abductor digiti minimi', ['abductor digiti minimi muscle'], 'Hypothenar muscle arising from the pisiform', [
+      'Abducts the little finger. Supplied by the ulnar nerve.',
+      'Arises from the pisiform. Inserts on the base of the proximal phalanx of the fifth digit.',
+    ]),
+    S('flexor_digiti_minimi_of_hand', 'Flexor digiti minimi brevis', 'Flexor digiti minimi brevis', ['flexor digiti minimi brevis muscle'], 'Hypothenar muscle from the hook of hamate', [
+      'Supplied by the ulnar nerve.',
+      'Arises from the hook of hamate and flexor retinaculum.',
+    ]),
+    S('opponens_digiti_minimi_muscle_of_hand', 'Opponens digiti minimi', 'Opponens digiti minimi', ['opponens digiti minimi muscle'], 'Hypothenar muscle reaching the fifth metacarpal', [
+      'Opposes the little finger. Supplied by the ulnar nerve.',
+      'Inserts on the fifth metacarpal.',
+    ]),
+    S('lumbrical_muscles_of_hand', 'Lumbricals of the hand', 'Lumbricals of the hand', ['lumbricals of the hand muscle'], 'Hand muscles reaching the extensor expansions', [
+      'Flex the MCP joints and extend the IP joints. Lumbricals 1 and 2 are supplied by the median nerve and 3 and 4 by the ulnar nerve.',
+      'Insert on the extensor expansions of digits 2 to 5.',
+    ]),
+    S('palmar_interossei_muscles', 'Palmar interossei', 'Palmar interossei', ['palmar interossei muscle'], 'Hand interossei that adduct the fingers', [
+      'Adduct the fingers. Supplied by the ulnar nerve.',
+    ]),
+    S('dorsal_interossei_muscles_of_hand', 'Dorsal interossei of the hand', 'Dorsal interossei of the hand', ['dorsal interossei of the hand muscle'], 'Hand interossei that abduct the fingers', [
+      'Abduct the fingers. Supplied by the ulnar nerve.',
     ]),
   ],
 };
@@ -184,6 +266,8 @@ export const levels = [
   { title: 'Rotator cuff', ids: ['supraspinatus', 'infraspinatus', 'teres_minor', 'subscapularis'] },
   { title: 'Shoulder girdle muscles', ids: ['deltoid', 'teres_major', 'pectoralis_major', 'trapezius', 'levator_scapulae', 'rhomboid_major', 'rhomboid_minor', 'serratus_anterior'] },
   { title: 'Arm and forearm muscles', ids: ['biceps_brachii', 'brachialis', 'coracobrachialis', 'triceps_brachii', 'brachioradialis', 'flexor_carpi_radialis', 'flexor_carpi_ulnaris', 'extensor_digitorum'] },
+  { title: 'Forearm muscles', ids: ['pronator_teres', 'palmaris_longus_muscle', 'flexor_digitorum_superficialis', 'flexor_digitorum_profundus', 'flexor_pollicis_longus', 'pronator_quadratus', 'supinator', 'abductor_pollicis_longus', 'extensor_pollicis_brevis', 'extensor_pollicis_longus', 'extensor_digiti_minimi', 'extensor_indicis'] },
+  { title: 'Hand muscles', ids: ['abductor_pollicis_brevis', 'flexor_pollicis_brevis', 'opponens_pollicis_muscle', 'adductor_pollicis', 'abductor_digiti_minimi_of_hand', 'flexor_digiti_minimi_of_hand', 'opponens_digiti_minimi_muscle_of_hand', 'lumbrical_muscles_of_hand', 'palmar_interossei_muscles', 'dorsal_interossei_muscles_of_hand'] },
   { title: '30L origins and insertions', bonus: true, ids: ['supraspinatus', 'infraspinatus', 'teres_minor', 'subscapularis', 'deltoid', 'pectoralis_major', 'biceps_brachii', 'triceps_brachii', 'brachioradialis', 'flexor_carpi_radialis'] },
 ];
 

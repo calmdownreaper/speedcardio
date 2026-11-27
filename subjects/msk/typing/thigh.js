@@ -21,6 +21,7 @@ const f = (en, pt) => [`Main action of ${en}?`, `Função principal do ${pt}?`];
 
 export default {
   id: 'thigh',
+  rewards: true,
   title: ['Thigh', 'Coxa'],
   sets: [
     {
@@ -123,6 +124,30 @@ export default {
         { id: 'sart-i', d3: { focus: ['sartorius'], view: 'ant', frame: ['sartorius', 'tibia'], glass: .12 }, q: i('sartorius', 'sartório'), a: [PES] },
         { id: 'pes-m', d3: { focus: ['sartorius','gracilis','semitendinosus'], view: 'ant', frame: ['sartorius','gracilis','semitendinosus','femur','tibia'], glass: .15 }, q: ['Which three muscles insert at the pes anserinus?', 'Quais três músculos inserem na pata de ganso?'], a: [['sartorius', 'sartório'], ['gracilis', 'grácil'], ['semitendinosus', 'semitendíneo']] },
         { id: 'pes-loc', d3: { focus: ['sartorius','gracilis','semitendinosus'], view: 'ant', frame: ['sartorius','gracilis','semitendinosus','femur','tibia'], glass: .15 }, q: ['Where is the pes anserinus?', 'Onde fica a pata de ganso?'], a: [PES] },
+      ],
+    },
+    {
+      id: 'by-landmark', d3ctx: ['femur', 'tibia', 'patella', 'hip_bone'], d3anchor: ['femur', 'patella'], d3frame: ['femur', 'tibia', 'patella'],
+      title: ['Thigh · by landmark', 'Coxa · por ponto ósseo'],
+      items: [
+        { id: 'lm-o-ischial-tuberosity', d3: { focus: ['biceps_femoris', 'semitendinosus', 'semimembranosus', 'adductor_magnus'], view: 'post', frame: ['biceps_femoris', 'hip_bone'], glass: .12 }, q: ['Which thigh muscles originate from the ischial tuberosity?', 'Quais músculos da coxa se originam no túber isquiático?'], a: [['long head of biceps femoris', 'cabeça longa do bíceps femoral', 'cabeca longa do biceps femoral', 'biceps femoris', 'bíceps femoral', 'biceps femoral'], ['semitendinosus', 'semitendíneo', 'semitendineo'], ['semimembranosus', 'semimembranoso'], ['adductor magnus', 'adutor magno']] },
+        { id: 'lm-o-lateral-lip-linea-aspera', d3: { focus: ['vastus_lateralis', 'biceps_femoris'], view: 'ant', frame: ['vastus_lateralis', 'femur'], glass: .12 }, q: ['Which thigh muscles originate from the lateral lip of the linea aspera?', 'Quais músculos da coxa se originam no lábio lateral da linha áspera?'], a: [['vastus lateralis', 'vasto lateral'], ['short head of biceps femoris', 'cabeça curta do bíceps femoral', 'cabeca curta do biceps femoral']] },
+        { id: 'lm-o-inferior-pubic-ramus', info: ['Adductor magnus: ischiopubic ramus.', 'Adutor magno: ramo isquiopúbico.'], d3: { focus: ['gracilis', 'adductor_brevis', 'adductor_magnus'], view: 'ant', frame: ['gracilis', 'hip_bone'], glass: .12 }, q: ['Which thigh muscles originate from the inferior pubic ramus?', 'Quais músculos da coxa se originam no ramo inferior do púbis?'], a: [['gracilis', 'grácil', 'gracil'], ['adductor brevis', 'adutor curto'], ['adductor magnus', 'adutor magno']] },
+        { id: 'lm-o-aiis', d3: { focus: ['rectus_femoris'], view: 'ant', frame: ['rectus_femoris', 'hip_bone'], glass: .12 }, q: ['Which thigh muscle originates from the anterior inferior iliac spine (AIIS)?', 'Qual músculo da coxa se origina na espinha ilíaca anteroinferior (EIAI)?'], a: [['rectus femoris', 'reto femoral']] },
+        { id: 'lm-o-asis', d3: { focus: ['sartorius'], view: 'ant', frame: ['sartorius', 'hip_bone'], glass: .12 }, q: ['Which thigh muscle originates from the anterior superior iliac spine (ASIS)?', 'Qual músculo da coxa se origina na espinha ilíaca anterossuperior (EIAS)?'], a: [['sartorius', 'sartório', 'sartorio']] },
+        { id: 'lm-o-pecten-pubis', d3: { focus: ['pectineus_muscle'], view: 'ant', frame: ['pectineus_muscle', 'hip_bone', 'femur'], glass: .12 }, q: ['Which thigh muscle originates from the pecten pubis?', 'Qual músculo da coxa se origina no pectíneo do púbis?'], a: [['pectineus', 'pectíneo', 'pectineo']] },
+        { id: 'lm-i-patella', info: ['rectus femoris: base; vastus lateralis: lateral border; vastus medialis: medial border; vastus intermedius: upper border.', 'reto femoral: base; vasto lateral: borda lateral; vasto medial: borda medial; vasto intermédio: borda superior.'], d3: { focus: ['rectus_femoris', 'vastus_lateralis', 'vastus_medialis', 'vastus_intermedius'], view: 'ant', frame: ['rectus_femoris', 'patella'], glass: .12 }, q: ['Which thigh muscles insert on the patella?', 'Quais músculos da coxa se inserem na patela?'], a: [['rectus femoris', 'reto femoral'], ['vastus lateralis', 'vasto lateral'], ['vastus medialis', 'vasto medial'], ['vastus intermedius', 'vasto intermédio', 'vasto intermedio']] },
+        { id: 'lm-i-tibial-tuberosity', d3: { focus: ['rectus_femoris', 'vastus_lateralis', 'vastus_medialis', 'vastus_intermedius'], view: 'ant', frame: ['rectus_femoris', 'patella'], glass: .12 }, q: ['Which thigh muscles insert on the tibial tuberosity (via the patellar ligament)?', 'Quais músculos da coxa se inserem na tuberosidade da tíbia (pelo ligamento patelar)?'], a: [['rectus femoris', 'reto femoral'], ['vastus lateralis', 'vasto lateral'], ['vastus medialis', 'vasto medial'], ['vastus intermedius', 'vasto intermédio', 'vasto intermedio']] },
+        { id: 'lm-i-linea-aspera', info: ['pectineus: proximal; adductor brevis: upper third (medial lip); adductor longus: middle third (medial lip); adductor magnus: medial lip.', 'pectíneo: proximal; adutor curto: terço superior (lábio medial); adutor longo: terço médio (lábio medial); adutor magno: lábio medial.'], d3: { focus: ['adductor_longus', 'adductor_magnus', 'pectineus_muscle', 'adductor_brevis'], view: 'ant', frame: ['adductor_longus', 'femur'], glass: .12 }, q: ['Which thigh muscles insert on the linea aspera?', 'Quais músculos da coxa se inserem na linha áspera?'], a: [['adductor longus', 'adutor longo'], ['adductor magnus', 'adutor magno'], ['pectineus', 'pectíneo', 'pectineo'], ['adductor brevis', 'adutor curto']] },
+        { id: 'lm-i-fibular-head', d3: { focus: ['biceps_femoris'], view: 'post', frame: ['biceps_femoris', 'fibula'], glass: .12 }, q: ['Which thigh muscle inserts on the fibular head?', 'Qual músculo da coxa se insere na cabeça da fíbula?'], a: [['biceps femoris', 'bíceps femoral', 'biceps femoral']] },
+        { id: 'lm-i-adductor-tubercle', d3: { focus: ['adductor_magnus'], view: 'post', frame: ['adductor_magnus', 'femur'], glass: .12 }, q: ['Which thigh muscle inserts on the adductor tubercle?', 'Qual músculo da coxa se insere no tubérculo adutor?'], a: [['adductor magnus', 'adutor magno']] },
+      ],
+    },
+    {
+      id: 'by-nerve', d3ctx: ['femur', 'tibia', 'patella', 'hip_bone'], d3anchor: ['femur', 'patella'], d3frame: ['femur', 'tibia', 'patella'],
+      title: ['Thigh · by nerve', 'Coxa · por nervo'],
+      items: [
+        { id: 'nv-femoral-nerve', info: ['pectineus can also receive a branch from the obturator nerve.', 'o pectíneo também pode receber um ramo do nervo obturatório.'], d3: { focus: ['sartorius', 'rectus_femoris', 'vastus_lateralis', 'vastus_medialis', 'vastus_intermedius', 'pectineus_muscle'], view: 'ant', frame: ['sartorius', 'femur'], glass: .12 }, q: ['Which thigh muscles does the femoral nerve supply?', 'Quais músculos da coxa o nervo femoral inerva?'], a: [['sartorius', 'sartório', 'sartorio'], ['quadriceps femoris', 'quadríceps femoral', 'quadriceps femoral'], ['pectineus', 'pectíneo', 'pectineo']] },
       ],
     },
   ],

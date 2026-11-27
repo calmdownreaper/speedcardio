@@ -1,5 +1,26 @@
 // Jejunum and ileum typing deck. Source: research/gastro_slides/09_jejunum_and_ileum/digest.md (and compact.md).
-const I = (id, q, a, info, focus, note) => ({ id, q, a, info, d3: note ? { focus, note } : { focus } });
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  mesenteric: rv('Which two parts of the small intestine form the mesenteric intestine?', 'Quais duas partes do intestino delgado formam o intestino mesentérico?', [['jejunum', 'jejuno'], ['ileum', 'íleo', 'ileo']]),
+  'jej-start': rv('Which part of the small intestine starts at the duodenojejunal flexure?', 'Qual parte do intestino delgado começa na flexura duodenojejunal?', [['jejunum', 'jejuno']]),
+  peyer: rv("Peyer's patches are characteristic of which part of the small intestine?", 'As placas de Peyer são características de qual parte do intestino delgado?', [['ileum', 'íleo', 'ileo']]),
+  brunner: rv("Brunner's glands are characteristic of which part of the small intestine?", 'As glândulas de Brunner são características de qual parte do intestino delgado?', [['duodenum', 'duodeno']]),
+  'root-ends': rv('Which peritoneal fold has its root running from the duodenojejunal flexure to the ileocaecal junction?', 'Qual prega peritoneal tem sua raiz indo da flexura duodenojejunal até a junção ileocecal?', [['mesentery', 'mesentério', 'mesenterio']]),
+  midgut: rv('The superior mesenteric artery supplies which embryonic gut region?', 'A artéria mesentérica superior irriga qual região embrionária do intestino?', [['midgut', 'intestino médio', 'intestino medio']]),
+  'sma-left': rv('From which side of the SMA do the jejunal and ileal arteries arise?', 'De qual lado da AMS saem as artérias jejunais e ileais?', [['left', 'left side', 'esquerda', 'lado esquerdo']]),
+  'mid-colic': rv('The middle colic artery runs between the layers of which peritoneal fold?', 'A artéria cólica média corre entre os folhetos de qual prega peritoneal?', [['transverse mesocolon', 'mesocolo transverso']]),
+  'right-colic': rv('Which colon segment and flexure are supplied by the right colic artery?', 'Qual segmento do cólon e qual flexura são irrigados pela artéria cólica direita?', [['ascending colon', 'cólon ascendente', 'colon ascendente'], ['hepatic flexure', 'right colic flexure', 'flexura hepática', 'flexura hepatica', 'flexura cólica direita', 'flexura colica direita']]),
+  jv: rv('Where does the superior mesenteric vein (SMV) drain?', 'Para onde drena a veia mesentérica superior (VMS)?', [['portal vein', 'hepatic portal vein', 'veia porta']]),
+  lieb: rv('Where are the crypts of Lieberkühn located (at the base of what)?', 'Onde ficam as criptas de Lieberkühn (na base de quê)?', [['villi', 'intestinal villi', 'vilosidades', 'vilos']]),
+  'goblet-fn': rv('What do goblet cells release for lubrication and protection?', 'O que as células caliciformes liberam para lubrificação e proteção?', [['mucins', 'mucin', 'mucus', 'mucinas', 'mucina', 'muco']]),
+  entero: rv('Enterocytes form what type of epithelium?', 'Os enterócitos formam que tipo de epitélio?', [['simple columnar', 'columnar', 'colunar simples', 'colunar']]),
+  iel: rv('T cells are the main type of which epithelial immune cells?', 'As células T são o principal tipo de quais células imunes epiteliais?', [['intraepithelial lymphocytes', 'iel', 'linfócitos intraepiteliais', 'linfocitos intraepiteliais']]),
+  celiac: rv('What happens to the intestinal villi in coeliac disease?', 'O que acontece com as vilosidades intestinais na doença celíaca?', [['atrophy', 'villous atrophy', 'atrofia', 'atrofiam']]),
+  lacteal: rv('What does the lacteal inside each villus collect?', 'O que o vaso lácteo dentro de cada vilosidade recolhe?', [['chylomicrons', 'quilomícrons', 'quilomicrons', 'fat', 'gordura']]),
+  cisterna: rv('The cisterna chyli is the origin of which large lymphatic duct?', 'A cisterna do quilo é a origem de qual grande ducto linfático?', [['thoracic duct', 'ducto torácico', 'ducto toracico']]),
+  scfa: rv('Short-chain fatty acids (SCFAs) are produced by the microbiota from the fermentation of what?', 'Os ácidos graxos de cadeia curta (AGCC) são produzidos pela microbiota a partir da fermentação de quê?', [['fibre', 'fiber', 'fibra', 'fibras']]),
+};
+const I = (id, q, a, info, focus, note) => ({ ...(REV[id] ? { rev: REV[id] } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
 const NOT3D = (en, pt) => [`Not in the 3D model. Highlighted: ${en}`, `Não está no modelo 3D. Destacado: ${pt}`];
 
 const ORG = ['duodenum', 'jejunum', 'ileum', 'ileocecal_junction', 'ascending_colon', 'transverse_colon', 'descending_colon', 'pancreas', 'stomach'];
@@ -8,6 +29,7 @@ const LYM = ['jejunum', 'ileum', 'sma', 'smv', 'abdominal_aorta_g', 'celiac_trun
 
 export default {
   id: 'jejunum_ileum',
+  rewards: true,
   title: ['Jejunum and ileum', 'Jejuno e íleo'],
   sets: [
     {

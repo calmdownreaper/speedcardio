@@ -11,10 +11,11 @@ const PP5 = ['base of proximal phalanx of 5th digit', 'base da falange proximal 
 
 export default {
   id: 'hand',
+  rewards: true,
   title: ['Hand', 'Mão'],
   sets: [
     {
-      id: 'thenar', d3ctx: ['radius', 'ulna', 'palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3anchor: ['radius', 'ulna'], d3frame: ['palmar_aponeurosis', 'flexor_retinaculum_of_wrist'],
+      id: 'thenar', d3ctx: ['radius', 'ulna', 'palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3anchor: ['radius', 'ulna'], d3frame: ['palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3half: 'lo',
       title: ['Thenar muscles', 'Músculos tenares'],
       rule: ['Three thenar muscles (abductor, flexor brevis, opponens) sit on the thumb pad and make up 3 of the 4 LOAF letters; the adductor pollicis is the flat one in the palm between the metacarpals and is NOT thenar.',
         'Três músculos tenares (abdutor, flexor curto, oponente) formam a eminência tenar e são 3 das 4 letras do LOAF; o adutor do polegar é o músculo achatado na palma entre os metacarpos e NÃO é tenar.'],
@@ -30,7 +31,7 @@ export default {
       ],
     },
     {
-      id: 'hypothenar', d3ctx: ['radius', 'ulna', 'palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3anchor: ['radius', 'ulna'], d3frame: ['palmar_aponeurosis', 'flexor_retinaculum_of_wrist'],
+      id: 'hypothenar', d3ctx: ['radius', 'ulna', 'palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3anchor: ['radius', 'ulna'], d3frame: ['palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3half: 'lo',
       title: ['Hypothenar and palmaris brevis', 'Hipotênar e palmar curto'],
       rule: ['Three hypothenar muscles mirror the thenar set on the little finger: abductor, flexor brevis, opponens. Palmaris brevis is the odd one out — a skin muscle over the hypothenar eminence.',
         'Três músculos hipotenares espelham o conjunto tenar no dedo mínimo: abdutor, flexor curto, oponente. O palmar curto é o diferente — um músculo da pele sobre a eminência hipotenar.'],
@@ -45,7 +46,7 @@ export default {
       ],
     },
     {
-      id: 'lumbricals-interossei', d3ctx: ['radius', 'ulna', 'palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3anchor: ['radius', 'ulna'], d3frame: ['palmar_aponeurosis', 'flexor_retinaculum_of_wrist'],
+      id: 'lumbricals-interossei', d3ctx: ['radius', 'ulna', 'palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3anchor: ['radius', 'ulna'], d3frame: ['palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3half: 'lo',
       title: ['Lumbricals and interossei', 'Lumbricais e interósseos'],
       rule: ['Lumbricals flex the MCP and extend the IP joints ("lumbricals = the hand\'s worm-like fine movers"). Interossei act on the MCPs: PAD = Palmar Adduct, DAB = Dorsal Abduct.',
         'Os lumbricais flexionam a metacarpofalângica e estendem as interfalângicas ("lumbricais = os movimentos finos da mão"). Os interósseos agem nas metacarpofalângicas: PAD = Palmar Aduz, DAB = Dorsal Abduz.'],
@@ -58,7 +59,7 @@ export default {
       ],
     },
     {
-      id: 'nerves', d3ctx: ['radius', 'ulna', 'palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3anchor: ['radius', 'ulna'], d3frame: ['palmar_aponeurosis', 'flexor_retinaculum_of_wrist'],
+      id: 'nerves', d3ctx: ['radius', 'ulna', 'palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3anchor: ['radius', 'ulna'], d3frame: ['palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3half: 'lo',
       title: ['Hand · innervation', 'Mão · inervação'],
       rule: ['LOAF: the MEDIAN nerve supplies the Lumbricals 1-2, Opponens pollicis, Abductor pollicis brevis and Flexor pollicis brevis. EVERY other intrinsic hand muscle is ULNAR (all interossei, lumbricals 3-4, adductor pollicis, all hypothenar).',
         'LOAF: o nervo MEDIANO inerva os Lumbricais 1-2, Oponente do polegar, Abdutor curto do polegar e Flexor curto do polegar. TODO outro músculo intrínseco da mão é ULNAR (todos os interósseos, lumbricais 3-4, adutor do polegar, todo o hipotênar).'],
@@ -74,7 +75,7 @@ export default {
       ],
     },
     {
-      id: 'ulnar-inverse', d3ctx: ['radius', 'ulna', 'palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3anchor: ['radius', 'ulna'], d3frame: ['palmar_aponeurosis', 'flexor_retinaculum_of_wrist'],
+      id: 'ulnar-inverse', d3ctx: ['radius', 'ulna', 'palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3anchor: ['radius', 'ulna'], d3frame: ['palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3half: 'lo',
       title: ['Ulnar nerve · hand muscles', 'Nervo ulnar · músculos da mão'],
       rule: ['Everything except LOAF is ulnar. Clinically that means ulnar palsy claws the hand (lumbricals 3-4 + interossei) while thumb opposition is spared.',
         'Tudo exceto o LOAF é ulnar. Clinicamente, a paralisia ulnar gera mão em garra (lumbricais 3-4 + interósseos), enquanto a oposição do polegar fica preservada.'],
@@ -83,6 +84,18 @@ export default {
         { id: 'hypo-n', d3: { focus: ['abductor_digiti_minimi_of_hand','flexor_digiti_minimi_of_hand','opponens_digiti_minimi_muscle_of_hand'], view: 'ant', frame: ['abductor_digiti_minimi_of_hand','flexor_digiti_minimi_of_hand','opponens_digiti_minimi_muscle_of_hand','palmar_aponeurosis'], glass: .15 }, q: n('hypothenar muscles', 'músculos hipotenares'), a: [ULN] },
         { id: 'lum34-n', d3: { focus: ['lumbrical_muscles_of_hand'], view: 'ant', frame: ['lumbrical_muscles_of_hand','palmar_aponeurosis'], glass: .15 }, q: n('lumbricals 3 and 4', 'lumbricais 3 e 4'), a: [ULN] },
         { id: 'claw-f', d3: { focus: ['lumbrical_muscles_of_hand','palmar_interossei_muscles','dorsal_interossei_muscles_of_hand'], view: 'ant', frame: ['lumbrical_muscles_of_hand','palmar_interossei_muscles','dorsal_interossei_muscles_of_hand','palmar_aponeurosis'], glass: .15 }, q: ['Which muscle group is paralysed in an ulnar nerve lesion that causes claw hand?', 'Qual grupo muscular fica paralisado na lesão do nervo ulnar que causa mão em garra?'], a: [['lumbricals 3-4', 'lumbricais 3-4'], ['interossei', 'interósseos']] },
+      ],
+    },
+    {
+      id: 'by-landmark', d3ctx: ['radius', 'ulna', 'palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3anchor: ['radius', 'ulna'], d3frame: ['palmar_aponeurosis', 'flexor_retinaculum_of_wrist'], d3half: 'lo',
+      title: ["Hand · by landmark", "Mão · por ponto ósseo"],
+      items: [
+        { id: 'lm-o-scaphoid', d3: { focus: ["abductor_pollicis_brevis"], view: 'ant', frame: ['abductor_pollicis_brevis','palmar_aponeurosis'], glass: .12 }, q: ["Which hand muscle originates from the scaphoid?", "Qual músculo da mão se origina no escafoide?"], a: [["abductor pollicis brevis", "abdutor curto do polegar"]] },
+        { id: 'lm-o-trapezium', d3: { focus: ["abductor_pollicis_brevis", "flexor_pollicis_brevis", "opponens_pollicis_muscle"], view: 'ant', frame: ['abductor_pollicis_brevis','palmar_aponeurosis'], glass: .12 }, q: ["Which hand muscles originate from the trapezium?", "Quais músculos da mão se originam no trapézio?"], a: [["abductor pollicis brevis", "abdutor curto do polegar"], ["flexor pollicis brevis", "flexor curto do polegar"], ["opponens pollicis", "oponente do polegar"]] },
+        { id: 'lm-o-pisiform', d3: { focus: ["abductor_digiti_minimi_of_hand"], view: 'ant', frame: ['abductor_digiti_minimi_of_hand','palmar_aponeurosis'], glass: .12 }, q: ["Which hand muscle originates from the pisiform?", "Qual músculo da mão se origina no pisiforme?"], a: [["abductor digiti minimi", "abdutor do dedo mínimo", "abdutor do dedo minimo"]] },
+        { id: 'lm-o-hook-of-hamate', d3: { focus: ["flexor_digiti_minimi_of_hand", "opponens_digiti_minimi_muscle_of_hand"], view: 'ant', frame: ['flexor_digiti_minimi_of_hand','palmar_aponeurosis'], glass: .12 }, q: ["Which hand muscles originate from the hook of hamate?", "Quais músculos da mão se originam no hâmulo do hamato?"], a: [["flexor digiti minimi brevis", "flexor curto do dedo mínimo", "flexor curto do dedo minimo"], ["opponens digiti minimi", "oponente do dedo mínimo", "oponente do dedo minimo"]] },
+        { id: 'lm-i-base-of-the-proximal-phalanx-of-the-thumb', d3: { focus: ["abductor_pollicis_brevis", "flexor_pollicis_brevis", "adductor_pollicis"], view: 'ant', frame: ['abductor_pollicis_brevis','palmar_aponeurosis'], glass: .12 }, q: ["Which hand muscles insert on the base of the proximal phalanx of the thumb?", "Quais músculos da mão se inserem na base da falange proximal do polegar?"], a: [["abductor pollicis brevis", "abdutor curto do polegar"], ["flexor pollicis brevis", "flexor curto do polegar"], ["adductor pollicis", "adutor do polegar"]] },
+        { id: 'lm-i-base-of-the-proximal-phalanx-of-the-5th-digit', d3: { focus: ["abductor_digiti_minimi_of_hand", "flexor_digiti_minimi_of_hand"], view: 'ant', frame: ['abductor_digiti_minimi_of_hand','palmar_aponeurosis'], glass: .12 }, q: ["Which hand muscles insert on the base of the proximal phalanx of the 5th digit?", "Quais músculos da mão se inserem na base da falange proximal do 5º dedo?"], a: [["abductor digiti minimi", "abdutor do dedo mínimo", "abdutor do dedo minimo"], ["flexor digiti minimi brevis", "flexor curto do dedo mínimo", "flexor curto do dedo minimo"]] },
       ],
     },
   ],

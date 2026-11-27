@@ -7,7 +7,7 @@ import { createViewer } from './viewer.js?v=115';
 import { ITEMS, initStudy, fold, shuffle } from './study.js?v=115';
 import { judge, normalize } from './typing.js?v=149';
 import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=148';
-import { BONE_ALL, BONE_AREAS, BONE_IMPORTANT, BONE_MEMBER_NAMES, BONE_PROFESSOR } from './subjects/msk/bone-atlas.js?v=3';
+import { BONE_ALL, BONE_AREAS, BONE_IMPORTANT, BONE_MEMBER_NAMES, BONE_PROFESSOR } from './subjects/msk/bone-atlas.js?v=4';
 
 const params = new URLSearchParams(location.search);
 let lang = params.get('lang');
@@ -37,7 +37,7 @@ const MODES = [
     note: ['A name is shown; select that bone on the model.', 'Um nome aparece; selecione esse osso no modelo.'] },
   { id: 'name', name: ['Name it', 'Nomear'],
     note: ['A bone is highlighted; type its anatomical name.', 'Um osso é destacado; digite o nome anatômico.'] },
-  { id: 'type', name: ['Type it', 'Digitar'],
+  { id: 'type', name: ['Learn', 'Aprender'],
     note: ['Type the name letter by letter over the hint.', 'Digite o nome letra por letra sobre a dica.'] },
 ];
 const LISTS = [
@@ -51,23 +51,24 @@ const LISTS = [
 const STOP = new Set(['bone', 'bones', 'osso', 'ossos', 'the', 'of', 'de', 'do', 'da', 'dos', 'das', 'and', 'e']);
 const coarsePointer = matchMedia('(pointer: coarse)');
 
-const sourcePack = (await import('./subjects/msk/index.js?v=122')).default;
-const localization = lang === 'pt-BR' ? await import('./translations/localize.js?v=160') : null;
+const sourcePack = (await import('./subjects/msk/index.js?v=124')).default;
+const localization = lang === 'pt-BR' ? await import('./translations/localize.js?v=162') : null;
 const pack = localization ? localization.localizePack(sourcePack) : sourcePack;
 const structureNames = Object.fromEntries(Object.entries(BONE_MEMBER_NAMES).map(([id, names]) =>
   [id, lang === 'pt-BR' ? names[1] ?? names[0] : names[0]]));
 initStudy(pack, { structureNames });
 if (localization) localization.installInterfaceTranslation();
-const manifestPromise = fetch('./msk/models.json?v=2', { cache: 'no-store' })
+const manifestPromise = fetch('./msk/models.json?v=3', { cache: 'no-store' })
   .then(response => response.ok ? response.json() : null)
   .catch(() => null);
 
 const AREA_BY_ID = Object.fromEntries(BONE_AREAS.map(entry => [entry.id, entry]));
 const listAliases = { important: 'essential', general: 'all' };
 const requestedList = listAliases[params.get('list')] || params.get('list');
+const requestedMode = params.get('mode') === 'learn' ? 'type' : params.get('mode');
 const state = {
   area: BONE_AREAS.some(entry => entry.id === params.get('area')) ? params.get('area') : 'all',
-  mode: MODES.some(entry => entry.id === params.get('mode')) ? params.get('mode') : 'explore',
+  mode: MODES.some(entry => entry.id === requestedMode) ? requestedMode : 'explore',
   list: LISTS.some(entry => entry.id === requestedList) ? requestedList : 'professor',
   selected: null,
   selectedMember: null,
@@ -158,12 +159,21 @@ function startSession() {
   }
 }
 
+function setPanelOpen(which, open) {
+  const toggle = document.getElementById(`at-${which}-toggle`);
+  const body = document.getElementById(`at-${which}-body`);
+  if (!toggle || !body) return;
+  toggle.setAttribute('aria-expanded', String(open));
+  body.hidden = !open;
+}
+
 function setArea(id) {
   if (state.area === id || !entriesInArea(id).length) return;
   state.area = id;
   viewDir = area().view || 'ant';
   state.selected = null;
   state.selectedMember = null;
+  setPanelOpen('list', true);
   startSession();
   render({ preserveCamera: false });
 }
@@ -174,7 +184,7 @@ function setMode(id) {
   state.selected = null;
   state.selectedMember = null;
   startSession();
-  render();
+  render({ preserveCamera: false });
 }
 
 function setList(id) {
@@ -204,8 +214,10 @@ function render({ preserveCamera = true } = {}) {
   renderList();
   renderPrompt();
   syncToolbar();
-  document.getElementById('at-model-label').textContent = L(area().name);
-  document.getElementById('at-angle').textContent = `${L(VIEWS[viewDir])} · ${T('L/R = patient’s', 'L/D = do paciente')}`;
+  const modelLabel = document.getElementById('at-model-label');
+  if (modelLabel) modelLabel.textContent = L(area().name);
+  const angleLabel = document.getElementById('at-angle');
+  if (angleLabel) angleLabel.textContent = `${L(VIEWS[viewDir])} · ${T('L/R = patient’s', 'L/D = do paciente')}`;
   const directions = document.getElementById('at-direction');
   if (directions.value !== viewDir) directions.value = viewDir;
   paint({ preserveCamera });
@@ -221,7 +233,10 @@ function renderAreas() {
     const pressed = entry.id === state.area;
     return `<button type="button" class="at-chip" aria-pressed="${pressed}"${empty ? ' disabled aria-disabled="true"' : ''}${empty ? '' : ` ${action(() => setArea(entry.id))}`} title="${empty ? T('No entries in this list', 'Sem entradas nesta lista') : ''}">${escape(L(entry.name))}${empty ? ' <small>0</small>' : ''}</button>`;
   }).join('');
-  document.getElementById('at-area-count').textContent = `${activeIds().length} ${T('meshes', 'malhas')}`;
+  const areaCount = document.getElementById('at-area-count');
+  if (areaCount) areaCount.textContent = `${activeIds().length} ${T('meshes', 'malhas')}`;
+  const areaSummary = document.getElementById('at-area-summary');
+  if (areaSummary) areaSummary.textContent = L(area().name);
   const note = document.getElementById('at-area-note');
   if (note) {
     note.hidden = !emptyNames.length;
@@ -260,11 +275,18 @@ function renderList() {
 }
 
 function renderPrompt() {
+  const promptEl = document.getElementById('at-prompt');
+  if (state.mode === 'explore' && !selectedEntry()) {
+    promptEl.hidden = true;
+    promptEl.innerHTML = '';
+    return;
+  }
+  promptEl.hidden = false;
   const html = state.mode === 'explore' ? explorePrompt()
     : state.mode === 'find' ? findPrompt()
       : state.mode === 'name' ? namePrompt()
         : typePrompt();
-  document.getElementById('at-prompt').innerHTML = html;
+  promptEl.innerHTML = html;
   if (!coarsePointer.matches) requestAnimationFrame(focusPrompt);
 }
 
@@ -280,7 +302,7 @@ function explorePrompt() {
       <p class="at-note">${count} ${T('of', 'de')} ${area().ids.length} ${T('meshes shown for this list.', 'malhas mostradas nesta lista.')}</p>
       <p class="at-note">${T('Click any bone on the model, or pick an entry from the list. Drag to rotate, scroll to zoom.',
         'Clique em qualquer osso no modelo ou escolha uma entrada na lista. Arraste para girar, role para ampliar.')}</p>
-      <div class="at-actions">${button(T('Find it', 'Encontrar'), () => setMode('find'))}${button(T('Name it', 'Nomear'), () => setMode('name'))}${button(T('Type it', 'Digitar'), () => setMode('type'))}</div>`;
+      <div class="at-actions">${button(T('Find it', 'Encontrar'), () => setMode('find'))}${button(T('Name it', 'Nomear'), () => setMode('name'))}${button(T('Learn', 'Aprender'), () => setMode('type'))}</div>`;
   }
   const member = state.selectedMember && entry.ids.includes(state.selectedMember) ? state.selectedMember : null;
   const title = member ? boneName(member) : L(entry.name);
@@ -353,7 +375,7 @@ function typePrompt() {
   }).join('') + (!complete && session.position >= label.length ? '<span class="caret"></span>' : '');
   const size = label.length > 17 ? ' long' : label.length > 11 ? ' medium' : '';
   return `<div class="at-prompt-head">
-      <div><div class="eyebrow">${T('Type it', 'Digitar')} · ${session.index + 1} / ${session.order.length}</div><h1>${T('Type the highlighted name', 'Digite o nome destacado')}</h1></div>
+      <div><div class="eyebrow">${T('Learn', 'Aprender')} · ${session.index + 1} / ${session.order.length}</div><h1>${T('Type the highlighted name', 'Digite o nome destacado')}</h1></div>
       <span class="at-badge">${session.correct} ${T('correct', 'certas')}</span>
     </div>
     <div class="word at-word${size}${complete ? (session.feedback.good ? ' solved' : ' revealed') : ''}" id="at-word" data-at-focus-typer role="textbox" tabindex="0" aria-label="${T('Type the name letter by letter', 'Digite o nome letra por letra')}">${word}</div>
@@ -369,14 +391,14 @@ function typePrompt() {
 
 function resultPrompt(session, kind) {
   const title = kind === 'find' ? T('Find it complete', 'Encontrar concluído')
-    : kind === 'name' ? T('Name it complete', 'Nomear concluído') : T('Type it complete', 'Digitar concluído');
+    : kind === 'name' ? T('Name it complete', 'Nomear concluído') : T('Learn complete', 'Aprender concluído');
   return `<div class="at-prompt-head">
       <div><div class="eyebrow">${title}</div><h1>${session.correct} / ${session.order.length}</h1></div>
       <span class="at-badge accent">${escape(L(area().name))}</span>
     </div>
     <p>${session.correct} ${T('of', 'de')} ${session.order.length} ${kind === 'find' ? T('located', 'localizados') : T('correct', 'corretos')}.</p>
     <div class="at-actions">
-      ${button(T('Practise again', 'Praticar de novo'), () => { startSession(); render(); }, { primary: true })}
+      ${button(T('Practise again', 'Praticar de novo'), () => { startSession(); render({ preserveCamera: false }); }, { primary: true })}
       ${button(T('Back to explore', 'Voltar a explorar'), () => setMode('explore'))}
     </div>`;
 }
@@ -488,7 +510,7 @@ function nextPrompt(kind) {
     session.wrong = false;
     session.feedback = null;
   }
-  render();
+  render({ preserveCamera: false });
 }
 
 function focusTyper() {
@@ -594,16 +616,18 @@ function paint({ preserveCamera = true } = {}) {
   if (!viewer) return;
   const active = area();
   const ids = activeIds();
+  const focus = highlightIds();
   const picking = state.mode === 'find' && Boolean(state.find) && !state.find.done && !state.find.finished;
+  const zoomToFocus = (state.mode === 'name' || state.mode === 'type') && focus.length > 0;
   viewer.paint({
     ids,
     context: [],
-    focus: highlightIds(),
-    frameIds: ids,
+    focus,
+    frameIds: zoomToFocus ? focus : ids,
     markerIds: [],
     atlas: true,
     view: viewDir,
-    padding: active.padding || 1.12,
+    padding: zoomToFocus ? 1.45 : (active.padding || 1.12),
     explore: state.mode === 'explore',
     pick: Boolean(picking),
     pickIds: picking ? ids : undefined,
@@ -744,9 +768,17 @@ soundButton.addEventListener('click', () => {
 
 document.getElementById('at-direction').addEventListener('change', event => {
   viewDir = event.target.value;
-  document.getElementById('at-angle').textContent = `${L(VIEWS[viewDir])} · ${T('L/R = patient’s', 'L/D = do paciente')}`;
+  const angleLabel = document.getElementById('at-angle');
+  if (angleLabel) angleLabel.textContent = `${L(VIEWS[viewDir])} · ${T('L/R = patient’s', 'L/D = do paciente')}`;
   viewer?.view(viewDir);
 });
+
+for (const which of ['area', 'list']) {
+  document.getElementById(`at-${which}-toggle`)?.addEventListener('click', () => {
+    const body = document.getElementById(`at-${which}-body`);
+    if (body) setPanelOpen(which, body.hidden);
+  });
+}
 
 document.getElementById('at-zoom-in').addEventListener('click', () => viewer?.zoom(.8));
 document.getElementById('at-zoom-out').addEventListener('click', () => viewer?.zoom(1.25));

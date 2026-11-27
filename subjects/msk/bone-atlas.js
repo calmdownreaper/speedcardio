@@ -4,7 +4,7 @@
 // The atlas uses only these individual meshes; the older merged MSK meshes stay
 // in the study pack but are not painted here.
 
-import { SKELETON_PARTS, SKELETON_TYPES, SKELETON_GROUPS, SKELETON_MISSING } from './skeleton-parts.js?v=1';
+import { SKELETON_PARTS, SKELETON_TYPES, SKELETON_GROUPS, SKELETON_MISSING } from './skeleton-parts.js?v=2';
 
 const ALIASES = {
   frontal: ['frontal'],
@@ -22,12 +22,16 @@ const ALIASES = {
   vomer: ['vomer', 'vômer'],
   mandible: ['mandible', 'lower jaw', 'jaw', 'mandibula'],
   hyoid: ['hyoid', 'hyoid bone', 'hioide', 'osso hioide'],
+  malleus: ['malleus', 'hammer', 'martelo'],
+  incus: ['incus', 'anvil', 'bigorna'],
+  stapes: ['stapes', 'stirrup', 'estribo'],
   atlas: ['atlas', 'c1', 'atlas c1', 'first cervical vertebra'],
   axis: ['axis', 'c2', 'axis c2', 'second cervical vertebra', 'áxis'],
   cervical: ['cervical vertebra', 'cervical vertebrae', 'cervical spine', 'vertebrae cervicales', 'vértebra cervical', 'vértebras cervicais'],
   thoracic: ['thoracic vertebra', 'thoracic vertebrae', 'thoracic spine', 'vertebrae thoracicae', 'vértebra torácica', 'vértebras torácicas'],
   lumbar: ['lumbar vertebra', 'lumbar vertebrae', 'lumbar spine', 'vertebrae lumbales', 'vértebra lombar', 'vértebras lombares'],
   sacrum: ['sacrum', 'sacral bone', 'sacro'],
+  coccyx: ['coccyx', 'tailbone', 'cóccix'],
   sternum: ['sternum', 'breastbone', 'esterno'],
   rib: ['rib', 'ribs', 'costela', 'costelas'],
   hip: ['hip bone', 'hip', 'coxal bone', 'os coxae', 'osso do quadril', 'quadril'],
@@ -81,12 +85,16 @@ const CUES = {
   vomer: ['Posterior part of the nasal septum.', 'Parte posterior do septo nasal.'],
   mandible: ['Lower jaw; the only movable bone of the skull.', 'Maxilar inferior; o único osso móvel do crânio.'],
   hyoid: ['U-shaped neck bone that articulates with no other bone.', 'Osso em U do pescoço que não se articula com nenhum outro osso.'],
+  malleus: ['Outermost auditory ossicle; its handle attaches to the eardrum.', 'Ossículo mais lateral da orelha média; seu cabo se prende ao tímpano.'],
+  incus: ['Middle auditory ossicle bridging the malleus and stapes.', 'Ossículo intermediário da orelha média entre o martelo e o estribo.'],
+  stapes: ['Innermost stirrup-shaped ossicle; its footplate sits in the oval window.', 'Menor osso do corpo, em forma de estribo; sua base se apoia na janela oval.'],
   atlas: ['First cervical vertebra; it carries the skull and nods.', 'Primeira vértebra cervical; sustenta o crânio e permite a flexão.'],
   axis: ['Second cervical vertebra; its dens lets the head turn.', 'Segunda vértebra cervical; seu dente permite girar a cabeça.'],
   cervical: ['Five small vertebrae (C3–C7) with transverse foramina.', 'Cinco vértebras pequenas (C3–C7) com forames transversos.'],
   thoracic: ['Twelve vertebrae that carry the ribs.', 'Doze vértebras que sustentam as costelas.'],
   lumbar: ['Five large weight-bearing vertebrae.', 'Cinco vértebras grandes que suportam peso.'],
   sacrum: ['Five fused vertebrae between the hip bones.', 'Cinco vértebras fundidas entre os ossos do quadril.'],
+  coccyx: ['Tailbone below the sacrum formed by three to five fused coccygeal vertebrae.', 'Osso terminal abaixo do sacro formado por três a cinco vértebras coccígeas fundidas.'],
   sternum: ['Manubrium, body and xiphoid process in the midline.', 'Manúbrio, corpo e processo xifoide na linha média.'],
   rib: ['Twelve pairs: 1–7 true, 8–10 false, 11–12 floating.', 'Doze pares: 1–7 verdadeiras, 8–10 falsas, 11–12 flutuantes.'],
   hip: ['Ilium, ischium and pubis fused into the hip bone.', 'Ílio, ísquio e púbis fundidos no osso do quadril.'],
@@ -299,7 +307,7 @@ const idsFor = areas => SKELETON_PARTS.filter(entry => areas.includes(entry.area
 
 export const BONE_AREAS = [
   { id: 'all', name: ['Whole body', 'Corpo inteiro'], view: 'ant', ids: BONE_IDS,
-    note: ['201 individual bone meshes (199 bones). The local BodyParts3D source has no coccyx or ear ossicles.', '201 malhas ósseas individuais (199 ossos). A fonte local BodyParts3D não tem cóccix nem ossículos da orelha.'] },
+    note: ['208 individual bone meshes (206 bones), combining BodyParts3D with Z-Anatomy coccyx and ear ossicles.', '208 malhas ósseas individuais (206 ossos), combinando BodyParts3D com cóccix e ossículos da orelha do Z-Anatomy.'] },
   { id: 'skull', name: ['Skull', 'Crânio'], view: 'ant', ids: idsFor(['skull']),
     note: ['Cranial and facial bones, hyoid included. Deep bones sit inside the vault.', 'Ossos do crânio e da face, incluindo o hioide. Ossos profundos ficam dentro da abóbada.'] },
   { id: 'axial', name: ['Axial / trunk', 'Axial / tronco'], view: 'ant', ids: idsFor(['spine', 'thorax', 'pelvis']),

@@ -1,13 +1,31 @@
 // Oral cavity typing deck. Source: research/gastro_slides/01_oral_cavity/digest.md and compact.md
 // (oral cavity p12–14, lips p15–23, cheeks p24–32, teeth p35–38, tongue p40–64, floor of the mouth p65–68).
 const NM = (en, pt) => [`Not in the 3D model. Highlighted: ${en}`, `Não está no modelo 3D. Destacado: ${pt}`];
-const it = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
+// Reverse cards for distinct one-to-one facts.
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  "vestibule": rv("The oral vestibule lies between which structures?", "O vestíbulo oral fica entre quais estruturas?", [["lips and cheeks", "lips cheeks", "lips", "cheeks", "lábios e bochechas", "labios e bochechas", "lábios", "labios", "bochechas"], ["teeth", "dentes"]]),
+  "isthmus": rv("The oropharyngeal isthmus connects the mouth to which region?", "O istmo orofaríngeo une a boca a qual região?", [["oropharynx", "orofaringe"]]),
+  "vermilion": rv("At the vermilion of the lip, which two coverings meet?", "No vermelhão do lábio, quais revestimentos se encontram?", [["skin", "pele"], ["mucosa", "mucous membrane"]]),
+  "raphe_ptm": rv("The pterygomandibular raphe separates which two muscles?", "A rafe pterigomandibular separa quais músculos?", [["buccinator", "bucinador"], ["superior constrictor", "constritor superior"]]),
+  "bichat": rv("The buccal fat pad lies between which two muscles?", "O corpo adiposo da bochecha fica entre quais músculos?", [["buccinator", "bucinador"], ["masseter"]]),
+  "enamel": rv("Which part of a tooth is covered by enamel?", "Qual parte do dente é coberta pelo esmalte?", [["crown", "tooth crown", "coroa", "coroa do dente"]]),
+  "cementum": rv("Which part of a tooth is covered by cementum?", "Qual parte do dente é coberta pelo cemento?", [["root", "tooth root", "raiz", "raiz do dente"]]),
+  "sulcus_term": rv("The terminal sulcus separates which two parts of the tongue?", "O sulco terminal separa quais partes da língua?", [["oral", "oral part", "parte oral", "body", "corpo"], ["pharyngeal", "pharyngeal part", "parte faríngea", "parte faringea", "root", "raiz"]]),
+  "foramen_caecum": rv("The foramen caecum is a remnant of which duct?", "O forame cego é resquício de qual ducto?", [["thyroglossal duct", "ducto tireoglosso", "tireoglosso"]]),
+  "von_ebner": rv("Von Ebner glands open at the base of which papillae?", "As glândulas de Von Ebner se abrem na base de quais papilas?", [["vallate", "circumvallate", "vallate papillae", "papilas valadas", "valadas", "circunvaladas"]]),
+  "genioglossus": rv("Genioglossus arises from which mental spine?", "O genioglosso nasce de qual espinha mentual?", [["upper mental spine", "superior mental spine", "espinha mentual superior"]]),
+  "hyoglossus": rv("Hyoglossus arises from which part of the hyoid?", "O hioglosso nasce de qual parte do hióide?", [["greater horn", "greater horn of hyoid", "corno maior", "corno maior do hioide", "corno maior do hióide"]]),
+  "styloglossus": rv("Styloglossus arises from which process?", "O estiloglosso nasce de qual processo?", [["styloid process", "processo estiloide", "processo estilóide", "estiloide"]]),
+};
+const it = (id, q, a, info, focus, note, warn) => ({ ...(REV[id] ? { rev: REV[id] } : {}), ...(warn ? { warn } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
 
 const CTX = ['tongue', 'teeth', 'submandibular_gland', 'sublingual_gland', 'superior_constrictor', 'palatopharyngeus'];
 const FRAME = ['tongue', 'teeth', 'sublingual_gland', 'submandibular_gland'];
 
 export default {
   id: 'oral_cavity',
+  rewards: true,
   title: ['Oral cavity', 'Cavidade oral'],
   rules: {
     lingual: ['Tongue: motor = XII (except palatoglossus, vagus); body sensation = lingual n. (V3), root = IX; taste: body = chorda tympani (VII), root incl. vallate = IX.', 'Língua: motor = XII (exceto palatoglosso, vago); sensibilidade do corpo = n. lingual (V3), raiz = IX; gustação: corpo = corda do tímpano (VII), raiz incl. valadas = IX.'],

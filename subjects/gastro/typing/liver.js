@@ -1,6 +1,36 @@
 // Liver typing deck. Source: research/gastro_slides/07_liver/digest.md + compact.md
 // (surfaces, lobes, ligaments, vascularisation, portal vein, segments, hepatic veins, microscopy).
-const it = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), id, info, d3: note ? { focus, note } : { focus }, q, a });
+// Reverse cards (answer → question), for 1-to-1 facts the professor may ask from the other side.
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  border: rv('The inferior border separates which two surfaces?', 'A borda inferior separa quais duas faces?', [['diaphragmatic', 'diafragmática', 'diafragmatica'], ['visceral']]),
+  quadrate: rv('The quadrate lobe lies between which two structures?', 'O lobo quadrado fica entre quais duas estruturas?', [['round ligament', 'ligamentum teres', 'ligamento redondo', 'teres'], ['gallbladder', 'vesícula biliar', 'vesicula biliar', 'vesícula', 'vesicula']]),
+  caudate: rv('The caudate lobe lies between which two structures?', 'O lobo caudado fica entre quais duas estruturas?', [['ligamentum venosum', 'ligamento venoso', 'venosum', 'venoso'], ['ivc', 'inferior vena cava', 'vci', 'veia cava inferior']]),
+  falciform: rv('The falciform ligament is a remnant of which mesentery?', 'O ligamento falciforme é remanescente de qual mesentério?', [['ventral mesentery', 'ventral', 'mesentério ventral', 'mesenterio ventral']]),
+  round: rv('The fetal umbilical vein becomes which ligament?', 'A veia umbilical fetal vira qual ligamento?', [['round ligament', 'ligamentum teres', 'teres', 'round', 'ligamento redondo', 'redondo']]),
+  venosum: rv('The fetal ductus venosus becomes which ligament?', 'O ducto venoso fetal vira qual ligamento?', [['ligamentum venosum', 'venosum', 'ligamento venoso', 'venoso', 'arantius']]),
+  coronary: rv('What is the role of the coronary ligaments?', 'Qual o papel dos ligamentos coronários?', [['suspensory', 'real suspensory', 'suspension', 'suspensório', 'suspensorio', 'suspensão', 'suspensao']]),
+  bare: rv('The bare area of the liver is attached to which structure?', 'A área nua do fígado está presa a qual estrutura?', [['diaphragm', 'diafragma']]),
+  'hd-art': rv('In the hepatoduodenal ligament, which structure lies anterior and medial?', 'No ligamento hepatoduodenal, qual estrutura fica anterior e medial?', [['hepatic artery', 'proper hepatic artery', 'artéria hepática', 'arteria hepatica', 'artéria hepática própria', 'arteria hepatica propria']]),
+  'hd-duct': rv('In the hepatoduodenal ligament, which structure lies anterior and lateral?', 'No ligamento hepatoduodenal, qual estrutura fica anterior e lateral?', [['bile duct', 'common bile duct', 'ducto colédoco', 'ducto coledoco', 'colédoco', 'coledoco', 'ducto biliar']]),
+  'pha-pct': rv('Which vessel supplies 20% of the liver blood?', 'Qual vaso fornece 20% do sangue do fígado?', [['proper hepatic artery', 'hepatic artery', 'artéria hepática própria', 'arteria hepatica propria', 'artéria hepática', 'arteria hepatica']]),
+  'pv-pct': rv('Which vessel supplies 80% of the liver blood?', 'Qual vaso fornece 80% do sangue do fígado?', [['portal vein', 'hepatic portal vein', 'veia porta', 'porta']]),
+  'cystic-a': rv('Which branch of the right hepatic artery supplies the gallbladder?', 'Qual ramo da artéria hepática direita irriga a vesícula biliar?', [['cystic artery', 'cystic', 'artéria cística', 'arteria cistica', 'cística', 'cistica']]),
+  'pv-form': rv('The superior mesenteric and splenic veins unite to form which vein?', 'As veias mesentérica superior e esplênica se unem para formar qual veia?', [['portal vein', 'hepatic portal vein', 'veia porta', 'porta']]),
+  'seg-i': rv('The caudate lobe corresponds to which segment?', 'O lobo caudado corresponde a qual segmento?', [['i', '1', 'segment i', 'segmento i']]),
+  cantlie: rv("Cantlie's line runs through which two landmarks?", 'A linha de Cantlie passa por quais dois pontos?', [['gallbladder fossa', 'gallbladder', 'fossa da vesícula', 'fossa da vesicula', 'vesícula', 'vesicula'], ['ivc groove', 'ivc', 'inferior vena cava', 'sulco da vci', 'vci', 'veia cava inferior']]),
+  'seg-left-lat': rv('Segments II and III form which division?', 'Os segmentos II e III formam qual divisão?', [['left lateral', 'left lateral division', 'lateral esquerda', 'divisão lateral esquerda', 'divisao lateral esquerda']]),
+  'seg-left-med': rv('Segment IV forms which division?', 'O segmento IV forma qual divisão?', [['left medial', 'left medial division', 'medial esquerda', 'divisão medial esquerda', 'divisao medial esquerda']]),
+  'seg-right-med': rv('Segments V and VIII form which division?', 'Os segmentos V e VIII formam qual divisão?', [['right medial', 'right anterior', 'right medial division', 'right anterior division', 'medial direita', 'anterior direita', 'divisão medial direita', 'divisao medial direita']]),
+  'seg-right-lat': rv('Segments VI and VII form which division?', 'Os segmentos VI e VII formam qual divisão?', [['right lateral', 'right posterior', 'right lateral division', 'right posterior division', 'lateral direita', 'posterior direita', 'divisão lateral direita', 'divisao lateral direita']]),
+  'lobule-center': rv('Where does the central vein lie?', 'Onde fica a veia central?', [['center of the hepatic lobule', 'hepatic lobule', 'lobule', 'center of lobule', 'centro do lóbulo', 'centro do lobulo', 'lóbulo hepático', 'lobulo hepatico', 'lóbulo', 'lobulo']]),
+  disse: rv('The space of Disse lies between which two structures?', 'O espaço de Disse fica entre quais duas estruturas?', [['sinusoids', 'sinusoid', 'sinusoides', 'sinusoide', 'sinusóides'], ['hepatocytes', 'hepatocyte', 'hepatócitos', 'hepatocitos']]),
+  ito: rv('Stellate (Ito) cells store which vitamin?', 'As células estreladas (Ito) armazenam qual vitamina?', [['a', 'vitamin a', 'vitamina a']]),
+  kupffer: rv('Kupffer cells are which cell type?', 'As células de Kupffer são de que tipo?', [['macrophage', 'macrophages', 'resident macrophage', 'macrófago', 'macrofago', 'macrófagos', 'macrofagos']]),
+  pit: rv('Which liver cells act as NK cells (large granular lymphocytes)?', 'Quais células do fígado agem como células NK (grandes linfócitos granulares)?', [['pit', 'pit cells', 'células pit', 'celulas pit', 'células de pit', 'celulas de pit']]),
+  'canal-seal': rv('In the liver, tight junctions seal which structures?', 'No fígado, as junções oclusivas selam quais estruturas?', [['bile canaliculi', 'canaliculi', 'canalículos biliares', 'canaliculos biliares', 'canalículos', 'canaliculos']]),
+};
+const it = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), ...(REV[id] ? { rev: REV[id] } : {}), id, info, d3: note ? { focus, note } : { focus }, q, a });
 const N_LIV = ["The liver itself and its ligaments are not in the 3D model. Highlighted: the nearest structures.", "O fígado e seus ligamentos não estão no modelo 3D. Destacado: as estruturas mais próximas."];
 const N_SEG = ["Segments are not in the 3D model. Highlighted: the caudate lobe and the vessels that define them.", "Os segmentos não estão no modelo 3D. Destacado: o lobo caudado e os vasos que os definem."];
 const N_HIS = ["Microscopic structures are not in the 3D model. Highlighted: the vessels and ducts that feed the lobule.", "Estruturas microscópicas não estão no modelo 3D. Destacado: os vasos e ductos que alimentam o lóbulo."];
@@ -11,6 +41,7 @@ const FR = ['caudate_lobe', 'gallbladder', 'hepatic_portal_v', 'ivc_g'];
 
 export default {
   id: 'liver',
+  rewards: true,
   title: ['Liver', 'Fígado'],
   sets: [
     {

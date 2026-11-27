@@ -13,7 +13,7 @@ export const SUBJECTS = [
     id: 'msk',
     name: 'SpeedMSK',
     tagline: 'Musculoskeletal anatomy',
-    load: () => import('./msk/index.js?v=151'),
+    load: () => import('./msk/index.js?v=153'),
   },
   {
     id: 'gastro',

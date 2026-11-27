@@ -75,6 +75,26 @@ export const deck = {
       'Laterally rotates the extended hip and abducts the flexed hip. It also stabilizes the femoral head. Supplied by the nerve to obturator internus (L5–S2).',
       'Arises from the pelvic surface of the obturator membrane and surrounding ischiopubic ramus. Inserts on the medial surface of the greater trochanter.',
     ]),
+    S('superior_gemellus_muscle', 'Superior gemellus', 'Superior gemellus', ['superior gemellus muscle', 'gemellus superior'], 'Small deep lateral rotator above the obturator internus tendon', [
+      'Deep in the gluteal region, lying on the tendon of obturator internus.',
+      'Laterally rotates the extended hip and stabilizes the femoral head. Supplied by the nerve to obturator internus.',
+      'Arises from the ischial spine. Inserts on the medial surface of the greater trochanter.',
+    ]),
+    S('inferior_gemellus_muscle', 'Inferior gemellus', 'Inferior gemellus', ['inferior gemellus muscle', 'gemellus inferior'], 'Small deep lateral rotator below the obturator internus tendon', [
+      'Deep in the gluteal region, lying on the tendon of obturator internus.',
+      'Laterally rotates the extended hip and stabilizes the femoral head. Supplied by the nerve to quadratus femoris.',
+      'Arises from the ischial tuberosity. Inserts on the medial surface of the greater trochanter.',
+    ]),
+    S('quadratus_femoris_muscle', 'Quadratus femoris', 'Quadratus femoris', ['quadratus femoris muscle'], 'Square deep lateral rotator from the ischial tuberosity to the quadrate tubercle', [
+      'In the gluteal region, deep to gluteus maximus.',
+      'Laterally rotates the extended hip and stabilizes the femoral head. Supplied by the nerve to quadratus femoris.',
+      'Arises from the lateral border of the ischial tuberosity. Inserts on the quadrate tubercle on the intertrochanteric crest.',
+    ]),
+    S('obturator_externus', 'Obturator externus', 'Obturator externus', ['obturator externus muscle', 'external obturator muscle'], 'Deep lateral rotator on the outer surface of the obturator membrane', [
+      'On the outer surface of the obturator membrane.',
+      'Laterally rotates and adducts the hip and stabilizes the pelvis. Supplied by the obturator nerve.',
+      'Arises from the outer surface of the obturator membrane and its bony boundaries. Inserts into the trochanteric fossa.',
+    ]),
     S('iliacus', 'Iliacus', 'Iliacus', ['iliacus muscle', 'iliac muscle'], 'Fills the hollow of the ilium and joins the psoas', [
       'Fills the inner iliac fossa lateral to psoas major.',
       'Flexes the hip with psoas major. The femoral nerve supplies it.',
@@ -108,7 +128,7 @@ export const region = { id: 'pelvis', title: 'Pelvic girdle', area: 'Pelvis' };
 export const levels = [
   { title: 'Pelvic bones', ids: ['hip_bone', 'sacrum'] },
   { title: 'Pelvic joints and ligaments', ids: ['sacroiliac_joint', 'pubic_symphysis', 'hip_joint', 'sacrotuberous_ligament', 'sacrospinous_ligament', 'iliolumbar_ligament', 'inguinal_ligament'] },
-  { title: 'Gluteal and pelvic muscles', ids: ['gluteus_maximus', 'gluteus_medius', 'gluteus_minimus', 'piriformis', 'obturator_internus', 'iliacus', 'psoas_major', 'coccygeus', 'pubococcygeus', 'iliococcygeus'] },
+  { title: 'Gluteal and pelvic muscles', ids: ['gluteus_maximus', 'gluteus_medius', 'gluteus_minimus', 'piriformis', 'obturator_internus', 'superior_gemellus_muscle', 'inferior_gemellus_muscle', 'quadratus_femoris_muscle', 'obturator_externus', 'iliacus', 'psoas_major', 'coccygeus', 'pubococcygeus', 'iliococcygeus'] },
   { title: '30L origins and insertions', bonus: true, ids: ['gluteus_maximus', 'gluteus_medius', 'gluteus_minimus', 'piriformis', 'obturator_internus', 'iliacus', 'psoas_major', 'coccygeus', 'pubococcygeus', 'iliococcygeus'] },
 ];
 

@@ -711,6 +711,17 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
       && (!regionMode || current.atlas || tightMarker || targetExtent >= .08);
     const box = focused ? target : group;
     if (box.isEmpty()) return;
+    // half: 'lo' | 'hi' frames one side of a bilateral mesh (e.g. one hand instead of both).
+    if (current.half) {
+      const mid = (box.min.x + box.max.x) / 2, lo = current.half === 'lo';
+      const sideIds = focused ? support : (current.frameIds || (regionMode && current.context?.length ? [...new Set([...ids, ...current.context])] : ids));
+      const side = new THREE.Box3(), v = new THREE.Vector3();
+      for (const id of sideIds) {
+        const pos = meshFor(id)?.geometry?.attributes?.position;
+        if (pos) for (let i = 0; i < pos.count; i++) { v.fromBufferAttribute(pos, i); if (lo ? v.x <= mid : v.x >= mid) side.expandByPoint(v); }
+      }
+      if (!side.isEmpty()) box.copy(side); else if (lo) box.max.x = mid; else box.min.x = mid;
+    }
     const extent = box.getSize(new THREE.Vector3());
     if (regionMode && Math.max(extent.x, extent.y, extent.z) < .05) box.expandByScalar(.06);
     const center = box.getCenter(new THREE.Vector3());

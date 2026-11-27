@@ -102,6 +102,19 @@ export const deck = {
       'Elevate the ribs in inspiration and assist lateral flexion of the thoracic spine. Supplied by posterior rami of the thoracic spinal nerves.',
       'Arise from the transverse processes of C7 and T1 to T11. Insert on the posterior surface of the rib below, or the second rib below for the longi.',
     ]),
+    S('latissimus_dorsi_muscle', 'Latissimus dorsi', 'Latissimus dorsi', ['latissimus dorsi muscle', 'lats'], 'Broad superficial back muscle inserting on the floor of the intertubercular sulcus', [
+      'Superficial across the lower back, covering serratus posterior inferior.',
+      'Extends, adducts and medially rotates the arm. Supplied by the thoracodorsal nerve.',
+      'Arises from the T7 to T12 spinous processes, thoracolumbar fascia, iliac crest and lower ribs. Inserts on the floor of the intertubercular sulcus of the humerus.',
+    ]),
+    S('pectoralis_minor_muscle', 'Pectoralis minor', 'Pectoralis minor', ['pectoralis minor muscle'], 'Deep anterior chest muscle from ribs 3 to 5 to the coracoid process', [
+      'On the anterior chest wall, deep to pectoralis major.',
+      'Arises from ribs 3 to 5. Inserts on the coracoid process.',
+    ]),
+    S('subclavius_muscle', 'Subclavius', 'Subclavius', ['subclavius muscle'], 'Small muscle from the first rib up to the underside of the clavicle', [
+      'Small muscle beneath the clavicle, between it and the first rib.',
+      'Arises from the first rib and its costal cartilage. Inserts on the inferior surface of the middle third of the clavicle.',
+    ]),
   ],
 };
 
@@ -110,7 +123,7 @@ export const region = { id: 'thorax', title: 'Thorax', area: 'Thorax' };
 export const levels = [
   { title: 'Thoracic cage bones', ids: ['sternum', 'ribs', 'costal_cartilages', 'thoracic_vertebra'] },
   { title: 'Thoracic joints and ligaments', ids: ['costovertebral_joint', 'costotransverse_joint', 'costochondral_joint', 'sternocostal_joint', 'manubriosternal_joint', 'xiphisternal_joint', 'radiate_sternocostal_ligament'] },
-  { title: 'Thoracic wall and diaphragm muscles', ids: ['intercostals_external', 'intercostals_internal', 'intercostals_innermost', 'diaphragm', 'transversus_thoracis', 'serratus_posterior_superior', 'serratus_posterior_inferior', 'levatores_costarum'] },
+  { title: 'Thoracic wall and diaphragm muscles', ids: ['intercostals_external', 'intercostals_internal', 'intercostals_innermost', 'diaphragm', 'transversus_thoracis', 'serratus_posterior_superior', 'serratus_posterior_inferior', 'levatores_costarum', 'latissimus_dorsi_muscle', 'pectoralis_minor_muscle', 'subclavius_muscle'] },
   { title: '30L origins and insertions', bonus: true, ids: ['intercostals_external', 'intercostals_internal', 'intercostals_innermost', 'diaphragm', 'transversus_thoracis', 'serratus_posterior_superior', 'serratus_posterior_inferior', 'levatores_costarum'] },
 ];
 

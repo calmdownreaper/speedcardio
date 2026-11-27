@@ -20,7 +20,7 @@
 //   }
 // Answers are accepted in either language. Progress is stored per subject, deck and language.
 import { correctSound } from './sound.js?v=148';
-import { mountRewards } from './rewards.js?v=148';
+import { mountRewards } from './rewards.js?v=149';
 
 const BASE_STOP = ['artery', 'arteries', 'arterial', 'a', 'vein', 'veins', 'venous', 'v', 'nerve', 'nerves', 'n',
   'muscle', 'muscles', 'm', 'the', 'of', 'and', 'arteria', 'arterias', 'veia', 'veias', 'nervo', 'nervos',
@@ -28,7 +28,9 @@ const BASE_STOP = ['artery', 'arteries', 'arterial', 'a', 'vein', 'veins', 'veno
 
 export function normalize(text, stop = new Set(BASE_STOP)) {
   return String(text ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .replace(/['’`]/g, '').split(/[^a-z0-9]+/).filter(word => word && !stop.has(word)).join('');
+    .replace(/['’`]/g, '').split(/[^a-z0-9]+/).filter(word => word && !stop.has(word)).join('')
+    // An answer made only of stop words ("V" = segment V, "A", "E"…) keeps its words instead of vanishing.
+    || (stop.size ? normalize(text, new Set()) : '');
 }
 
 // Optimal string alignment distance: insertions, deletions, substitutions, and swapped neighbours count 1.
@@ -68,6 +70,18 @@ const AIDED_GAP = 3, RELEARN_GAP = 8;
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const shuffle = list => { const a = [...list]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+// Progress keys of a set, reverse cards included.
+const setKeys = s => s.items.flatMap(it => it.rev ? [`${s.id}:${it.id}`, `${s.id}:${it.id}~r`] : [`${s.id}:${it.id}`]);
+// Keeps a card and its reverse from landing next to each other.
+const pairOf = (a, b) => a && b && (a.revOf === b.key || b.revOf === a.key);
+function spreadPairs(list) {
+  for (let pass = 0; pass < 3; pass++) for (let i = 1; i < list.length; i++) {
+    if (!pairOf(list[i - 1], list[i])) continue;
+    const j = list.findIndex((x, k) => Math.abs(k - i) > 1 && !pairOf(list[k - 1], list[i]) && !pairOf(list[i], list[k + 1]) && !pairOf(list[i - 1], x) && !pairOf(x, list[i + 1]));
+    if (j >= 0) [list[i], list[j]] = [list[j], list[i]];
+  }
+  return list;
+}
 const clock = secs => `${Math.floor(secs / 60)}:${String(Math.floor(secs % 60)).padStart(2, '0')}`;
 
 function template(answer, level) {
@@ -91,10 +105,16 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
   function prepare(d) {
     const stop = new Set([...BASE_STOP, ...(d.stop || []).map(w => normalize(w, new Set()))]);
     const items = [];
-    d.sets.forEach(set => set.items.forEach(item => items.push({
+    const mk = (item, set) => ({
       ...item, key: `${set.id}:${item.id}`, set,
       slots: item.a.map((names, slot) => ({ slot, label: pt ? names[1] ?? names[0] : names[0], keys: [...new Set(names.map(n => normalize(n, stop)).filter(Boolean))] })),
-    })));
+    });
+    // `rev: { q, a, info? }` adds the reverse card (answer → question) as an item of its own.
+    // In learn it unlocks only once the forward card is learned; in test both are shuffled apart.
+    d.sets.forEach(set => set.items.forEach(item => {
+      const fwd = mk(item, set); delete fwd.rev; items.push(fwd);
+      if (item.rev) items.push({ ...mk({ ...item, ...item.rev, id: `${item.id}~r`, rev: undefined }, set), revOf: fwd.key });
+    }));
     const universe = new Set(items.flatMap(item => item.slots.flatMap(s => s.keys)));
     return { stop, items, universe };
   }
@@ -121,7 +141,7 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
     if (decks.length === 1) return showDeck(decks[0]);
     const deckCards = decks.map((d, i) => {
       const learned = loadFor(d).learned || {};
-      const keys = d.sets.flatMap(s => s.items.map(it => `${s.id}:${it.id}`));
+      const keys = d.sets.flatMap(setKeys);
       const done = keys.filter(k => learned[k]).length;
       const isDone = keys.length > 0 && done === keys.length;
       return `<li><button class="ty-deck${isDone ? ' is-done' : ''}" data-deck="${i}"><span class="ty-deck-title">${esc(L(d.title))}</span><span class="ty-deck-meta">${done}/${keys.length}</span></button></li>`;
@@ -146,7 +166,7 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
     const data = load();
     const selected = chosen || new Set(d.sets.map(s => s.id));
     const setRow = set => {
-      const total = set.items.length, done = set.items.filter(item => learned[`${set.id}:${item.id}`]).length;
+      const sk = setKeys(set), total = sk.length, done = sk.filter(k => learned[k]).length;
       return `<li class="ty-set ${done === total ? 'is-done' : ''}"><label><input type="checkbox" data-set="${esc(set.id)}" ${selected.has(set.id) ? 'checked' : ''}>
         <span class="ty-set-name">${esc(L(set.title))}</span><span class="ty-set-count">${done}/${total}</span></label></li>`;
     };
@@ -279,7 +299,11 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
     const pool = prepared.items.filter(item => scope.has(item.set.id));
     const data = load();
     data.learned ||= {};
-    const unseen = learnOrder(pool.filter(item => !data.learned[item.key]));
+    // Reverse cards wait until their forward card is learned, then drop into the queue at a random spot.
+    const lockedRev = pool.filter(item => item.revOf && !data.learned[item.key] && !data.learned[item.revOf]);
+    const unseen = learnOrder(pool.filter(item => !data.learned[item.key] && !item.revOf));
+    const dropIn = item => { const lo = Math.min(2, unseen.length); unseen.splice(lo + Math.floor(Math.random() * (unseen.length - lo + 1)), 0, item); };
+    pool.filter(item => item.revOf && !data.learned[item.key] && data.learned[item.revOf]).forEach(dropIn);
     const state = new Map(); // key -> { hint, need }
     let schedule = []; // { item, due }
     let n = 0, answered = 0, firstTry = 0, streak = 0;
@@ -389,6 +413,7 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
         if (st.need <= 0) {
           data.learned[cur.item.key] = 1; save({ ...load(), learned: data.learned });
           rw?.learned(cur.item);
+          for (let k = lockedRev.length - 1; k >= 0; k--) if (lockedRev[k].revOf === cur.item.key) dropIn(lockedRev.splice(k, 1)[0]);
           feedback(T('Marked as learned.', 'Marcado como aprendido.'), 'good');
         } else {
           schedule.push({ item: cur.item, due: n + RELEARN_GAP });
@@ -438,7 +463,7 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
   // ---------- Test ----------
   function startTest(scope) {
     stopTimer();
-    const order = shuffle(prepared.items.filter(item => scope.has(item.set.id)));
+    const order = spreadPairs(shuffle(prepared.items.filter(item => scope.has(item.set.id))));
     const results = [];
     let i = -1, streak = 0, cur = null, locked = false;
     const started = Date.now();

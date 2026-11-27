@@ -1,6 +1,6 @@
 import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=148';
 import { createEngine } from './aulas-engine.js?v=115';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=160';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=161';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
@@ -32,7 +32,7 @@ try { savedLanguage = localStorage.getItem('anatomy_language') || 'en'; } catch 
 const requestedLanguage = new URLSearchParams(location.search).get('lang');
 const language = ['en', 'pt-BR'].includes(requestedLanguage) ? requestedLanguage : savedLanguage === 'pt-BR' ? 'pt-BR' : 'en';
 const sourcePack = (await subject.load()).default;
-const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=160') : null;
+const localization = language === 'pt-BR' ? await import('./translations/localize.js?v=162') : null;
 const pack = localization ? localization.localizePack(sourcePack) : sourcePack;
 document.documentElement.lang = language;
 initStudy(pack);
@@ -47,7 +47,7 @@ let PRACTICE_MUSCLES = [];
 if (subject.id === 'msk') {
   const [boneAtlas, muscleList] = await Promise.all([
     import('./subjects/msk/bone-atlas.js?v=3').catch(() => null),
-    import('./subjects/msk/practice-muscles.js?v=1').catch(() => null),
+    import('./subjects/msk/practice-muscles.js?v=2').catch(() => null),
   ]);
   BONE_IDS = boneAtlas?.BONE_IDS || [];
   LEGACY_BONE_IDS = boneAtlas?.LEGACY_BONE_IDS || [];

@@ -16,6 +16,31 @@ export const deck = {
       'Compresses the abdomen and flexes the trunk. One side rotates the trunk to the opposite side. Supplied by anterior rami of T7–T11 and the subcostal nerve (T12).',
       'Arises from the external surfaces of ribs 5 to 12. Inserts on the linea alba, pubic tubercle and anterior half of the iliac crest.',
     ]),
+    S('internal_abdominal_oblique_muscle', 'Internal oblique', 'Internal oblique', ['internal oblique muscle', 'internal abdominal oblique', 'internal abdominal oblique muscle', 'obliquus internus abdominis'], 'Middle flat sheet of the abdominal wall whose fibers run down and outward', [
+      'Middle flat layer of the abdominal wall, deep to external oblique.',
+      'Flexes the trunk, bends it to the same side, compresses the abdomen and is active in expiration. Supplied by the thoracoabdominal nerves (anterior rami of T7 to T11).',
+      'Arises from the deep layer of the thoracolumbar fascia, iliac crest and inguinal ligament. Inserts on the lower borders of ribs 10 to 12, rectus sheath and linea alba.',
+    ]),
+    S('transversus_abdominis_muscle', 'Transversus abdominis', 'Transversus abdominis', ['transversus abdominis muscle', 'transverse abdominal muscle'], 'Deepest flat sheet of the abdominal wall with horizontal fibers', [
+      'Deepest flat layer of the abdominal wall, with horizontal fibers.',
+      'Compresses the abdomen, rotates the trunk to the same side and is active in expiration. Supplied by the thoracoabdominal nerves (anterior rami of T7 to T11).',
+      'Arises from the inner surfaces of costal cartilages 7 to 12, deep thoracolumbar fascia, inner iliac crest and lateral inguinal ligament. Inserts on the pubic crest, pectineal line and linea alba.',
+    ]),
+    S('rectus_abdominis_muscle', 'Rectus abdominis', 'Rectus abdominis', ['rectus abdominis muscle', 'rectus muscle'], 'Paired vertical strap muscle inside the rectus sheath', [
+      'Long vertical strap on the anterior abdominal wall, enclosed in the rectus sheath.',
+      'Flexes the trunk, compresses the abdomen and is active in expiration. Supplied by the thoracoabdominal nerves (anterior rami of T7 to T11).',
+      'Arises from the costal cartilages of ribs 5 to 7 and the xiphoid process. Inserts on the pubic crest between the pubic tubercle and the symphysis.',
+    ]),
+    S('pyramidalis_muscle', 'Pyramidalis', 'Pyramidalis', ['pyramidalis muscle'], 'Small triangular muscle inside the lower rectus sheath', [
+      'Small triangular muscle inside the rectus sheath, in front of rectus abdominis.',
+      'Tenses the linea alba.',
+      'Arises from the pubis anterior to the rectus insertion. Inserts on the linea alba.',
+    ]),
+    S('quadratus_lumborum_muscle', 'Quadratus lumborum', 'Quadratus lumborum', ['quadratus lumborum muscle', 'QL'], 'Posterior abdominal wall muscle between the iliac crest and the twelfth rib', [
+      'On the posterior abdominal wall, filling the space between the iliac crest, twelfth rib and lumbar transverse processes.',
+      'Unilaterally bends the trunk to the same side; bilaterally extends the vertebral column.',
+      'Arises from the iliac crest. Inserts on the twelfth rib and costal processes of L1 to L4.',
+    ]),
     S('linea_alba', 'Linea alba', 'Linea alba', ['white line', 'linea alba of abdomen'], 'Midline seam between the paired sheaths of the straight belly muscles', [
       'It runs from the xiphoid process to the pubic symphysis and is formed by the decussating aponeuroses of the flat abdominal muscles.',
       'It is relatively avascular and is used for midline laparotomy incisions.',
@@ -48,7 +73,7 @@ export const region = { id: 'abdomen', title: 'Abdominal wall', area: 'Abdomen' 
 
 export const levels = [
   { title: 'Bony frame', ids: ['lumbar_vertebra', 'hip_bone', 'ribs'] },
-  { title: 'Abdominal wall muscles', ids: ['external_oblique', 'psoas_major', 'iliacus', 'linea_alba'] },
+  { title: 'Abdominal wall muscles', ids: ['external_oblique', 'internal_abdominal_oblique_muscle', 'transversus_abdominis_muscle', 'rectus_abdominis_muscle', 'pyramidalis_muscle', 'quadratus_lumborum_muscle', 'psoas_major', 'iliacus', 'linea_alba'] },
   { title: 'Inguinal region', ids: ['inguinal_ligament', 'superficial_inguinal_ring', 'deep_inguinal_ring', 'rectus_sheath', 'arcuate_line'] },
   { title: '30L origins, insertions and the inguinal canal', bonus: true, ids: ['external_oblique', 'psoas_major', 'iliacus'] },
 ];

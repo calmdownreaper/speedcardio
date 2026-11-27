@@ -1,6 +1,26 @@
 // Rectum and anal canal typing deck. Source: research/gastro_slides/11_rectum/digest.md + compact.md.
 const NM = (en, pt) => ['Not in the 3D model. Highlighted: ' + en + '.', 'Não está no modelo 3D. Destacado: ' + pt + '.'];
-const I = (id, q, a, info, focus, note) => ({ id, q, a, info, d3: note ? { focus, note } : { focus } });
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  analcanal: rv('Which two structures does the anal canal pass through?', 'Quais duas estruturas o canal anal atravessa?', [['perineum', 'períneo', 'perineo'], ['pelvic diaphragm', 'diafragma pélvico', 'diafragma pelvico']]),
+  houston: rv("What is the function of Houston's transverse folds?", 'Qual é a função das pregas transversas de Houston?', [['support the weight of faeces', 'support faeces', 'support feces', 'sustentar o peso das fezes', 'sustentam o peso das fezes', 'sustentar fezes']]),
+  douglas: rv('The rectouterine pouch (of Douglas) separates the rectum from which two structures?', 'A escavação retouterina (de Douglas) separa o reto de quais duas estruturas?', [['uterus', 'útero', 'utero'], ['vagina', 'upper vagina', 'parte superior da vagina']]),
+  denon: rv("In males, Denonvilliers' (rectoprostatic) fascia lies between the rectum and which organs?", 'No homem, a fáscia de Denonvilliers (retoprostática) fica entre o reto e quais órgãos?', [['bladder', 'urinary bladder', 'bexiga'], ['prostate', 'próstata', 'prostata']]),
+  'levator-n': rv('Which muscle is supplied by the nerve to levator ani (S4) and the inferior rectal nerve?', 'Qual músculo é inervado pelo nervo do levantador do ânus (S4) e pelo nervo retal inferior?', [['levator ani', 'levantador do ânus', 'levantador do anus']]),
+  columns: rv('What do the lower ends of the anal columns (of Morgagni) form?', 'O que formam as extremidades inferiores das colunas anais (de Morgagni)?', [['anal valves', 'válvulas anais', 'valvulas anais']]),
+  pectinate: rv('The pectinate (dentate) line is the boundary between which two embryonic gut/wall regions?', 'A linha pectínea (denteada) é o limite entre quais duas regiões embrionárias?', [['hindgut', 'intestino posterior'], ['proctodeum', 'proctodeu']]),
+  cushions: rv('Which venous plexus forms the anal (haemorrhoidal) cushions?', 'Qual plexo venoso forma os coxins anais (hemorroidários)?', [['internal haemorrhoidal plexus', 'internal hemorrhoidal plexus', 'plexo hemorroidário interno', 'plexo hemorroidario interno']]),
+  urorectal: rv('The urorectal septum divides the cloaca into which two structures?', 'O septo urorretal divide a cloaca em quais duas estruturas?', [['urogenital sinus', 'seio urogenital'], ['rectum', 'reto', 'anorectal canal', 'canal anorretal', 'anorectum']]),
+  mra: rv('Which rectal artery arises from the internal iliac artery?', 'Qual artéria retal nasce da artéria ilíaca interna?', [['middle rectal artery', 'middle rectal', 'artéria retal média', 'arteria retal media', 'retal média', 'retal media']]),
+  ias: rv('The internal anal sphincter is formed by a thickening of which muscle layer?', 'O esfíncter anal interno é formado pelo espessamento de qual camada muscular?', [['inner circular muscle', 'circular muscle', 'camada circular interna', 'músculo circular interno', 'musculo circular']]),
+  eas: rv('The outer muscle of the external anal sphincter fuses with which muscle?', 'O músculo externo do esfíncter anal externo se funde com qual músculo?', [['levator ani', 'levantador do ânus', 'levantador do anus']]),
+  sling: rv('Which junction is kinked by the puborectalis sling?', 'Qual junção é angulada pela alça do puborretal?', [['anorectal junction', 'perineal flexure', 'anorectal flexure', 'junção anorretal', 'juncao anorretal', 'flexura perineal']]),
+  'ps-oes': rv('Through which veins do oesophageal veins drain to the SVC in oesophageal varices?', 'Por quais veias as veias esofágicas drenam para a VCS nas varizes esofágicas?', [['azygos', 'azygos and hemiazygos', 'ázigo', 'azigo', 'ázigo e hemiázigo', 'azigo e hemiazigo']]),
+  'ps-para': rv('In which two liver ligaments do the paraumbilical veins lie?', 'Em quais dois ligamentos do fígado ficam as veias paraumbilicais?', [['falciform', 'falciform ligament', 'falciforme', 'ligamento falciforme'], ['round', 'round ligament', 'ligamentum teres', 'redondo', 'ligamento redondo']]),
+  'ps-colic': rv('The colic veins form a retroperitoneal portosystemic anastomosis between the SMV/IMV and which veins?', 'As veias cólicas formam uma anastomose portossistêmica retroperitoneal entre a VMS/VMI e quais veias?', [['ascending lumbar veins', 'ascending lumbar', 'veias lombares ascendentes', 'lombares ascendentes']]),
+  'ps-rectal': rv('In the rectal portosystemic anastomosis, the middle and inferior rectal veins drain to the IVC via which vein?', 'Na anastomose portossistêmica retal, as veias retais média e inferior drenam para a VCI por qual veia?', [['internal iliac vein', 'internal iliac', 'veia ilíaca interna', 'veia iliaca interna', 'ilíaca interna', 'iliaca interna']]),
+};
+const I = (id, q, a, info, focus, note) => ({ ...(REV[id] ? { rev: REV[id] } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
 
 const CTX = ['rectum', 'descending_colon', 'external_anal_sphincter', 'puborectalis', 'abdominal_aorta_g', 'ima', 'superior_rectal_a', 'sigmoid_a', 'imv'];
 const VCTX = ['rectum', 'descending_colon', 'external_anal_sphincter', 'puborectalis', 'abdominal_aorta_g', 'ivc_g', 'ima', 'superior_rectal_a', 'sigmoid_a', 'left_colic_a', 'imv', 'splenic_v', 'smv', 'hepatic_portal_v'];
@@ -11,6 +31,7 @@ const RS = ['rectum'];
 
 export default {
   id: 'rectum',
+  rewards: true,
   title: ['Rectum and anal canal', 'Reto e canal anal'],
   rules: {
     pectinate: ['Pectinate (dentate) line: above = gut (smooth muscle, autonomic, superior rectal vessels from IMA); below = body wall (skeletal muscle, somatic/pudendal, internal iliac vessels).', 'Linha pectínea (denteada): acima = tubo digestivo (músculo liso, autônomo, vasos retais superiores da AMI); abaixo = parede do corpo (músculo esquelético, somático/pudendo, vasos ilíacos internos).'],

@@ -1,5 +1,5 @@
 import { deck as skeletonDeck, colors as skeletonColors } from './skeleton-items.js?v=1';
-const V = '?v=115';
+const V = '?v=117';
 // Add a region by writing regions/<id>.js and listing it here.
 const REGION_FILES = ['skull', 'spine', 'thorax', 'pelvis', 'upper', 'abdomen', 'lower'];
 const ALL = (await Promise.all(REGION_FILES.map(async name => {

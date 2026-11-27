@@ -2,7 +2,19 @@
 // (general p1–3 and 34–36, nasopharynx p4–12, oropharynx p13–16, laryngopharynx p17–18, muscles p19–33,
 // vessels and nerves p37–39, wall layers p40–44, parapharyngeal space p45).
 const NM = (en, pt) => [`Not in the 3D model. Highlighted: ${en}`, `Não está no modelo 3D. Destacado: ${pt}`];
-const it = (id, q, a, info, focus, note) => ({ id, q, a, info, d3: note ? { focus, note } : { focus } });
+// Reverse cards for distinct one-to-one facts.
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  "retro_space": rv("The retropharyngeal space continues into which region?", "O espaço retrofaríngeo continua em qual região?", [["mediastinum", "mediastino"]]),
+  "eustachian": rv("The auditory tube connects the nasopharynx to which cavity?", "A tuba auditiva liga a nasofaringe a qual cavidade?", [["middle ear", "middle ear cavity", "ouvido médio", "ouvido medio", "orelha média", "orelha media"]]),
+  "palatine_tonsil": rv("The palatine tonsil lies between which two arches?", "A tonsila palatina fica entre quais arcos?", [["palatoglossal arch", "palatoglossal", "arco palatoglosso", "palatoglosso"], ["palatopharyngeal arch", "palatopharyngeal", "arco palatofaríngeo", "arco palatofaringeo", "palatofaríngeo", "palatofaringeo"]]),
+  "inf_c": rv("The inferior constrictor has which two parts?", "O constritor inferior tem quais partes?", [["thyropharyngeus", "tireofaríngeo", "tireofaringeo"], ["cricopharyngeus", "cricofaríngeo", "cricofaringeo"]]),
+  "raphe": rv("Where do the three pharyngeal constrictors insert posteriorly?", "Onde os três constritores da faringe se inserem posteriormente?", [["pharyngeal raphe", "raphe", "rafe faríngeo", "rafe faringeo", "rafe"]]),
+  "killian": rv("Which diverticulum forms at Killian’s triangle?", "Qual divertículo se forma no triângulo de Killian?", [["zenker's diverticulum", "zenker diverticulum", "zenker", "diverticulum of zenker", "divertículo de zenker", "diverticulo de zenker"]]),
+  "stylopharyngeus": rv("Stylopharyngeus arises from which process?", "O estilofaríngeo nasce de qual processo?", [["styloid process", "processo estiloide", "processo estilóide"]]),
+  "layer4": rv("The buccopharyngeal fascia is which outer layer of the pharynx?", "A fáscia bucofaríngea é qual camada externa da faringe?", [["adventitia", "adventícia", "adventicia"]]),
+};
+const it = (id, q, a, info, focus, note) => ({ ...(REV[id] ? { rev: REV[id] } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
 const WALL = NM('the pharyngeal constrictors that form the wall.', 'os constritores faríngeos que formam a parede.');
 const WALLF = ['superior_constrictor', 'middle_constrictor', 'inferior_constrictor'];
 
@@ -11,6 +23,7 @@ const FRAME = ['superior_constrictor', 'middle_constrictor', 'inferior_constrict
 
 export default {
   id: 'pharynx',
+  rewards: true,
   title: ['Pharynx', 'Faringe'],
   rules: {
     levels: ['Levels: nasopharynx to the soft palate (C1); oropharynx to the epiglottis (C3); laryngopharynx to the cricoid (C6).', 'Níveis: nasofaringe até o palato mole (C1); orofaringe até a epiglote (C3); laringofaringe até a cricoide (C6).'],

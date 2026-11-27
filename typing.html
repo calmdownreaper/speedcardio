@@ -44,13 +44,13 @@
     <div id="typing-root" class="ty-root"></div>
   </main>
   <script type="module">
-    import { mountTyping } from './typing.js?v=156';
+    import { mountTyping } from './typing.js?v=160';
     const params = new URLSearchParams(location.search);
     const subject = ['gastro', 'msk', 'cardio'].includes(params.get('s')) ? params.get('s') : 'gastro';
     let lang = params.get('lang');
     if (!['en', 'pt-BR'].includes(lang)) { try { lang = localStorage.getItem('anatomy_language') === 'pt-BR' ? 'pt-BR' : 'en'; } catch { lang = 'en'; } }
     document.documentElement.lang = lang;
-    const { decks, title, model3d } = await import(`./subjects/${subject}/typing/index.js?v=160`);
+    const { decks, title, model3d } = await import(`./subjects/${subject}/typing/index.js?v=167`);
     if (title) document.title = lang === 'pt-BR' ? title[1] : title[0];
     const back = new URL('./', location.href); back.searchParams.set('s', subject); if (params.get('lang')) back.searchParams.set('lang', lang);
     const T = (en, pt) => lang === 'pt-BR' ? pt : en;
@@ -69,7 +69,7 @@
         if (info?.mode === 'summary') return paintSummary(info);
         const spec = item?.d3 || null;
         const ctx = (item && (item.set?.d3ctx || item.d3ctx)) || info?.deck?.sets?.[0]?.d3ctx || defaultCtx;
-        if (!spec) { viewer.paint({ ids: ctx, context: [], focus: [], markerIds: [], frameIds: (item?.set || info?.deck?.sets?.[0])?.d3frame || model3d.frame || ['stomach'], view: 'ant', neutral: true, padding: 1.15 }); viewer.glow([]); viewer.glowArea([]); label.textContent = info?.label || ''; note.hidden = true; return; }
+        if (!spec) { viewer.paint({ ids: ctx, context: [], focus: [], markerIds: [], frameIds: (item?.set || info?.deck?.sets?.[0])?.d3frame || model3d.frame || ['stomach'], half: (item?.set || info?.deck?.sets?.[0])?.d3half, view: 'ant', neutral: true, padding: 1.15 }); viewer.glow([]); viewer.glowArea([]); label.textContent = info?.label || ''; note.hidden = true; return; }
         const isMark = id => model3d.landmarks[id] || model3d.areas?.[id]; // an id may be a glow area alone
         const marks = spec.focus.filter(isMark);
         const meshes = [...new Set(spec.focus.filter(id => !isMark(id)).flatMap(meshIdsFor))];
@@ -81,7 +81,7 @@
         const glass = Object.fromEntries([...(item.set?.d3anchor || []).filter(id => !meshes.includes(id)).map(id => [id, .22]), ...meshes.map(id => [id, .55])]);
         if (spec.glass != null) for (const k in glass) if (glass[k] < .5) glass[k] = spec.glass; // optional per-item bone opacity
         viewer.paint({ ids: [...new Set([...ctx, ...meshes])], context: [], focus: marks.length ? marks : ['__none'], markerIds: [],
-          anchors: [], glass, frameIds, view: spec.view || 'ant', close: false, neutral: true, padding: 1.3 });
+          anchors: [], glass, frameIds, half: spec.half ?? item.set?.d3half, view: spec.view || 'ant', close: false, neutral: true, padding: 1.3 });
         // model3d.themeGlow: the highlight takes the page's accent colour (follows light/dark theme).
         const themed = Boolean(model3d.themeGlow), accent = themed ? (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || undefined) : undefined;
         viewer.glowArea([...marks.filter(id => model3d.areas?.[id]).map(id => model3d.areas[id]), ...meshes.map(id => ({ mesh: id, weight: () => 1, gain: /^(esq|dir)$/.test(spec.view) ? .35 : .8, color: /_v$|^smv$/.test(id) ? '#4f8dff' : /_a$|^sma$|celiac|aorta/.test(id) ? '#ff4d4d' : undefined }))], accent); viewer.glow(marks.filter(id => !model3d.areas?.[id]).flatMap(id => { const lm = model3d.landmarks[id]; return Array.isArray(lm[0]?.[0]) ? lm : [lm]; }), meshes.length ? '#e8e2d0' : (themed ? accent : '#ffb347'), meshes.length ? .45 : 1);
@@ -112,7 +112,7 @@
         for (const m of meshes) meshState[m.mesh] = meshState[m.mesh] && meshState[m.mesh] !== m.color ? RESULT.part : m.color;
         viewer.paint({ ids: uniq([...ctx, ...meshIds]), context: [], focus: meshIds.length ? meshIds : ['__none'], palette: meshState, markerIds: [], anchors: [],
           glass: Object.fromEntries(anchors.map(id => [id, .22])),
-          frameIds: frameIds.length ? frameIds : model3d.frame || ['stomach'], view: 'ant', close: false, neutral: true, padding: 1.15 });
+          frameIds: frameIds.length ? frameIds : model3d.frame || ['stomach'], half: sets[0]?.d3half, view: 'ant', close: false, neutral: true, padding: 1.15 });
         // Small landmarks: one soft dot each, faint enough that neighbours stay distinct.
         viewer.glowArea(areas.map(a => ({ ...a, gain: .4 })));
         viewer.glow(paths, '#ffffff', paths.length * .2);
@@ -122,7 +122,7 @@
       (async () => {
         try {
           const [{ SUBJECTS }, { initStudy }, { createViewer }] = await Promise.all([
-            import('./subjects/registry.js?v=160'), import('./study.js?v=115'), import('./viewer.js?v=150')]);
+            import('./subjects/registry.js?v=161'), import('./study.js?v=115'), import('./viewer.js?v=167')]);
           const entry = SUBJECTS.find(x => x.id === subject);
           const pack = (await entry.load()).default;
           meshGroups = pack.meshGroups || {};

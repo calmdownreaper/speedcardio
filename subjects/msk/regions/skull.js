@@ -150,6 +150,36 @@ export const deck = {
       'The mental nerve branches from the inferior alveolar nerve (V3) and exits with the mental artery and vein.',
       'From the front, find it below the mandibular premolars, above the lower border of the mandibular body.',
     ]),
+    S('masseter', 'Masseter', 'Masseter', ['masseter muscle'], 'Jaw muscle from the zygomatic arch', [
+      'Elevates the mandible. Supplied by the mandibular nerve (V3).',
+      'Arises from the zygomatic arch. Inserts on the angle and central ramus of the mandible.',
+    ]),
+    S('medial_pterygoid_muscle', 'Medial pterygoid', 'Medial pterygoid', ['medial pterygoid muscle'], 'Jaw muscle on the medial mandibular ramus', [
+      'Elevates and protrudes the mandible. Supplied by the mandibular nerve (V3).',
+      'Arises from the pterygoid fossa and maxillary tuberosity. Inserts on the medial ramus and angle of the mandible.',
+    ]),
+    S('lateral_pterygoid', 'Lateral pterygoid', 'Lateral pterygoid', ['lateral pterygoid muscle'], 'Jaw muscle reaching the mandibular neck', [
+      'Protrudes and grinds the mandible. Supplied by the mandibular nerve (V3).',
+      'Arises from the lateral pterygoid plate and greater wing of the sphenoid. Inserts on the mandibular neck and TMJ disc.',
+    ]),
+    S('sternocleidomastoid_muscle', 'Sternocleidomastoid', 'Sternocleidomastoid', ['sternocleidomastoid muscle', 'SCM'], 'Neck muscle from sternum and clavicle to mastoid', [
+      'Rotates the head to the opposite side and tilts it to the same side. Supplied by the accessory nerve (XI), with C2 to C4 proprioceptive fibres.',
+      'Arises from the manubrium and medial clavicle. Inserts on the mastoid process and lateral superior nuchal line.',
+    ]),
+    S('digastric', 'Digastric', 'Digastric', ['digastric muscle'], 'Suprahyoid muscle connecting the hyoid to the mandible and skull base', [
+      'A suprahyoid muscle above the hyoid.',
+      'Suprahyoid muscles elevate the hyoid and depress the mandible.',
+    ]),
+    S('sternothyroid_muscle', 'Sternothyroid', 'Sternothyroid', ['sternothyroid muscle'], 'Infrahyoid muscle below the hyoid', [
+      'Infrahyoid muscles depress the hyoid.',
+      'Arises from the manubrium of the sternum.',
+    ]),
+    S('genioglossus_muscle', 'Genioglossus', 'Genioglossus', ['genioglossus muscle'], 'Tongue muscle supplied by cranial nerve XII', [
+      'Supplied by the hypoglossal nerve (XII).',
+    ]),
+    S('hyoglossus_muscle', 'Hyoglossus', 'Hyoglossus', ['hyoglossus muscle'], 'Tongue muscle supplied by cranial nerve XII', [
+      'Supplied by the hypoglossal nerve (XII).',
+    ]),
   ],
 };
 
@@ -159,6 +189,7 @@ export const levels = [
   { title: 'Cranial bones', ids: ['frontal', 'parietal', 'temporal', 'occipital', 'sphenoid', 'ethmoid'] },
   { title: 'Facial bones', ids: ['maxilla', 'mandible', 'zygomatic', 'nasal', 'vomer', 'palatine'] },
   { title: 'Skull landmarks', ids: ['bregma', 'pterion', 'nasion', 'glabella', 'inion', 'mastoid_process'] },
+  { title: 'Head and neck muscles', ids: ['masseter', 'medial_pterygoid_muscle', 'lateral_pterygoid', 'sternocleidomastoid_muscle', 'digastric', 'sternothyroid_muscle', 'genioglossus_muscle', 'hyoglossus_muscle'] },
   { title: '30L Foramina and contents', bonus: true, ids: ['foramen_magnum', 'foramen_ovale', 'foramen_rotundum', 'foramen_spinosum', 'jugular_foramen', 'internal_acoustic_meatus', 'optic_canal', 'superior_orbital_fissure', 'infraorbital_foramen', 'mental_foramen'] },
 ];
 

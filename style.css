@@ -1548,7 +1548,7 @@ body { -webkit-font-smoothing: antialiased; }
 .study-map-featured-actions .button { min-height: 44px; text-decoration: none; }
 .study-map-content .study-map-regions { grid-column: 1; grid-row: 3; }
 .study-map-regions > h2, .study-map-practice > h2 { margin: 0 0 10px; font-size: 18px; }
-.study-map-layout .model-shell { grid-column: 2; grid-row: 3; min-height: clamp(320px, 42svh, 450px); }
+.study-map-layout .model-shell { grid-column: 2; grid-row: 3; position: static; top: auto; min-height: clamp(320px, 42svh, 450px); }
 .study-map-practice { grid-row: 4; margin-top: 8px; }
 .study-map-practice .mode-list { border-top: 1px solid var(--line); }
 .study-map-area + .study-map-area { margin-top: 16px; }

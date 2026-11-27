@@ -1,6 +1,26 @@
 // Gallbladder, biliary tree and superior mesenteric artery typing deck. Source: research/gastro_slides/13_gallbladder_spleen_SMA.
 const NM = (en, pt) => ['Not in the 3D model. Highlighted: ' + en + '.', 'Não está no modelo 3D. Destacado: ' + pt + '.'];
-const I = (id, q, a, info, focus, note) => ({ id, q, a, info, d3: note ? { focus, note } : { focus } });
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  loc: rv('Which part of the gallbladder projects at the 9th costal cartilage?', 'Qual parte da vesícula biliar se projeta na cartilagem costal da 9ª costela?', [['fundus', 'fundo']]),
+  hart: rv("In which part of the gallbladder does Hartmann's pouch lie?", 'Em qual parte da vesícula biliar fica a bolsa de Hartmann?', [['neck', 'colo']]),
+  cyst: rv('The cystic duct leaves which part of the gallbladder?', 'O ducto cístico sai de qual parte da vesícula biliar?', [['neck', 'colo']]),
+  heister: rv('In which duct is the spiral valve of Heister located?', 'Em qual ducto fica a válvula espiral de Heister?', [['cystic duct', 'ducto cístico', 'ducto cistico']]),
+  chd: rv('The common hepatic duct is joined by which duct to form the common bile duct?', 'O ducto hepático comum recebe qual ducto para formar o colédoco?', [['cystic duct', 'ducto cístico', 'ducto cistico']]),
+  cbd: rv('Which two ducts unite to form the common bile duct?', 'Quais dois ductos se unem para formar o colédoco?', [['cystic duct', 'ducto cístico', 'ducto cistico'], ['common hepatic duct', 'chd', 'ducto hepático comum', 'ducto hepatico comum']]),
+  vater: rv('Where does the ampulla of Vater open into the duodenum?', 'Onde a ampola de Vater se abre no duodeno?', [['major duodenal papilla', 'major papilla', 'papila duodenal maior', 'papila maior']]),
+  'ca-or': rv('Which artery usually arises from the right hepatic artery behind the common hepatic duct?', 'Qual artéria geralmente nasce da artéria hepática direita atrás do ducto hepático comum?', [['cystic artery', 'artéria cística', 'arteria cistica']]),
+  calot: rv("What are the 3 boundaries of Calot's triangle?", 'Quais são os 3 limites do triângulo de Calot?', [['cystic artery', 'artéria cística', 'arteria cistica'], ['cystic duct', 'ducto cístico', 'ducto cistico'], ['common hepatic duct', 'chd', 'ducto hepático comum', 'ducto hepatico comum']]),
+  end: rv('In the right iliac fossa, the ileocolic artery anastomoses with the end of which artery?', 'Na fossa ilíaca direita, a artéria ileocólica se anastomosa com o fim de qual artéria?', [['sma', 'superior mesenteric artery', 'ams', 'artéria mesentérica superior', 'arteria mesenterica superior']]),
+  terr: rv('Which half of the duodenum is supplied by the SMA?', 'Qual metade do duodeno é irrigada pela AMS?', [['distal half', 'distal', 'metade distal']]),
+  left: rv('From which side of the SMA do the jejunal and ileal arteries arise?', 'De qual lado da AMS saem as artérias jejunais e ileais?', [['left', 'left side', 'esquerda', 'lado esquerdo']]),
+  ipd: rv('The inferior pancreaticoduodenal artery arises from which main artery?', 'A artéria pancreaticoduodenal inferior nasce de qual artéria principal?', [['sma', 'superior mesenteric artery', 'ams', 'artéria mesentérica superior', 'arteria mesenterica superior']]),
+  rc: rv('Which part of the colon is supplied by the right colic artery?', 'Qual parte do cólon é irrigada pela artéria cólica direita?', [['ascending colon', 'ascending', 'cólon ascendente', 'colon ascendente']]),
+  mc: rv('Which part of the colon is supplied by the middle colic artery?', 'Qual parte do cólon é irrigada pela artéria cólica média?', [['transverse colon', 'transverse', 'cólon transverso', 'colon transverso']]),
+  drum: rv('The marginal artery of Drummond links the territories of which two main mesenteric arteries?', 'A artéria marginal de Drummond liga os territórios de quais duas artérias mesentéricas principais?', [['sma', 'superior mesenteric artery', 'ams', 'artéria mesentérica superior'], ['ima', 'inferior mesenteric artery', 'ami', 'artéria mesentérica inferior']]),
+  smv: rv('Which two veins join to form the portal vein?', 'Quais duas veias se unem para formar a veia porta?', [['smv', 'superior mesenteric vein', 'vms', 'veia mesentérica superior', 'veia mesenterica superior'], ['splenic vein', 'veia esplênica', 'veia esplenica', 'veia lienal']]),
+};
+const I = (id, q, a, info, focus, note) => ({ ...(REV[id] ? { rev: REV[id] } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
 
 const BCTX = ['gallbladder', 'cystic_duct', 'common_hepatic_duct', 'hepatic_ducts', 'duodenum', 'pancreas', 'caudate_lobe', 'proper_hepatic_a', 'common_hepatic_a', 'celiac_trunk', 'hepatic_portal_v', 'abdominal_aorta_g'];
 const SCTX = ['sma', 'celiac_trunk', 'abdominal_aorta_g', 'ima', 'ivc_g', 'pancreas', 'duodenum', 'jejunum', 'ileum', 'ileocecal_junction', 'appendix', 'ascending_colon', 'transverse_colon', 'ileocolic_a', 'right_colic_a', 'middle_colic_a', 'appendicular_a', 'pancreaticoduodenal_a', 'smv', 'splenic_v', 'hepatic_portal_v'];
@@ -8,6 +28,7 @@ const G = ['gallbladder'];
 
 export default {
   id: 'gallbladder_sma',
+  rewards: true,
   title: ['Gallbladder, bile ducts and SMA', 'Vesícula biliar, vias biliares e AMS'],
   sets: [
     {

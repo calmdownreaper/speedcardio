@@ -20,6 +20,7 @@ const f = (en, pt) => [`Main action of ${en}?`, `Função principal do ${pt}?`];
 
 export default {
   id: 'leg',
+  rewards: true,
   title: ['Leg', 'Perna'],
   sets: [
     {
@@ -117,6 +118,29 @@ export default {
         { id: 'nerve', extra: true, d3: { focus: ['tibialis_posterior','flexor_digitorum_longus','flexor_hallucis_longus'], view: 'ant', frame: ['tibialis_posterior','flexor_digitorum_longus','flexor_hallucis_longus','tibia','tarsal_bones'], glass: .15 }, q: ['Which nerve runs behind the medial malleolus?', 'Qual nervo passa atrás do maléolo medial?'], a: [TIB] },
         { id: 'harry', extra: true, d3: { focus: ['flexor_hallucis_longus'], view: 'post', frame: ['flexor_hallucis_longus', 'tibia'], glass: .12 }, q: ['Last structure behind the medial malleolus?', 'Última estrutura atrás do maléolo medial?'], a: [['flexor hallucis longus tendon', 'tendão do flexor longo do hálux']] },
         { id: 'tdvh', extra: true, d3: { focus: ['tibialis_posterior','flexor_digitorum_longus','flexor_hallucis_longus'], view: 'ant', frame: ['tibialis_posterior','flexor_digitorum_longus','flexor_hallucis_longus','tibia','tarsal_bones'], glass: .15 }, q: ['Name the six structures behind the medial malleolus.', 'Cite as seis estruturas atrás do maléolo medial.'], a: [['tibialis posterior', 'tibial posterior'], ['flexor digitorum longus', 'flexor longo dos dedos'], ['posterior tibial artery', 'artéria tibial posterior'], ['posterior tibial vein', 'veia tibial posterior'], TIB, ['flexor hallucis longus', 'flexor longo do hálux']] },
+      ],
+    },
+    {
+      id: 'by-landmark', d3ctx: ['tibia', 'fibula', 'femur', 'tarsal_bones'], d3anchor: ['tibia', 'fibula'], d3frame: ['tibia', 'fibula', 'femur'],
+      title: ['Leg · by landmark', 'Perna · por ponto ósseo'],
+      items: [
+        { id: 'lm-o-lateral-tibial-condyle', d3: { focus: ['tibialis_anterior', 'extensor_digitorum_longus'], view: 'ant', frame: ['tibialis_anterior', 'tibia'], glass: .12 }, q: ['Which leg muscles originate from the lateral tibial condyle?', 'Quais músculos da perna se originam no côndilo lateral da tíbia?'], a: [['tibialis anterior', 'tibial anterior'], ['extensor digitorum longus', 'extensor longo dos dedos', 'EDL']] },
+        { id: 'lm-o-fibular-head', d3: { focus: ['extensor_digitorum_longus', 'fibularis_longus', 'soleus'], view: 'ant', frame: ['extensor_digitorum_longus', 'tibia'], glass: .12 }, q: ['Which leg muscles originate from the head of the fibula?', 'Quais músculos da perna se originam na cabeça da fíbula?'], a: [['extensor digitorum longus', 'extensor longo dos dedos', 'EDL'], ['fibularis longus', 'fibular longo', 'peroneus longus'], ['soleus', 'sóleo', 'soleo']] },
+        { id: 'lm-o-lateral-femoral-epicondyle', d3: { focus: ['gastrocnemius', 'plantaris'], view: 'post', frame: ['gastrocnemius', 'femur'], glass: .12 }, q: ['Which leg muscles originate from the lateral epicondyle of the femur?', 'Quais músculos da perna se originam no epicôndilo lateral do fêmur?'], a: [['gastrocnemius', 'gastrocnêmio', 'gastrocnemio'], ['plantaris', 'plantar']] },
+        { id: 'lm-o-soleal-line', d3: { focus: ['soleus'], view: 'post', frame: ['soleus', 'tibia'], glass: .12 }, q: ['Which leg muscle originates from the soleal line of the tibia?', 'Qual músculo da perna se origina na linha do sóleo da tíbia?'], a: [['soleus', 'sóleo', 'soleo']] },
+        { id: 'lm-i-medial-cuneiform', info: ['tibialis anterior: medial surface; fibularis longus: plantar/lateral surface.', 'tibial anterior: face medial; fibular longo: face plantar/lateral.'], d3: { focus: ['tibialis_anterior', 'fibularis_longus'], view: 'ant', frame: ['tibialis_anterior', 'tarsal_bones'], glass: .12 }, q: ['Which leg muscles insert on the medial cuneiform?', 'Quais músculos da perna se inserem no cuneiforme medial?'], a: [['tibialis anterior', 'tibial anterior'], ['fibularis longus', 'fibular longo', 'peroneus longus']] },
+        { id: 'lm-i-fifth-metatarsal-base', info: ['fibularis tertius: dorsum of base; fibularis brevis: tuberosity.', 'fibular terceiro: dorso da base; fibular curto: tuberosidade.'], d3: { focus: ['fibularis_tertius_muscle', 'fibularis_brevis'], view: 'ant', frame: ['fibularis_tertius_muscle', 'fibula', 'metatarsals'], glass: .12 }, q: ['Which leg muscles insert on the base/tuberosity of the fifth metatarsal?', 'Quais músculos da perna se inserem na base/tuberosidade do quinto metatarsal?'], a: [['fibularis tertius', 'fibular terceiro', 'peroneus tertius'], ['fibularis brevis', 'fibular curto', 'peroneus brevis']] },
+        { id: 'lm-i-calcaneal-tuberosity', d3: { focus: ['gastrocnemius', 'soleus', 'plantaris'], view: 'post', frame: ['gastrocnemius', 'tarsal_bones'], glass: .12 }, q: ['Which leg muscles insert on the calcaneal tuberosity (calcaneus)?', 'Quais músculos da perna se inserem na tuberosidade do calcâneo (calcâneo)?'], a: [['gastrocnemius', 'gastrocnêmio', 'gastrocnemio'], ['soleus', 'sóleo', 'soleo'], ['plantaris', 'plantar']] },
+        { id: 'lm-i-great-toe-distal-phalanx', info: ['extensor hallucis longus: dorsal base; flexor hallucis longus: plantar base.', 'extensor longo do hálux: base dorsal; flexor longo do hálux: base plantar.'], d3: { focus: ['extensor_hallucis_longus', 'flexor_hallucis_longus'], view: 'ant', frame: ['extensor_hallucis_longus', 'tibia', 'fibula'], glass: .12 }, q: ['Which leg muscles insert on the base of the distal phalanx of the great toe?', 'Quais músculos da perna se inserem na base da falange distal do hálux?'], a: [['extensor hallucis longus', 'extensor longo do hálux', 'extensor longo do halux', 'EHL'], ['flexor hallucis longus', 'flexor longo do hálux', 'flexor longo do halux', 'FHL']] },
+        { id: 'lm-i-navicular-tuberosity', d3: { focus: ['tibialis_posterior'], view: 'post', frame: ['tibialis_posterior', 'tarsal_bones'], glass: .12 }, q: ['Which leg muscle inserts on the navicular tuberosity?', 'Qual músculo da perna se insere na tuberosidade do navicular?'], a: [['tibialis posterior', 'tibial posterior']] },
+      ],
+    },
+    {
+      id: 'by-nerve', d3ctx: ['tibia', 'fibula', 'femur', 'tarsal_bones'], d3anchor: ['tibia', 'fibula'], d3frame: ['tibia', 'fibula', 'femur'],
+      title: ['Leg · by nerve', 'Perna · por nervo'],
+      items: [
+        { id: 'nv-deep-fibular-nerve', d3: { focus: ['tibialis_anterior', 'extensor_digitorum_longus', 'extensor_hallucis_longus', 'fibularis_tertius_muscle'], view: 'ant', frame: ['tibialis_anterior', 'tibia'], glass: .12 }, q: ['Which leg muscles does the deep fibular nerve supply?', 'Quais músculos da perna o nervo fibular profundo inerva?'], a: [['tibialis anterior', 'tibial anterior'], ['extensor digitorum longus', 'extensor longo dos dedos', 'EDL'], ['extensor hallucis longus', 'extensor longo do hálux', 'extensor longo do halux', 'EHL'], ['fibularis tertius', 'fibular terceiro', 'peroneus tertius']] },
+        { id: 'nv-superficial-fibular-nerve', d3: { focus: ['fibularis_longus', 'fibularis_brevis'], view: 'esq', frame: ['fibularis_longus', 'fibula'], glass: .12 }, q: ['Which leg muscles does the superficial fibular nerve supply?', 'Quais músculos da perna o nervo fibular superficial inerva?'], a: [['fibularis longus', 'fibular longo', 'peroneus longus'], ['fibularis brevis', 'fibular curto', 'peroneus brevis']] },
       ],
     },
   ],

@@ -1,5 +1,37 @@
 // Duodenum / small intestine typing deck. Source: research/gastro_slides/08_duodenum/digest.md (and compact.md).
-const I = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  'si-folds': rv('Plicae circulares (valves of Kerckring) are permanent folds of which two wall layers?', 'As pregas circulares (valvas de Kerckring) são pregas permanentes de quais duas camadas da parede?', [['mucosa'], ['submucosa']]),
+  'si-micro': rv('Microvilli are extensions of the apical surface of which cells?', 'As microvilosidades são extensões da superfície apical de quais células?', [['enterocytes', 'enterocyte', 'enterócitos', 'enterocitos', 'enterócito', 'enterocito']]),
+  'd-sup-flex': rv('The superior duodenal flexure lies between which two parts of the duodenum?', 'A flexura duodenal superior fica entre quais duas partes do duodeno?', [['superior', 'superior part', '1st', 'first', 'parte superior', '1ª'], ['descending', 'descending part', '2nd', 'second', 'parte descendente', '2ª']]),
+  'd-inf-flex': rv('The inferior duodenal flexure lies between which two parts of the duodenum?', 'A flexura duodenal inferior fica entre quais duas partes do duodeno?', [['descending', 'descending part', '2nd', 'second', 'parte descendente', '2ª'], ['horizontal', 'horizontal part', '3rd', 'third', 'parte horizontal', '3ª']]),
+  'd-mesocolon': rv('The root of the transverse mesocolon crosses which part of the duodenum?', 'A raiz do mesocolo transverso cruza qual parte do duodeno?', [['descending', 'descending part', '2nd', '2nd part', 'second', 'parte descendente', 'descendente', '2ª', '2ª parte']]),
+  'd-horiz': rv('The horizontal (3rd) part of the duodenum crosses in front of which two large vessels?', 'A parte horizontal (3ª) do duodeno cruza à frente de quais dois grandes vasos?', [['ivc', 'inferior vena cava', 'vci', 'veia cava inferior'], ['abdominal aorta', 'aorta', 'aorta abdominal']]),
+  'd-compass': rv('The aortic-mesenteric compass is formed between which two arteries?', 'O compasso aortomesentérico é formado entre quais duas artérias?', [['sma', 'superior mesenteric artery', 'ams', 'artéria mesentérica superior', 'arteria mesenterica superior'], ['aorta', 'abdominal aorta', 'aorta abdominal']]),
+  'd-dj': rv('The duodenojejunal flexure is the junction between which two parts of the small intestine?', 'A flexura duodenojejunal é a junção entre quais duas partes do intestino delgado?', [['duodenum', 'duodeno'], ['jejunum', 'jejuno']]),
+  treitz: rv('The suspensory ligament of the duodenum (ligament of Treitz) suspends which flexure?', 'O ligamento suspensor do duodeno (ligamento de Treitz) suspende qual flexura?', [['duodenojejunal flexure', 'duodenojejunal', 'flexura duodenojejunal']]),
+  'treitz-sup': rv('Which head of the suspensory ligament of the duodenum is made of skeletal muscle?', 'Qual cabeça do ligamento suspensor do duodeno é feita de músculo esquelético?', [['superior', 'superior head', 'cabeça superior', 'cabeca superior']]),
+  'treitz-inf': rv('Which head of the suspensory ligament of the duodenum is made of smooth muscle?', 'Qual cabeça do ligamento suspensor do duodeno é feita de músculo liso?', [['inferior', 'inferior head', 'cabeça inferior', 'cabeca inferior']]),
+  'fossa-sup': rv('The inferior mesenteric vein lies in which duodenal fossa?', 'A veia mesentérica inferior fica em qual fossa duodenal?', [['superior duodenal fossa', 'superior fossa', 'fossa duodenal superior', 'fossa superior']]),
+  'fossa-inf': rv('The left colic artery lies in which duodenal fossa?', 'A artéria cólica esquerda fica em qual fossa duodenal?', [['inferior duodenal fossa', 'inferior fossa', 'fossa duodenal inferior', 'fossa inferior']]),
+  variants: rv('Which part of the duodenum is absent in a V-shaped duodenum?', 'Qual parte do duodeno está ausente no duodeno em V?', [['horizontal', 'horizontal part', '3rd', '3rd part', 'parte horizontal', '3ª', '3ª parte']]),
+  'major-papilla': rv('Which two ducts open at the major duodenal papilla?', 'Quais dois ductos desembocam na papila duodenal maior?', [['common bile duct', 'cbd', 'bile duct', 'colédoco', 'coledoco', 'ducto colédoco', 'ducto coledoco'], ['main pancreatic duct', 'pancreatic duct', 'wirsung', 'ducto pancreático principal', 'ducto pancreatico principal', 'ducto de wirsung']]),
+  ampulla: rv('Where is the hepatopancreatic ampulla (ampulla of Vater) located?', 'Onde fica a ampola hepatopancreática (ampola de Vater)?', [['major duodenal papilla', 'major papilla', 'papila duodenal maior', 'papila maior']]),
+  wirsung: rv('The duct of Wirsung is formed by the union of the ducts of which two embryonic buds?', 'O ducto de Wirsung se forma pela união dos ductos de quais dois brotos embrionários?', [['ventral', 'ventral bud', 'broto ventral'], ['dorsal', 'dorsal bud', 'broto dorsal']]),
+  'minor-papilla': rv('Where does the accessory pancreatic duct (of Santorini) open?', 'Onde desemboca o ducto pancreático acessório (de Santorini)?', [['minor duodenal papilla', 'minor papilla', 'papila duodenal menor', 'papila menor']]),
+  oddi: rv('Where is the sphincter of Oddi located?', 'Onde fica o esfíncter de Oddi?', [['hepatopancreatic ampulla', 'ampulla of vater', 'ampulla', 'major papilla', 'ampola hepatopancreática', 'ampola hepatopancreatica', 'ampola de vater', 'papila maior']]),
+  territories: rv('Which 3 arteries supply the foregut, midgut and hindgut, in order?', 'Quais 3 artérias irrigam o intestino anterior, médio e posterior, em ordem?', [['celiac trunk', 'coeliac trunk', 'tronco celíaco', 'tronco celiaco'], ['sma', 'superior mesenteric artery', 'ams', 'artéria mesentérica superior', 'arteria mesenterica superior'], ['ima', 'inferior mesenteric artery', 'ami', 'artéria mesentérica inferior', 'arteria mesenterica inferior']]),
+  'sup-origin': rv('The gastroduodenal artery gives which pancreaticoduodenal artery?', 'A artéria gastroduodenal dá qual artéria pancreaticoduodenal?', [['superior pancreaticoduodenal artery', 'superior pancreaticoduodenal', 'artéria pancreaticoduodenal superior', 'arteria pancreaticoduodenal superior', 'pancreaticoduodenal superior']]),
+  'inf-origin': rv('Which pancreaticoduodenal artery arises from the SMA?', 'Qual artéria pancreaticoduodenal nasce da AMS?', [['inferior pancreaticoduodenal artery', 'inferior pancreaticoduodenal', 'artéria pancreaticoduodenal inferior', 'arteria pancreaticoduodenal inferior', 'pancreaticoduodenal inferior']]),
+  retro: rv('The retroduodenal branches arise from which artery?', 'Os ramos retroduodenais nascem de qual artéria?', [['gastroduodenal artery', 'gastroduodenal', 'artéria gastroduodenal', 'arteria gastroduodenal']]),
+  'sup-parts': rv('Which pancreaticoduodenal arteries supply the 1st and 2nd parts of the duodenum?', 'Quais artérias pancreaticoduodenais irrigam a 1ª e a 2ª partes do duodeno?', [['superior pancreaticoduodenal artery', 'superior pancreaticoduodenal arteries', 'superior pancreaticoduodenal', 'superior', 'superiores', 'pancreaticoduodenais superiores', 'artéria pancreaticoduodenal superior', 'arteria pancreaticoduodenal superior']]),
+  'inf-parts': rv('Which pancreaticoduodenal artery supplies the 3rd and 4th parts of the duodenum?', 'Qual artéria pancreaticoduodenal irriga a 3ª e a 4ª partes do duodeno?', [['inferior pancreaticoduodenal artery', 'inferior pancreaticoduodenal', 'inferior', 'artéria pancreaticoduodenal inferior', 'arteria pancreaticoduodenal inferior']]),
+  jejunal4: rv('The first jejunal branch of the SMA supplies which part of the duodenum?', 'O 1º ramo jejunal da AMS irriga qual parte do duodeno?', [['4th', '4th part', 'fourth', 'ascending', 'ascending part', '4ª', '4ª parte', 'parte ascendente']]),
+  auerbach: rv('What does the myenteric plexus (of Auerbach) control?', 'O que o plexo mioentérico (de Auerbach) controla?', [['motility', 'muscle activity', 'motilidade', 'atividade muscular']]),
+  meissner: rv('What does the submucosal plexus (of Meissner) control?', 'O que o plexo submucoso (de Meissner) controla?', [['secretion and local blood flow', 'secretion', 'secreção e fluxo sanguíneo local', 'secrecao e fluxo sanguineo local', 'secreção', 'secrecao']]),
+  'rel3-front': rv('The superior mesenteric vessels cross in front of which part of the duodenum?', 'Os vasos mesentéricos superiores cruzam à frente de qual parte do duodeno?', [['3rd', '3rd part', 'third', 'horizontal', 'horizontal part', '3ª', '3ª parte', 'parte horizontal']]),
+};
+const I = (id, q, a, info, focus, note, warn) => ({ ...(warn ? { warn } : {}), ...(REV[id] ? { rev: REV[id] } : {}), id, q, a, info, d3: note ? { focus, note } : { focus } });
 const NOT3D = (en, pt) => [`Not in the 3D model. Highlighted: ${en}`, `Não está no modelo 3D. Destacado: ${pt}`];
 
 const PD = ['pancreaticoduodenal_a'];
@@ -11,6 +43,7 @@ const REL = ['duodenum', 'pancreas', 'stomach', 'gallbladder', 'caudate_lobe', '
 
 export default {
   id: 'duodenum',
+  rewards: true,
   title: ['Small intestine and duodenum', 'Intestino delgado e duodeno'],
   sets: [
     {

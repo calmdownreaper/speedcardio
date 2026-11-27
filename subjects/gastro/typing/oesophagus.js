@@ -1,6 +1,17 @@
 // Oesophagus typing deck. Source: research/gastro_slides/04_oesophagus/digest.md + compact.md
 // (position, parts, constrictions, junction, diverticula, vessels, nerves, histology, swallowing).
-const it = (id, q, a, info, focus, note) => ({ id, info, d3: note ? { focus, note } : { focus }, q, a });
+// Reverse cards for distinct one-to-one facts.
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  "zline": rv("The Z line marks the junction of which two mucosae?", "A linha Z marca a junção de quais mucosas?", [["oesophageal", "esophageal", "oesophageal mucosa", "esophageal mucosa", "esofágica", "esofagica", "mucosa esofágica", "mucosa esofagica"], ["gastric", "gastric mucosa", "gástrica", "gastrica", "mucosa gástrica", "mucosa gastrica"]]),
+  "his": rv("The angle of His lies between which two structures?", "O ângulo de His fica entre quais estruturas?", [["cardia", "cárdia"], ["oesophagus", "esophagus", "esôfago", "esofago"]]),
+  "killian": rv("Which diverticulum forms at Killian’s triangle?", "Qual divertículo se forma no triângulo de Killian?", [["zenker", "zenker diverticulum", "divertículo de zenker", "diverticulo de zenker"]]),
+  "epiphrenic": rv("Where is an epiphrenic diverticulum found?", "Onde fica um divertículo epifrênico?", [["above the oesophageal hiatus", "above the esophageal hiatus", "just above the hiatus", "acima do hiato esofágico", "acima do hiato esofagico"]]),
+  "n-plexus": rv("Which nerves form the oesophageal plexus?", "Quais nervos formam o plexo esofágico?", [["vagus", "vagi", "vagus nerves", "vagos", "nervos vagos"]]),
+  "dysphagia": rv("What does dysphagia mean?", "O que significa disfagia?", [["difficulty swallowing", "difficulty in swallowing", "swallowing difficulty", "dificuldade para engolir", "dificuldade de deglutição", "dificuldade de degluticao"]]),
+  "omohyoid": rv("The omohyoid arises from which border of the scapula?", "O omo-hióideo nasce de qual borda da escápula?", [["superior border", "superior border of scapula", "borda superior", "borda superior da escápula", "borda superior da escapula", "margem superior", "margem superior da escápula", "margem superior da escapula"]]),
+};
+const it = (id, q, a, info, focus, note) => ({ ...(REV[id] ? { rev: REV[id] } : {}), id, info, d3: note ? { focus, note } : { focus }, q, a });
 const NOTE_PART = ["Parts, curves and layers are not separate meshes. Highlighted: the oesophagus.", "Partes, curvas e camadas não são peças separadas. Destacado: o esôfago."];
 const NOTE_WALL = ["Inside the wall: not visible in the 3D model. Highlighted: the oesophagus.", "Dentro da parede: não aparece no modelo 3D. Destacado: o esôfago."];
 const NOTE_NERVE = ["Nerves are not in the 3D model. Highlighted: where they run.", "Os nervos não estão no modelo 3D. Destacado: por onde eles passam."];
@@ -12,6 +23,7 @@ const CTX_S = ['esophagus', 'diaphragm_g', 'stomach', 'tongue', 'teeth', 'superi
 
 export default {
   id: 'oesophagus',
+  rewards: true,
   title: ['Oesophagus', 'Esôfago'],
   sets: [
     {

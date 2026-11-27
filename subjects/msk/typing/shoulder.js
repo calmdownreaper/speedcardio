@@ -16,6 +16,7 @@ const f = (en, pt) => [`Main action of ${en}?`, `Função principal do ${pt}?`];
 
 export default {
   id: 'shoulder',
+  rewards: true,
   title: ['Shoulder', 'Ombro'],
   sets: [
     {
@@ -76,6 +77,31 @@ export default {
         { id: 'delt-i', d3: { focus: ['deltoid'], view: 'post', frame: ['deltoid', 'scapula'], glass: .12 }, q: i('deltoid', 'deltoide'), a: [['deltoid tuberosity', 'tuberosidade deltóidea', 'tuberosidade deltoide', 'deltoid tubercle', 'tubérculo deltoide', 'tubérculo deltóideo']] },
         { id: 'tmaj-o', d3: { focus: ['teres_major'], view: 'post', frame: ['teres_major', 'scapula'], glass: .12 }, q: o('teres major', 'redondo maior'), a: [['inferior angle of scapula', 'ângulo inferior da escápula', 'inferior scapular angle', 'ângulo escapular inferior']] },
         { id: 'tmaj-i', d3: { focus: ['teres_major'], view: 'post', frame: ['teres_major', 'scapula'], glass: .12 }, q: i('teres major', 'redondo maior'), a: [['intertubercular sulcus', 'sulco intertubercular', 'medial lip of intertubercular sulcus', 'lábio medial do sulco intertubercular', 'bicipital groove']] },
+      ],
+    },
+    {
+      id: 'by-landmark', d3ctx: ['scapula', 'humerus', 'clavicle'], d3anchor: ['scapula', 'humerus'], d3frame: ['scapula', 'humerus'],
+      title: ["Shoulder · by landmark", "Ombro · por ponto ósseo"],
+      items: [
+        { id: 'lm-o-supraspinous-fossa', d3: { focus: ["supraspinatus"], view: 'post', frame: ['supraspinatus', 'scapula'], glass: .12 }, q: ["Which shoulder muscle originates from the supraspinous fossa?", "Qual músculo do ombro se origina na fossa supraespinal?"], a: [["supraspinatus", "supraespinal"]] },
+        { id: 'lm-o-infraspinous-fossa', d3: { focus: ["infraspinatus"], view: 'post', frame: ['infraspinatus', 'scapula'], glass: .12 }, q: ["Which shoulder muscle originates from the infraspinous fossa?", "Qual músculo do ombro se origina na fossa infraespinal?"], a: [["infraspinatus", "infraespinal"]] },
+        { id: 'lm-o-lateral-border-of-scapula', d3: { focus: ["teres_minor"], view: 'post', frame: ['teres_minor', 'scapula'], glass: .12 }, q: ["Which shoulder muscle originates from the lateral border of scapula?", "Qual músculo do ombro se origina na borda lateral da escápula?"], a: [["teres minor", "redondo menor"]] },
+        { id: 'lm-o-subscapular-fossa', d3: { focus: ["subscapularis"], view: 'ant', frame: ['subscapularis', 'scapula'], glass: .12 }, q: ["Which shoulder muscle originates from the subscapular fossa?", "Qual músculo do ombro se origina na fossa subescapular?"], a: [["subscapularis", "subescapular"]] },
+        { id: 'lm-o-acromion', d3: { focus: ["deltoid"], view: 'post', frame: ['deltoid', 'scapula'], glass: .12 }, q: ["Which shoulder muscle originates from the acromion?", "Qual músculo do ombro se origina no acrômio?"], a: [["deltoid", "deltoide"]] },
+        { id: 'lm-o-spine-of-scapula', d3: { focus: ["deltoid"], view: 'post', frame: ['deltoid', 'scapula'], glass: .12 }, q: ["Which shoulder muscle originates from the spine of scapula?", "Qual músculo do ombro se origina na espinha da escápula?"], a: [["deltoid", "deltoide"]] },
+        { id: 'lm-o-inferior-angle-of-scapula', d3: { focus: ["teres_major"], view: 'post', frame: ['teres_major', 'scapula'], glass: .12 }, q: ["Which shoulder muscle originates from the inferior angle of scapula?", "Qual músculo do ombro se origina no ângulo inferior da escápula?"], a: [["teres major", "redondo maior"]] },
+        { id: 'lm-i-greater-tubercle', d3: { focus: ["supraspinatus", "infraspinatus", "teres_minor"], view: 'post', frame: ['supraspinatus', 'scapula'], glass: .12 }, q: ["Which shoulder muscles insert on the greater tubercle?", "Quais músculos do ombro se inserem no tubérculo maior?"], a: [["supraspinatus", "supraespinal"], ["infraspinatus", "infraespinal"], ["teres minor", "redondo menor"]] },
+        { id: 'lm-i-lesser-tubercle', d3: { focus: ["subscapularis"], view: 'ant', frame: ['subscapularis', 'scapula'], glass: .12 }, q: ["Which shoulder muscle inserts on the lesser tubercle?", "Qual músculo do ombro se insere no tubérculo menor?"], a: [["subscapularis", "subescapular"]] },
+        { id: 'lm-i-deltoid-tuberosity', d3: { focus: ["deltoid"], view: 'post', frame: ['deltoid', 'scapula'], glass: .12 }, q: ["Which shoulder muscle inserts on the deltoid tuberosity?", "Qual músculo do ombro se insere na tuberosidade deltoide?"], a: [["deltoid", "deltoide"]] },
+        { id: 'lm-i-intertubercular-sulcus', d3: { focus: ["teres_major"], view: 'post', frame: ['teres_major', 'scapula'], glass: .12 }, q: ["Which shoulder muscle inserts on the intertubercular sulcus?", "Qual músculo do ombro se insere no sulco intertubercular?"], a: [["teres major", "redondo maior"]] },
+      ],
+    },
+    {
+      id: 'by-nerve', d3ctx: ['scapula', 'humerus', 'clavicle'], d3anchor: ['scapula', 'humerus'], d3frame: ['scapula', 'humerus'],
+      title: ["Shoulder · by nerve", "Ombro · por nervo"],
+      items: [
+        { id: 'nv-suprascapular-nerve', d3: { focus: ["supraspinatus", "infraspinatus"], view: 'post', frame: ['supraspinatus', 'scapula'], glass: .12 }, q: ["Which shoulder muscles does the suprascapular nerve supply?", "Quais músculos do ombro o nervo supraescapular inerva?"], a: [["supraspinatus", "supraespinal"], ["infraspinatus", "infraespinal"]] },
+        { id: 'nv-lower-subscapular-nerve', d3: { focus: ["subscapularis", "teres_major"], view: 'ant', frame: ['subscapularis', 'scapula'], glass: .12 }, q: ["Which shoulder muscles does the lower subscapular nerve supply?", "Quais músculos do ombro o nervo subescapular inferior inerva?"], a: [["subscapularis", "subescapular"], ["teres major", "redondo maior"]] },
       ],
     },
   ],

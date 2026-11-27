@@ -1,5 +1,18 @@
 // Peritoneum and ANS typing deck. Source: research/gastro_slides/05_peritoneum_and_ANS/digest.md + compact.md
-const it = (id, q, a, info, focus, note) => ({ id, info, d3: note ? { focus, note } : { focus }, q, a });
+// Reverse cards for distinct one-to-one facts.
+const rv = (en, pt, a) => ({ q: [en, pt], a });
+const REV = {
+  "symp-fn": rv("Which autonomic response is associated with the sympathetic division?", "Qual resposta autonômica se associa à divisão simpática?", [["fight or flight", "fight flight", "luta ou fuga"]]),
+  "para-fn": rv("Which autonomic response is associated with the parasympathetic division?", "Qual resposta autonômica se associa à divisão parassimpática?", [["rest and digest", "rest digest", "repouso e digestão", "repouso e digestao"]]),
+  "splanchnic": rv("Splanchnic nerves run from the sympathetic trunk to which ganglia?", "Os nervos esplâncnicos vão do tronco simpático a quais gânglios?", [["prevertebral ganglia", "prevertebral", "gânglios pré-vertebrais", "ganglios pre-vertebrais", "ganglios prevertebrais"]]),
+  "dvn": rv("The dorsal motor nucleus of the vagus contains which vagal neuron?", "O núcleo motor dorsal do vago contém qual neurônio vagal?", [["presynaptic", "preganglionic", "presynaptic vagal neuron", "pré-sináptico", "pre-sinaptico", "pré-ganglionar", "pre-ganglionar"]]),
+  "ascites": rv("What accumulates abnormally in ascites?", "O que se acumula de modo anormal na ascite?", [["peritoneal fluid", "fluid", "líquido peritoneal", "liquido peritoneal", "líquido", "liquido"]]),
+  "dm": rv("The dorsal mesogastrium forms which omentum?", "O mesogástrio dorsal forma qual omento?", [["greater omentum", "omento maior"]]),
+  "vm": rv("The ventral mesogastrium forms which omentum?", "O mesogástrio ventral forma qual omento?", [["lesser omentum", "omento menor"]]),
+  "foramen": rv("The omental foramen connects the omental bursa to which sac?", "O forame omental liga a bolsa omental a qual saco?", [["greater sac", "saco maior"]]),
+  "fo-above": rv("Which liver lobe forms the upper boundary of the omental foramen?", "Qual lobo do fígado forma o limite superior do forame omental?", [["caudate lobe", "caudate", "lobo caudado", "caudado"]]),
+};
+const it = (id, q, a, info, focus, note) => ({ ...(REV[id] ? { rev: REV[id] } : {}), id, info, d3: note ? { focus, note } : { focus }, q, a });
 const N_NERVE = ["Nerves and ganglia are not in the 3D model. Highlighted: the aorta, where the prevertebral ganglia lie.", "Nervos e gânglios não estão no modelo 3D. Destacado: a aorta, onde ficam os gânglios pré-vertebrais."];
 const N_PERI = ["Peritoneal folds are not in the 3D model. Highlighted: the organs they connect.", "As pregas peritoneais não estão no modelo 3D. Destacado: os órgãos que elas conectam."];
 const N_SPACE = ["Spaces are not in the 3D model. Highlighted: the organs around them.", "Os espaços não estão no modelo 3D. Destacado: os órgãos ao redor."];
@@ -9,6 +22,7 @@ const AORTA = ['abdominal_aorta_g', 'celiac_trunk', 'sma', 'ima'];
 
 export default {
   id: 'peritoneum_ans',
+  rewards: true,
   title: ['Peritoneum and ANS', 'Peritônio e SNA'],
   sets: [
     {
