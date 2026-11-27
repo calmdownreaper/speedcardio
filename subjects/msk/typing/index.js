@@ -2,15 +2,15 @@
 // d3.focus: mesh ids from msk/models.json (muscles) or marker ids (foramina, from regions/skull.js).
 import shoulder from './shoulder.js?v=131';
 import arm from './arm.js?v=131';
-import forearm from './forearm.js?v=131';
-import hand from './hand.js?v=131';
-import hip from './hip.js?v=131';
-import thigh from './thigh.js?v=131';
-import leg from './leg.js?v=131';
-import foot from './foot.js?v=131';
-import trunk from './trunk.js?v=131';
-import headneck from './headneck.js?v=131';
-import cranium from './cranium.js?v=143';
+import forearm from './forearm.js?v=150';
+import hand from './hand.js?v=153';
+import hip from './hip.js?v=150';
+import thigh from './thigh.js?v=150';
+import leg from './leg.js?v=150';
+import foot from './foot.js?v=150';
+import trunk from './trunk.js?v=150';
+import headneck from './headneck.js?v=150';
+import cranium from './cranium.js?v=150';
 import { markers } from '../regions/skull.js?v=121';
 
 const FORAMINA = ['foramen_magnum', 'foramen_ovale', 'foramen_rotundum', 'foramen_spinosum', 'jugular_foramen', 'superior_orbital_fissure', 'optic_canal', 'mental_foramen', 'infraorbital_foramen'];

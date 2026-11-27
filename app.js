@@ -1,6 +1,6 @@
 import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=148';
 import { createEngine } from './aulas-engine.js?v=115';
-import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=122';
+import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=151';
 import {
   IDS, ITEMS, LEVELS, REGIONS, REGION_CONTEXT, ROUND_NAMES, Recall, day, fold, gradeCard, initStudy, matchDaily,
   readProgress, recordLaterRecall, saveProgress as writeProgress, shuffle, streak,
@@ -10,12 +10,13 @@ import {
 // viewer module and model assets in parallel so the 3D scene doesn't wait on
 // the subject pack waterfall.
 const V = '?v=115';
+const VIEWER_VERSION = '?v=150';
 const subjectId = subjectFromUrl();
 const subject = SUBJECTS.find(entry => entry.id === subjectId) || SUBJECTS[0];
-let viewerModulePromise = import(`./viewer.js${V}`);
+let viewerModulePromise = import(`./viewer.js${VIEWER_VERSION}`);
 const preloadManifestUrl = { msk: './msk/models.json', gastro: './gastro/models.json' }[subject.id] || './models.json';
 let modelPreload = {
-  manifest: fetch(`${preloadManifestUrl}${V}`, { cache: 'force-cache' }).then(r => {
+  manifest: fetch(`${preloadManifestUrl}${subject.id === 'cardio' ? V : VIEWER_VERSION}`, { cache: 'force-cache' }).then(r => {
     if (!r.ok) throw new Error('Model index unavailable');
     return r.json();
   }).catch(() => null),
@@ -3333,7 +3334,7 @@ async function loadViewer() {
   $('view-fallback').hidden = true;
   if (activity?.type === 'recall') render();
   try {
-    const modPromise = viewerModulePromise || import(`./viewer.js${V}`);
+    const modPromise = viewerModulePromise || import(`./viewer.js${VIEWER_VERSION}`);
     viewerModulePromise = null;
     const preload = modelPreload;
     modelPreload = null;

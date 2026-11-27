@@ -9,7 +9,10 @@ backup_pre_redesign/
 tools/zanatomy/.cache/
 
 # Build pipeline / dev-only (keep local, never deploy)
-tools/
+tools/*
+!tools/zanatomy/
+tools/zanatomy/*
+!tools/zanatomy/export_muscles.py
 build_models.py
 pilot/
 .aulas-qa.html

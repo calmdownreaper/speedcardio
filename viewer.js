@@ -13,6 +13,7 @@ const VIEWS = {
 };
 
 const VERSION = '?v=115';
+const REGION_MANIFEST_VERSION = '?v=150';
 const GHOST_ORDER = 1;
 const GHOST_DEFAULT = 40;
 
@@ -92,7 +93,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
   let buffer;
   let IndexArray;
   if (regionMode) {
-    manifest = (await source.preload?.manifest) || await fetchJSON(`${source.manifest}${VERSION}`);
+    manifest = (await source.preload?.manifest) || await fetchJSON(`${source.manifest}${REGION_MANIFEST_VERSION}`);
     meta = { center: manifest.center, scale: manifest.scale, parts: {} };
     for (const [region, info] of Object.entries(manifest.regions)) {
       for (const id of Object.keys(info.parts)) meta.parts[id] = { region };
@@ -775,6 +776,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
       pending.then(() => {
         if (unavailable || current !== config) return;
         applyStyles();
+        if (areaGlowSpec) glowArea(...areaGlowSpec);
         if (!preserveCamera) frame(config.view);
         else schedule();
         onModelReady?.();
@@ -1226,6 +1228,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
   }
   // Soft glow painted over part of an organ: weight(mm point) gives 0..1 per vertex.
   function glowArea(list, color = '#ffb347') {
+    areaGlowSpec = list?.length ? [list, color] : null;
     for (const child of [...areaGlow.children]) { areaGlow.remove(child); child.geometry.dispose(); child.material.dispose(); }
     for (const { mesh: id, weight, both, gain = 1, color: own } of list || []) {
       const tint = new THREE.Color(own || color);
@@ -1249,6 +1252,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     }
     schedule();
   }
+  let areaGlowSpec = null;
   const areaGlow = new THREE.Group();
   scene.add(areaGlow);
   return {

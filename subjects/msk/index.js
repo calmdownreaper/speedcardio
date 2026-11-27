@@ -84,6 +84,7 @@ export default {
   orientation: [],
   territories: [],
   model: { kind: 'regions', manifest: './msk/models.json' },
+  meshGroups: {'masseter': ['superficial_part_of_masseter', 'deep_part_of_masseter'], 'pronator_teres': ['superficial_head_of_pronator_teres', 'deep_head_of_pronator_teres'], 'flexor_digitorum_superficialis': ['humero_ulnar_head_of_flexor_digitorum_superficialis', 'radial_head_of_flexor_digitorum_superficialis'], 'extensor_carpi_ulnaris': ['humeral_head_of_extensor_carpi_ulnaris', 'ulnar_head_of_extensor_carpi_ulnaris'], 'flexor_pollicis_brevis': ['superficial_head_of_flexor_pollicis_brevis', 'deep_head_of_flexor_pollicis_brevis'], 'adductor_pollicis': ['oblique_head_of_adductor_pollicis', 'transverse_head_of_adductor_pollicis'], 'adductor_hallucis': ['oblique_head_of_adductor_hallucis', 'transverse_head_of_adductor_hallucis'], 'flexor_hallucis_brevis': ['medial_head_of_flexor_hallucis_brevis', 'lateral_head_of_flexor_hallucis_brevis'], 'lateral_pterygoid': ['superior_head_of_lateral_pterygoid_muscle', 'inferior_head_of_lateral_pterygoid_muscle'], 'digastric': ['anterior_belly_of_digastric_muscle', 'posterior_belly_of_digastric_muscle', 'intermediate_tendon_of_digastric_muscle']},
   markers,
   markerMeta,
   markerSpace: 'world',

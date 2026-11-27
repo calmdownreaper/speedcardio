@@ -50,7 +50,7 @@
     let lang = params.get('lang');
     if (!['en', 'pt-BR'].includes(lang)) { try { lang = localStorage.getItem('anatomy_language') === 'pt-BR' ? 'pt-BR' : 'en'; } catch { lang = 'en'; } }
     document.documentElement.lang = lang;
-    const { decks, title, model3d } = await import(`./subjects/${subject}/typing/index.js?v=143`);
+    const { decks, title, model3d } = await import(`./subjects/${subject}/typing/index.js?v=154`);
     if (title) document.title = lang === 'pt-BR' ? title[1] : title[0];
     const back = new URL('./', location.href); back.searchParams.set('s', subject); if (params.get('lang')) back.searchParams.set('lang', lang);
     const T = (en, pt) => lang === 'pt-BR' ? pt : en;
@@ -62,7 +62,8 @@
       document.getElementById('ty-3d-orient').textContent = T('L/R = patient’s · drag to rotate', 'E/D = do paciente · arraste para girar');
       document.getElementById('model-status').textContent = T('Loading the 3D model…', 'Carregando o modelo 3D…');
       panel.hidden = false;
-      let viewer = null, pending = null, defaultCtx = [];
+      let viewer = null, pending = null, defaultCtx = [], meshGroups = {};
+      const meshIdsFor = id => Object.hasOwn(meshGroups, id) ? meshGroups[id] : [id];
       const paint = (item, info) => {
         if (!viewer) { pending = [item, info]; return; }
         if (info?.mode === 'summary') return paintSummary(info);
@@ -71,16 +72,19 @@
         if (!spec) { viewer.paint({ ids: ctx, context: [], focus: [], markerIds: [], frameIds: (item?.set || info?.deck?.sets?.[0])?.d3frame || model3d.frame || ['stomach'], view: 'ant', neutral: true, padding: 1.15 }); viewer.glow([]); viewer.glowArea([]); label.textContent = info?.label || ''; note.hidden = true; return; }
         const isMark = id => model3d.landmarks[id] || model3d.areas?.[id]; // an id may be a glow area alone
         const marks = spec.focus.filter(isMark);
-        const meshes = spec.focus.filter(id => !isMark(id));
-        const frameIds = spec.frame || [...new Set([...(item.set?.d3frame || model3d.frame || ['stomach']), ...(item.set?.d3frame ? [] : meshes.filter(id => id !== 'esophagus'))])];
+        const meshes = [...new Set(spec.focus.filter(id => !isMark(id)).flatMap(meshIdsFor))];
+        const fallbackFrame = item.set?.d3frame || [
+          ...(model3d.frame || ['stomach']), ...meshes.filter(id => id !== 'esophagus'),
+        ];
+        const frameIds = [...new Set((spec.frame || fallbackFrame).flatMap(meshIdsFor))];
         // Landmarks: organ turns to glass and the structure glows inside it.
         const glass = Object.fromEntries([...(item.set?.d3anchor || []).filter(id => !meshes.includes(id)).map(id => [id, .22]), ...meshes.map(id => [id, .55])]);
         if (spec.glass != null) for (const k in glass) if (glass[k] < .5) glass[k] = spec.glass; // optional per-item bone opacity
         viewer.paint({ ids: [...new Set([...ctx, ...meshes])], context: [], focus: marks.length ? marks : ['__none'], markerIds: [],
-          anchors: [], glass, frameIds, view: spec.view || 'ant', close: false, neutral: true, padding: 1.15 });
+          anchors: [], glass, frameIds, view: spec.view || 'ant', close: false, neutral: true, padding: 1.3 });
         // model3d.themeGlow: the highlight takes the page's accent colour (follows light/dark theme).
         const themed = Boolean(model3d.themeGlow), accent = themed ? (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || undefined) : undefined;
-        viewer.glowArea([...marks.filter(id => model3d.areas?.[id]).map(id => model3d.areas[id]), ...meshes.map(id => ({ mesh: id, weight: () => 1, color: /_v$|^smv$/.test(id) ? '#4f8dff' : /_a$|^sma$|celiac|aorta/.test(id) ? '#ff4d4d' : undefined }))], accent); viewer.glow(marks.filter(id => !model3d.areas?.[id]).flatMap(id => { const lm = model3d.landmarks[id]; return Array.isArray(lm[0]?.[0]) ? lm : [lm]; }), meshes.length ? '#e8e2d0' : (themed ? accent : '#ffb347'), meshes.length ? .45 : 1);
+        viewer.glowArea([...marks.filter(id => model3d.areas?.[id]).map(id => model3d.areas[id]), ...meshes.map(id => ({ mesh: id, weight: () => 1, gain: /^(esq|dir)$/.test(spec.view) ? .35 : .8, color: /_v$|^smv$/.test(id) ? '#4f8dff' : /_a$|^sma$|celiac|aorta/.test(id) ? '#ff4d4d' : undefined }))], accent); viewer.glow(marks.filter(id => !model3d.areas?.[id]).flatMap(id => { const lm = model3d.landmarks[id]; return Array.isArray(lm[0]?.[0]) ? lm : [lm]; }), meshes.length ? '#e8e2d0' : (themed ? accent : '#ffb347'), meshes.length ? .45 : 1);
         label.textContent = info?.label || (info?.reveal ? spec.focus.map(id => L(model3d.names?.[id]) || '').filter(Boolean).join(' · ') || String(T(item.a?.[0]?.[0], item.a?.[0]?.[1] || item.a?.[0]?.[0]) || T('Highlighted', 'Destacado')) : T('Highlighted: the answer', 'Destacado: a resposta'));
         note.textContent = L(spec.note); note.hidden = !spec.note;
       };
@@ -96,12 +100,12 @@
           for (const id of item.d3?.focus || []) {
             if (model3d.areas?.[id]) areas.push({ ...model3d.areas[id], color });
             else if (model3d.landmarks[id]) { const lm = model3d.landmarks[id]; (Array.isArray(lm[0]?.[0]) ? lm : [lm]).forEach(pts => paths.push({ pts, color })); }
-            else meshes.push({ mesh: id, weight: () => 1, color });
+            else for (const mesh of meshIdsFor(id)) meshes.push({ mesh, weight: () => 1, color });
           }
         }
         const meshIds = uniq(meshes.map(m => m.mesh));
         const anchors = uniq(sets.flatMap(s => s.d3anchor || [])).filter(id => !meshIds.includes(id));
-        const frameIds = uniq(sets.flatMap(s => s.d3frame || [])); 
+        const frameIds = uniq(sets.flatMap(s => (s.d3frame || []).flatMap(meshIdsFor)));
         // Whole structures: solid colour (no additive glow, which washes overlapping parts out to white).
         // One mesh asked in several items: yellow if results disagree.
         const meshState = {};
@@ -118,9 +122,10 @@
       (async () => {
         try {
           const [{ SUBJECTS }, { initStudy }, { createViewer }] = await Promise.all([
-            import('./subjects/registry.js?v=122'), import('./study.js?v=115'), import('./viewer.js?v=149')]);
+            import('./subjects/registry.js?v=151'), import('./study.js?v=115'), import('./viewer.js?v=150')]);
           const entry = SUBJECTS.find(x => x.id === subject);
           const pack = (await entry.load()).default;
+          meshGroups = pack.meshGroups || {};
           initStudy(pack);
           defaultCtx = decks[0]?.sets?.[0]?.d3ctx || [];
           viewer = await createViewer(host, () => {}, () => { document.getElementById('model-status').textContent = T('3D view unavailable', '3D indisponível'); }, () => {},
