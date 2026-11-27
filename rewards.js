@@ -2,7 +2,7 @@
 //   1. Every right answer: light pulse over the 3D structure, the answer lights up, a note that climbs with the streak.
 //   2. Streak: tier colour (bone → blue → violet → gold) and a big ×N badge + arpeggio at 5, 10, 20, 30, 50…
 //   6. Atlas: one dot per structure, grouped by set; a learned structure lights up for good, with a spark that flies there.
-import { streakSound, milestoneSound } from './sound.js?v=148';
+import { streakSound, milestoneSound } from './sound.js?v=150';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -28,11 +28,11 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css?v=123">
-  <link rel="stylesheet" href="./atlas-tool.css?v=6">
+  <link rel="stylesheet" href="./atlas-tool.css?v=9">
   <script type="importmap">
     {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js?v=115","three/addons/controls/OrbitControls.js":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js?v=115"}}
   </script>
-  <link rel="modulepreload" href="./viewer.js?v=115">
+  <link rel="modulepreload" href="./viewer.js?v=169">
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
@@ -113,9 +113,6 @@
         </aside>
         <div class="at-main">
           <section class="model-shell at-stage" aria-label="3D skeleton viewer">
-            <div id="view" aria-label="Rotatable 3D bones">
-              <p id="model-status" role="status">Loading the 3D model…</p>
-            </div>
             <div class="at-toolbar" role="toolbar" aria-label="Model view">
               <div class="at-toolbar-group">
                 <div class="control-select view-select at-select">
@@ -134,6 +131,9 @@
                 <button id="at-rotate" type="button" aria-pressed="false" title="Auto-rotate the model"><svg class="icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-rotate-cw"/></svg><span class="at-btn-label" id="at-rotate-label">Rotate</span></button>
               </div>
             </div>
+            <div id="view" aria-label="Rotatable 3D bones">
+              <p id="model-status" role="status">Loading the 3D model…</p>
+            </div>
           </section>
           <section class="at-prompt" id="at-prompt" aria-label="Atlas prompt" aria-live="polite"></section>
         </div>
@@ -141,6 +141,6 @@
     </div>
   </main>
   <footer class="credits">3D anatomy by <a href="https://www.z-anatomy.com/" target="_blank" rel="noopener">Z-Anatomy</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> and <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D © DBCLS</a> · <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a> · Bone atlas idea and grouped bone list after <a href="https://samplesize1.com/tools/bone-atlas/" target="_blank" rel="noopener">SampleSize1 Bone Atlas</a> (© SampleSize_1) · <a href="https://github.com/SampleSize1/Anatomy-Atlas" target="_blank" rel="noopener">MIT</a> · Landmark areas from <a href="https://github.com/SampleSize1/Anatomy-Atlas" target="_blank" rel="noopener">SampleSize1 Bone Landmarks</a> · CC BY-SA 4.0</footer>
-  <script type="module" src="./atlas-bone.js?v=7"></script>
+  <script type="module" src="./atlas-bone.js?v=14"></script>
 </body>
 </html>

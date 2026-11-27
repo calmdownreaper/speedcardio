@@ -19,8 +19,8 @@
 //     }],
 //   }
 // Answers are accepted in either language. Progress is stored per subject, deck and language.
-import { correctSound } from './sound.js?v=148';
-import { mountRewards } from './rewards.js?v=149';
+import { correctSound } from './sound.js?v=150';
+import { mountRewards } from './rewards.js?v=151';
 
 const BASE_STOP = ['artery', 'arteries', 'arterial', 'a', 'vein', 'veins', 'venous', 'v', 'nerve', 'nerves', 'n',
   'muscle', 'muscles', 'm', 'the', 'of', 'and', 'arteria', 'arterias', 'veia', 'veias', 'nervo', 'nervos',
@@ -294,14 +294,18 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
   }
 
   // ---------- Learn ----------
-  function startLearn(scope) {
+  // mistakes: keys missed in the round just finished ("Learn from your mistakes", as on samplesize1).
+  // Only those items are asked, learned or not, each owing two help-free right answers.
+  function startLearn(scope, mistakes = null) {
     stopTimer();
-    const pool = prepared.items.filter(item => scope.has(item.set.id));
+    const only = mistakes ? new Set(mistakes) : null;
+    const pool = prepared.items.filter(item => only ? only.has(item.key) : scope.has(item.set.id));
     const data = load();
     data.learned ||= {};
     // Reverse cards wait until their forward card is learned, then drop into the queue at a random spot.
-    const lockedRev = pool.filter(item => item.revOf && !data.learned[item.key] && !data.learned[item.revOf]);
-    const unseen = learnOrder(pool.filter(item => !data.learned[item.key] && !item.revOf));
+    const lockedRev = only ? [] : pool.filter(item => item.revOf && !data.learned[item.key] && !data.learned[item.revOf]);
+    const unseen = only ? shuffle(pool.slice()) : learnOrder(pool.filter(item => !data.learned[item.key] && !item.revOf));
+    const missedKeys = new Set();
     const dropIn = item => { const lo = Math.min(2, unseen.length); unseen.splice(lo + Math.floor(Math.random() * (unseen.length - lo + 1)), 0, item); };
     pool.filter(item => item.revOf && !data.learned[item.key] && data.learned[item.revOf]).forEach(dropIn);
     const state = new Map(); // key -> { hint, need }
@@ -313,7 +317,8 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
     let cur = null; // { item, filled:Set, aided, missed }
     if (deck.rewards) rw = mountRewards({ deck, items: pool, learned: () => data.learned, lang });
 
-    const learnedCount = () => pool.filter(item => data.learned[item.key]).length;
+    const cleared = new Set(); // mistakes mode: items that paid back their two right answers
+    const learnedCount = () => only ? cleared.size : pool.filter(item => data.learned[item.key]).length;
     function updateStats() {
       stat('acc').textContent = `${T('accuracy', 'acerto')} ${answered ? `${Math.round(100 * firstTry / answered)}%` : '–'}`;
       stat('streak').textContent = `${T('streak', 'sequência')} ${streak}`;
@@ -329,14 +334,14 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
       let pick = schedule.find(s => s.due <= n);
       if (!pick && schedule.length < NEW_GAP_ACTIVE && unseen.length) {
         const item = unseen.shift();
-        state.set(item.key, { hint: HINT_FULL, need: 1, isNew: true });
+        state.set(item.key, only ? { hint: HINT_FIRST, need: 2, isNew: true } : { hint: HINT_FULL, need: 1, isNew: true });
         pick = { item, due: n };
         schedule.push(pick);
       }
       if (!pick && schedule.length) pick = schedule[0];
       if (!pick && unseen.length) {
         const item = unseen.shift();
-        state.set(item.key, { hint: HINT_FULL, need: 1, isNew: true });
+        state.set(item.key, only ? { hint: HINT_FIRST, need: 2, isNew: true } : { hint: HINT_FULL, need: 1, isNew: true });
         pick = { item, due: n }; schedule.push(pick);
       }
       if (!pick) return finish();
@@ -383,6 +388,7 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
       if (!res.ok) {
         rw?.miss();
         if (!cur.missed) markWeak(cur.item.key);
+        missedKeys.add(cur.item.key);
         cur.missed = true; cur.aided = true; streak = 0;
         st.need = 2;
         st.hint = Math.max(HINT_FULL, st.hint - 1);
@@ -411,6 +417,7 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
         creditWeak(cur.item.key);
         st.need -= 1;
         if (st.need <= 0) {
+          cleared.add(cur.item.key);
           data.learned[cur.item.key] = 1; save({ ...load(), learned: data.learned });
           rw?.learned(cur.item);
           for (let k = lockedRev.length - 1; k >= 0; k--) if (lockedRev[k].revOf === cur.item.key) dropIn(lockedRev.splice(k, 1)[0]);
@@ -443,14 +450,16 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
       stopTimer();
       root.querySelector('.ty-card').innerHTML = `<h2 class="ty-q">${T('Selection complete.', 'Seleção concluída.')}</h2>
         <p class="ty-sub">${T('Accuracy', 'Acerto')} ${answered ? Math.round(100 * firstTry / answered) : 100}% · ${clock((Date.now() - started) / 1000)}</p>
-        <div class="ty-actions"><button class="ty-btn primary" data-act="t">${T('Take test', 'Fazer teste')}</button><button class="ty-btn" data-act="h">${T('Back to deck', 'Voltar ao deck')}</button></div>`;
+        ${missedKeys.size ? `<p class="ty-sub">${missedKeys.size} ${T('missed along the way', 'erradas no caminho')}</p>` : ''}
+        <div class="ty-actions"><button class="ty-btn primary" data-act="t">${T('Take test', 'Fazer teste')}</button>${missedKeys.size ? `<button class="ty-btn" data-act="m">${T('Learn from your mistakes', 'Aprender com os erros')} (${missedKeys.size})</button>` : ''}<button class="ty-btn" data-act="h">${T('Back to deck', 'Voltar ao deck')}</button></div>`;
       root.querySelector('[data-act="t"]').addEventListener('click', () => startTest(scope));
+      root.querySelector('[data-act="m"]')?.addEventListener('click', () => startLearn(scope, [...missedKeys]));
       root.querySelector('[data-act="h"]').addEventListener('click', () => showDeck(deck, scope));
       updateStats();
     }
     updateStats();
     const rules = [...new Set(unseen.map(item => ruleText(item.set.rule) || ruleOf(item)).filter(Boolean))]; // intro: one summary per set
-    if (!rules.length) return next();
+    if (!rules.length || only) return next();
     const card = root.querySelector('.ty-card'), saved = card.innerHTML;
     card.innerHTML = `<h2 class="ty-intro-title">${T('Rules for this selection', 'Regras desta seleção')}</h2>${rules.map(r => `<p class="ty-rule">${esc(r)}</p>`).join('')}
       <div class="ty-actions"><button class="ty-btn primary" data-act="go">${T('Start typing', 'Começar a digitar')}</button></div>`;
@@ -546,7 +555,8 @@ export function mountTyping(root, { subject, decks, lang = 'en', onExit, onItem 
       root.querySelector('.ty-card').innerHTML = `<h2 class="ty-q">${pct}% · ${clock(secs)}${isBest ? ` · ${T('new best', 'novo recorde')}` : ''}${pct >= 90 ? ` · ✓ ${T('passed', 'aprovado')}` : ''}</h2>
         <p class="ty-sub">${right}/${order.length} ${T('correct', 'certas')}${prev && !isBest ? ` · ${T('best', 'recorde')} ${prev.pct}% · ${clock(prev.secs)}` : ''}</p>
         ${missed.length ? `<ul class="ty-missed">${missed.map(r => `<li><span>${esc(plainPrompt(r.item))}</span><strong>${esc(r.item.slots.map(s => s.label).join(' · '))}</strong></li>`).join('')}</ul>` : ''}
-        <div class="ty-actions"><button class="ty-btn primary" data-act="again">${T('Test again', 'Testar de novo')}</button><button class="ty-btn" data-act="h">${T('Back to deck', 'Voltar ao deck')}</button></div>`;
+        <div class="ty-actions">${missed.length ? `<button class="ty-btn primary" data-act="m">${T('Learn from your mistakes', 'Aprender com os erros')} (${missed.length})</button>` : ''}<button class="ty-btn ${missed.length ? '' : 'primary'}" data-act="again">${T('Test again', 'Testar de novo')}</button><button class="ty-btn" data-act="h">${T('Back to deck', 'Voltar ao deck')}</button></div>`;
+      root.querySelector('[data-act="m"]')?.addEventListener('click', () => startLearn(scope, missed.map(r => r.item.key)));
       root.querySelector('[data-act="again"]').addEventListener('click', () => startTest(scope));
       root.querySelector('[data-act="h"]').addEventListener('click', () => showDeck(deck, scope));
     }

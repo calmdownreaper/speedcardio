@@ -29,7 +29,7 @@
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-volume" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.8"/></symbol><symbol id="i-volume-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></symbol></svg>
   <button id="ty-sound" class="sound-toggle ty-sound" type="button" aria-pressed="false"><svg class="icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-volume"/></svg></button>
   <script type="module">
-    import { isMuted, setMuted, correctSound } from './sound.js?v=148';
+    import { isMuted, setMuted, correctSound } from './sound.js?v=150';
     const b = document.getElementById('ty-sound'), pt = new URLSearchParams(location.search).get('lang') === 'pt-BR';
     const sync = () => { const off = isMuted(); b.setAttribute('aria-pressed', String(off)); const t = off ? (pt ? 'Ativar sons' : 'Turn sounds on') : (pt ? 'Silenciar sons' : 'Mute sounds'); b.title = t; b.setAttribute('aria-label', t); b.querySelector('use').setAttribute('href', off ? '#i-volume-x' : '#i-volume'); };
     b.addEventListener('click', () => { setMuted(!isMuted()); sync(); if (!isMuted()) correctSound(); });
@@ -44,13 +44,13 @@
     <div id="typing-root" class="ty-root"></div>
   </main>
   <script type="module">
-    import { mountTyping } from './typing.js?v=160';
+    import { mountTyping } from './typing.js?v=163';
     const params = new URLSearchParams(location.search);
     const subject = ['gastro', 'msk', 'cardio'].includes(params.get('s')) ? params.get('s') : 'gastro';
     let lang = params.get('lang');
     if (!['en', 'pt-BR'].includes(lang)) { try { lang = localStorage.getItem('anatomy_language') === 'pt-BR' ? 'pt-BR' : 'en'; } catch { lang = 'en'; } }
     document.documentElement.lang = lang;
-    const { decks, title, model3d } = await import(`./subjects/${subject}/typing/index.js?v=167`);
+    const { decks, title, model3d } = await import(`./subjects/${subject}/typing/index.js?v=168`);
     if (title) document.title = lang === 'pt-BR' ? title[1] : title[0];
     const back = new URL('./', location.href); back.searchParams.set('s', subject); if (params.get('lang')) back.searchParams.set('lang', lang);
     const T = (en, pt) => lang === 'pt-BR' ? pt : en;

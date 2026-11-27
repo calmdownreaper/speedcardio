@@ -123,6 +123,7 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
     const light = theme === 'light' || (theme === 'system' && matchMedia('(prefers-color-scheme: light)').matches);
     return {
       select: token('--model-select', '--accent'),
+      correct: token('--good', '--accent'),
       selectDeep: token('--model-select-deep', '--accent-soft'),
       accent: token('--accent', '--model-select'),
       accentGlow: light ? .06 : .14,
@@ -246,7 +247,11 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
 
   function loadedFor(ids) {
     if (!regionMode) return ids.every(id => markerPoints.has(id) || Object.hasOwn(meta.parts, id));
-    return ids.every(id => markerPoints.has(id) || packs.has(meta.parts[id]?.region));
+    // Match ensurePacks: only IDs indexed as meshes can have a pending download.
+    return ids.every(id => {
+      const region = meta.parts[id]?.region;
+      return !region || packs.has(region);
+    });
   }
 
   function meshFor(id) {
@@ -878,6 +883,11 @@ gl_FragColor.a = max(gl_FragColor.a, max(spot, shade * 0.7));`);
         material.color.set(active ? select : baseColor(id));
         material.emissive.copy(active ? selectDeep : off);
         material.emissiveIntensity = active ? 1 : 0;
+        if (active && current.correctFocus) {
+          material.color.set(tone.correct);
+          material.emissive.set(tone.correct);
+          material.emissiveIntensity = .35;
+        }
         material.opacity = active ? 1 : (highlight.size ? display.ghost : 1);
       } else if (current.subtleFocus) {
         // Orientation steps keep the whole specimen visible with a light tint.

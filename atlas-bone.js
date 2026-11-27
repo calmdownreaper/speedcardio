@@ -3,10 +3,10 @@
 // (study.js) and the answer matcher from the typing engine (typing.js).
 // Practice modes mirror the curriculum: Find it, Name it and Type it.
 
-import { createViewer } from './viewer.js?v=115';
+import { createViewer } from './viewer.js?v=169';
 import { ITEMS, initStudy, fold, shuffle } from './study.js?v=115';
-import { judge, normalize } from './typing.js?v=149';
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=148';
+import { judge, normalize } from './typing.js?v=163';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=150';
 import { BONE_ALL, BONE_AREAS, BONE_IMPORTANT, BONE_MEMBER_NAMES, BONE_PROFESSOR } from './subjects/msk/bone-atlas.js?v=4';
 
 const params = new URLSearchParams(location.search);
@@ -145,7 +145,7 @@ function button(label, fn, options = {}) {
 function matcherFor(entries) {
   const keysOf = entry => [...new Set(entry.keys.map(key => normalize(key, STOP)).filter(Boolean))];
   const candidates = entries.map((entry, slot) => ({ slot, keys: keysOf(entry) }));
-  return { candidates, universe: new Set(candidates.flatMap(candidate => candidate.keys)) };
+  return { candidates: new Map(entries.map((entry, index) => [entry, candidates[index]])), universe: new Set(candidates.flatMap(candidate => candidate.keys)) };
 }
 
 function startSession() {
@@ -153,7 +153,7 @@ function startSession() {
   if (state.mode === 'find') {
     state.find = { order: shuffle(entries), index: 0, tries: 0, done: false, hit: false, feedback: '', correct: 0, finished: false };
   } else if (state.mode === 'name') {
-    state.name = { order: shuffle(entries), index: 0, value: '', feedback: null, correct: 0, finished: false, matcher: matcherFor(entries) };
+    state.name = { order: shuffle(entries), total: entries.length, index: 0, value: '', feedback: null, correct: 0, finished: false, matcher: matcherFor(entries) };
   } else if (state.mode === 'type') {
     state.type = { order: shuffle(entries), index: 0, position: 0, wrong: false, feedback: null, correct: 0, finished: false };
   }
@@ -346,18 +346,25 @@ function namePrompt() {
   const entry = session.order[session.index];
   if (!entry) return '';
   const feedback = session.feedback;
-  return `<div class="at-prompt-head">
-      <div><div class="eyebrow">${T('Name it', 'Nomear')} · ${session.index + 1} / ${session.order.length}</div><h1>${T('Name the highlighted structure', 'Nomeie a estrutura destacada')}</h1></div>
-      <span class="at-badge">${session.correct} ${T('correct', 'certas')}</span>
+  const progress = `${Math.min(session.index + 1, session.total)}/${session.total}`;
+  const reviews = session.order.length - Math.max(session.total, session.index + 1);
+  return `<div class="at-prompt-head at-name-head">
+      <h1>${T('Name the highlighted structure', 'Nomeie a estrutura destacada')}</h1>
+      <span class="at-badge">${progress}</span>
     </div>
-    <input id="at-answer" class="at-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="sentences" spellcheck="false" enterkeyhint="done" aria-label="${T('Your answer', 'Sua resposta')}" placeholder="${T('Type the name', 'Digite o nome')}" value="${escape(session.value)}"${feedback ? ' disabled' : ''}>
-    <p class="at-feedback${feedback ? (feedback.good ? ' good' : ' bad') : ''}" role="status">${feedback ? escape(feedback.text) : ''}</p>
-    <div class="at-actions">
-      ${feedback
-        ? button(T('Next', 'Próxima'), () => nextPrompt('name'), { primary: true, attrs: 'id="at-next"' })
-        : button(T('Check answer', 'Conferir'), checkName, { primary: true, attrs: 'id="at-check"' })}
+    <div class="at-answer-row">
+      <input id="at-answer" class="at-input${feedback?.good ? ' at-answer-correct' : ''}" type="text" autocomplete="off" autocorrect="off" autocapitalize="sentences" spellcheck="false" enterkeyhint="done" aria-label="${T('Your answer', 'Sua resposta')}" placeholder="${T('Type the name', 'Digite o nome')}" value="${escape(session.value)}"${feedback ? ' disabled' : ''}>
+      <div class="at-actions">
+        ${feedback
+          ? button(T('Next', 'Próxima'), () => nextPrompt('name'), { primary: true, attrs: 'id="at-next"' })
+          : button(T('Check answer', 'Conferir'), checkName, { primary: true, attrs: 'id="at-check"' })}
+      </div>
     </div>
-    ${feedback ? `<p class="at-note">${escape(L(entry.cue))}</p>` : ''}`;
+    ${reviews ? `<p class="at-note">${progress} +${reviews} ${reviews === 1 ? T('review', 'revisão') : T('reviews', 'revisões')}</p>` : ''}
+    ${feedback?.good
+      ? feedback.spelling ? `<p class="at-spelling-note" role="status">${T('Correct — spelling adjusted.', 'Correto — grafia ajustada.')}</p>` : `<span class="at-status-only" role="status">${T('Correct.', 'Correto.')}</span>`
+      : feedback ? `<p class="at-feedback bad" role="status">${escape(feedback.text)}</p>
+        <p class="at-note">${escape(L(entry.cue))}</p>` : ''}`;
 }
 
 function typePrompt() {
@@ -390,13 +397,14 @@ function typePrompt() {
 }
 
 function resultPrompt(session, kind) {
+  const total = session.total ?? session.order.length;
   const title = kind === 'find' ? T('Find it complete', 'Encontrar concluído')
     : kind === 'name' ? T('Name it complete', 'Nomear concluído') : T('Learn complete', 'Aprender concluído');
   return `<div class="at-prompt-head">
-      <div><div class="eyebrow">${title}</div><h1>${session.correct} / ${session.order.length}</h1></div>
+      <div><div class="eyebrow">${title}</div><h1>${session.correct} / ${total}</h1></div>
       <span class="at-badge accent">${escape(L(area().name))}</span>
     </div>
-    <p>${session.correct} ${T('of', 'de')} ${session.order.length} ${kind === 'find' ? T('located', 'localizados') : T('correct', 'corretos')}.</p>
+    <p>${session.correct} ${T('of', 'de')} ${total} ${kind === 'find' ? T('located', 'localizados') : T('correct', 'corretos')}.</p>
     <div class="at-actions">
       ${button(T('Practise again', 'Praticar de novo'), () => { startSession(); render({ preserveCamera: false }); }, { primary: true })}
       ${button(T('Back to explore', 'Voltar a explorar'), () => setMode('explore'))}
@@ -477,16 +485,19 @@ function checkName() {
     return;
   }
   const entry = session.order[session.index];
-  const result = judge(session.value, session.matcher.candidates, session.matcher.universe, STOP);
+  const result = judge(session.value, [session.matcher.candidates.get(entry)], session.matcher.universe, STOP);
   if (result.ok) {
+    if (!result.exact) session.value = L(entry.name);
     session.correct += 1;
     correctSound();
   } else {
+    if (session.index < session.total) session.order.push(entry);
     wrongKeySound();
   }
   session.feedback = {
     good: Boolean(result.ok),
-    text: result.ok ? T('Correct.', 'Correto.')
+    spelling: Boolean(result.ok && !result.exact),
+    text: result.ok ? ''
       : result.ambiguous ? T('That name is shared by more than one entry. Be more specific.', 'Esse nome é compartilhado por mais de uma entrada. Seja mais específico.')
         : T(`Not quite. This is ${L(entry.name)}.`, `Quase. Esta estrutura é ${L(entry.name)}.`),
   };
@@ -626,6 +637,7 @@ function paint({ preserveCamera = true } = {}) {
     frameIds: zoomToFocus ? focus : ids,
     markerIds: [],
     atlas: true,
+    correctFocus: state.mode === 'name' && Boolean(state.name?.feedback?.good),
     view: viewDir,
     padding: zoomToFocus ? 1.45 : (active.padding || 1.12),
     explore: state.mode === 'explore',
@@ -796,6 +808,18 @@ document.getElementById('at-isolate').addEventListener('click', () => {
   isolateOn = !isolateOn;
   viewer.setIsolate(isolateOn);
   document.getElementById('at-isolate').setAttribute('aria-pressed', String(isolateOn));
+});
+
+// Keep typing after rotating the model or using its buttons with a mouse.
+// Select menus and keyboard navigation retain their normal focus behavior.
+document.querySelector('.at-stage').addEventListener('pointerup', event => {
+  if (event.pointerType !== 'mouse' || event.target.closest('select, input, a')) return;
+  const session = state[state.mode];
+  if (!['name', 'type'].includes(state.mode) || !session || session.finished || session.feedback) return;
+  setTimeout(() => {
+    const current = state[state.mode];
+    if (['name', 'type'].includes(state.mode) && current && !current.finished && !current.feedback) focusPrompt();
+  }, 0);
 });
 
 document.addEventListener('click', event => {

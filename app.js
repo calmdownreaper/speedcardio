@@ -1,4 +1,4 @@
-import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=148';
+import { correctSound, isMuted, keySound, setMuted, wrongKeySound } from './sound.js?v=150';
 import { createEngine } from './aulas-engine.js?v=115';
 import { SUBJECTS, subjectFromUrl, subjectUrl } from './subjects/registry.js?v=161';
 import {
@@ -10,13 +10,13 @@ import {
 // viewer module and model assets in parallel so the 3D scene doesn't wait on
 // the subject pack waterfall.
 const V = '?v=115';
-const VIEWER_VERSION = '?v=150';
+const VIEWER_VERSION = '?v=168';
 const subjectId = subjectFromUrl();
 const subject = SUBJECTS.find(entry => entry.id === subjectId) || SUBJECTS[0];
 let viewerModulePromise = import(`./viewer.js${VIEWER_VERSION}`);
 const preloadManifestUrl = { msk: './msk/models.json', gastro: './gastro/models.json' }[subject.id] || './models.json';
 let modelPreload = {
-  manifest: fetch(`${preloadManifestUrl}${subject.id === 'cardio' ? V : VIEWER_VERSION}`, { cache: 'force-cache' }).then(r => {
+  manifest: fetch(`${preloadManifestUrl}${subject.id === 'cardio' ? V : '?v=150'}`, { cache: 'force-cache' }).then(r => {
     if (!r.ok) throw new Error('Model index unavailable');
     return r.json();
   }).catch(() => null),
@@ -3290,7 +3290,7 @@ function syncSoundToggle() {
   toggle.title = off ? 'Turn sounds on' : 'Mute sounds';
   toggle.querySelector('use').setAttribute('href', off ? '#i-volume-x' : '#i-volume');
 }
-$('sound-toggle').addEventListener('click', () => { setMuted(!isMuted()); syncSoundToggle(); });
+$('sound-toggle').addEventListener('click', () => { setMuted(!isMuted()); syncSoundToggle(); if (!isMuted()) correctSound(); });
 syncSoundToggle();
 $('pick-center').addEventListener('click', () => viewer?.pickCenter());
 $('view-zoom-in').addEventListener('click', () => viewer?.zoom(.8));
